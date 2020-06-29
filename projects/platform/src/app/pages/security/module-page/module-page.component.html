@@ -1,0 +1,306 @@
+<div class="pt3" style="background-color: rgb(188, 146, 84);">
+    <div class="container-fluid pb9">
+
+        <div class="header-page">
+            <div class="breadcrumb">
+                <h6 class="breadcrumb-home text-galery-24">
+                    <clr-icon shape="users" class="is-solid breadcrumb-icon"></clr-icon>
+                    {{breadcrumb}}
+                </h6>
+            </div>
+            <div>
+                <button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus"></clr-icon></button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="container-fluid mt-7">
+    <div class="clr-row">
+        <div class="clr-col-lg-12">
+            <div class="card card-table">
+                <h4 class="stack-header">
+                    <span class="stack-title">
+                        {{title}}
+                    </span>
+                </h4>
+
+                <clr-datagrid id="main-grid" [clrDgLoading]="modules == null" class="shadow">
+                    <clr-dg-placeholder>We couldn't find any contents</clr-dg-placeholder>
+                    <clr-dg-column [clrDgField]="'code'">
+                        <ng-container *clrDgHideableColumn="{hidden: false}">
+                            Code
+                        </ng-container>
+                    </clr-dg-column>
+                    <clr-dg-column [clrDgField]="'name'">
+                        <ng-container *clrDgHideableColumn="{hidden: false}">
+                            Name
+                        </ng-container>
+                    </clr-dg-column>
+
+                        
+                        <clr-dg-row *clrDgItems="let row of contents">
+                            <clr-dg-cell>{{row.code}}</clr-dg-cell>
+                            <clr-dg-cell>{{row.name}}</clr-dg-cell>
+
+                            <ng-container ngProjectAs="clr-dg-row-detail" *ngIf="true">
+                                <ng-container *ngFor="let sub of subModules" >
+                                    <ng-container *ngIf="sub.module.code == row.code"  >
+                                        <clr-dg-row-detail *clrIfExpanded >
+                                            <clr-dg-cell>{{sub.code}}</clr-dg-cell>
+                                            <clr-dg-cell>{{sub.name}}</clr-dg-cell>
+
+                                            <clr-dg-action-overflow>
+                                                <button class="action-item" (click)="subEdit(sub)">Edit</button>
+                                                <button class="action-item" (click)="mainDelete(sub)">Delete</button>
+                                            </clr-dg-action-overflow>
+                                        </clr-dg-row-detail>  
+                                    </ng-container>
+                                </ng-container>
+                            </ng-container>                                            
+                      
+                              
+                            <clr-dg-action-overflow>
+                                <button class="action-item" (click)="mainEdit(row)" >Edit</button>
+                                <button class="action-item" (click)="mainDelete(row)" >Delete</button>
+                            </clr-dg-action-overflow>
+                            
+                        </clr-dg-row>
+                   
+                    
+
+                    <clr-dg-footer>
+                       <clr-dg-pagination #pagination [clrDgPageSize]="10">
+                            <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Users per page</clr-dg-page-size>
+                            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                            of {{pagination.totalItems}} users
+                        </clr-dg-pagination>
+                        <clr-dg-column-toggle>
+                            <clr-dg-column-toggle-title>Show Column</clr-dg-column-toggle-title>
+                            <clr-dg-column-toggle-button>Select All Column</clr-dg-column-toggle-button>
+                        </clr-dg-column-toggle>
+                    </clr-dg-footer>
+                </clr-datagrid>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal add dialog-->
+<ng-container *ngIf="modalAddDialog">
+    
+        <clr-modal [clrModalSize]="'md'" [clrModalOpen]="modalAddDialog" [clrModalClosable]="false"
+            [clrModalStaticBackdrop]="true">
+
+            <h3 class="modal-title">Add {{title}}</h3>
+
+            <div class="modal-body ">
+                <clr-tabs>
+                    <clr-tab>
+                        <button clrTabLink id="link1">Module</button>
+                        <clr-tab-content id="content1" *clrIfActive ="true">
+
+                            <form [formGroup]="formMain" (ngSubmit)="mainAddSubmit();">
+                                <clr-input-container>
+                                    <label>Code</label>
+                                    <input clrInput type="text" formControlName="code"/>
+                                    <clr-control-helper>Please input with unique code</clr-control-helper>
+                                    <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                    <clr-control-error *clrIfError="'maxlength'; error as err">Must be at maximum {{ err.requiredLength }} characters</clr-control-error>
+                
+                                </clr-input-container>
+                                <clr-input-container>
+                                    <label>Name</label>
+                                    <input clrInput type="text" formControlName="name" />
+                                    <clr-control-helper>Please input module name</clr-control-helper>
+                                    <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                    <clr-control-error *clrIfError="'maxlength'; error as err">Must be at maximum {{ err.requiredLength }} characters</clr-control-error>
+                
+                                </clr-input-container>
+                                <clr-input-container>
+                                    
+                                    <input clrInput type="hidden" formControlName="type" />
+                                    
+                                </clr-input-container>
+
+                                <!-- hidden field put here-->
+                                <input type="hidden" formaControlName="code_validation">
+                                
+                        
+                                <div class="modal-footer">
+
+                                    <button type="button" class="btn btn-outline" (click)="modalAddDialog = false">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">
+                                    <span *ngIf="spinner==true" class="spinner spinner-inline">
+                                        Saving
+                                    </span>
+                                    <ng-container *ngIf="spinner==false">
+                                        Save
+                                    </ng-container>
+                                    </button>
+                                </div>
+                            </form>
+
+                        </clr-tab-content>
+                    </clr-tab>
+                    <clr-tab>
+                        <button clrTabLink>Sub Module</button>
+                        <clr-tab-content *clrIfActive>
+
+                            <form [formGroup]="formSub" (ngSubmit)="mainAddSubmit();">
+                                <clr-input-container>
+                                    <label>Code</label>
+                                    <input clrInput type="text" formControlName="code"/>
+                                    <clr-control-helper>Please input with unique code</clr-control-helper>
+                                    <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                    <clr-control-error *clrIfError="'maxlength'; error as err">Must be at maximum {{ err.requiredLength }} characters</clr-control-error>
+                
+                                </clr-input-container>
+                                <clr-input-container>
+                                    <label>Name</label>
+                                    <input clrInput type="text" formControlName="name" />
+                                    <clr-control-helper>Please input module name</clr-control-helper>
+                                    <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                    <clr-control-error *clrIfError="'maxlength'; error as err">Must be at maximum {{ err.requiredLength }} characters</clr-control-error>
+                
+                                </clr-input-container>
+
+                                <clr-select-container>
+                                    <label>Module</label>
+                                    <select clrSelect name="module" formControlName="module">
+                                        <option *ngFor="let module of modules" [value]="module._hash">
+                                            {{module.code}} - {{module.name}}
+                                        </option>
+                                    </select>
+                                    <clr-control-helper>Please select a role</clr-control-helper>
+                                    <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                </clr-select-container>
+
+                                <clr-input-container>
+                                    <input clrInput type="hidden" formControlName="type" />
+                                    
+                                </clr-input-container>
+
+                                <!-- hidden field put here-->
+                                <input type="hidden" formaControlName="code_validation">
+                                <input type="hidden" formaControlName="module_encoded">
+                                
+                        
+                                <div class="modal-footer">
+
+                                    <button type="button" class="btn btn-outline" (click)="modalAddDialog = false">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">
+                                    <span *ngIf="spinner==true" class="spinner spinner-inline">
+                                        Saving
+                                    </span>
+                                    <ng-container *ngIf="spinner==false">
+                                        Save
+                                    </ng-container>
+                                    </button>
+                                </div>
+                            </form>
+
+                        </clr-tab-content>
+                    </clr-tab>
+                </clr-tabs>
+                
+                
+            </div>
+            
+        </clr-modal>
+</ng-container>
+<!--End Modal add dialog-->
+
+<ng-container *ngIf="modalEditDialog">
+    <form [formGroup]="form" (ngSubmit)="mainEditSubmit();">
+        <clr-modal [clrModalSize]="'lg'" [clrModalOpen]="modalEditDialog" [clrModalClosable]="false"
+            [clrModalStaticBackdrop]="false">
+
+            <h3 class="modal-title">Edit {{title}}</h3>
+
+            <div class="modal-body">
+                <clr-input-container>
+                    <label>Code</label>
+                    <input clrInput type="text" formControlName="code"/>
+                    <clr-control-helper>Please input with unique code</clr-control-helper>
+                    <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                    <clr-control-error *clrIfError="'maxlength'; error as err">Must be at maximum {{ err.requiredLength }} characters</clr-control-error>
+
+                </clr-input-container>
+                <clr-input-container>
+                    <label>Name</label>
+                    <input clrInput type="text" formControlName="name" />
+                    <clr-control-helper>Please input module name</clr-control-helper>
+                    <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                    <clr-control-error *clrIfError="'maxlength'; error as err">Must be at maximum {{ err.requiredLength }} characters</clr-control-error>
+
+                </clr-input-container>
+
+                <clr-select-container *ngIf="modalEdit">
+                    <label>Module</label>
+                    <select clrSelect name="module" formControlName="module">
+                        <option *ngFor="let module of modules" [value]="module._hash">
+                            {{module.code}} - {{module.name}}
+                        </option>
+                    </select>
+                    <clr-control-helper>Please select a role</clr-control-helper>
+                    <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                </clr-select-container>
+
+                <clr-input-container>
+                    <input clrInput type="hidden" formControlName="type" />
+                    
+                </clr-input-container>
+            </div>
+            <!-- hidden field put here-->
+            <input type="hidden" formaControlName="code_validation">
+            <input type="hidden" formaControlName="module_encoded">
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" (click)="modalEditDialog = false">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    <span *ngIf="spinner==true" class="spinner spinner-inline">
+                        Updating
+                    </span>
+                    <ng-container *ngIf="spinner==false">
+                        Update
+                    </ng-container>
+                </button>
+            </div>
+
+        </clr-modal>
+    </form>
+</ng-container>
+
+<ng-container *ngIf="modalDeleteDialog">
+    <form [formGroup]="form" (ngSubmit)="mainDeleteSubmit();">
+        <clr-modal [clrModalSize]="'md'" [clrModalOpen]="modalDeleteDialog" [clrModalClosable]="false"
+            [clrModalStaticBackdrop]="false">
+
+            <h3 class="modal-title">Delete {{title}}</h3>
+
+            <div class="modal-body">
+                <p>Are you sure you want to permanently remove this item?</p>
+                <clr-input-container>
+                    <input clrInput type="hidden" formControlName="code" />
+                </clr-input-container>
+            </div>
+            <!-- hidden field put here-->
+          
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" (click)="modalDeleteDialog = false">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    <span *ngIf="spinner==true" class="spinner spinner-inline">
+                        Deleting
+                    </span>
+                    <ng-container *ngIf="spinner==false">
+                        Delete
+                    </ng-container>
+                </button>
+            </div>
+
+        </clr-modal>
+    </form>
+</ng-container>
+

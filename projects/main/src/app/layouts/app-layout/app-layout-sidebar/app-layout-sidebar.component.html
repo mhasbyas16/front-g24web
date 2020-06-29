@@ -1,0 +1,24 @@
+<!-- USER
+<div class="nav-divider"></div> -->
+<clr-vertical-nav-group>
+    <!-- <a routerLink="./normal" hidden aria-hidden="true"></a> -->
+    <span class="icon-menu">
+        <clr-icon shape="dashboard" clrVerticalNavIcon></clr-icon>
+    </span>
+    Example
+    <clr-vertical-nav-group-children *clrIfExpanded="true">
+        <a clrVerticalNavLink routerLink="/app/example" routerLinkActive="active">
+            Product
+            <span class="badge badge-success badge-menu">15</span>
+        </a>
+        <a clrVerticalNavLink routerLink="/app/example2" routerLinkActive="active">
+            Example V2
+        </a>
+    </clr-vertical-nav-group-children>
+</clr-vertical-nav-group>
+<a clrVerticalNavLink routerLinkActive="active" routerLink="/admin/setting">
+    <span class="icon-menu">
+        <clr-icon shape="network-settings" clrVerticalNavIcon></clr-icon>
+    </span>
+    Setting
+</a>

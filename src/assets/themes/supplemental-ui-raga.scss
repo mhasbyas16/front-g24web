@@ -1,0 +1,262 @@
+.content-area{
+    padding: 0px!important; 
+    background-color: #f4f5fb;
+}
+
+// card
+.card-table{
+    transition: all 0.15s ease;
+    // box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15) !important;
+    box-shadow: 0 4px 20px 1px rgba(0,0,0,.06), 0 1px 4px rgba(0,0,0,.08);
+    background-color: white;
+    border-radius: .25rem;
+    border: none;
+    margin: 0;
+    .stack-header{
+        margin-top: 0;
+        padding: .5rem 1.2rem 0rem 1.2rem;
+        margin-top: 0;
+        padding: .75rem 1rem;
+        .stack-title{
+            color: #666666;
+            font-weight: 500 !important;
+        }
+    }
+
+    // #datagrid-table
+    .datagrid{
+        border-left: 0;
+        border-right: 0;
+        border-bottom: 0;
+        .datagrid-table{
+            outline: none;
+            .datagrid-column{
+                background: #f6f9fc;
+                .datagrid-column-title{
+                    // color: #8898aa!important;
+                    outline: none;
+                }
+            }
+        }
+
+        /*
+        .datagrid-column-separator{
+            // display: none;
+        }
+        .datagrid-cell:last-child:after{
+            // opacity: 0;
+        }
+        */
+    }
+    
+    .datagrid-footer{
+        border: none;
+        background-color: white;
+    }
+    
+    // #enddatagrid-table
+}
+// #enddatagrid
+
+// #breadcrumb
+.header-page{
+    display: flex;
+}
+.breadcrumb{
+    margin: 0 0 .5rem;
+    flex-grow: 1;
+    
+    .breadcrumb-home{
+        display: inline-block !important; 
+        margin: 0;
+        font-size: 1rem;
+        line-height: 1;
+        padding-right: .5rem;
+        margin: 0;
+        color: white!important; 
+        font-size: 24px!important;
+        // color: #986520;
+
+        .breadcrumb-icon{
+            height: 25px;
+            width: 25px;
+            margin-right: 10px;
+            vertical-align: bottom;
+        }
+    }
+    
+    .breadcrumb-link{
+        display: inline-block !important; 
+        margin-left: .5rem !important;
+        ol{
+            display: flex; 
+            flex-wrap: wrap;
+            list-style: none;
+            li{
+                display: inline-block;
+                position: relative;
+                padding: 0 0.7rem 0px .5rem;
+                line-height: 1;
+                vertical-align: bottom;
+                color: #fff;
+
+                &:after{
+                    position: absolute;
+                    top: -1px;
+                    right: 0;
+                    content: "-";
+                    // height: 16px;
+                    // width: 1px;
+                    // background: #fff;
+                    border-radius: 5px;
+                }
+                &:last-child{
+                    &::after{
+                        opacity: 0;
+                    }
+                }
+                a{
+                    color: #fff;
+                    &:hover{
+                        text-decoration: none;
+                    }
+                }
+            }
+        }
+    }
+}
+.separator-breadcrumb{
+    border-top: 1px solid #dee2e6!important;
+    margin-bottom: 1rem;
+}
+// #endbreadcrumb
+$sizes: 12;
+
+@mixin margin-classes {
+  @for $i from 1 through $sizes {
+     $margin: $i * 0.5rem;
+    /* margin #{$margin} */
+    .m#{$i}  {margin: $margin;}
+    .ml#{$i} {margin-left: $margin;}
+    .mr#{$i} {margin-right: $margin;}
+    .mt#{$i} {margin-top: $margin;}
+    .mb#{$i} {margin-bottom: $margin;}
+    .mx#{$i} {margin-left: $margin; margin-right: $margin;}
+    .my#{$i} {margin-top: $margin; margin-bottom: $margin;}
+  }
+}
+@include margin-classes;
+
+@mixin margin-classes-min {
+  @for $i from 1 through $sizes {
+     $margin: $i * 0.5rem;
+    /* margin #{$margin} */
+    .m-#{$i}  {margin: -$margin;}
+    .ml-#{$i} {margin-left: -$margin;}
+    .mr-#{$i} {margin-right: -$margin;}
+    .mt-#{$i} {margin-top: -$margin;}
+    .mb-#{$i} {margin-bottom: -$margin;}
+    .mx-#{$i} {margin-left: -$margin; margin-right: -$margin;}
+    .my-#{$i} {margin-top: -$margin; margin-bottom: -$margin;}
+  }
+}
+@include margin-classes-min;
+
+
+@mixin padding-classes {
+  @for $i from 1 through $sizes {
+    $padding: $i * 0.5rem;
+    /* padding #{$padding} */
+    .p#{$i} {padding: $padding;}
+    .pl#{$i} {padding-left: $padding;}
+    .pr#{$i} {padding-right: $padding;}
+    .pt#{$i} {padding-top: $padding;}
+    .pb#{$i} {padding-bottom: $padding;}
+    .px#{$i} {padding-left: $padding; padding-right: $padding;}
+    .py#{$i} {padding-top: $padding; padding-bottom: $padding;}
+  }
+}
+@include padding-classes;
+
+@mixin padding-classes-min {
+  @for $i from 1 through $sizes {
+    $padding: $i * 0.5rem;
+    /* padding #{$padding} */
+    .p-#{$i} {padding: -$padding;}
+    .pl-#{$i} {padding-left: -$padding;}
+    .pr-#{$i} {padding-right: -$padding;}
+    .pt-#{$i} {padding-top: -$padding;}
+    .pb-#{$i} {padding-bottom: -$padding;}
+    .px-#{$i} {padding-left: -$padding; padding-right: -$padding;}
+    .py-#{$i} {padding-top: -$padding; padding-bottom: -$padding;}
+  }
+}
+@include padding-classes-min;
+
+@media (max-width: 567px) {
+    .container-fluid {
+        padding-left: .75rem;
+        padding-right: .75rem;
+    }
+}
+
+
+// table grid
+.datagrid-row{
+    // border-color: #cccccc;
+    border-color: #e9ecef;
+    &:nth-of-type(odd){
+        background-color:#f9f9f9
+    }
+}
+
+.datagrid-row-sticky{
+    &:nth-of-type(odd){
+        background-color:#f9f9f9
+    }
+}
+
+.datagrid-row-master{
+    border-top: 1px solid #e9ecef;
+    // background-color: black;
+}
+
+.badge-menu{
+    float: right;
+    margin-top: 10px;
+}
+
+// menu
+.nav-text,
+.nav-group-text,
+.nav-group-children{
+    // color: rgba(0,0,0,.5);
+    // color: currentColor;
+    color: white;
+}
+
+.icon-menu{
+    .nav-icon{
+        margin-left: 0!important;
+    }
+}
+
+// grid
+@media (min-width: 568px) {
+    .container-fluid {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+@media (min-width: 992px) {
+    .container-fluid {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}
+@media (min-width: 1200px) {
+    .container-fluid {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+}

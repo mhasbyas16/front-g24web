@@ -1,0 +1,50 @@
+<clr-main-container>
+    <clr-header>
+        <div class="branding">
+            <a href="javascript:void(0)" class="logo-and-title">
+                <!-- <img src="/assets/images/logo.png" height="70%" style="margin-right: 1rem;"> -->
+                <img src="https://clarity.design/clarity-logo.eb275aa53551567fa576.svg" height="70%" style="margin-right: 1rem;">
+                <span class="title">Raga Platform</span>
+            </a>
+        </div>
+        <div class="header-nav" [clr-nav-level]="1">
+            ...
+        </div>
+        <!-- ... -->
+    </clr-header>
+    <div class="content-container">
+        <main class="content-area">
+            ...1
+        </main>
+        <nav class="sidenav" [clr-nav-level]="1">
+            <section class="sidenav-content">
+                <a href="..." class="nav-link active">
+                    Nav Element 1
+                </a>
+                <a href="..." class="nav-link">
+                    Nav Element 2
+                </a>
+                <section class="nav-group collapsible">
+                    <input id="tabexample1" type="checkbox">
+                    <label for="tabexample1">Collapsible Nav Element</label>
+                    <ul class="nav-list">
+                        <li><a class="nav-link">Link 1</a></li>
+                        <li><a class="nav-link">Link 2</a></li>
+                    </ul>
+                </section>
+                <section class="nav-group">
+                    <input id="tabexample2" type="checkbox">
+                    <label for="tabexample2">Default Nav Element</label>
+                    <ul class="nav-list">
+                        <li><a class="nav-link">Link 1</a></li>
+                        <li><a class="nav-link">Link 2</a></li>
+                        <li><a class="nav-link active">Link 3</a></li>
+                        <li><a class="nav-link">Link 4</a></li>
+                        <li><a class="nav-link">Link 5</a></li>
+                        <li><a class="nav-link">Link 6</a></li>
+                    </ul>
+                </section>
+            </section>
+        </nav>
+    </div>
+</clr-main-container>

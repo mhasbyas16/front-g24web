@@ -1,0 +1,14 @@
+<clr-main-container>
+    <!-- <app-app-layout-alert-header></app-app-layout-alert-header> -->
+    <app-header></app-header>
+    <!-- <app-app-layout-sub-header></app-app-layout-sub-header> -->
+    <div class="content-container">
+        <main class="content-area">
+            <router-outlet></router-outlet>
+            <app-footer></app-footer>
+        </main>
+        <clr-vertical-nav  [clr-nav-level]="1" [clrVerticalNavCollapsible]="collapsible">
+            <app-sidebar></app-sidebar>
+        </clr-vertical-nav>
+    </div>
+</clr-main-container>

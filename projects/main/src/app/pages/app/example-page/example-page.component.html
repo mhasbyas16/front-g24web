@@ -1,0 +1,145 @@
+<div class="pt3" style="background-color: rgb(188, 146, 84);">
+    <div class="container-fluid pb9">
+        <div class="header-page">
+            <div class="breadcrumb" style="flex-grow: 1;">
+                <h6 class="breadcrumb-home">
+                    <clr-icon shape="shopping-cart" class="is-solid breadcrumb-icon"></clr-icon>
+                    Product
+                </h6>
+                <!-- <nav class="breadcrumb-link">
+                    <ol>
+                        <li><a href="javascript:void(0)">Home</a></li>
+                        <li>List Product</li>
+                    </ol>
+                </nav> -->
+            </div>
+            <div>
+                <!-- <button class="btn btn-danger btn-sm">Export <clr-icon shape="export"></clr-icon></button> -->
+                <button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus"></clr-icon></button>
+            </div>
+        </div>
+        <!-- <div class="separator-breadcrumb"></div> -->
+
+    </div>
+</div>
+
+<div class="container-fluid mt-7">
+    <div class="clr-row">
+        <div class="clr-col-lg-12">
+            <div class="card card-table">
+                <h4 class="stack-header">
+                    <span class="stack-title">
+                        {{title}}
+                    </span>
+                    <!-- <span class="stack-actions">
+                        <button class="stack-action btn btn-sm btn-outline-primary" type="button" (click)="mainAdd()">
+                            Add
+                        </button>
+                    </span> -->
+                </h4>
+
+                <clr-datagrid id="main-grid" [clrDgLoading]="contents == null" class="shadow">
+                    <clr-dg-placeholder>We couldn't find any contents</clr-dg-placeholder>
+
+                    <clr-dg-column [clrDgField]="'id'">
+                        <ng-container *clrDgHideableColumn="{hidden: false}">
+                            User ID
+                        </ng-container>
+                    </clr-dg-column>
+                    <clr-dg-column [clrDgField]="'name'">
+                        <ng-container *clrDgHideableColumn="{hidden: false}">
+                            Name
+                        </ng-container>
+                    </clr-dg-column>
+                    <clr-dg-column [clrDgField]="'creation'">
+                        <ng-container *clrDgHideableColumn="{hidden: false}">
+                            Creation Date
+                        </ng-container>
+                    </clr-dg-column>
+                    <clr-dg-column [clrDgField]="'color'">
+                        <ng-container *clrDgHideableColumn="{hidden: false}">
+                            Favorite Color
+                        </ng-container>
+                    </clr-dg-column>
+
+                    <clr-dg-row *clrDgItems="let row of contents">
+                        <clr-dg-cell>{{row.id}}</clr-dg-cell>
+                        <clr-dg-cell>{{row.name}}</clr-dg-cell>
+                        <clr-dg-cell>{{row.creation}}</clr-dg-cell>
+                        <clr-dg-cell>{{row.color}}</clr-dg-cell>
+                        <clr-dg-action-overflow>
+                            <button class="action-item" (click)="mainEdit(row)">Edit</button>
+                            <button class="action-item" (click)="mainDeleteSubmit(row)">Delete</button>
+                        </clr-dg-action-overflow>
+                    </clr-dg-row>
+
+                    <clr-dg-footer>
+                        <clr-dg-pagination #pagination [clrDgPageSize]="10">
+                            <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Users per page</clr-dg-page-size>
+                            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                            of {{pagination.totalItems}} users
+                        </clr-dg-pagination>
+                        <clr-dg-column-toggle>
+                            <clr-dg-column-toggle-title>Show Column</clr-dg-column-toggle-title>
+                            <clr-dg-column-toggle-button>Select All Column</clr-dg-column-toggle-button>
+                        </clr-dg-column-toggle>
+                    </clr-dg-footer>
+                </clr-datagrid>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-container *ngIf="modalAddDialog">
+    <form [formGroup]="form" (ngSubmit)="mainAddSubmit();">
+        <clr-modal [clrModalSize]="'lg'" [clrModalOpen]="modalAddDialog" [clrModalClosable]="false"
+            [clrModalStaticBackdrop]="false">
+
+            <h3 class="modal-title">Add {{title}}</h3>
+
+            <div class="modal-body">
+
+                <clr-input-container>
+                    <label>Code</label>
+                    <input clrInput type="text" formControlName="code" />
+                </clr-input-container>
+                <clr-input-container>
+                    <label>Name</label>
+                    <input clrInput type="text" formControlName="name" />
+                </clr-input-container>
+
+            </div>
+            <!-- hidden field put here-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" (click)="modalAddDialog = false">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </clr-modal>
+    </form>
+</ng-container>
+
+<ng-container *ngIf="modalEditDialog">
+    <form [formGroup]="form" (ngSubmit)="mainEditSubmit();">
+        <clr-modal [clrModalSize]="'lg'" [clrModalOpen]="modalEditDialog" [clrModalClosable]="false"
+            [clrModalStaticBackdrop]="false">
+
+            <h3 class="modal-title">Edit {{title}}</h3>
+
+            <div class="modal-body">
+                <clr-input-container>
+                    <label>Code</label>
+                    <input clrInput type="text" formControlName="code" />
+                </clr-input-container>
+                <clr-input-container>
+                    <label>Name</label>
+                    <input clrInput type="text" formControlName="name" />
+                </clr-input-container>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" (click)="modalAddDialog = false">Cancel</button>
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+
+        </clr-modal>
+    </form>
+</ng-container>

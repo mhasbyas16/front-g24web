@@ -1,0 +1,44 @@
+<div class="login-wrapper">
+    <form #form="ngForm" class="login" (ngSubmit)="submit(form)">
+        <section class="title">
+            <h3 class="welcome">Welcome to</h3>
+            Raga Platform
+            <h5 class="hint">Use your Company ID to sign in or create one now</h5>
+        </section>
+        <div class="login-group">
+            <clr-input-container *ngIf="state == 1">
+                <label class="clr-sr-only">Company</label>
+                <input required type="text"  clrInput name="company" placeholder="Company" ngModel #company="ngModel" />
+                <clr-control-helper>Please input with valid company code</clr-control-helper>
+            </clr-input-container>    
+            <div class="clr-form-control" *ngIf="state > 1 ">
+                <label class="clr-control-label">{{company}}</label>
+            </div>
+            <div class="clr-form-control" *ngIf="state == 3">
+                <label class="clr-control-label">{{name}}</label>
+            </div>            
+            <clr-input-container *ngIf="state == 2">
+                <label class="clr-sr-only">Username</label>
+                <input required type="text" name="username" clrInput placeholder="Username" ngModel #username="ngModel" />
+                <clr-control-helper>Please input with valid username, email or phone number</clr-control-helper>
+            </clr-input-container>
+            <clr-password-container *ngIf="state == 3">
+                <label class="clr-sr-only">Password</label>
+                <input type="password" name="password" clrPassword placeholder="Password" ngModel/>
+                <clr-control-helper>Please input with valid password for the user {{name}}</clr-control-helper>
+            </clr-password-container>
+
+            <div *ngIf="error != null" class="error active">
+                {{error}}
+            </div>
+            <button type="submit" class="btn btn-primary" >
+                <span *ngIf="spinner==true" class="spinner spinner-inline">
+                    
+                </span>
+                NEXT</button>
+            <!--
+            <a href="javascript://" class="signup">Sign up for a Company ID</a>
+            -->
+        </div>
+    </form>
+</div>
