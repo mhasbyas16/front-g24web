@@ -9,12 +9,11 @@ import { NewLayoutComponent } from 'projects/main/src/app/layouts/new-layout/new
 //g24
 import { MainComponent } from 'projects/main/src/app/g24/layout/main/main.component';
 const defaultPage = "auth/signin";
-const dashboard = "g24";
-
+const dashboard = "/g24";
 const routes: Routes = [
   {
     path: '',
-    redirectTo: dashboard,
+    redirectTo: defaultPage,
     pathMatch: 'full',
   },
   {
@@ -79,7 +78,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: dashboard
+    redirectTo: defaultPage
   },  
 ];
 
