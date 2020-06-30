@@ -1,13 +1,17 @@
+
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../../core-services/auth.service';
 import { Router } from '@angular/router';
+import { CoreResourceService } from 'src/app/lib/common/core-resource.service';
+import { AuthService } from 'src/app/lib/common/auth.service';
+import { PasswordRequirementService } from 'src/app/lib/common/password-requirement.service';
+import { CommonResourceService } from 'src/app/lib/common/common-resource.service';
 
 @Component({
   selector: 'app-signin-page',
-  templateUrl: './signin-page.component.html',
-  styleUrls: ['./signin-page.component.scss']
+  templateUrl: './sign-in-page.component.html',
+  styleUrls: ['./sign-in-page.component.scss']
 })
-export class SigninPageComponent implements OnInit {
+export class SignInPageComponent implements OnInit {
 
   spinner = false;
 
@@ -25,27 +29,14 @@ export class SigninPageComponent implements OnInit {
 
     // angular
     private router: Router,
-  ) { 
+  ) {
     /*if (this.authService.isSignin()) {
       this.router.navigate(["/app/example"]);
     }*/
   }
 
   ngOnInit(): void {
-    this.authService.logout();
-    const company= "g24";
-    this.authService.authCompany(company).subscribe((response:any) => {
-      this.spinner = false;
-      if (response == false) {
-        if (this.authService.getMessage() != null) {
-          this.error = this.authService.getMessage();
-        }    
-        return;
-      }
-      console.debug("response", response);
-      this.company = response.name;
-      this.state = 2;
-    });  
+
   }
 
   submit(data) {
@@ -117,7 +108,7 @@ export class SigninPageComponent implements OnInit {
           }   
           return;         
         }
-        this.router.navigate(["g24"]);
+        this.router.navigate(["/front"]);
       });    
     }
   }

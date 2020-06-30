@@ -25,8 +25,6 @@ import { ProfilePageComponent } from './profile-page/profile-page.component';
     FormsModule,
     ClarityModule,
 
-
-
   ],  
   exports: [
     RouterModule,

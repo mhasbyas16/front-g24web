@@ -1,0 +1,158 @@
+<div class="clr-row">
+    <div class="card" style="margin-top: 0em;">
+        <div class="card-header">
+            Penjualan
+        </div>
+        <div class="card-block">
+            <div class="card-text">
+                <clr-tabs>
+                    <clr-tab>
+                        <button clrTabLink>Logam Mulia</button>
+                        <clr-tab-content >
+                            <clr-datagrid>
+                                <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
+    
+                                <clr-dg-column>Kode</clr-dg-column>
+                                <clr-dg-column>Vendor</clr-dg-column>
+                                <clr-dg-column>Jenis</clr-dg-column>
+                                <clr-dg-column>Berat</clr-dg-column>
+                                <clr-dg-column>Kadar</clr-dg-column>
+                                <clr-dg-column>Warna</clr-dg-column>
+                                <clr-dg-column>Harga</clr-dg-column>
+                                <clr-dg-column class="right"></clr-dg-column>
+                            
+                                <clr-dg-row *clrDgItems="let d of perhiasans">
+                                    <clr-dg-cell>{{d.kode}}</clr-dg-cell>
+                                    <clr-dg-cell>{{d.vendor}}</clr-dg-cell>
+                                    <clr-dg-cell>{{d.jenis}}</clr-dg-cell>
+                                    <clr-dg-cell>{{d.berat}}</clr-dg-cell>
+                                    <clr-dg-cell>{{d.kadar}}</clr-dg-cell>
+                                    <clr-dg-cell>{{d.warna}}</clr-dg-cell>
+                                    <clr-dg-cell><span style="float: right;">Rp. {{d.harga | number}}</span></clr-dg-cell>
+                                    <clr-dg-cell><span style="float: left;">
+                                        <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home">
+                                            <clr-icon shape="plus"></clr-icon>
+                                        </button>
+                                    </span>
+                                    </clr-dg-cell>
+                                </clr-dg-row>
+                                <clr-dg-footer>
+                                    <clr-dg-pagination #pagination [clrDgPageSize]="5">
+                                      <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Users per page</clr-dg-page-size>
+                                      {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                                      of {{pagination.totalItems}} Produk
+                                    </clr-dg-pagination>
+                                  </clr-dg-footer>
+                            </clr-datagrid>
+
+
+                        </clr-tab-content>
+                    </clr-tab>
+                    <clr-tab>
+                        <button clrTabLink>Perhiasan</button>
+                        <clr-tab-content >
+                            <form #searchPerhiasan="ngForm" id="perhiasan" clrForm (ngSubmit)="onCariPerhiasan(searchPerhiasan.value)">
+                                <div class="clr-row">
+                                    <div class="clr-col-3">
+                                        <clr-select-container class="clr-form-control">
+                                            <label class="clr-control-label">Vendor</label>
+                                            <select [(ngModel)]="searchModel.vendors" clrSelect name="input_vendor_perhiasan" ngModel>
+                                                <option value="all" >All</option>
+                                                <ng-container *ngFor="let vendor of vendors">
+                                                    <option value="{{vendor.kode}}">{{vendor.name}}</option>
+                                                </ng-container>
+                                            </select>
+                                        </clr-select-container>
+                                    </div>
+                                    <div class="clr-col-3">
+                                        <clr-select-container class="clr-form-control">
+                                            <label class="clr-control-label">Jenis</label>
+                                            <select [(ngModel)]="searchModel.jenisperhiasan" #product clrSelect name="input_jenis_perhiasan" ngModel>
+                                                <option value="all" selected>All</option>
+                                                <ng-container *ngFor="let c of jenisperhiasan">
+                                                    <option value="{{c.name}}">{{c.name}}</option>
+                                                </ng-container>
+                                            </select>
+                                        </clr-select-container>
+                                    </div>
+                                    <div class="clr-col-3">
+                                        <div class="clr-form-control">
+                                            <label class="clr-control-label">Berat</label>
+                                            <div class="clr-control-container">
+                                                <input  class="clr-input" type="number" step="0.001" min = '0' name="input_berat_perhiasan" [(ngModel)]="searchModel.berat"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clr-col-1">
+                                        <div class="clr-form-control">
+                                            <div class="clr-control-container">
+                                                <button class="btn btn-info-outline btn-sm">Cari</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>     
+                            </form>
+                            <clr-datagrid>
+                                <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
+    
+                                <clr-dg-column>Kode</clr-dg-column>
+                                <clr-dg-column>Vendor</clr-dg-column>
+                                <clr-dg-column>Jenis</clr-dg-column>
+                                <clr-dg-column>Berat</clr-dg-column>
+                                <clr-dg-column>Kadar</clr-dg-column>
+                                <clr-dg-column>Warna</clr-dg-column>
+                                <clr-dg-column>Harga</clr-dg-column>
+                                <clr-dg-column class="right"></clr-dg-column>
+                            
+                                <clr-dg-row *clrDgItems="let d of perhiasans">
+                                    <clr-dg-cell>{{d.kode}}</clr-dg-cell>
+                                    <clr-dg-cell>{{d.vendor}}</clr-dg-cell>
+                                    <clr-dg-cell>{{d.jenis}}</clr-dg-cell>
+                                    <clr-dg-cell>{{d.berat}}</clr-dg-cell>
+                                    <clr-dg-cell>{{d.kadar}}</clr-dg-cell>
+                                    <clr-dg-cell>{{d.warna}}</clr-dg-cell>
+                                    <clr-dg-cell><span style="float: right;">Rp. {{d.harga | number}}</span></clr-dg-cell>
+                                    <clr-dg-cell><span style="float: left;">
+                                        <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home">
+                                            <clr-icon shape="plus"></clr-icon>
+                                        </button>
+                                    </span>
+                                    </clr-dg-cell>
+                                </clr-dg-row>
+                                <clr-dg-footer>
+                                    <clr-dg-pagination #pagination [clrDgPageSize]="5">
+                                      <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Users per page</clr-dg-page-size>
+                                      {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                                      of {{pagination.totalItems}} Produk
+                                    </clr-dg-pagination>
+                                  </clr-dg-footer>
+                            </clr-datagrid>
+                            </clr-tab-content>
+                    </clr-tab>
+                    <clr-tab>
+                        <button clrTabLink>Berlian</button>
+                        <clr-tab-content >
+                            ...
+                        </clr-tab-content>
+                    </clr-tab>
+                    <clr-tab>
+                        <button clrTabLink>Gift dan Souvenir</button>
+                        <clr-tab-content >
+                            ...
+                        </clr-tab-content>
+                    </clr-tab>
+                    <clr-tab>
+                        <button clrTabLink>Dinar</button>
+                        <clr-tab-content >
+                            ...
+                        </clr-tab-content>
+                    </clr-tab>
+                </clr-tabs>
+            </div>
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-sm btn-link">Footer Action 1</button>
+            <button class="btn btn-sm btn-link">Footer Action 2</button>
+        </div>
+    </div>
+</div>
