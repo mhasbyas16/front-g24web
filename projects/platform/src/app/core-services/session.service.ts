@@ -119,7 +119,7 @@ export class SessionService {
   }
 
   public getHeader() {
-    
+    console.debug("Check bearer",this.getBearer());
     if (this.getLoginId() != null) {
       return {
         'Accept': 'application/json',
