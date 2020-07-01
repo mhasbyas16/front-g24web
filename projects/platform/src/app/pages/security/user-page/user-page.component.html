@@ -127,6 +127,14 @@
                     <clr-control-error *clrIfError="'pattern'; error as err">Must be a valid phone number</clr-control-error>
 
                 </clr-input-container>
+                <clr-input-container>
+                    <label>Password</label>
+                    <input clrInput type="password" formControlName="password" />
+                    <clr-control-helper>Please input with valid phone for Password</clr-control-helper>
+                    <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                    <clr-control-error *clrIfError="'pattern'; error as err">Must be a valid phone number</clr-control-error>
+
+                </clr-input-container>
                 <clr-select-container>
                     <label>Role</label>
                     <select clrSelect name="role" formControlName="role">

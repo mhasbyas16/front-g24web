@@ -87,6 +87,7 @@ export class UserPageComponent implements OnInit {
       email_validation: new FormControl("unique:email"),
       phone: new FormControl("", [Validators.required, Validators.maxLength(20), Validators.pattern(/^[+0-9]*$/)]),
       phone_validation: new FormControl("unique:phone"),
+      password: new FormControl ("",[Validators.required, Validators.minLength(8)]),
       role: new FormControl("", Validators.required),
       role_encoded: new FormControl("base64")
     });
