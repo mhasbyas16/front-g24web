@@ -29,6 +29,7 @@ export class PenjualanDistroComponent implements OnInit {
   vendors = null;
   jenis = null;
   datalist = null;
+  perhiasans = null;
 
   //params
   params = null;
@@ -68,7 +69,6 @@ export class PenjualanDistroComponent implements OnInit {
 
   static key = EMenuID.DISTRO;
   jeniss : any[] = [];
-  perhiasans : any[] = [];
   ini = 5;
   pageSize: number = 5;
   placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
@@ -118,20 +118,12 @@ export class PenjualanDistroComponent implements OnInit {
       }
 
       this.productService.list(this.params).subscribe((response: any) => {
-        if (response != false) {
-         
-          this.datalist = response;
-          
-          if (this.datalist.length == 0) {
-            //jika gaada data datagrid kosong
-            this.perhiasans = [];
-            this.placeholderDatagrid = "Pencarian Tidak Ditemukan, Periksa Kembali Parameter Pencarian";
-          }else{
-            this.perhiasans = response;
-          }
-          console.debug(this.datalist);
-        }      
-      });
+        if (response == false) {
+            // error jika tidak ada data
+        }    
+        this.perhiasans = response;
+        console.debug(this.perhiasans);
+      });     
 
       // const filteredperhiasan = this.getPerhiasan.filter(kamu =>  kamu.jenis == jenis && kamu.vendor == vendor);
       
