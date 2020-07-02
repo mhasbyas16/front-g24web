@@ -4,9 +4,10 @@ import { PenjualanRoutingModule } from './penjualan-routing.module';
 import { PenjualanDistroComponent } from './penjualan-distro/penjualan-distro.component';
 import { ClarityModule } from '@clr/angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { PerhiasanComponent } from './penjualan-distro/perhiasan/perhiasan.component';
 
 @NgModule({
-  declarations: [PenjualanDistroComponent],
+  declarations: [PenjualanDistroComponent, PerhiasanComponent],
   imports: [
     CommonModule,
     PenjualanRoutingModule,
