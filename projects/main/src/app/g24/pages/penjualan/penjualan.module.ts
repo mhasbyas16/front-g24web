@@ -15,7 +15,7 @@ import { PerhiasanComponent } from './penjualan-distro/perhiasan/perhiasan.compo
     FormsModule
   ],
   exports : [
-    PenjualanDistroComponent
+    PenjualanDistroComponent,
   ]
 })
 export class PenjualanModule { }
