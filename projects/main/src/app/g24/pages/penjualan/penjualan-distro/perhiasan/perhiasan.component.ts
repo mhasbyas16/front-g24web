@@ -6,6 +6,9 @@ import { VendorService } from '../../../../services/vendor.service';
 import { ProductService } from '../../../../services/product/product.service';
 import { ProductJenisService } from '../../../../services/product/product-jenis.service';
 
+//rumus harga 
+import { PricingService }  from '../../../../services/pricing.service';
+
 @Component({
   selector: 'app-perhiasan',
   templateUrl: './perhiasan.component.html',
@@ -30,7 +33,8 @@ export class PerhiasanComponent implements OnInit {
     private productService: ProductService,
     private productJenisService: ProductJenisService,
 
-    //
+    //pricing
+    private pricingService: PricingService,
   ) { }
   searchModel : any = {vendors:"all", jenisperhiasan: "all"};
 
@@ -101,8 +105,20 @@ export class PerhiasanComponent implements OnInit {
         }    
         this.perhiasans = response;
         console.debug(this.perhiasans);
-      });     
 
+                        
+                                       
+       
+      this.perhiasans.forEach(function (item) {
+        //Berat        harga baku       baku tukar      margin baku   ppn baku              
+        this.datalist=this.pricingService.pricePerhiasan(Number('8.35'),Number('850000'),Number('86.22'),Number('3.5'),Number('2'));
+        console.debug([this.datalist,"dta"]); 
+        console.debug(["hass",item.berat]);
+      });
+      
+      });  
+      
+     
       // const filteredperhiasan = this.getPerhiasan.filter(kamu =>  kamu.jenis == jenis && kamu.vendor == vendor);
       
      

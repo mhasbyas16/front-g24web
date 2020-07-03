@@ -137,7 +137,8 @@ export class RolePageComponent implements OnInit {
       return;
     }
 
-    let data = this.form.getRawValue();
+    let data = this.form.getRawValue() ;
+    data._trigger="admin:role";
     this.spinner = true;
     this.roleService.update(data).subscribe((response: any) => {
       this.spinner = false;
@@ -152,6 +153,7 @@ export class RolePageComponent implements OnInit {
       this.toastr.success("Data modification was success", this.title);
       this.mainLoading();
     });
+
   }
 
   mainDelete(row) {
