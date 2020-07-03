@@ -51,14 +51,14 @@
     <clr-dg-column>Harga</clr-dg-column>
     <clr-dg-column class="right"></clr-dg-column>
 
-    <clr-dg-row *clrDgItems="let d of perhiasans">
+    <clr-dg-row *clrDgItems="let d of dataperhiasans">
         <clr-dg-cell>{{d.code}}</clr-dg-cell>
         <clr-dg-cell>{{d.vendor.name}}</clr-dg-cell>
         <clr-dg-cell>{{d['product-jenis'].name}}</clr-dg-cell>
         <clr-dg-cell>{{d.berat}}</clr-dg-cell>
         <clr-dg-cell>{{d['product-purity'].name}}</clr-dg-cell>
         <clr-dg-cell>{{d['product-warna'].nama}}</clr-dg-cell>
-        <clr-dg-cell><span style="float: right;">Rp. 00,000</span></clr-dg-cell>
+        <clr-dg-cell><span style="float: right;">Rp. {{d.hargaJual}}</span></clr-dg-cell>
         <clr-dg-cell><span style="float: left;">
             <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home">
                 <clr-icon shape="plus"></clr-icon>

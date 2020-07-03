@@ -5,6 +5,9 @@ import { NgForm, Form, FormGroup } from '@angular/forms';
 import { VendorService } from '../../../../services/vendor.service';
 import { ProductService } from '../../../../services/product/product.service';
 import { ProductJenisService } from '../../../../services/product/product-jenis.service';
+import { PrmJualService } from '../../../../services/parameter/prm-jual.service';
+import { PrmMarginService } from '../../../../services/parameter/prm-margin.service';
+import { PrmPpnService } from '../../../../services/parameter/prm-ppn.service';
 
 //rumus harga 
 import { PricingService }  from '../../../../services/pricing.service';
@@ -23,9 +26,16 @@ export class PerhiasanComponent implements OnInit {
   jenis = null;
   datalist = null;
   perhiasans = null;
+  dataperhiasans = null;
 
   //params
   params = null;
+  category = "?product-category.code=00";
+
+  //parameter
+
+  margin = null;
+  hargaBaku = null;
 
   constructor(
     //app
@@ -35,6 +45,11 @@ export class PerhiasanComponent implements OnInit {
 
     //pricing
     private pricingService: PricingService,
+
+    //parameter
+    private prmJualService : PrmJualService,
+    private prmMarginService: PrmMarginService,
+    private prmPpnService : PrmPpnService,
   ) { }
   searchModel : any = {vendors:"all", jenisperhiasan: "all"};
 
@@ -59,63 +74,88 @@ export class PerhiasanComponent implements OnInit {
     });
   }
 
+  onListPpn(){
+    
+  }
+
+  onListMargin(){
+    
+  }
+
   onCariPerhiasan(data)
     {
       let vendor = data.input_vendor_perhiasan;
       let jenis = data.input_jenis_perhiasan;
       let berat = data.input_berat_perhiasan;
+      let ppn :string;
 
       const urlVendor = "vendor.code="+vendor;
       const urlJenis = "product-jenis.code="+jenis;
       const urlBerat = "berat="+berat;
 
-      
       let filteredperhiasan = [];
       if (vendor != 'all' && jenis != 'all' && berat != null) {
-        this.params = "?"+urlVendor+"&"+urlJenis+"&"+urlBerat;
+        this.params = this.category+"&"+urlVendor+"&"+urlJenis+"&"+urlBerat;
          // filteredperhiasan = this.getPerhiasan.filter(produk =>  produk.jenis == jenis && produk.vendor == vendor && produk.berat == berat);
       }else if (vendor == 'all' && jenis != 'all' && berat != null) {
-        this.params = "?"+urlJenis+"&"+urlBerat;
+        this.params = this.category+"&"+urlJenis+"&"+urlBerat;
          // filteredperhiasan = this.getPerhiasan.filter(produk =>  produk.jenis == jenis && produk.berat == berat)
       }else if (vendor != 'all' && jenis == 'all' && berat != null) {
-        this.params = "?"+urlVendor+"&"+urlBerat;
+        this.params = this.category+"&"+urlVendor+"&"+urlBerat;
           //filteredperhiasan = this.getPerhiasan.filter(produk =>  produk.vendor == vendor && produk.berat == berat)
       }else if (vendor != 'all' && jenis != 'all' && berat == null) {
-        this.params = "?"+urlVendor+"&"+urlJenis;
+        this.params = this.category+"&"+urlVendor+"&"+urlJenis;
          // filteredperhiasan = this.getPerhiasan.filter(produk =>  produk.vendor == vendor && produk.jenis == jenis)
       }else if (vendor != 'all' && jenis == 'all' && berat == null) {
-        this.params = "?"+urlVendor;
+        this.params = this.category+"&"+urlVendor;
           //filteredperhiasan = this.getPerhiasan.filter(produk =>  produk.vendor == vendor )
       }else if (vendor == 'all' && jenis != 'all' && berat == null) {
-        this.params = "?"+urlJenis;
+        this.params = this.category+"&"+urlJenis;
           //filteredperhiasan = this.getPerhiasan.filter(produk =>  produk.jenis == jenis )
       }else if (vendor == 'all' && jenis == 'all' && berat != null) {
-        this.params = "?"+urlBerat;
+        this.params = this.category+"&"+urlBerat;
         //filteredperhiasan = this.getPerhiasan.filter(produk =>  produk.berat == berat )
       }else if (vendor == 'all' && jenis == 'all' && berat == null ) {
-        this.params = "";
+        this.params = this.category;
           //filteredperhiasan = this.getPerhiasan
       }else{
         
       }
 
+      
+      // product
       this.productService.list(this.params).subscribe((response: any) => {
         if (response == false) {
             // error jika tidak ada data
         }    
         this.perhiasans = response;
-        console.debug(this.perhiasans);
 
-                        
-                                       
-       
-      this.perhiasans.forEach(function (item) {
-        //Berat        harga baku       baku tukar      margin baku   ppn baku              
-        this.datalist=this.pricingService.pricePerhiasan(Number('8.35'),Number('850000'),Number('86.22'),Number('3.5'),Number('2'));
-        console.debug([this.datalist,"dta"]); 
-        console.debug(["hass",item.berat]);
-      });
-      
+
+        // pricing
+        this.prmJualService.list("?product-category.code=00").subscribe((Jualresponse: any) => {
+          if (Jualresponse != false) {
+            this.hargaBaku = Jualresponse;
+          }
+          this.prmPpnService.list().subscribe((PPNresponse: any) => {
+            if (PPNresponse != false) {
+              ppn = PPNresponse['0']['ppn'];
+            }      
+            this.prmMarginService.list().subscribe((Marginresponse: any) => {
+              if (Marginresponse != false) {
+                this.margin = Marginresponse;
+              }      
+  
+              for (let index = 0, len = this.perhiasans.length; index < len; index++) {
+                
+                this.datalist=this.pricingService.pricePerhiasan(Number(this.perhiasans[index]['berat']),this.hargaBaku['0']['harga-jual'],this.perhiasans[index]['baku-tukar'],this.margin['0']['margin'],ppn);
+                
+                this.perhiasans[index].hargaJual = this.datalist;
+              }
+
+              this.dataperhiasans = this.perhiasans;
+            });          
+          });
+        }); 
       });  
       
      
