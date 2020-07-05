@@ -42,7 +42,11 @@ export class SidebarComponent implements OnInit {
       {_id: "0002",type: "sub-menu", name : "Inisiasi", icons: "yang bagus", color : "warna-warni", componentId : "1001", parentId: "x1001", module: "x1", menu : {_id: "0001"}},
       // {_id: "0002",type: "sub-menu", name : "SKU", icons: "yang bagus", color : "warna-warni", componentId : "1003", parentId: "x1002", module: "x1", menu : {_id: "0001"}},
       {_id: "0003", type: "menu", name : "Penjualan", icons: "yang bagus", color : "warna-warni", componentId : "S10001", parentId: "", module: "pj"},
-      {_id: "0003", type: "sub-menu", name : "Penjualan Distro", icons: "yang bagus", color : "warna-warni", componentId : "10001", parentId: "S10001", module: "pj",menu : {_id: "0003"}}
+      {_id: "0003", type: "sub-menu", name : "Penjualan Distro", icons: "yang bagus", color : "warna-warni", componentId : "10001", parentId: "S10001", module: "pj",menu : {_id: "0003"}},
+      // SECURITY
+      {_id: "0004", type: "menu", name : "Security", icons: "yang bagus", color : "warna-warni", componentId : "S10002", parentId: "", module: "rl"},
+      {_id: "0004", type: "sub-menu", name : "Role", icons: "yang bagus", color : "warna-warni", componentId : "10002", parentId: "S10002", module: "rl",menu : {_id: "0004"}}
+      
      
     ];
     this.ReloadSidebar();

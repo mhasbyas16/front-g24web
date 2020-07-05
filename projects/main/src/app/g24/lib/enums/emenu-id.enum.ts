@@ -95,6 +95,7 @@ export enum EMenuID {
      */
     SYSTEM_PARAM        = '9900',
 
-    DISTRO              = '10001'
+    DISTRO              = '10001',
+    ROLE                = '10002',
 
 }
