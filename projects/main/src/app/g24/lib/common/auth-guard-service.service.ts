@@ -8,7 +8,7 @@ import { CoreResourceService } from './core-resource.service';
 export class AuthGuardService implements CanActivate {
 
 
-  canActivate(route: import("@angular/router").ActivatedRouteSnapshot, state: import("@angular/router").RouterStateSnapshot): boolean {
+  canActivate(route: import("@angular/router").ActivatedRouteSnapshot, state: import('@angular/router').RouterStateSnapshot): boolean {
     const user = this.coreService.getUser();
     
     const authenticated = (user != null);

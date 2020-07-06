@@ -11,6 +11,7 @@ import { AuthLayoutComponent } from './auth-layout/auth-layout.component';
 
 import {AuthGuard } from 'projects/platform/src/app/guard/auth.guard';
 
+
 const routes : Routes =
 [
   {

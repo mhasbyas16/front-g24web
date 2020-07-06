@@ -65,15 +65,15 @@ export class SessionService {
   }
 
   getUser() {
-    return JSON.parse(this.decrypt(sessionStorage.getItem("__user")));
+    return JSON.parse(this.decrypt(sessionStorage.getItem('__user')));
   }
 
   public setRole(user: any) {
-    sessionStorage.setItem("__role", this.encrypt(JSON.stringify(user)));
+    sessionStorage.setItem('__role', this.encrypt(JSON.stringify(user)));
   }
 
   getRole() {
-    return JSON.parse(this.decrypt(sessionStorage.getItem("__role")));
+    return JSON.parse(this.decrypt(sessionStorage.getItem('__role')));
   }
 
   logout() {
