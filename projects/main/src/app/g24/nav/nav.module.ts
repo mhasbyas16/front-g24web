@@ -7,10 +7,11 @@ import { FooterComponent } from './footer/footer.component';
 import { RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { ModalComponent } from './modal/modal.component';
+import { CartComponent } from './cart/cart.component';
 
 
 @NgModule({
-  declarations: [HeaderComponent, SidebarComponent, ContentComponent, FooterComponent, ModalComponent],
+  declarations: [HeaderComponent, SidebarComponent, ContentComponent, FooterComponent, ModalComponent, CartComponent],
   imports: [
     CommonModule,
     RouterModule,
@@ -21,7 +22,8 @@ import { ModalComponent } from './modal/modal.component';
     HeaderComponent,
     SidebarComponent,
     FooterComponent,
-    ContentComponent
+    ContentComponent,
+    CartComponent
   ],
 })
 export class NavModule { }

@@ -5,6 +5,7 @@ import { PenjualanDistroComponent } from './penjualan-distro/penjualan-distro.co
 import { ClarityModule } from '@clr/angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PerhiasanComponent } from './penjualan-distro/perhiasan/perhiasan.component';
+import { NavModule } from '../../nav/nav.module';
 
 @NgModule({
   declarations: [PenjualanDistroComponent, PerhiasanComponent],
@@ -12,7 +13,8 @@ import { PerhiasanComponent } from './penjualan-distro/perhiasan/perhiasan.compo
     CommonModule,
     PenjualanRoutingModule,
     ClarityModule,
-    FormsModule
+    FormsModule,
+    NavModule
   ],
   exports : [
     PenjualanDistroComponent,

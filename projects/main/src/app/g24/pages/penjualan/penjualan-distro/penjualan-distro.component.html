@@ -1,8 +1,13 @@
 <div class="clr-row">
     <div class="card" style="margin-top: 0em;">
         <div class="card-header">
-            Penjualan
+            Penjualan    
+            <div class="cart-style">
+                <app-cart></app-cart>
+            </div>
+               
         </div>
+       
         <div class="card-block">
             <div class="card-text">
                 <clr-tabs>
@@ -30,7 +35,7 @@
                                     <clr-dg-cell>{{d.warna}}</clr-dg-cell>
                                     <clr-dg-cell><span style="float: right;">Rp. {{d.harga | number}}</span></clr-dg-cell>
                                     <clr-dg-cell><span style="float: left;">
-                                        <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home">
+                                        <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart()">
                                             <clr-icon shape="plus"></clr-icon>
                                         </button>
                                     </span>

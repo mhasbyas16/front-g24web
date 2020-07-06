@@ -2,6 +2,7 @@ import { Component, OnInit,Pipe, PipeTransform } from '@angular/core';
 import { EMenuID } from '../../../lib/enums/emenu-id.enum';
 import { DContent } from '../../../decorators/content/pages';
 
+
 //toastr
 import { ToastrService } from 'ngx-toastr';
 
@@ -28,7 +29,9 @@ export class PenjualanDistroComponent implements OnInit {
   constructor( ) {}
  // searchModel : any = {vendors:"all", jenisperhiasan: "all"};
 
-  
+  addCart(){
+    
+  }
   ngOnInit(): void {}
 
   static key = EMenuID.DISTRO;

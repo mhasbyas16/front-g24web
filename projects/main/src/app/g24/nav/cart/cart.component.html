@@ -1,0 +1,53 @@
+
+    <a href="javascript://" class="nav-link nav-icon-text" (click)="cartModal = true">
+        <clr-icon shape="shopping-cart" class="is-solid cart-color" size="36"></clr-icon>
+    </a>
+
+
+<ng-container *ngIf="cartModal">
+    <clr-modal [(clrModalOpen)]="cartModal" [clrModalSize]="'xl'" [clrModalStaticBackdrop]="false">
+        <h3 class="modal-title">Shopping Chart <clr-icon shape="shopping-cart" class="is-solid cart-color"></clr-icon></h3>
+        <div class="modal-body">
+           <!-- <ng-container *ngFor="let item of cart">
+                {{item.kode_barang}}
+            </ng-container>-->
+            <clr-datagrid>
+                <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
+            
+                <clr-dg-column>id</clr-dg-column>
+                <clr-dg-column>kode</clr-dg-column>
+                <clr-dg-column>kode barang</clr-dg-column>
+                <clr-dg-column>qty</clr-dg-column>
+                <clr-dg-column>harga</clr-dg-column>
+                <clr-dg-column class="right"></clr-dg-column>
+            
+                <clr-dg-row *clrDgItems="let i of cart" >
+                    <clr-dg-cell>{{i.id}}</clr-dg-cell>
+                    <clr-dg-cell>{{i.kode}}</clr-dg-cell>
+                    <clr-dg-cell>{{i.kode_barang}}</clr-dg-cell>
+                    <clr-dg-cell>{{i.qty}}</clr-dg-cell>
+                    <clr-dg-cell><span style="float: right;">Rp. {{i.harga|number}}</span></clr-dg-cell>
+                    <clr-dg-cell><span style="float: left;">
+                        <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home">
+                            <clr-icon shape="plus"></clr-icon>
+                        </button>
+                    </span>
+                    </clr-dg-cell>
+                </clr-dg-row>
+                <clr-dg-footer>
+                    <clr-dg-pagination #pagination [clrDgPageSize]="5">
+                      <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Users per page</clr-dg-page-size>
+                      {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                      of {{pagination.totalItems}} Produk
+                    </clr-dg-pagination>
+                  </clr-dg-footer>
+            </clr-datagrid>
+            
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-warning" (click)="removeCart()">Clear</button>
+            <button type="button" class="btn btn-outline" (click)="cartModal = false">Cancel</button>
+            <button type="button" class="btn btn-primary" (click)="cartModal = false">Ok</button>
+        </div>
+    </clr-modal>
+</ng-container>
