@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, Input } from '@angular/core';
 import { CART } from '../../sample/cart';
 
 @Component({
@@ -7,27 +7,33 @@ import { CART } from '../../sample/cart';
   styleUrls: ['./cart.component.scss']
 })
 export class CartComponent implements OnInit {
+
   placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
+  @Input() total:any;
+  @Input() badgeCart: boolean;
   // cart
   cart = CART;
   // modal
   cartModal: boolean = false; 
   // total cart
-  total: any;
   price: any;
 
   constructor( ) { }
 
   ngOnInit(): void {
   
+    this.badgeCart = true;
   }
 
   removeCart(){
-    // remove all item in array
+    // remove all item in array    
     this.cart.splice(0);
+    this.cartTotal();
+    this.badgeCart = false;
   }
 
-  cartTotal(){
-    this.total = this.cart.length;
+  cartTotal(){   
+    this.total = this.cart; 
+    return this.total; 
   }
 }

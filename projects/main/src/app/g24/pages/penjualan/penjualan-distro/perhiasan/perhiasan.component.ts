@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output} from '@angular/core';
 import { NgForm, Form, FormGroup } from '@angular/forms';
 
 // Database
@@ -14,7 +14,6 @@ import { PricingService }  from '../../../../services/pricing.service';
 import { CART } from '../../../../sample/cart';
 
 //cart component
-import { CartComponent } from '../../../../nav/cart/cart.component';
 
 @Component({
   selector: 'app-perhiasan',
@@ -22,6 +21,8 @@ import { CartComponent } from '../../../../nav/cart/cart.component';
   styleUrls: ['./perhiasan.component.scss']
 })
 export class PerhiasanComponent implements OnInit {
+  @Output() data = new EventEmitter();
+  @Output() badge = new EventEmitter();
   //placeholder 
   placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
   
@@ -40,8 +41,8 @@ export class PerhiasanComponent implements OnInit {
   margin = null;
   hargaBaku = null;
 
-  // cart data
   cartList = CART;
+  total = null;
 
   constructor(
     //app
@@ -168,11 +169,9 @@ export class PerhiasanComponent implements OnInit {
     }
 
     addCart(code: any, harga: any){
-      console.debug([code,harga,"cart code"]);
-      
-
       this.cartList.push({'id': 1001, 'kode': "cart0033", 'kode_barang': code, 'qty': 2, 'harga': harga});
-   
+      this.data.emit(this.cartList.length);
+      this.badge.emit('true');
     }
 
 }

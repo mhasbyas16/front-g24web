@@ -1,4 +1,4 @@
-import { Component, OnInit,Pipe, PipeTransform } from '@angular/core';
+import { Component, OnInit,Pipe, PipeTransform, EventEmitter, Output } from '@angular/core';
 import { EMenuID } from '../../../lib/enums/emenu-id.enum';
 import { DContent } from '../../../decorators/content/pages';
 
@@ -16,7 +16,7 @@ import { ToastrService } from 'ngx-toastr';
 
 @DContent(PenjualanDistroComponent.key)
 export class PenjualanDistroComponent implements OnInit {
-
+  @Output () toCart= new EventEmitter();
   //list
   vendors = null;
   jenis = null;
@@ -26,6 +26,9 @@ export class PenjualanDistroComponent implements OnInit {
   //params
   params = null;
 
+  total:any;
+  badge:any;
+
   constructor( ) {}
  // searchModel : any = {vendors:"all", jenisperhiasan: "all"};
 
@@ -34,6 +37,14 @@ export class PenjualanDistroComponent implements OnInit {
   }
   ngOnInit(): void {}
 
+  cartData(data){
+    this.total = data;
+    
+  }
+  cartBadge(isi){
+    this.badge = isi;
+    console.debug(this.badge,"ISI bADGE");
+  }
   static key = EMenuID.DISTRO;
 
 }

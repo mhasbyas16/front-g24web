@@ -59,7 +59,6 @@ export class AppRoutingModule
     // roles
     const getRole = this.sessionService.getRole();
 
-    console.debug([getRole,"CHEK ISI ROLE"]);
     ModuleLoader.register('x1', () => import('./pages/inventory-addition/inventory-addition.module').then(m => m.InventoryAdditionModule))
     ModuleLoader.register('pj', () => import('./pages/penjualan/penjualan.module').then(m => m.PenjualanModule))
     
