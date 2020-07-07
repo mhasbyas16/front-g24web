@@ -12,6 +12,10 @@ import { PrmPpnService } from '../../../../services/parameter/prm-ppn.service';
 //rumus harga 
 import { PricingService }  from '../../../../services/pricing.service';
 import { CART } from '../../../../sample/cart';
+
+//cart component
+import { CartComponent } from '../../../../nav/cart/cart.component';
+
 @Component({
   selector: 'app-perhiasan',
   templateUrl: './perhiasan.component.html',
@@ -38,9 +42,6 @@ export class PerhiasanComponent implements OnInit {
 
   // cart data
   cartList = CART;
-   // total cart
-   total: any;
-   price: any;
 
   constructor(
     //app
@@ -171,8 +172,7 @@ export class PerhiasanComponent implements OnInit {
       
 
       this.cartList.push({'id': 1001, 'kode': "cart0033", 'kode_barang': code, 'qty': 2, 'harga': harga});
-
-      this.total = this.cartList.length;
+   
     }
 
 }

@@ -11,17 +11,23 @@ export class CartComponent implements OnInit {
   // cart
   cart = CART;
   // modal
-  cartModal: boolean = false;
- 
-  
-  constructor() { }
+  cartModal: boolean = false; 
+  // total cart
+  total: any;
+  price: any;
+
+  constructor( ) { }
 
   ngOnInit(): void {
-
+  
   }
 
   removeCart(){
     // remove all item in array
     this.cart.splice(0);
+  }
+
+  cartTotal(){
+    this.total = this.cart.length;
   }
 }
