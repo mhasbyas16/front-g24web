@@ -1,10 +1,9 @@
 
     <a href="javascript://" class="nav-link nav-icon-text" (click)="cartModal = true">
         <clr-icon shape="shopping-cart" class="cart-color" size="36"></clr-icon>
-        <ng-container *ngIf="badgeCart">
+        <ng-container *ngIf="total > 0">
             <span class="badge badge-danger ">{{total}}</span>
         </ng-container>     
-        {{badgeCart}}
     </a>
 
 

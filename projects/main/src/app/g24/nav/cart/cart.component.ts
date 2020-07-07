@@ -10,7 +10,6 @@ export class CartComponent implements OnInit {
 
   placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
   @Input() total:any;
-  @Input() badgeCart: boolean;
   // cart
   cart = CART;
   // modal
@@ -22,14 +21,12 @@ export class CartComponent implements OnInit {
 
   ngOnInit(): void {
   
-    this.badgeCart = true;
   }
 
   removeCart(){
     // remove all item in array    
     this.cart.splice(0);
     this.cartTotal();
-    this.badgeCart = false;
   }
 
   cartTotal(){   

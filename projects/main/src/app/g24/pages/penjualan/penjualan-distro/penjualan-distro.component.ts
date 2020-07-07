@@ -41,10 +41,6 @@ export class PenjualanDistroComponent implements OnInit {
     this.total = data;
     
   }
-  cartBadge(isi){
-    this.badge = isi;
-    console.debug(this.badge,"ISI bADGE");
-  }
   static key = EMenuID.DISTRO;
 
 }

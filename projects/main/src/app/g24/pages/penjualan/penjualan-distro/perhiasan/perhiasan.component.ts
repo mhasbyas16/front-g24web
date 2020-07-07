@@ -22,7 +22,6 @@ import { CART } from '../../../../sample/cart';
 })
 export class PerhiasanComponent implements OnInit {
   @Output() data = new EventEmitter();
-  @Output() badge = new EventEmitter();
   //placeholder 
   placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
   
@@ -171,7 +170,6 @@ export class PerhiasanComponent implements OnInit {
     addCart(code: any, harga: any){
       this.cartList.push({'id': 1001, 'kode': "cart0033", 'kode_barang': code, 'qty': 2, 'harga': harga});
       this.data.emit(this.cartList.length);
-      this.badge.emit('true');
     }
 
 }
