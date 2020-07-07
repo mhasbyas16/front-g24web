@@ -38,6 +38,9 @@ export class PerhiasanComponent implements OnInit {
 
   // cart data
   cartList = CART;
+   // total cart
+   total: any;
+   price: any;
 
   constructor(
     //app
@@ -74,14 +77,6 @@ export class PerhiasanComponent implements OnInit {
         this.jenis = response;
       }      
     });
-  }
-
-  onListPpn(){
-    
-  }
-
-  onListMargin(){
-    
   }
 
   onCariPerhiasan(data)
@@ -176,6 +171,8 @@ export class PerhiasanComponent implements OnInit {
       
 
       this.cartList.push({'id': 1001, 'kode': "cart0033", 'kode_barang': code, 'qty': 2, 'harga': harga});
+
+      this.total = this.cartList.length;
     }
 
 }

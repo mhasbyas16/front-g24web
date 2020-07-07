@@ -12,11 +12,11 @@ export class CartComponent implements OnInit {
   cart = CART;
   // modal
   cartModal: boolean = false;
+ 
   
   constructor() { }
 
   ngOnInit(): void {
-    
 
   }
 
@@ -24,5 +24,4 @@ export class CartComponent implements OnInit {
     // remove all item in array
     this.cart.splice(0);
   }
-
 }
