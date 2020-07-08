@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output} from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Input} from '@angular/core';
 import { NgForm, Form, FormGroup } from '@angular/forms';
 
 // Database
@@ -23,6 +23,10 @@ import { PERHIASAN } from '../../../../sample/cart';
 export class PerhiasanComponent implements OnInit {
   @Output() data = new EventEmitter();
   @Output() perhiasan = new EventEmitter();
+  @Output() totalHarga = new EventEmitter();
+
+  //
+  @Input() RPricePerhiasan:any;
   //placeholder 
   placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
   
@@ -42,7 +46,7 @@ export class PerhiasanComponent implements OnInit {
   hargaBaku = null;
 
   cartList = PERHIASAN;
-  total = null;
+  total = 0;
 
   constructor(
     //app
@@ -180,8 +184,19 @@ export class PerhiasanComponent implements OnInit {
         'kadar': kadar, 
         'harga': harga,
         'qty': 1});
-      this.data.emit(this.cartList.length);
-      this.perhiasan.emit(this.cartList.length);
+
+        // harga
+        this.total = this.total+harga;
+        this.totalHarga.emit(this.total);
+        //
+        this.perhiasan.emit(this.cartList.length);
+        this.data.emit(this.cartList.length);
     }
 
+    refresh(harga: any){
+       // harga
+      // this.total = this.total-harga;
+       console.debug(harga.target,"pengurangan harga");
+      // this.totalHarga.emit(this.total);
+    }
 }

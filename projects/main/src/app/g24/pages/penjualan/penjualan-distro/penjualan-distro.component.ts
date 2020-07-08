@@ -30,8 +30,14 @@ export class PenjualanDistroComponent implements OnInit {
   badge:any;
   price:any;
 
+  // jumlah isi cart
   perhiasan:any;
 
+  // total harga per kategori
+  hargaPerhiasan:any;
+
+  //remove price
+  RPricePerhiasan:any;
   constructor( ) {}
  // searchModel : any = {vendors:"all", jenisperhiasan: "all"};
 
@@ -40,14 +46,22 @@ export class PenjualanDistroComponent implements OnInit {
 
   // total isi cart
   cartData(data: any){
-    this.total = data;    
-    return this.total;
+    this.total = data;  
   }
 
   // total isi cart perhiasan
   totalPerhiasan(isi: any){
     this.perhiasan = isi;
-    return this.perhiasan;
+  }
+
+  //total harga cart
+  HPerhiasan(harga: any){
+    this.hargaPerhiasan = harga;
+  }
+
+  // remove price
+  RHPerhiasan(price: any){
+  this.RPricePerhiasan = price;
   }
   static key = EMenuID.DISTRO;
 
