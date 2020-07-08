@@ -28,18 +28,26 @@ export class PenjualanDistroComponent implements OnInit {
 
   total:any;
   badge:any;
+  price:any;
+
+  perhiasan:any;
 
   constructor( ) {}
  // searchModel : any = {vendors:"all", jenisperhiasan: "all"};
 
-  addCart(){
-    
-  }
+  addCart(){ }
   ngOnInit(): void {}
 
-  cartData(data){
-    this.total = data;
-    
+  // total isi cart
+  cartData(data: any){
+    this.total = data;    
+    return this.total;
+  }
+
+  // total isi cart perhiasan
+  totalPerhiasan(isi: any){
+    this.perhiasan = isi;
+    return this.perhiasan;
   }
   static key = EMenuID.DISTRO;
 

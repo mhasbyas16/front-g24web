@@ -60,7 +60,7 @@
         <clr-dg-cell>{{d['product-warna'].nama}}</clr-dg-cell>
         <clr-dg-cell><span style="float: right;">Rp. {{d.hargaJual|number}}</span></clr-dg-cell>
         <clr-dg-cell><span style="float: left;">
-            <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.code, d.hargaJual)">
+            <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.code,d.vendor.name,d['product-jenis'].name,d['product-warna'].nama, d.berat, d['product-purity'].name, d.hargaJual)">
                 <clr-icon shape="plus"></clr-icon>
             </button>
         </span>

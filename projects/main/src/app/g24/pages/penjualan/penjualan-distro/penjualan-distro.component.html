@@ -1,9 +1,9 @@
 <div class="clr-row">
     <div class="card" style="margin-top: 0em;">
         <div class="card-header">
-            Penjualan   
+            Penjualan {{price}}
             <div class="cart-style">
-                <app-cart [total]="total"></app-cart>
+                <app-cart [total]="total" [perhiasan]="perhiasan"></app-cart>
             </div>
                
         </div>
@@ -12,7 +12,7 @@
             <div class="card-text">
                 <clr-tabs>
                     <clr-tab>
-                        <button clrTabLink>Logam Mulia</button>
+                        <button clrTabLink>Logam Mulia </button>
                         <clr-tab-content >
                             <clr-datagrid>
                                 <clr-dg-placeholder><!--placeholdergrid--></clr-dg-placeholder>
@@ -56,7 +56,7 @@
                     <clr-tab>
                         <button clrTabLink>Perhiasan</button>
                         <clr-tab-content >     
-                            <app-perhiasan (data)="cartData($event)"></app-perhiasan>  
+                            <app-perhiasan (data)="cartData($event)" (perhiasan)="totalPerhiasan($event)"></app-perhiasan>  
                         </clr-tab-content>
                     </clr-tab>
                     <clr-tab>

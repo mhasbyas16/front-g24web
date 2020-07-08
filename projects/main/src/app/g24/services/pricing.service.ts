@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CART } from '../sample/cart';
+import { PERHIASAN } from '../sample/cart';
 
 @Injectable({
   providedIn: 'root'
@@ -22,12 +22,5 @@ export class PricingService {
     harga_jual = ppn_jual+hjual_plusmargin; 
     
     return harga_jual;
-  }
-
-  addCart(code: any, harga: any){
-    let cartList = CART;
-    cartList.push({'id': 1001, 'kode': "cart0033", 'kode_barang': code, 'qty': 2, 'harga': harga});
-
-    return cartList.length;
   }
 }

@@ -11,7 +11,7 @@ import { PrmPpnService } from '../../../../services/parameter/prm-ppn.service';
 
 //rumus harga 
 import { PricingService }  from '../../../../services/pricing.service';
-import { CART } from '../../../../sample/cart';
+import { PERHIASAN } from '../../../../sample/cart';
 
 //cart component
 
@@ -22,6 +22,7 @@ import { CART } from '../../../../sample/cart';
 })
 export class PerhiasanComponent implements OnInit {
   @Output() data = new EventEmitter();
+  @Output() perhiasan = new EventEmitter();
   //placeholder 
   placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
   
@@ -40,7 +41,7 @@ export class PerhiasanComponent implements OnInit {
   margin = null;
   hargaBaku = null;
 
-  cartList = CART;
+  cartList = PERHIASAN;
   total = null;
 
   constructor(
@@ -167,9 +168,20 @@ export class PerhiasanComponent implements OnInit {
       console.log(filteredperhiasan.length);
     }
 
-    addCart(code: any, harga: any){
-      this.cartList.push({'id': 1001, 'kode': "cart0033", 'kode_barang': code, 'qty': 2, 'harga': harga});
+    addCart(code: any,vendor: any, jenis: any, 
+      warna: any, berat: any, kadar: any, harga: any){
+      
+      this.cartList.push({
+        'code': code, 
+        'vendor': vendor, 
+        'jenis': jenis,
+        'warna' : warna,
+        'berat' : berat,
+        'kadar': kadar, 
+        'harga': harga,
+        'qty': 1});
       this.data.emit(this.cartList.length);
+      this.perhiasan.emit(this.cartList.length);
     }
 
 }
