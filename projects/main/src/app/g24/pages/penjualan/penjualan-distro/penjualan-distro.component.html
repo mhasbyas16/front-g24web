@@ -1,12 +1,11 @@
 <div class="clr-row">
     <div class="card" style="margin-top: 0em;">
         <div class="card-header">
-            Penjualan {{total}} {{hargaPerhiasan}}
+            Penjualan
             <div class="cart-style"> <!-- total isi cart              total harga cart                           -->
                 <app-cart [total]="total"
                 [perhiasan]="perhiasan" 
                 [hargaPerhiasan]="hargaPerhiasan"
-                (removeHPerhiasan)="RHPerhiasan($event)"
                 ></app-cart>
             </div>
                
@@ -64,7 +63,7 @@
                             (data)="cartData($event)" 
                             (perhiasan)="totalPerhiasan($event)" 
                             (totalHarga)="HPerhiasan($event)"
-                            [RPricePerhiasan]="RPricePerhiasan"></app-perhiasan>  
+                            ></app-perhiasan>  
                         </clr-tab-content>
                     </clr-tab>
                     <clr-tab>

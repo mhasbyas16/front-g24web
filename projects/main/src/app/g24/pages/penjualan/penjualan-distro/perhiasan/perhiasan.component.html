@@ -60,9 +60,17 @@
         <clr-dg-cell>{{d['product-warna'].nama}}</clr-dg-cell>
         <clr-dg-cell><span style="float: right;">Rp. {{d.hargaJual|number}}</span></clr-dg-cell>
         <clr-dg-cell><span style="float: left;">
-            <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.code,d.vendor.name,d['product-jenis'].name,d['product-warna'].nama, d.berat, d['product-purity'].name, d.hargaJual)">
-                <clr-icon shape="plus"></clr-icon>
-            </button>
+            <ng-container *ngIf="cekItemArray(d.code); else plus">
+                <button type="button" class="btn btn-icon btn-sm btn-danger disabled" aria-label="home" >
+                    <clr-icon shape="minus"></clr-icon>
+                </button>                
+            </ng-container>
+            <ng-template #plus>
+                <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.code,d.vendor.name,d['product-jenis'].name,d['product-warna'].nama, d.berat, d['product-purity'].name, d.hargaJual)">
+                    <clr-icon shape="plus"></clr-icon>
+                </button>  
+            </ng-template>
+            
         </span>
         </clr-dg-cell>
     </clr-dg-row>
@@ -70,7 +78,7 @@
         <clr-dg-pagination #pagination [clrDgPageSize]="5">
           <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Users per page</clr-dg-page-size>
           {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
-          of {{pagination.totalItems}} Produk --- {{RPricePerhiasan}}
+          of {{pagination.totalItems}} Produk
         </clr-dg-pagination>
       </clr-dg-footer>
 </clr-datagrid>

@@ -1,19 +1,14 @@
 import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
 import { PERHIASAN, LM, GS, BERLIAN, DINAR } from '../../sample/cart';
 
-import { PerhiasanComponent } from '../../pages/penjualan/penjualan-distro/perhiasan/perhiasan.component';
+
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.scss']
 })
 export class CartComponent implements OnInit {
-  // send remove item
-  @Output() removePerhiasan = new EventEmitter();
-  // send remove price
-  @Output() removeHPerhiasan = new EventEmitter();
   //
-  placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
   @Input() total:any;
   @Input() perhiasan:any;
   @Input() logam:any;
@@ -26,11 +21,12 @@ export class CartComponent implements OnInit {
   @Input() hargaBerlian:any = 0;
   @Input() hargaGift:any = 0;
   @Input() hargaDinar:any = 0;
+
+  // data grid  
+  placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
   // modal
   cartModal: boolean = false; 
-
   // isi cart cards
-
   cartPerhiasan = PERHIASAN;
   cartLogam = LM;
   cartGift = GS;
@@ -43,7 +39,10 @@ export class CartComponent implements OnInit {
   }
 
   removeCart(){
+<<<<<<< HEAD
     // let compo = new PerhiasanComponent();
+=======
+>>>>>>> b53614a3693462881d96c644d9c5344eb9806f51
     // remove all item in array    
     this.cartPerhiasan.splice(0);
     // reset card modal
@@ -53,23 +52,30 @@ export class CartComponent implements OnInit {
     this.berlian = 0;
     this.dinar = 0;
 
-    // harga
+    // reset harga
     this.hargaPerhiasan = 0;
     this.hargaLogam = 0;
     this.hargaBerlian = 0;
     this.hargaGift = 0;
     this.hargaDinar = 0;
-    this.removeHPerhiasan.emit(0);
 
     // refresh
+<<<<<<< HEAD
     // compo.refresh(0,"m");
+=======
+>>>>>>> b53614a3693462881d96c644d9c5344eb9806f51
     this.total = this.total-this.total;
   }
 
+  // remove item perhiasan
   removeItemPerhiasan(key: any, harga:any ){
     this.cartPerhiasan.splice(key,1);
-    this.removeHPerhiasan.emit(harga);
+
+    //pengrurangan harga
+    this.hargaPerhiasan = this.hargaPerhiasan-harga;
+    //pengurangan jumlah cart
     this.total = this.total-1;
+    this.perhiasan = this.perhiasan-1;
   }
 
   modalView(){

@@ -58,12 +58,7 @@ export class PenjualanDistroComponent implements OnInit {
   HPerhiasan(harga: any){
     this.hargaPerhiasan = harga;
   }
-
-  // remove price
-  RHPerhiasan(price: any){
-  this.RPricePerhiasan = price;
-  this.hargaPerhiasan = 0;
-  }
+  
   static key = EMenuID.DISTRO;
 
 }

@@ -25,8 +25,6 @@ export class PerhiasanComponent implements OnInit {
   @Output() perhiasan = new EventEmitter();
   @Output() totalHarga = new EventEmitter();
 
-  //
-  @Input() RPricePerhiasan:any;
   //placeholder 
   placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
   
@@ -190,6 +188,8 @@ export class PerhiasanComponent implements OnInit {
         //
         this.perhiasan.emit(this.cartList.length);
         this.data.emit(this.cartList.length);
+
+       // this.cekItemArray(code);
     }
 
     refresh(harga: any, sum: any){
@@ -197,6 +197,7 @@ export class PerhiasanComponent implements OnInit {
 
 
        if (sum == "p") {
+<<<<<<< HEAD
           this.total = 0;
         for (const i of this.cartList) {
           
@@ -207,10 +208,24 @@ export class PerhiasanComponent implements OnInit {
       //   this.total = 0;
       //  }
        
+=======
+        this.total =0;
+        for (const i of this.cartList) {
+          this.total += i.harga;
+        }
+       }
+>>>>>>> b53614a3693462881d96c644d9c5344eb9806f51
        this.totalHarga.emit(this.total);
-       console.debug(this.total)
-       console.debug(harga.target,"pengurangan harga");
       // this.totalHarga.emit(this.total);
     }
+<<<<<<< HEAD
   }
+=======
+
+    cekItemArray(data: any){
+      const code = this.cartList.map(el => el.code);
+      const ARR = code.includes(data);
+      return ARR;
+    }
+>>>>>>> b53614a3693462881d96c644d9c5344eb9806f51
 }
