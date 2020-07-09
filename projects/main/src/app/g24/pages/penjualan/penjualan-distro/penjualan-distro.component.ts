@@ -62,6 +62,7 @@ export class PenjualanDistroComponent implements OnInit {
   // remove price
   RHPerhiasan(price: any){
   this.RPricePerhiasan = price;
+  this.hargaPerhiasan = 0;
   }
   static key = EMenuID.DISTRO;
 

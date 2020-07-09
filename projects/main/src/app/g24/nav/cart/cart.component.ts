@@ -1,5 +1,7 @@
 import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
 import { PERHIASAN, LM, GS, BERLIAN, DINAR } from '../../sample/cart';
+
+import { PerhiasanComponent } from '../../pages/penjualan/penjualan-distro/perhiasan/perhiasan.component';
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
@@ -41,9 +43,7 @@ export class CartComponent implements OnInit {
   }
 
   removeCart(){
-    
-
-
+    let compo = new PerhiasanComponent();
     // remove all item in array    
     this.cartPerhiasan.splice(0);
     // reset card modal
@@ -62,7 +62,7 @@ export class CartComponent implements OnInit {
     this.removeHPerhiasan.emit(0);
 
     // refresh
-
+    compo.refresh(0,"m");
     this.total = this.total-this.total;
   }
 

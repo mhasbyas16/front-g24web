@@ -186,16 +186,22 @@ export class PerhiasanComponent implements OnInit {
         'qty': 1});
 
         // harga
-        this.total = this.total+harga;
-        this.totalHarga.emit(this.total);
+        this.refresh(harga, "p")
         //
         this.perhiasan.emit(this.cartList.length);
         this.data.emit(this.cartList.length);
     }
 
-    refresh(harga: any){
+    refresh(harga: any, sum: any){
        // harga
-      // this.total = this.total-harga;
+       if (sum == "p") {
+        this.total = this.total+harga;  
+       } else {
+        this.total = 0;
+       }
+       
+       this.totalHarga.emit(this.total);
+       console.debug(this.total)
        console.debug(harga.target,"pengurangan harga");
       // this.totalHarga.emit(this.total);
     }
