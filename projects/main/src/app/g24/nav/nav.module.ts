@@ -8,10 +8,11 @@ import { RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { ModalComponent } from './modal/modal.component';
 import { CartComponent } from './cart/cart.component';
+import { CheckoutComponent } from './checkout/checkout.component';
 
 
 @NgModule({
-  declarations: [HeaderComponent, SidebarComponent, ContentComponent, FooterComponent, ModalComponent, CartComponent],
+  declarations: [HeaderComponent, SidebarComponent, ContentComponent, FooterComponent, ModalComponent, CartComponent, CheckoutComponent],
   imports: [
     CommonModule,
     RouterModule,

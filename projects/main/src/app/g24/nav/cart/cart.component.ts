@@ -33,6 +33,9 @@ export class CartComponent implements OnInit {
   cartBerlian = BERLIAN;
   cartDinar = DINAR;
 
+  // modal 
+  checkoutModal:any;
+
   constructor( ) { }
 
   ngOnInit(): void {
@@ -69,8 +72,8 @@ export class CartComponent implements OnInit {
     this.total-=1;
     this.perhiasan = this.perhiasan-1;
   }
-  modalView(){
-    this.cartModal = true;
+  modalView(isi: any){
+    this.cartModal = isi;
   }
   totalAdd(){
     this.total+=1;

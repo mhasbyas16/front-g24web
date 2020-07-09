@@ -1,19 +1,9 @@
-
-    <a href="javascript://" class="nav-link nav-icon-text" (click)="modalView(true)">
-        <clr-icon shape="shopping-cart" class="cart-color" size="36"></clr-icon>
-        <ng-container *ngIf="total > 0">
-            <span class="badge badge-danger ">{{total}}</span>
-           
-        </ng-container>
-    </a>
-
-
-<ng-container *ngIf="cartModal">
-    <clr-modal [(clrModalOpen)]="cartModal" [clrModalSize]="'xl'" [clrModalStaticBackdrop]="false">
-        <h3 class="modal-title" >Shopping Chart <clr-icon shape="shopping-cart" class="is-solid cart-color"></clr-icon></h3>
+<ng-container *ngIf="checkoutModal">
+    <clr-modal [(clrModalOpen)]="checkoutModal" [clrModalSize]="'xl'" [clrModalClosable]="false">
+        <h3 class="modal-title" >Check Out <clr-icon shape="shopping-cart" class="is-solid cart-color"></clr-icon></h3>
         <div class="modal-body">
 
-            <ng-container *ngIf="perhiasan > 0">
+            <ng-container *ngIf="true">
                 <div class="clr-row">
                     <div class="card" style="margin-top: 0;">
                         <div class="card-header">
@@ -21,7 +11,7 @@
                         </div>
                         <div class="card-block">
                             <ul class="list-group">
-                                <ng-container *ngFor="let ip of cartPerhiasan | keyvalue">
+                                <ng-container *ngFor="let ip of perhiasan | keyvalue">
                                     <li class="list-group-item">
                                         <div class="clr-row" style="padding-top: 0;">
                                             <div class="clr-col-2" >
@@ -48,11 +38,6 @@
                                             <div class="clr-col-3">
                                                 <span class="left"> Rp. {{ip.value.harga| number}}</span>
                                             </div>
-                                            <div class="clr-col-1">
-                                                <button type="button" class="btn btn-icon btn-sm btn-danger" aria-label="home" (click)="removeItemPerhiasan(ip.key, ip.value.harga )">
-                                                    <clr-icon shape="minus"></clr-icon>
-                                                </button>
-                                            </div>
                                         </div>
                                     </li>                                        
                                 </ng-container>
@@ -62,7 +47,7 @@
                 </div>        
             </ng-container>
             
-            <ng-container *ngIf="logam > 0">
+           <!-- <ng-container *ngIf="logam > 0">
                 <div class="clr-row">
                     <div class="card">
                         <div class="card-header">
@@ -164,15 +149,14 @@
                         </div>
                     </div>
                 </div>        
-            </ng-container>
+            </ng-container> -->
                 
         </div>
         <div class="modal-footer">
-            <span>Total : Rp. {{hargaPerhiasan+hargaLogam+hargaBerlian+hargaGift+hargaDinar | number}}</span>
-            <button type="button" class="btn btn-warning" (click)="removeCart()">Clear</button>
-            <button type="button" class="btn btn-outline" (click)="cartModal = false">Cancel</button>
-            <button type="button" class="btn btn-primary" (click)="CO.openModal(hargaPerhiasan+hargaLogam+hargaBerlian+hargaGift+hargaDinar)">Check Out</button>
+            <span>Total : Rp. {{totalBelanja | number}}</span>
+            <!--<button type="button" class="btn btn-warning" (click)="removeCart()">Clear</button> -->
+            <button type="button" class="btn btn-outline" (click)="closeModal()" >Cancel</button>
+            <button type="button" class="btn btn-primary">Ok</button>
         </div>
     </clr-modal>
 </ng-container>
-<app-checkout #CO (cartModal)="modalView($event)"></app-checkout>
