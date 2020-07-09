@@ -188,6 +188,8 @@ export class PerhiasanComponent implements OnInit {
         //
         this.perhiasan.emit(this.cartList.length);
         this.data.emit(this.cartList.length);
+
+       // this.cekItemArray(code);
     }
 
     refresh(harga: any, sum: any){
@@ -199,7 +201,12 @@ export class PerhiasanComponent implements OnInit {
         }
        }
        this.totalHarga.emit(this.total);
-       console.debug(this.total)
       // this.totalHarga.emit(this.total);
+    }
+
+    cekItemArray(data: any){
+      const code = this.cartList.map(el => el.code);
+      const ARR = code.includes(data);
+      return ARR;
     }
 }

@@ -64,7 +64,6 @@ export class CartComponent implements OnInit {
     this.cartPerhiasan.splice(key,1);
 
     //pengrurangan harga
-    console.debug(this.hargaPerhiasan,harga,'dfmsdjfsdhfshufs');
     this.hargaPerhiasan = this.hargaPerhiasan-harga;
     //pengurangan jumlah cart
     this.total = this.total-1;
