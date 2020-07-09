@@ -6,7 +6,6 @@
                 <app-cart [total]="total"
                 [perhiasan]="perhiasan" 
                 [hargaPerhiasan]="hargaPerhiasan"
-                (removeHPerhiasan)="RHPerhiasan($event)"
                 ></app-cart>
             </div>
                
@@ -64,7 +63,7 @@
                             (data)="cartData($event)" 
                             (perhiasan)="totalPerhiasan($event)" 
                             (totalHarga)="HPerhiasan($event)"
-                            [RPricePerhiasan]="RPricePerhiasan"></app-perhiasan>  
+                            ></app-perhiasan>  
                         </clr-tab-content>
                     </clr-tab>
                     <clr-tab>

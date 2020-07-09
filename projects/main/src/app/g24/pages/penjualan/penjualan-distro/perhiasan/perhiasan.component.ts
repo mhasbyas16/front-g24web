@@ -25,8 +25,6 @@ export class PerhiasanComponent implements OnInit {
   @Output() perhiasan = new EventEmitter();
   @Output() totalHarga = new EventEmitter();
 
-  //
-  @Input() RPricePerhiasan:any;
   //placeholder 
   placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
   
@@ -195,14 +193,13 @@ export class PerhiasanComponent implements OnInit {
     refresh(harga: any, sum: any){
        // harga
        if (sum == "p") {
-        this.total = this.total+harga;  
-       } else {
-        this.total = 0;
+        this.total =0;
+        for (const i of this.cartList) {
+          this.total += i.harga;
+        }
        }
-       
        this.totalHarga.emit(this.total);
        console.debug(this.total)
-       console.debug(harga.target,"pengurangan harga");
       // this.totalHarga.emit(this.total);
     }
 }
