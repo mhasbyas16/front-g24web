@@ -39,10 +39,6 @@ export class CartComponent implements OnInit {
   }
 
   removeCart(){
-<<<<<<< HEAD
-    // let compo = new PerhiasanComponent();
-=======
->>>>>>> b53614a3693462881d96c644d9c5344eb9806f51
     // remove all item in array    
     this.cartPerhiasan.splice(0);
     // reset card modal
@@ -60,10 +56,6 @@ export class CartComponent implements OnInit {
     this.hargaDinar = 0;
 
     // refresh
-<<<<<<< HEAD
-    // compo.refresh(0,"m");
-=======
->>>>>>> b53614a3693462881d96c644d9c5344eb9806f51
     this.total = this.total-this.total;
   }
 

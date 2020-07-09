@@ -197,35 +197,18 @@ export class PerhiasanComponent implements OnInit {
 
 
        if (sum == "p") {
-<<<<<<< HEAD
-          this.total = 0;
-        for (const i of this.cartList) {
-          
-          this.total += i.harga;
-        }
-      //   this.total = this.total+harga;  
-      //  } else {
-      //   this.total = 0;
-      //  }
-       
-=======
         this.total =0;
         for (const i of this.cartList) {
           this.total += i.harga;
         }
        }
->>>>>>> b53614a3693462881d96c644d9c5344eb9806f51
        this.totalHarga.emit(this.total);
       // this.totalHarga.emit(this.total);
     }
-<<<<<<< HEAD
-  }
-=======
 
     cekItemArray(data: any){
       const code = this.cartList.map(el => el.code);
       const ARR = code.includes(data);
       return ARR;
     }
->>>>>>> b53614a3693462881d96c644d9c5344eb9806f51
 }
