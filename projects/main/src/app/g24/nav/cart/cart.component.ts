@@ -43,7 +43,7 @@ export class CartComponent implements OnInit {
   }
 
   removeCart(){
-    let compo = new PerhiasanComponent();
+    // let compo = new PerhiasanComponent();
     // remove all item in array    
     this.cartPerhiasan.splice(0);
     // reset card modal
@@ -62,7 +62,7 @@ export class CartComponent implements OnInit {
     this.removeHPerhiasan.emit(0);
 
     // refresh
-    compo.refresh(0,"m");
+    // compo.refresh(0,"m");
     this.total = this.total-this.total;
   }
 
