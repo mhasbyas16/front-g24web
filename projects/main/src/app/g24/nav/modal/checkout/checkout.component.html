@@ -1,0 +1,234 @@
+<ng-container *ngIf="checkoutModal">
+    <clr-modal [(clrModalOpen)]="checkoutModal" [clrModalSize]="'xl'" [clrModalClosable]="false">
+        <h3 class="modal-title" >Check Out <clr-icon shape="shopping-cart" class="is-solid cart-color"></clr-icon></h3>
+        <div class="modal-body">
+
+            <form class="clr-form clr-form-horizontal" [formGroup]="formData">
+                <div class="card" style="margin-top: 0;">
+                    <div class="card-header">
+                        Detail Pencarian
+                    </div>
+                    <div class="card-block">
+                        <div class="card-text">
+                            <div class="clr-row">
+                                <div class="clr-col-5">
+                                    <clr-input-container>
+                                        <label>CIF</label>
+                                        <input clrInput type="text" formControlName="cif">
+                                        <clr-control-helper>Please Input CIF</clr-control-helper>
+                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                        <clr-control-error *clrIfError="'pattern'">This is a required field 0 - 9</clr-control-error>
+                                    </clr-input-container> 
+                                </div>
+                                <div class="clr-col-3">
+                                    <button type="button" class="btn btn-primary">Cari</button>
+                                    <button type="button" class="btn btn-primary" (click)="addNasabah.openModal()">Tambah</button>
+                                </div>
+                            </div>
+                            <clr-input-container>
+                                <label>Nama Nasabah</label>
+                                <input clrInput type="text" formControlName="nama">
+                                <clr-control-helper>Please Input Nama Nasabah</clr-control-helper>
+                                <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                            </clr-input-container> 
+                            <clr-date-container>
+                                <label>Tanggal Lahir</label>
+                                <input clrDate type="date" formControlName="tglLahir">
+                                <clr-control-helper>Please Input date</clr-control-helper>
+                                <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                            </clr-date-container>
+                        </div> 
+                        <!-- hidden field put here-->
+                        <input type="hidden" formaControlName="idPenjualan_validation">                                                             
+                    </div>
+                </div>
+                <!-- card list -->
+                <div class="card" style="margin-top: 0;">
+                    <div class="card-header">
+                        List Cart
+                    </div>
+                    <div class="card-block">
+                        <div class="card-text">
+
+                            <ng-container *ngIf="P > 0">
+                                <div class="clr-row">
+                                    <div class="card" style="margin-top: 0;">
+                                        <div class="card-header">
+                                            Perhiasan
+                                        </div>
+                                        <div class="card-block">
+                                            <ul class="list-group">
+                                                <ng-container *ngFor="let ip of perhiasan | keyvalue">
+                                                    <li class="list-group-item">
+                                                        <div class="clr-row" style="padding-top: 0;">
+                                                            <div class="clr-col-2" >
+                                                                <span>{{ip.value.code}}</span>
+                                                            </div>
+                                                            <div class="clr-col-1">
+                                                                <span>{{ip.value.vendor}}</span>
+                                                            </div>
+                                                            <div class="clr-col-1">
+                                                                <span>{{ip.value.jenis}}</span>
+                                                            </div>
+                                                            <div class="clr-col-1">
+                                                                <span>{{ip.value.warna}}</span>
+                                                            </div>
+                                                            <div class="clr-col-1">
+                                                                <span>{{ip.value.kadar}}</span>
+                                                            </div>
+                                                            <div class="clr-col-1">
+                                                                <span>{{ip.value.berat}}</span>
+                                                            </div>
+                                                            <div class="clr-col-1">
+                                                               
+                                                            </div>
+                                                            <div class="clr-col-3">
+                                                                <span class="left"> Rp. {{ip.value.harga| number}}</span>
+                                                            </div>
+                                                        </div>
+                                                    </li>                                        
+                                                </ng-container>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>        
+                            </ng-container>
+                            
+                            <ng-container *ngIf="logam > 0">
+                                <div class="clr-row">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            Logam Mulia
+                                        </div>
+                                        <div class="card-block">
+                                            <div class="card-media-block">
+                                                <img src="..." class="card-media-image">
+                                                <div class="card-media-description">
+                                                    <span class="card-media-title">
+                                                        Project A
+                                                    </span>
+                                                    <span class="card-media-text">
+                                                        Owner: John Doe
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="card-text">
+                                                ...
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>        
+                            </ng-container>
+                
+                            <ng-container *ngIf="B > 0">
+                                <div class="clr-row">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            Berlian
+                                        </div>
+                                        <div class="card-block">
+                                            <div class="card-media-block">
+                                                <img src="..." class="card-media-image">
+                                                <div class="card-media-description">
+                                                    <span class="card-media-title">
+                                                        Project A
+                                                    </span>
+                                                    <span class="card-media-text">
+                                                        Owner: John Doe
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="card-text">
+                                                ...
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>        
+                            </ng-container>
+                
+                            <ng-container *ngIf="gift > 0">
+                                <div class="clr-row">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            Gift Dan Souvenir
+                                        </div>
+                                        <div class="card-block">
+                                            <div class="card-media-block">
+                                                <img src="..." class="card-media-image">
+                                                <div class="card-media-description">
+                                                    <span class="card-media-title">
+                                                        Project A
+                                                    </span>
+                                                    <span class="card-media-text">
+                                                        Owner: John Doe
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="card-text">
+                                                ...
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>        
+                            </ng-container>
+                
+                            <ng-container *ngIf="D > 0">
+                                <div class="clr-row">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            Dinar
+                                        </div>
+                                        <div class="card-block">
+                                            <div class="card-media-block">
+                                                <img src="..." class="card-media-image">
+                                                <div class="card-media-description">
+                                                    <span class="card-media-title">
+                                                        Project A
+                                                    </span>
+                                                    <span class="card-media-text">
+                                                        Owner: John Doe
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="card-text">
+                                                ...
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>        
+                            </ng-container>
+
+                        </div>                                                              
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 0;">
+                    <div class="card-header">
+                        Total : Rp. {{totalBelanja | number}}
+                    </div>
+                    <div class="card-block">
+                        <div class="card-text">
+                            <clr-select-container>
+                                <label>Bayar</label>
+                                <select clrSelect name="bayar" formControlName="bayar">
+                                    <option selected [value]="'kas'">kas</option>
+                                    <option [value]="'transfer'">transfer</option>
+                                </select>
+                                <clr-control-helper>Please Select One</clr-control-helper>
+                                <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                            </clr-select-container>
+                        </div>                                                              
+                    </div>
+                </div>
+            </form>  
+                
+                
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-warning" (click)="removeCart()">Clear</button> -->
+            <button type="button" class="btn btn-warning-outline" (click)="closeModal()" >Cancel</button>
+            <button type="button" class="btn btn-primary">Ok</button>
+        </div>
+    </clr-modal>
+</ng-container>
+<app-add-nasabah #addNasabah></app-add-nasabah>

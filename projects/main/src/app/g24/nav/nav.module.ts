@@ -7,16 +7,20 @@ import { FooterComponent } from './footer/footer.component';
 import { RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { ModalComponent } from './modal/modal.component';
-import { CartComponent } from './cart/cart.component';
-import { CheckoutComponent } from './checkout/checkout.component';
+import { CartComponent } from './modal/cart/cart.component';
+import { CheckoutComponent } from './modal/checkout/checkout.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AddNasabahComponent } from './modal/add-nasabah/add-nasabah.component';
 
 
 @NgModule({
-  declarations: [HeaderComponent, SidebarComponent, ContentComponent, FooterComponent, ModalComponent, CartComponent, CheckoutComponent],
+  declarations: [HeaderComponent, SidebarComponent, ContentComponent, FooterComponent, ModalComponent, CartComponent, CheckoutComponent, AddNasabahComponent],
   imports: [
     CommonModule,
     RouterModule,
-    ClarityModule
+    ClarityModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   exports: [

@@ -1,0 +1,786 @@
+<ng-container *ngIf="addNasabahModal">
+    <clr-modal [(clrModalOpen)]="addNasabahModal" [clrModalSize]="'xl'" [clrModalClosable]="false">
+        <h3 class="modal-title" >Data Nasabah <clr-icon shape="users" class="is-solid"></clr-icon></h3>
+        <div class="modal-body">
+
+            <form clrForm>
+                <div class="card" style="margin-top: 0;">
+                    <div class="card-header">
+                        <div class="clr-row">
+                            <div class="clr-col-5">
+                                <clr-input-container>
+                                    <label>CIF</label>
+                                    <input clrInput type="text" [value]="cifHasil" readonly>
+                                </clr-input-container>
+                            </div>
+                            <div class="clr-col-5">
+                                <clr-select-container>
+                                    <label>Tipe Nasabah</label>
+                                    <select clrSelect (change)="getTipe($event.target.value)">
+                                        <option selected [value]="'bu'">Badan Usaha</option>
+                                        <option [value]="'po'">perorangan</option>
+                                    </select>
+                                </clr-select-container>
+                            </div>    
+                        </div>                        
+                    </div>
+                </div>
+            </form>
+            
+
+            <!-- Badan Usaha -->
+            <form class="clr-form clr-form-horizontal" [formGroup]="badanUsaha">
+                <ng-container *ngIf="tipe; else perorangan ">
+                    <div class="card" style="margin-top: 0;">
+                        <div class="card-header">
+                            Badan Usaha
+                        </div>
+                        <div class="card-block">
+                            <div class="card-text">
+                                <!-- informasi cepat data nasabah -->
+                                <div class="card" style="margin-top: 0;">
+                                    <div class="card-header">
+                                        Informasi Cepat Data Nasabah Badan Usaha
+                                    </div>
+                                    <clr-input-container>
+                                        <input clrInput type="text" [value]="cifHasil" formControlName="cif" hidden>
+                                    </clr-input-container>
+
+                                    <div class="card-block">
+                                        <div class="card-text">
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-input-container>
+                                                        <label>Nama Badan Usaha</label>
+                                                        <input clrInput type="text" formControlName="namaBU">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-input-container>
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-date-container>
+                                                        <label>Tanggal Berdiri</label>
+                                                        <input clrDate type="date" formControlName="tglBerdiri"> 
+                                                        <clr-control-helper>Please Input date</clr-control-helper>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-date-container>
+                                                </div>
+                                            </div>
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-input-container>
+                                                        <label>Kode Unit Kerja</label>
+                                                        <input clrInput type="text" formControlName="kodeUnitKerja">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-input-container>
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-input-container>
+                                                        <label>Nama Unit Kerja</label>
+                                                        <input clrInput type="text" formControlName="namaUnitKerja">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-input-container>
+                                                </div>
+                                            </div>                                            
+                                        </div>                                                              
+                                    </div>
+                                </div>
+                                <!-- detail data nasabah -->
+                                <div class="card" style="margin-top: 0;">
+                                    <div class="card-header">
+                                        Detail Data Nasabah
+                                    </div>
+                                    <div class="card-block">
+                                        <div class="card-text">
+                                            <div class="clr-row">
+                                                <div class="clr-col-3">
+                                                    <clr-select-container>
+                                                        <label class="clr-col-5">Tipe ID/No</label>
+                                                        <select class="clr-col-7" clrSelect formControlName="tipeID">
+                                                            <option selected></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>                                                    
+                                                </div>
+                                                <div class ="clr-col-3">
+                                                    <clr-input-container>
+                                                        <input clrInput type="text" formControlName="tipeNo">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-input-container>
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-date-container>
+                                                        <label>Tanggal Berlaku Sampai</label>
+                                                        <input clrDate type="date" formControlName="tglBerlaku"> 
+                                                        <clr-control-helper>Please Input date</clr-control-helper>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-date-container>
+                                                </div>
+                                            </div>
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Jenis Perusahaan</label>
+                                                        <select clrSelect formControlName="jenisPerusahaan">
+                                                            <option selected></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>                                                    
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Jenis Badan Hukum</label>
+                                                        <select clrSelect formControlName="jenisBadanHukum">
+                                                            <option selected></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>
+                                                </div>
+                                            </div>
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Bidang Usaha</label>
+                                                        <select clrSelect formControlName="bidangUsaha">
+                                                            <option selected></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>                                                    
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-input-container>
+                                                        <label>No. Akte</label>
+                                                        <input clrInput type="text" formControlName="noAkte">
+                                                        <clr-control-error *clrIfError="'required'">This isi a required field</clr-control-error>
+                                                    </clr-input-container>
+                                                </div>
+                                            </div>
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-input-container>
+                                                        <label>No. Akte Terakhir</label>
+                                                        <input clrInput type="text" formControlName="noAkteT">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-input-container>                                                    
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-date-container>
+                                                        <label>Tanggal Perubahan Akte</label>
+                                                        <input clrDate type="text" formControlName="tglPerubahanAkte">
+                                                        <clr-control-error *clrIfError="'required'">This isi a required field</clr-control-error>
+                                                    </clr-date-container>
+                                                </div>
+                                            </div>
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Sumber Dana</label>
+                                                        <select clrSelect formControlName="sumberDana">
+                                                            <option selected></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>                                                    
+                                                </div>
+                                            </div>
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-input-container>
+                                                        <label>No. NPWP</label>
+                                                        <input clrInput type="text" formControlName="noNPWP">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-input-container>                                                    
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-input-container>
+                                                        <label>Telepon</label>
+                                                        <input clrInput type="text" formControlName="telp">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-input-container>
+                                                </div>
+                                            </div>
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-input-container>
+                                                        <label>Nama Penanggung Jawab 1</label>
+                                                        <input clrInput type="text" formControlName="namaPJ1">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-input-container>                                                    
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-input-container>
+                                                        <label>HP Penanggung Jawab 1</label>
+                                                        <input clrInput type="text" formControlName="hpPJ1">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-input-container>
+                                                </div>
+                                            </div>
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-input-container>
+                                                        <label>Nama Penanggung Jawab 2</label>
+                                                        <input clrInput type="text" formControlName="namaPJ2">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-input-container>                                                    
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-input-container>
+                                                        <label>HP Penanggung Jawab 2</label>
+                                                        <input clrInput type="text" formControlName="hpPJ2">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-input-container>
+                                                </div>
+                                            </div>
+                                        </div>                                                              
+                                    </div>
+                                </div>
+                                <!-- alamat -->
+                                <div class="card" style="margin-top: 0;">
+                                    <div class="card-header">
+                                        Alamat
+                                    </div>
+                                    <div class="card-block">
+                                        <div class="card-text">
+                                            <clr-textarea-container>
+                                                <label>Alamat</label>
+                                                <textarea clrTextarea formControlName="alamat" id="" cols="50" rows="2"></textarea>    
+                                                <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                            </clr-textarea-container>
+                                            <div class="clr-row">
+                                                <div class="clr-col-5">
+                                                    <clr-input-container>
+                                                        <label>RT/RW</label>
+                                                        <input clrInput type="text" formControlName="rt" maxlength="5">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>                                            
+                                                    </clr-input-container>
+                                                </div>
+                                                <div class="clr-col-1">
+                                                    <clr-input-container>
+                                                        <label>/</label>
+                                                    </clr-input-container>
+                                                </div>
+                                                <div class="clr-col-5">
+                                                    <clr-input-container>
+                                                        <input clrInput type="text" formControlName="rw">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>                                           
+                                                    </clr-input-container>
+                                                </div>                                          
+                                            </div>
+                                            <clr-input-container>
+                                                <label>Kode Pos</label>
+                                                <input clrInput type="text" formControlName="kodePos" maxlength="5">
+                                                <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>                                            
+                                            </clr-input-container>
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Provinsi</label>
+                                                        <select  clrSelect formControlName="provinsi">
+                                                            <option></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Kabupaten</label>
+                                                        <select  clrSelect formControlName="kabupaten">
+                                                            <option></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>
+                                                </div>                                         
+                                            </div>
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Kecamatan</label>
+                                                        <select  clrSelect formControlName="kecamatan">
+                                                            <option></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error> 
+                                                    </clr-select-container>
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Kelurahan</label>
+                                                        <select  clrSelect formControlName="kelurahan">
+                                                            <option></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>
+                                                </div>                                         
+                                            </div>
+                                            <!-- hidden field -->
+                                            <input type="hidden" formControlName="cif_validation">
+                                            <input type="hidden" formControlName="tipeNo_validation">
+                                            <input type="hidden" formControlName="noAkteT_validation">
+                                            <input type="hidden" formControlName="noNPWP_validation">
+                                            <input type="hidden" formControlName="noAkte_validation">
+                                            <input type="hidden" formControlName="telp_validation">
+                                            <input type="hidden" formControlName="hpPJ1_validation">
+                                            <input type="hidden" formControlName="hpPJ2_validation">
+
+                                        </div>                                                              
+                                    </div>
+                                </div>
+                            </div>                                                              
+                        </div>
+                    </div>
+                </ng-container>
+            </form>
+            
+            <form class="clr-form clr-form-horizontal" [formGroup]="person">
+                <!-- perorangan -->
+                <ng-template #perorangan>
+                    <div class="card">
+                        <div class="card-header">
+                            Perorangan
+                        </div>
+                        <div class="card-block">
+                            <div class="card-text">
+                                <div class="card">
+                                    <div class="card-header">
+                                        Informasi Cepat Data Nasabah Perorangan
+                                    </div>
+                                    
+                                    <div class="card-block">
+                                        <div class="card-text">
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Tipe ID</label>
+                                                        <select clrSelect formControlName="tipeID">
+                                                            <option selected></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>                                                    
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-checkbox-container>
+                                                        <clr-checkbox-wrapper>
+                                                          <input type="checkbox" clrCheckbox disabled/>
+                                                          <label>Dukcapil Verified</label>
+                                                        </clr-checkbox-wrapper>
+                                                      </clr-checkbox-container>
+                                                </div>
+                                            </div>                                            
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-input-container>
+                                                        <label>No. ID</label>
+                                                        <input clrInput type="text" formControlName="noID">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-input-container>                                                  
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <button class="btn btn-primary">Cek Dukcapil</button>
+                                                </div>
+                                            </div>
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-input-container>
+                                                        <label>Nama Nasabah</label>
+                                                        <input clrInput type="text" formControlName="namaNasabah">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-input-container>                                                  
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-input-container>
+                                                        <label>Nama Ibu Kandung</label>
+                                                        <input clrInput type="text" formControlName="namaIbuKandung">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-input-container>
+                                                </div>
+                                            </div>
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-input-container>
+                                                        <label>Tempat Lahir</label>
+                                                        <input clrInput type="text" formControlName="tempatLahir">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-input-container>                                                  
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-date-container>
+                                                        <label>Tanggal Lahir</label>
+                                                        <input clrDate type="text" formControlName="tglLahir">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-date-container>
+                                                </div>
+                                            </div>
+                                            <clr-radio-container clrInline>
+                                                <label>Masa Berlaku ID</label>
+                                                <clr-radio-wrapper>
+                                                    <input type="radio" clrRadio value="SH" formControlName="masaBerlakuID" (change)="masaBerlakuID($event.target.value)" />
+                                                    <label>Seumur Hidup</label>
+                                                  </clr-radio-wrapper>
+                                                  <clr-radio-wrapper>
+                                                    <input type="radio" clrRadio value="SD" formControlName="masaBerlakuID" (change)="masaBerlakuID($event.target.value)" />
+                                                    <label>Seumur Dengan</label>
+                                                </clr-radio-wrapper>
+                                            </clr-radio-container> 
+                                            <ng-container *ngIf="tglberlakuS; else dis">
+                                                <clr-date-container>
+                                                    <label>Tanggal Berlaku Sampai</label>
+                                                        <input clrDate type="date" formControlName="tglBerlakuSampai">                                             
+                                                    <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                </clr-date-container>
+                                            </ng-container>
+                                            <ng-template #dis></ng-template>
+                                                                                                                                   
+                                        </div>                                                              
+                                    </div>
+                                </div>
+                                <!-- Detail Data Nasabah -->
+                                <div class="card">
+                                    <div class="card-header">
+                                        Detail Data Nasabah {{tglberlakuS}}
+                                    </div>
+                                    <div class="card-block">
+                                        <div class="card-text">
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Nama Nasabah</label>
+                                                        <select clrSelect formControlName="jenisKelamin">
+                                                            <option [value]="'lk'">Laki - Laki</option>
+                                                            <option [value]="'pr'">Perempuan</option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>                                                  
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Pendidikan</label>
+                                                        <select clrSelect formControlName="pendidikan">
+                                                            <option value=""></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>
+                                                </div>
+                                            </div> 
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Status Perkawinan</label>
+                                                        <select clrSelect formControlName="statusPerkawinan">
+                                                            
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>                                                  
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-input-container>
+                                                        <label>Nama Pasangan</label>
+                                                        <input clrInput type="text" formControlName="namaPasangan">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-input-container>
+                                                </div>
+                                            </div> 
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Status Perkawinan</label>
+                                                        <select clrSelect formControlName="statusPerkawinan">
+                                                            
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>                                                  
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-input-container>
+                                                        <label>Nama Pasangan</label>
+                                                        <input clrInput type="text" formControlName="namaPasangan">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-input-container>
+                                                </div>
+                                            </div> 
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-date-container>
+                                                        <label>Tanggal Lahir Pasangan</label>
+                                                        <input clrDate type="date" formControlName="tglLahirPasangan">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-date-container>                          
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-input-container>
+                                                        <label>Jumlah Tanggungan</label>
+                                                        <input  clrInput type="number" step="1" min = '0' formControlName="jmlTanggungan">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-input-container>
+                                                </div>
+                                            </div>  
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-input-container>
+                                                        <label>No. Telepon</label>
+                                                        <input clrInput type="text" formControlName="noTelp">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-input-container>                          
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-input-container>
+                                                        <label>No. HP</label>
+                                                        <input clrInput type="text" formControlName="noHP">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-input-container>
+                                                </div>
+                                            </div> 
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-input-container>
+                                                        <label>Email</label>
+                                                        <input clrInput type="email" formControlName="email">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-input-container>                          
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-input-container>
+                                                        <label>No. NPWP</label>
+                                                        <input clrInput type="text" formControlName="noNPWP">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-input-container>
+                                                </div>
+                                            </div> 
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Kewarganegaraan</label>
+                                                        <select clrSelect formControlName="kewarganegaraan">
+                                                            <option value=""></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>                                     
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Tipe Kependudukan</label>
+                                                        <select clrSelect formControlName="tipeKependudukan">
+                                                            <option value=""></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>
+                                                </div>
+                                            </div>
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Sumber Dana</label>
+                                                        <select clrSelect formControlName="sumberDana">
+                                                            <option value=""></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>                                                  
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Pekerjaan</label>
+                                                        <select clrSelect formControlName="pekerjaan">
+                                                            <option value=""></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>
+                                                </div>
+                                            </div>
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Agama</label>
+                                                        <select clrSelect formControlName="agama">
+                                                            <option value=""></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>                                                  
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Rata - Rata Penghasilan</label>
+                                                        <select clrSelect formControlName="rataPenghasilan">
+                                                            <option value=""></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>
+                                                </div>
+                                            </div>
+                                                                   
+                                        </div>                                                              
+                                    </div>
+                                </div>
+                                <!-- Alamat Sesuai KTP -->
+                                <div class="card">
+                                    <div class="card-header">
+                                        Alamat Sesuai KTP
+                                    </div>
+    
+                                    <div class="card-block">
+                                        <div class="card-text">
+                                            <clr-textarea-container>
+                                                <label>Alamat</label>
+                                                <textarea clrTextarea formControlName="alamat" id="" cols="50" rows="2"></textarea>    
+                                                <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                            </clr-textarea-container>
+                                            <div class="clr-row">
+                                                <div class="clr-col-5">
+                                                    <clr-input-container>
+                                                        <label>RT/RW</label>
+                                                        <input clrInput type="text" formControlName="rt" maxlength="5">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>                                            
+                                                    </clr-input-container>
+                                                </div>
+                                                <div class="clr-col-1">
+                                                    <clr-input-container>
+                                                        <label>/</label>
+                                                    </clr-input-container>
+                                                </div>
+                                                <div class="clr-col-5">
+                                                    <clr-input-container>
+                                                        <input clrInput type="text" formControlName="rw">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>                                           
+                                                    </clr-input-container>
+                                                </div>                                          
+                                            </div>
+                                            <clr-input-container>
+                                                <label>Kode Pos</label>
+                                                <input clrInput type="text" formControlName="kodePos" maxlength="5">
+                                                <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>                                            
+                                            </clr-input-container>
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Provinsi</label>
+                                                        <select  clrSelect formControlName="provinsi">
+                                                            <option></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Kabupaten</label>
+                                                        <select  clrSelect formControlName="kabupaten">
+                                                            <option></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>
+                                                </div>                                         
+                                            </div>
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Kecamatan</label>
+                                                        <select  clrSelect formControlName="kecamatan">
+                                                            <option></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error> 
+                                                    </clr-select-container>
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Kelurahan</label>
+                                                        <select  clrSelect formControlName="kelurahan">
+                                                            <option></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>
+                                                </div>                                         
+                                            </div>                                      
+                                        </div>                                                              
+                                    </div>
+                                </div>
+                                <!-- Alamat Tinggal Saat Ini -->
+                                <div class="card">
+                                    <div class="card-header">
+                                        Alamat Tinggal Saat Ini
+                                    </div>
+    
+                                    <div class="card-block">
+                                        <div class="card-text">
+                                            <clr-textarea-container>
+                                                <label>Alamat</label>
+                                                <textarea clrTextarea formControlName="alamat2" id="" cols="50" rows="2"></textarea>    
+                                                <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                            </clr-textarea-container>
+                                            <div class="clr-row">
+                                                <div class="clr-col-5">
+                                                    <clr-input-container>
+                                                        <label>RT/RW</label>
+                                                        <input clrInput type="text" formControlName="rt2" maxlength="5">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>                                            
+                                                    </clr-input-container>
+                                                </div>
+                                                <div class="clr-col-1">
+                                                    <clr-input-container>
+                                                        <label>/</label>
+                                                    </clr-input-container>
+                                                </div>
+                                                <div class="clr-col-5">
+                                                    <clr-input-container>
+                                                        <input clrInput type="text" formControlName="rw2">
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>                                           
+                                                    </clr-input-container>
+                                                </div>                                          
+                                            </div>
+                                            <clr-input-container>
+                                                <label>Kode Pos</label>
+                                                <input clrInput type="text" formControlName="kodePos2" maxlength="5">
+                                                <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>                                            
+                                            </clr-input-container>
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Provinsi</label>
+                                                        <select  clrSelect formControlName="provinsi2">
+                                                            <option></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Kabupaten</label>
+                                                        <select  clrSelect formControlName="kabupaten2">
+                                                            <option></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>
+                                                </div>                                         
+                                            </div>
+                                            <div class="clr-row">
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Kecamatan</label>
+                                                        <select  clrSelect formControlName="kecamatan2">
+                                                            <option></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error> 
+                                                    </clr-select-container>
+                                                </div>
+                                                <div class="clr-col-6">
+                                                    <clr-select-container>
+                                                        <label>Kelurahan</label>
+                                                        <select  clrSelect formControlName="kelurahan2">
+                                                            <option></option>
+                                                        </select>
+                                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                    </clr-select-container>
+                                                </div>                                         
+                                            </div>                                      
+                                        </div>                                                              
+                                    </div>
+                                </div>
+                            </div>                                                              
+                        </div>
+                    </div>
+                </ng-template>
+            </form>
+           
+                
+                
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-warning" (click)="removeCart()">Clear</button> -->
+            <button type="button" class="btn btn-warning-outline" (click)="addNasabahModal = false" >Cancel</button>
+            <button type="button" class="btn btn-primary">Ok</button>
+        </div>
+    </clr-modal>
+</ng-container>

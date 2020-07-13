@@ -170,7 +170,7 @@
         <div class="modal-footer">
             <span>Total : Rp. {{hargaPerhiasan+hargaLogam+hargaBerlian+hargaGift+hargaDinar | number}}</span>
             <button type="button" class="btn btn-warning" (click)="removeCart()">Clear</button>
-            <button type="button" class="btn btn-outline" (click)="cartModal = false">Cancel</button>
+            <!-- <button type="button" class="btn btn-outline" (click)="cartModal = false">Cancel</button> -->
             <button type="button" class="btn btn-primary" (click)="CO.openModal(hargaPerhiasan+hargaLogam+hargaBerlian+hargaGift+hargaDinar)">Check Out</button>
         </div>
     </clr-modal>

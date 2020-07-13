@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
-import { PERHIASAN, LM, GS, BERLIAN, DINAR } from '../../sample/cart';
+import { PERHIASAN, LM, GS, BERLIAN, DINAR } from '../../../sample/cart';
 
 
 @Component({
