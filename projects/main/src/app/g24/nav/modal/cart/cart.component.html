@@ -1,5 +1,5 @@
 
-    <a href="javascript://" class="nav-link nav-icon-text" (click)="modalView()">
+    <a href="javascript://" class="nav-link nav-icon-text" (click)="modalView(true)">
         <clr-icon shape="shopping-cart" class="cart-color" size="36"></clr-icon>
         <ng-container *ngIf="total > 0">
             <span class="badge badge-danger ">{{total}}</span>
@@ -170,8 +170,9 @@
         <div class="modal-footer">
             <span>Total : Rp. {{hargaPerhiasan+hargaLogam+hargaBerlian+hargaGift+hargaDinar | number}}</span>
             <button type="button" class="btn btn-warning" (click)="removeCart()">Clear</button>
-            <button type="button" class="btn btn-outline" (click)="cartModal = false">Cancel</button>
-            <button type="button" class="btn btn-primary" (click)="cartModal = false">Ok</button>
+            <!-- <button type="button" class="btn btn-outline" (click)="cartModal = false">Cancel</button> -->
+            <button type="button" class="btn btn-primary" (click)="CO.openModal(hargaPerhiasan+hargaLogam+hargaBerlian+hargaGift+hargaDinar)">Check Out</button>
         </div>
     </clr-modal>
 </ng-container>
+<app-checkout #CO (cartModal)="modalView($event)"></app-checkout>

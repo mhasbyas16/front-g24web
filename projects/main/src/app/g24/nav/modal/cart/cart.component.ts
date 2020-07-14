@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
-import { PERHIASAN, LM, GS, BERLIAN, DINAR } from '../../sample/cart';
+import { PERHIASAN, LM, GS, BERLIAN, DINAR } from '../../../sample/cart';
 
 
 @Component({
@@ -9,7 +9,7 @@ import { PERHIASAN, LM, GS, BERLIAN, DINAR } from '../../sample/cart';
 })
 export class CartComponent implements OnInit {
   //
-  @Input() total:any;
+  @Input() total:any=0;
   @Input() perhiasan:any;
   @Input() logam:any;
   @Input() gift:any;
@@ -32,6 +32,9 @@ export class CartComponent implements OnInit {
   cartGift = GS;
   cartBerlian = BERLIAN;
   cartDinar = DINAR;
+
+  // modal 
+  checkoutModal:any;
 
   constructor( ) { }
 
@@ -56,7 +59,7 @@ export class CartComponent implements OnInit {
     this.hargaDinar = 0;
 
     // refresh
-    this.total = this.total-this.total;
+    this.total=0;
   }
 
   // remove item perhiasan
@@ -66,11 +69,14 @@ export class CartComponent implements OnInit {
     //pengrurangan harga
     this.hargaPerhiasan = this.hargaPerhiasan-harga;
     //pengurangan jumlah cart
-    this.total = this.total-1;
+    this.total-=1;
     this.perhiasan = this.perhiasan-1;
   }
-
-  modalView(){
-    this.cartModal = true;
+  modalView(isi: any){
+    this.cartModal = isi;
+  }
+  totalAdd(){
+    this.total+=1;
+    console.debug(this.total,'sdasdasdsaas');
   }
 }
