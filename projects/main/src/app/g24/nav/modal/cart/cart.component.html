@@ -3,7 +3,6 @@
         <clr-icon shape="shopping-cart" class="cart-color" size="36"></clr-icon>
         <ng-container *ngIf="total > 0">
             <span class="badge badge-danger ">{{total}}</span>
-           
         </ng-container>
     </a>
 
@@ -168,10 +167,12 @@
                 
         </div>
         <div class="modal-footer">
-            <span>Total : Rp. {{hargaPerhiasan+hargaLogam+hargaBerlian+hargaGift+hargaDinar | number}}</span>
+            <ng-container *ngIf="total > 0">
+                <span>Total : Rp. {{hargaPerhiasan+hargaLogam+hargaBerlian+hargaGift+hargaDinar | number}}</span>
             <button type="button" class="btn btn-warning" (click)="removeCart()">Clear</button>
             <!-- <button type="button" class="btn btn-outline" (click)="cartModal = false">Cancel</button> -->
-            <button type="button" class="btn btn-primary" (click)="CO.openModal(hargaPerhiasan+hargaLogam+hargaBerlian+hargaGift+hargaDinar)">Check Out</button>
+                <button type="button" class="btn btn-primary" (click)="CO.openModal(hargaPerhiasan+hargaLogam+hargaBerlian+hargaGift+hargaDinar)">Check Out</button>
+            </ng-container>            
         </div>
     </clr-modal>
 </ng-container>

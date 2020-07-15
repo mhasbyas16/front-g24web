@@ -2,6 +2,12 @@ import { Component, OnInit, Attribute } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormControlName } from '@angular/forms';
 import { CifGeneratorService } from '../../../lib/helper/cif-generator.service';
 
+// services
+import { ProvinceService } from '../../../services/client/province.service';
+import { DistrictService } from '../../../services/client/district.service';
+import { RegencyService } from '../../../services/client/regency.service';
+import { VillageService } from '../../../services/client/village.service';
+
 @Component({
   selector: 'app-add-nasabah',
   templateUrl: './add-nasabah.component.html',
@@ -18,8 +24,21 @@ export class AddNasabahComponent implements OnInit {
 
   badanUsaha: FormGroup = null;
   person: FormGroup = null;
+
+  // Wilayah
+  province:any;
+  regency:any;
+  regency2:any;
+  district:any;
+  district2:any;
+  village:any;
+  village2:any;
   constructor(
     private cifNumber: CifGeneratorService,
+    private provinceService: ProvinceService,
+    private districtService: DistrictService,
+    private regencyService: RegencyService,
+    private villageService: VillageService,
   ) { }
 
   ngOnInit(): void {
@@ -79,9 +98,13 @@ export class AddNasabahComponent implements OnInit {
       rw : new FormControl("", Validators.required),
       kodePos : new FormControl("", Validators.required),
       provinsi : new FormControl("", Validators.required),
+      // provinsi_encoded : new FormControl("base64"),
       kabupaten : new FormControl("", Validators.required),
+      // kabupaten_encoded : new FormControl("base64"),
       kecamatan : new FormControl("", Validators.required),
+      // kecamatan_encoded : new FormControl("base64"),
       kelurahan : new FormControl("", Validators.required),
+      // kelurahan_encoded : new FormControl("base64"),
     });
 
     this.person = new FormGroup({
@@ -115,7 +138,7 @@ export class AddNasabahComponent implements OnInit {
       sumberDana : new FormControl("", Validators.required),
       pekerjaan : new FormControl("", Validators.required),
       agama : new FormControl("", Validators.required),
-      rataPenghasilan : new FormControl("", Validators.required),
+      pendapatan : new FormControl("", Validators.required),
       
       // Alamat Sesuai KTP
       alamat : new FormControl("", Validators.required),
@@ -123,9 +146,13 @@ export class AddNasabahComponent implements OnInit {
       rw : new FormControl("", Validators.required),
       kodePos : new FormControl("", Validators.required),
       provinsi : new FormControl("", Validators.required),
+      provinsi_encoded : new FormControl("base64"),
       kabupaten : new FormControl("", Validators.required),
+      kabupaten_encoded : new FormControl("base64"),
       kecamatan : new FormControl("", Validators.required),
+      kecamatan_encoded : new FormControl("base64"),
       kelurahan : new FormControl("", Validators.required),
+      kelurahan_encoded :new FormControl("base64"),
 
       // Alamat Saat Ini
       alamat2 : new FormControl("", Validators.required),
@@ -133,13 +160,17 @@ export class AddNasabahComponent implements OnInit {
       rw2 : new FormControl("", Validators.required),
       kodePos2 : new FormControl("", Validators.required),
       provinsi2 : new FormControl("", Validators.required),
+      provinsi2_encoded : new FormControl("base64"),
       kabupaten2 : new FormControl("", Validators.required),
+      kabupaten2_encoded : new FormControl("base64"),
       kecamatan2 : new FormControl("", Validators.required),
+      kecamatan2_encoded : new FormControl("base64"),
       kelurahan2 : new FormControl("", Validators.required),
+      kelurahan2_encoded :new FormControl("base64"),
     });
 
     this.addNasabahModal = true;   
-    
+    this.getProvinsi();
   }
 
   masaBerlakuID(val: any){
@@ -151,6 +182,99 @@ export class AddNasabahComponent implements OnInit {
 
   }
 
+  getProvinsi(){
+    this.provinceService.list("?_hash=1").subscribe((response: any) => {
+      if (response != false) {
+        this.province = response;
+        this.province.sort(function(a, b){
+          if(a.name < b.name) { return -1; }
+          if(a.name > b.name) { return 1; }
+          return 0;
+      })
+      }      
+    });
+  }
+
+  getRegency(val:string, col:any){
+    
+    const params = "?parent="+val+"&parent_encoded=int&_hash=1";
+    this.regencyService.list(params).subscribe((response: any) => {
+      if (response != false) {
+        if (col == '1') {
+          this.regency=null;
+          this.district=null;
+          this.village=null;
+
+          this.regency = response;
+          this.regency.sort(function(a, b){
+            if(a.name < b.name) { return -1; }
+            if(a.name > b.name) { return 1; }
+            return 0;
+          })
+        } else {
+          this.regency2=null;
+          this.district2=null;
+          this.village2=null;
+          
+          this.regency2 = response;
+          this.regency2.sort(function(a, b){
+            if(a.name < b.name) { return -1; }
+            if(a.name > b.name) { return 1; }
+            return 0;
+          })
+        }
+        
+      }      
+    });
+  }
+
+  getDistrict(val:string, col:any){
+    const params = "?parent="+val+"&parent_encoded=int";
+    this.districtService.list(params).subscribe((response: any) => {
+      if (response != false) {
+        if (col == '1') {
+          this.district = response;
+          this.district.sort(function(a, b){
+            if(a.name < b.name) { return -1; }
+            if(a.name > b.name) { return 1; }
+            return 0;
+          })
+        } else {
+          this.district2 = response;
+          this.district2.sort(function(a, b){
+            if(a.name < b.name) { return -1; }
+            if(a.name > b.name) { return 1; }
+            return 0;
+          })
+        }        
+      }      
+    });
+  }
+
+  getVillage(val:string, col:any){
+    const params = "?parent="+val+"&parent_encoded=int";
+    this.villageService.list(params).subscribe((response: any) => {
+      if (response != false) {
+        if (col == '1') {
+          this.village = response;
+          this.village.sort(function(a, b){
+            if(a.name < b.name) { return -1; }
+            if(a.name > b.name) { return 1; }
+            return 0;
+          })
+        } else {
+          this.village2 = response;
+          this.village2.sort(function(a, b){
+            if(a.name < b.name) { return -1; }
+            if(a.name > b.name) { return 1; }
+            return 0;
+          })
+        }        
+      }      
+    });
+  }
+  
+  
 }
 
 

@@ -273,17 +273,18 @@
                                                 <div class="clr-col-6">
                                                     <clr-select-container>
                                                         <label>Provinsi</label>
-                                                        <select  clrSelect formControlName="provinsi">
-                                                            <option></option>
+                                                        <select  clrSelect formControlName="provinsi" (click)="getRegency($event.target.value,1)">
+                                                            <option *ngFor="let provinsi of province" [value]="provinsi.code">{{provinsi.name}}</option>
                                                         </select>
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                                     </clr-select-container>
                                                 </div>
                                                 <div class="clr-col-6">
                                                     <clr-select-container>
-                                                        <label>Kabupaten</label>
-                                                        <select  clrSelect formControlName="kabupaten">
-                                                            <option></option>
+                                                        <label>Kabupaten/Kota</label>
+                                                        <select  clrSelect formControlName="kabupaten" (click)="getDistrict($event.target.value,1)">
+                                                            <option selected value="" disabled>-- Select One --</option>
+                                                            <option *ngFor="let kabupaten of regency" [value]="kabupaten.code">{{kabupaten.name}}</option>
                                                         </select>
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                                     </clr-select-container>
@@ -293,8 +294,8 @@
                                                 <div class="clr-col-6">
                                                     <clr-select-container>
                                                         <label>Kecamatan</label>
-                                                        <select  clrSelect formControlName="kecamatan">
-                                                            <option></option>
+                                                        <select  clrSelect formControlName="kecamatan" (click)="getVillage($event.target.value,1)"> 
+                                                            <option *ngFor="let kecamatan of district" [value]="kecamatan.code">{{kecamatan.name}}</option>
                                                         </select>
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error> 
                                                     </clr-select-container>
@@ -303,7 +304,7 @@
                                                     <clr-select-container>
                                                         <label>Kelurahan</label>
                                                         <select  clrSelect formControlName="kelurahan">
-                                                            <option></option>
+                                                            <option *ngFor="let kelurahan of village" [value]="kelurahan.code">{{kelurahan.name}}</option>
                                                         </select>
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                                     </clr-select-container>
@@ -318,6 +319,7 @@
                                             <input type="hidden" formControlName="telp_validation">
                                             <input type="hidden" formControlName="hpPJ1_validation">
                                             <input type="hidden" formControlName="hpPJ2_validation">
+
 
                                         </div>                                                              
                                     </div>
@@ -593,13 +595,11 @@
                                                     </clr-select-container>                                                  
                                                 </div>
                                                 <div class="clr-col-6">
-                                                    <clr-select-container>
-                                                        <label>Rata - Rata Penghasilan</label>
-                                                        <select clrSelect formControlName="rataPenghasilan">
-                                                            <option value=""></option>
-                                                        </select>
+                                                    <clr-input-container>
+                                                        <label>Pendapatan Per Bulan</label>
+                                                        <input clrInput type="text" formControlName="pendapatan">
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
-                                                    </clr-select-container>
+                                                    </clr-input-container>
                                                 </div>
                                             </div>
                                                                    
@@ -648,17 +648,18 @@
                                                 <div class="clr-col-6">
                                                     <clr-select-container>
                                                         <label>Provinsi</label>
-                                                        <select  clrSelect formControlName="provinsi">
-                                                            <option></option>
+                                                        <select  clrSelect formControlName="provinsi" (click)="getRegency($event.target.value,1)">
+                                                            <option *ngFor="let provinsi of province" [value]="provinsi.code">{{provinsi.name}}</option>
                                                         </select>
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                                     </clr-select-container>
                                                 </div>
                                                 <div class="clr-col-6">
                                                     <clr-select-container>
-                                                        <label>Kabupaten</label>
-                                                        <select  clrSelect formControlName="kabupaten">
-                                                            <option></option>
+                                                        <label>Kabupaten/Kota</label>
+                                                        <select  clrSelect formControlName="kabupaten" (click)="getDistrict($event.target.value,1)">
+                                                            <option selected value="" disabled>-- Select One --</option>
+                                                            <option *ngFor="let kabupaten of regency" [value]="kabupaten.code">{{kabupaten.name}}</option>
                                                         </select>
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                                     </clr-select-container>
@@ -668,8 +669,8 @@
                                                 <div class="clr-col-6">
                                                     <clr-select-container>
                                                         <label>Kecamatan</label>
-                                                        <select  clrSelect formControlName="kecamatan">
-                                                            <option></option>
+                                                        <select  clrSelect formControlName="kecamatan" (click)="getVillage($event.target.value,1)">
+                                                            <option *ngFor="let kecamatan of district" [value]="kecamatan.code">{{kecamatan.name}}</option>
                                                         </select>
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error> 
                                                     </clr-select-container>
@@ -678,7 +679,7 @@
                                                     <clr-select-container>
                                                         <label>Kelurahan</label>
                                                         <select  clrSelect formControlName="kelurahan">
-                                                            <option></option>
+                                                            <option *ngFor="let kelurahan of village" [value]="kelurahan.code">{{kelurahan.name}}</option>
                                                         </select>
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                                     </clr-select-container>
@@ -729,17 +730,18 @@
                                                 <div class="clr-col-6">
                                                     <clr-select-container>
                                                         <label>Provinsi</label>
-                                                        <select  clrSelect formControlName="provinsi2">
-                                                            <option></option>
+                                                        <select  clrSelect formControlName="provinsi2" (click)="getRegency($event.target.value,2)">
+                                                            <option *ngFor="let provinsi of province" [value]="provinsi.code">{{provinsi.name}}</option>
                                                         </select>
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                                     </clr-select-container>
                                                 </div>
                                                 <div class="clr-col-6">
                                                     <clr-select-container>
-                                                        <label>Kabupaten</label>
-                                                        <select  clrSelect formControlName="kabupaten2">
-                                                            <option></option>
+                                                        <label>Kabupaten/Kota</label>
+                                                        <select  clrSelect formControlName="kabupaten2" (click)="getDistrict($event.target.value,2)">
+                                                            <option selected value="" disabled>-- Select One --</option>
+                                                            <option *ngFor="let kabupaten2 of regency2" [value]="kabupaten2.code">{{kabupaten2.name}}</option>
                                                         </select>
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                                     </clr-select-container>
@@ -749,8 +751,8 @@
                                                 <div class="clr-col-6">
                                                     <clr-select-container>
                                                         <label>Kecamatan</label>
-                                                        <select  clrSelect formControlName="kecamatan2">
-                                                            <option></option>
+                                                        <select  clrSelect formControlName="kecamatan2" (click)="getVillage($event.target.value,2)">
+                                                            <option *ngFor="let kecamatan2 of district2" [value]="kecamatan2.code">{{kecamatan2.name}}</option>
                                                         </select>
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error> 
                                                     </clr-select-container>
@@ -759,12 +761,13 @@
                                                     <clr-select-container>
                                                         <label>Kelurahan</label>
                                                         <select  clrSelect formControlName="kelurahan2">
-                                                            <option></option>
+                                                            <option *ngFor="let kelurahan2 of village2" [value]="kelurahan2.code">{{kelurahan2.name}}</option>
                                                         </select>
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                                     </clr-select-container>
                                                 </div>                                         
-                                            </div>                                      
+                                            </div>  
+                                            <!-- hidden field -->                                    
                                         </div>                                                              
                                     </div>
                                 </div>
