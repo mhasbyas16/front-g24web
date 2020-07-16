@@ -7,6 +7,17 @@ import { ProvinceService } from '../../../services/client/province.service';
 import { DistrictService } from '../../../services/client/district.service';
 import { RegencyService } from '../../../services/client/regency.service';
 import { VillageService } from '../../../services/client/village.service';
+// client
+import { ClientService } from '../../../services/client/client.service';
+import { ClientIdTypeService } from '../../../services/client/client-id-type.service';
+import { ClientFundsService } from '../../../services/client/client-funds.service';
+import { ClientNationalityService } from '../../../services/client/client-nationality.service';
+import { ClientPopulationTypeService } from '../../../services/client/client-population-type.service';
+import { ClientReligionService } from '../../../services/client/client-religion.service';
+import { ClientProfessionService } from '../../../services/client/client-profession.service';
+import { ClientMaritalStatusService } from '../../../services/client/client-marital-status.service';
+import { ClientTypeService } from '../../../services/client/client-type.service';
+import { ClientEducationService } from '../../../services/client/client-education.service';
 
 @Component({
   selector: 'app-add-nasabah',
@@ -14,7 +25,7 @@ import { VillageService } from '../../../services/client/village.service';
   styleUrls: ['./add-nasabah.component.scss']
 })
 export class AddNasabahComponent implements OnInit {
-  tipe:boolean = true;
+  tipe:boolean = false;
 
   cifHasil:any;
   
@@ -33,23 +44,40 @@ export class AddNasabahComponent implements OnInit {
   district2:any;
   village:any;
   village2:any;
+
+  // Client
+  IdType:any;
+  sumberDana:any;
+  warganegara:any;
+  tipePenduduk:any;
+  agama:any;
+  pekerjaan:any;
+  pendidikan:any;
+  status:any;
+  typeClient:any;
+  education:any;
+
   constructor(
     private cifNumber: CifGeneratorService,
     private provinceService: ProvinceService,
     private districtService: DistrictService,
     private regencyService: RegencyService,
     private villageService: VillageService,
+    // client
+    private clientService: ClientService,
+    private clientIdType: ClientIdTypeService,
+    private clientFunds: ClientFundsService,
+    private clientNationality: ClientNationalityService,
+    private clientPopulationType: ClientPopulationTypeService,
+    private clientReligion: ClientReligionService,
+    private clientProfession: ClientProfessionService,
+    private clietnMarital: ClientMaritalStatusService,
+    private clientType: ClientTypeService,
+    private clientEducation: ClientEducationService,
   ) { }
 
   ngOnInit(): void {
-  }
-  
-  getTipe(value: any){
-    if (value == 'po') {
-      this.tipe = false;
-    } else if (value == 'bu') {
-      this.tipe = true;
-    }
+    this.getType();
   }
 
   openModal(){
@@ -98,13 +126,13 @@ export class AddNasabahComponent implements OnInit {
       rw : new FormControl("", Validators.required),
       kodePos : new FormControl("", Validators.required),
       provinsi : new FormControl("", Validators.required),
-      // provinsi_encoded : new FormControl("base64"),
+      provinsi_encoded : new FormControl("base64"),
       kabupaten : new FormControl("", Validators.required),
-      // kabupaten_encoded : new FormControl("base64"),
+      kabupaten_encoded : new FormControl("base64"),
       kecamatan : new FormControl("", Validators.required),
-      // kecamatan_encoded : new FormControl("base64"),
+      kecamatan_encoded : new FormControl("base64"),
       kelurahan : new FormControl("", Validators.required),
-      // kelurahan_encoded : new FormControl("base64"),
+      kelurahan_encoded : new FormControl("base64"),
     });
 
     this.person = new FormGroup({
@@ -170,7 +198,101 @@ export class AddNasabahComponent implements OnInit {
     });
 
     this.addNasabahModal = true;   
+
+    // client
     this.getProvinsi();
+    this.getClientIdType();
+    this.getClientFunds();
+    this.getNationality();
+    this.getPopulation();
+    this.getClientReligion();
+    this.getProfession();
+    this.getMaritalStatus();
+    this.getEducation();
+  }
+
+  // Client
+  getEducation(){
+    this.clientEducation.list("?_hash=1").subscribe((response: any) => {
+      if (response != false) {
+        this.education = response;
+      } 
+    });
+  }
+  getMaritalStatus(){
+    this.clietnMarital.list("?_hash=1").subscribe((response: any) => {
+      if (response != false) {
+        this.status = response;
+      } 
+    });
+  }
+  getProfession(){
+    this.clientProfession.list("?_hash=1").subscribe((response: any) => {
+      if (response != false) {
+        this.pekerjaan = response;
+      } 
+    });
+  }
+  getClientReligion(){
+    this.clientReligion.list("?_hash=1").subscribe((response: any) => {
+      if (response != false) {
+        this.agama = response;
+      } 
+    });
+  }
+  getClientIdType(){
+    this.clientIdType.list("?_hash=1").subscribe((response: any) => {
+      if (response != false) {
+        this.IdType = response;
+      } 
+    });
+  }
+
+  getClientFunds(){
+    this.clientFunds.list("?_hash=1").subscribe((response:any) => {
+      if (response != false) {
+        this.sumberDana = response;
+      }
+    });
+  }
+
+  getNationality(){
+    this.clientNationality.list("?_hash=1").subscribe((response:any) => {
+      if (response != false) {
+        this.warganegara = response;
+      }
+    });
+  }
+
+  getPopulation(){
+    this.clientPopulationType.list("?_hash=1").subscribe((response:any) => {
+      if (response != false) {
+        this.tipePenduduk = response;
+      }
+    });
+  }
+
+  getType(){
+    this.clientType.list("?_hash=1").subscribe((response:any) => {
+      if (response != false) {
+        this.typeClient = response;
+      }
+    });
+  }
+  // getClient(){
+  //   this.clientService.list("?_hash=1").subscribe((response: any) => {
+  //     if (response != false) {
+  //       console.debug(response,"A")
+  //     } 
+  //   });
+  // }
+  
+  getTipe(value: any){
+    if (value == 1) {
+      this.tipe = false;
+    } else if (value == 2) {
+      this.tipe = true;
+    }
   }
 
   masaBerlakuID(val: any){
@@ -182,6 +304,7 @@ export class AddNasabahComponent implements OnInit {
 
   }
 
+  // Wilayah Indonesia
   getProvinsi(){
     this.provinceService.list("?_hash=1").subscribe((response: any) => {
       if (response != false) {
@@ -215,7 +338,7 @@ export class AddNasabahComponent implements OnInit {
           this.regency2=null;
           this.district2=null;
           this.village2=null;
-          
+
           this.regency2 = response;
           this.regency2.sort(function(a, b){
             if(a.name < b.name) { return -1; }
@@ -229,7 +352,7 @@ export class AddNasabahComponent implements OnInit {
   }
 
   getDistrict(val:string, col:any){
-    const params = "?parent="+val+"&parent_encoded=int";
+    const params = "?parent="+val+"&parent_encoded=int&_hash=1";
     this.districtService.list(params).subscribe((response: any) => {
       if (response != false) {
         if (col == '1') {
@@ -252,7 +375,7 @@ export class AddNasabahComponent implements OnInit {
   }
 
   getVillage(val:string, col:any){
-    const params = "?parent="+val+"&parent_encoded=int";
+    const params = "?parent="+val+"&parent_encoded=int&_hash=1";
     this.villageService.list(params).subscribe((response: any) => {
       if (response != false) {
         if (col == '1') {
