@@ -1,6 +1,7 @@
 import { Component, OnInit, Attribute } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormControlName } from '@angular/forms';
 import { CifGeneratorService } from '../../../lib/helper/cif-generator.service';
+import { ToastrService } from 'ngx-toastr';
 
 // services
 import { ProvinceService } from '../../../services/client/province.service';
@@ -80,6 +81,9 @@ export class AddNasabahComponent implements OnInit {
     private clietnMarital: ClientMaritalStatusService,
     private clientType: ClientTypeService,
     private clientEducation: ClientEducationService,
+
+    //ng
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -149,7 +153,7 @@ export class AddNasabahComponent implements OnInit {
       tipeClient_encoded: new FormControl("base64"),
       tipeID: new FormControl("", Validators.required),
       tipeID_encoded: new FormControl("base64"),
-      noID: new FormControl("", Validators.required),
+      noID: new FormControl("", [Validators.required, Validators.maxLength(15), Validators.pattern(/^[0-9]*$/)]),
       noID_validation: new FormControl("unique:noID"),
       namaNasabah: new FormControl("", Validators.required),
       namaIbuKandung: new FormControl("", Validators.required),
@@ -166,13 +170,13 @@ export class AddNasabahComponent implements OnInit {
       namaPasangan : new FormControl(""),
       tglLahirPasangan : new FormControl(""),
       jmlTanggungan : new FormControl(""),
-      noTelp : new FormControl(""),
+      noTelp : new FormControl("", [Validators.maxLength(12), Validators.pattern(/^[0-9]*$/)]),
       noTelp_validation : new FormControl("unique:noTelp"),
-      noHP : new FormControl("", Validators.required),
+      noHP : new FormControl("", [Validators.required, Validators.maxLength(12), Validators.pattern(/^[0-9]*$/)]),
       noHP_validation : new FormControl("unique:noHP"),
-      email : new FormControl(""),
+      email : new FormControl("", Validators.email),
       email_validation : new FormControl("unique:email"),
-      noNPWP : new FormControl(""),
+      noNPWP : new FormControl("", [Validators.maxLength(17), Validators.pattern(/^[0-9]*$/)]),
       noNPWP_validation : new FormControl("unique:noNPWP"),
       kewarganegaraan : new FormControl("", Validators.required),
       kewarganegaraan_encoded : new FormControl("base64"),
@@ -188,9 +192,9 @@ export class AddNasabahComponent implements OnInit {
 
       // Alamat Sesuai KTP
       alamat : new FormControl("", Validators.required),
-      rt : new FormControl("", Validators.required),
-      rw : new FormControl("", Validators.required),
-      kodePos : new FormControl("", Validators.required),
+      rt : new FormControl("", [Validators.required,Validators.maxLength(4), Validators.pattern(/^[0-9]*$/)]),
+      rw : new FormControl("", [Validators.required,Validators.maxLength(4), Validators.pattern(/^[0-9]*$/)]),
+      kodePos : new FormControl("", [Validators.required,Validators.maxLength(7), Validators.pattern(/^[0-9]*$/)]),
       provinsi : new FormControl("", Validators.required),
       provinsi_encoded : new FormControl("base64"),
       kabupaten : new FormControl("", Validators.required),
@@ -202,9 +206,9 @@ export class AddNasabahComponent implements OnInit {
 
       // Alamat Saat Ini
       alamat2 : new FormControl("", Validators.required),
-      rt2 : new FormControl("", Validators.required),
-      rw2 : new FormControl("", Validators.required),
-      kodePos2 : new FormControl("", Validators.required),
+      rt2 : new FormControl("", [Validators.required,Validators.maxLength(4), Validators.pattern(/^[0-9]*$/)]),
+      rw2 : new FormControl("", [Validators.required,Validators.maxLength(4), Validators.pattern(/^[0-9]*$/)]),
+      kodePos2 : new FormControl("", [Validators.required,Validators.maxLength(7), Validators.pattern(/^[0-9]*$/)]),
       provinsi2 : new FormControl("", Validators.required),
       provinsi2_encoded : new FormControl("base64"),
       kabupaten2 : new FormControl("", Validators.required),
@@ -254,6 +258,7 @@ export class AddNasabahComponent implements OnInit {
 
   peroranganAddSubmit() {
     if (!this.person.valid) {
+      this.toastr.error("Form not complete yet", "Add Client");
       console.debug("Form not complete yet", this.person.getRawValue());
       return;
     }
@@ -302,7 +307,7 @@ export class AddNasabahComponent implements OnInit {
       kewarganegaraan_encoded: this.person.get("kewarganegaraan_encoded").value,
       masaBerlakuID: this.person.get("masaBerlakuID").value,
       namaIbuKandung: this.person.get("namaIbuKandung").value,
-      namaNasabah: this.person.get("namaNasabah").value,
+      name: this.person.get("namaNasabah").value,
       namaPasangan: this.person.get("namaPasangan").value,
       noHP: this.person.get("noHP").value,
       noHP_validation: this.person.get("noHP_validation").value,
@@ -337,13 +342,13 @@ export class AddNasabahComponent implements OnInit {
 
       if (response == false) {
         if (this.mainClient.message() != "") {
-          console.debug(this.mainClient.message(),data, "Data Perorangan");
+          this.toastr.error(this.mainClient.message(), "Client Data");
           return;
         }
       } else {
-        // this.addNasabahModal = false;
-        // this.hide = false;
-        console.debug(this.mainClient.message(), data,"Data Perorangan Succsess");
+        this.addNasabahModal = false;
+        this.hide = false;
+        this.toastr.success("Data addition was success", "Client Data Add Success");
       }
     });
   }
