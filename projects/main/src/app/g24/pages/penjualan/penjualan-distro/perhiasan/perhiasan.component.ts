@@ -148,7 +148,7 @@ export class PerhiasanComponent implements OnInit {
   
               for (let index = 0, len = this.perhiasans.length; index < len; index++) {
                 
-                this.datalist=this.pricingService.pricePerhiasan(Number(this.perhiasans[index]['berat']),this.hargaBaku['0']['harga-jual'],this.perhiasans[index]['baku-tukar'],this.margin['0']['margin'],ppn);
+                this.datalist=this.pricingService.pricePerhiasan(Number(this.perhiasans[index]['berat']),this.hargaBaku['0']['harga-baku'],this.perhiasans[index]['baku-tukar'],this.margin['0']['margin'],ppn);
                 
                 this.perhiasans[index].hargaJual =  Math.ceil(this.datalist/1000)*1000;
               }

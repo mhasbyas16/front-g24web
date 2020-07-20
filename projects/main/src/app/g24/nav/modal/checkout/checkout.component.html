@@ -14,20 +14,20 @@
                                 <div class="clr-col-5">
                                     <clr-input-container>
                                         <label>CIF</label>
-                                        <input clrInput type="text" formControlName="cif">
+                                        <input clrInput type="text" formControlName="cif" (keyup)="getCif()">
                                         <clr-control-helper>Please Input CIF</clr-control-helper>
                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                         <clr-control-error *clrIfError="'pattern'">This is a required field 0 - 9</clr-control-error>
                                     </clr-input-container> 
                                 </div>
                                 <div class="clr-col-3">
-                                    <button type="button" class="btn btn-primary">Cari</button>
+                                    <button type="button" class="btn btn-primary" (click)="getCif()">Cari</button>
                                     <button type="button" class="btn btn-primary" (click)="addNasabah.openModal()">Tambah</button>
                                 </div>
                             </div>
                             <clr-input-container>
                                 <label>Nama Nasabah</label>
-                                <input clrInput type="text" formControlName="nama">
+                                <input clrInput type="text" formControlName="name">
                                 <clr-control-helper>Please Input Nama Nasabah</clr-control-helper>
                                 <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                             </clr-input-container> 
@@ -209,26 +209,95 @@
                     <div class="card-block">
                         <div class="card-text">
                             <clr-select-container>
-                                <label>Bayar</label>
-                                <select clrSelect name="bayar" formControlName="bayar">
-                                    <option selected [value]="'kas'">kas</option>
-                                    <option [value]="'transfer'">transfer</option>
+                                <label>Metode bayar</label>
+                                <select clrSelect formControlName="metodeBayar" (click)="bankValid($event.target.value)">
+                                    <option *ngFor="let i of transactionMethod" selected [value]="i._hash">{{i.name}}</option>
                                 </select>
                                 <clr-control-helper>Please Select One</clr-control-helper>
                                 <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                             </clr-select-container>
+                            <ng-container *ngIf="bankForm">
+                                <clr-select-container>
+                                    <label>Jenis Pembayaran</label>
+                                    <select clrSelect formControlName="jenisPembayaran">
+                                        <option *ngFor="let t of transactionBankMethod" selected [value]="t._hash">{{t.name}}</option>
+                                    </select>
+                                    <clr-control-helper>Please Select One</clr-control-helper>
+                                    <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                </clr-select-container>
+                                <div class="clr-row">                                
+                                    <div class="clr-col-6">
+                                        <clr-select-container>
+                                            <label>Bank Asal</label>
+                                            <select clrSelect formControlName="bankAsal">
+                                                <option *ngFor="let bank of bank" [value]="bank.name">{{bank.name}}</option>
+                                            </select>
+                                            <clr-control-helper>Please Select One</clr-control-helper>
+                                            <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                        </clr-select-container>
+                                    </div>
+                                    <div class="clr-col-6">
+                                        <clr-select-container>
+                                            <label>Bank Tujuan</label>
+                                            <select clrSelect formControlName="bankTujuan">
+                                                <option *ngFor="let bank of bank" [value]="bank._hash">{{bank["mata-anggaran"]}} - {{bank.name}}</option>
+                                            </select>
+                                            <clr-control-helper>Please Select One</clr-control-helper>
+                                            <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                        </clr-select-container>
+                                    </div>
+                                </div>
+                            </ng-container>                            
+                            
+                            <clr-input-container>
+                                <label>Diterima Dari</label>
+                                <input clrInput type="text" (keyup)="diterimaUang($event.target.value)">
+                            </clr-input-container>
+                            <clr-input-container>
+                                <label>Kembali</label>
+                                <input clrInput type="text" [value]="kembali | number" readonly>
+                            </clr-input-container>
+                            <clr-input-container>
+                                <label>NIK Pemasar</label>
+                                <input clrInput type="text" value="{{nikUser.nik}}" readonly>
+                                <clr-control-helper></clr-control-helper>
+                            </clr-input-container>
                         </div>                                                              
                     </div>
+                    <!-- Hidden Form -->
+                    <input type="hidden" formControlName="metodeBayar_encoded">
+                    <input type="hidden" formControlName="paymentMethod_encoded">
+                    <input type="hidden" formControlName="bankTujuan_encoded">
+                    <input type="hidden" formControlName="jenisPembayaran_encoded">
+                    <input type="hidden" formControlName="jumlahTerima">
+                    <input type="hidden" formControlName="nik">
+                    <input type="hidden" formControlName="nik_encoded">
+                    <div class="card-footer">
+                        <button type="button" class="btn btn-primary" (click)="transaction()">Submit</button>
+                    </div>
                 </div>
-            </form>  
-                
-                
+            </form>                
         </div>
         <div class="modal-footer">
             <!--<button type="button" class="btn btn-warning" (click)="removeCart()">Clear</button> -->
             <button type="button" class="btn btn-warning-outline" (click)="closeModal()" >Cancel</button>
-            <button type="button" class="btn btn-primary">Ok</button>
         </div>
     </clr-modal>
 </ng-container>
+
+<ng-container *ngIf="validModel">
+    <clr-modal [(clrModalOpen)]="validModel" [clrModalSize]="'sm'">
+        <h3 class="modal-title">Confirmation</h3>
+        <div class="modal-body">
+            <p>Do You Want Process This Transaction ?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger-outline" (click)="validModel = false" >Cancel</button>
+            <button type="button" class="btn btn-primary" (click)="storeTransaction()">Process</button>
+        </div>
+    </clr-modal>
+</ng-container>
+
+
+
 <app-add-nasabah #addNasabah></app-add-nasabah>
