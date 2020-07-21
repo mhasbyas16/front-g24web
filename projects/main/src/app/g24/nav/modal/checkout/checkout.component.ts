@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { PERHIASAN, MULIA, GS, BERLIAN, DINAR } from '../../../sample/cart';
+import { PERHIASAN, LM , GS, BERLIAN, DINAR } from '../../../sample/cart';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 
