@@ -25,7 +25,9 @@ export class CheckoutComponent implements OnInit {
 
   validModel:boolean= false;
   bankForm:boolean = false;
+
   // cart
+   perhiasanHash = null;
    perhiasan = PERHIASAN;
    lm = LM;
    gs = GS;
@@ -71,15 +73,18 @@ export class CheckoutComponent implements OnInit {
   ngOnInit(): void {
     this.nikUser = this.sessionService.getUser();
     this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser)),"nik":this.nikUser["username"]} ;
-    console.debug(this.nikUser,"NIK LOGIN")
+
   }
   
   openModal(totalHarga: any){
+    this.perhiasanHash = this.perhiasan;
     this.formData = new FormGroup({
-      idPenjualan: new FormControl(""),
-      idPenjualan_validation: new FormControl("unique:idPenjualan"),
+      // idPenjualan: new FormControl(""),
+      // idPenjualan_validation: new FormControl("unique:idPenjualan"),
       cif: new FormControl ("", [Validators.required, Validators.pattern(/^[0-9]*$/)]),
       name: new FormControl ("",[ Validators.required]),
+      client: new FormControl ("", Validators.required),
+      client_encoded: new FormControl("base64"),
       metodeBayar: new FormControl ("", [Validators.required]),
       metodeBayar_encoded: new FormControl ("base64"),
       tglLahir: new FormControl ("", [Validators.required]),
@@ -90,8 +95,10 @@ export class CheckoutComponent implements OnInit {
       jenisPembayaran_encoded: new FormControl ("base64"),
       nik: new FormControl (this.nikUser["_hash"], [Validators.required]),
       nik_encoded: new FormControl("base64"),
-      paymentMethod_encoded : new FormControl ("base64"),
       jumlahTerima: new FormControl (totalHarga, Validators.required),
+      unit: new FormControl(""),
+      product: new FormControl(this.perhiasanHash),
+      // product_encoded: new FormControl("base64"),
       
     });
     //
@@ -105,7 +112,7 @@ export class CheckoutComponent implements OnInit {
     this.cartModal.emit(false);
     this.totalBelanja = totalHarga;
 
-    
+    console.debug(this.perhiasanHash,"ISI PERHIASAN")
     this.getBank(); 
     this.getTransactionMethod();   
     this.getTransactionBankMethod();
@@ -144,7 +151,9 @@ export class CheckoutComponent implements OnInit {
       this.isiCif = response;
       if (response != false) {
         this.detail = response["0"];
+        this.formData.patchValue({client: btoa(JSON.stringify(this.detail))});
         this.formData.patchValue({name: this.detail["name"]});
+        // this.formData.patchValue({unit: this.detail["unit"]});
         this.formData.patchValue({tglLahir: this.detail["tglLahir"]});
         this.toastr.success(this.clientService.message(), "Client Data");
       }else if(this.isiCif.length == 0){
@@ -193,26 +202,14 @@ export class CheckoutComponent implements OnInit {
   }
 
   storeTransaction(){
-    let data = {
-      // idPenjualan: new FormControl(""),
-      // idPenjualan_validation: new FormControl("unique:idPenjualan"),
-      cif: this.formData.get("cif").value,
-      name: this.formData.get("name").value,
-      birthDate: this.formData.get("tglLahir").value,
-      paymentMethod: btoa(JSON.stringify({
-        bankOfOrigin: this.formData.get("bankAsal").value ,
-        transactionMethod: JSON.parse(atob(this.formData.get("metodeBayar").value)),
-        transactionBankMethod: JSON.parse(atob(this.formData.get("jenisPembayaran").value)),
-        destinationBank: JSON.parse(atob(this.formData.get("bankTujuan").value)),
-        bankAdmin: 0,
-      })),
-      paymentMethod_encoded: this.formData.get("paymentMethod_encoded").value,
-      nik: this.formData.get("nik").value,
-      nik_encoded: this.formData.get("nik_encoded").value,
-      jumlahTerima: this.formData.get("jumlahTerima").value,
-      product: btoa(JSON.stringify(this.perhiasan)),
-      product_encoded: "base64"
-    }
+
+    let data = this.formData.getRawValue();    
+    data.product = btoa(JSON.stringify({PERHIASAN})) ;
+    data.product_encoded = "base64";
+    console.debug(data,"ISI FORMDATA");
+
+    // data.metodeBayar =
+
     
     this.transactionService.add(data).subscribe((response:any)=> {
       if (response != false) {
