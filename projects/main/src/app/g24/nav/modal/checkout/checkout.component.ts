@@ -13,10 +13,13 @@ import { TransactionService } from '../../../services/transaction/transaction.se
 
 // session service
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
+import { DatePipe } from '@angular/common';
+
 @Component({
   selector: 'app-checkout',
   templateUrl: './checkout.component.html',
-  styleUrls: ['./checkout.component.scss']
+  styleUrls: ['./checkout.component.scss'],
+  providers: [DatePipe]
 })
 export class CheckoutComponent implements OnInit {
 
@@ -25,9 +28,9 @@ export class CheckoutComponent implements OnInit {
 
   validModel:boolean= false;
   bankForm:boolean = false;
-
   // cart
-   perhiasanHash = null;
+   edc:any;
+   administrasi = 0;
    perhiasan = PERHIASAN;
    lm = LM;
    gs = GS;
@@ -68,16 +71,16 @@ export class CheckoutComponent implements OnInit {
     //ng
     private toastr: ToastrService,
     private sessionService: SessionService,
+    private datePipe: DatePipe,
   ) { }
 
   ngOnInit(): void {
     this.nikUser = this.sessionService.getUser();
     this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser)),"nik":this.nikUser["username"]} ;
-
   }
   
   openModal(totalHarga: any){
-    this.perhiasanHash = this.perhiasan;
+    
     this.formData = new FormGroup({
       // idPenjualan: new FormControl(""),
       // idPenjualan_validation: new FormControl("unique:idPenjualan"),
@@ -91,14 +94,14 @@ export class CheckoutComponent implements OnInit {
       bankTujuan: new FormControl (""),
       bankAsal: new FormControl (""),
       bankTujuan_encoded: new FormControl ("base64"),
-      jenisPembayaran: new FormControl (""),
-      jenisPembayaran_encoded: new FormControl ("base64"),
-      nik: new FormControl (this.nikUser["_hash"], [Validators.required]),
-      nik_encoded: new FormControl("base64"),
+      transaksiMetodeBank: new FormControl (""),
+      transaksiMetodeBank_encoded: new FormControl ("base64"),
+      admBank: new FormControl(""),
+      maker: new FormControl (this.nikUser["_hash"], [Validators.required]),
+      maker_encoded: new FormControl("base64"),
+      makeDate: new FormControl(this.datePipe.transform(Date.now(),'yyyy/MM/dd, h:mm:ss a'), Validators.required),
       jumlahTerima: new FormControl (totalHarga, Validators.required),
-      unit: new FormControl(""),
-      product: new FormControl(this.perhiasanHash),
-      // product_encoded: new FormControl("base64"),
+      unit: new FormControl("")
       
     });
     //
@@ -111,8 +114,6 @@ export class CheckoutComponent implements OnInit {
     this.checkoutModal = true;
     this.cartModal.emit(false);
     this.totalBelanja = totalHarga;
-
-    console.debug(this.perhiasanHash,"ISI PERHIASAN")
     this.getBank(); 
     this.getTransactionMethod();   
     this.getTransactionBankMethod();
@@ -133,11 +134,33 @@ export class CheckoutComponent implements OnInit {
 
   bankValid(val){
     let cod = JSON.parse(atob(val));
-    if (cod["code"] != "01") {
-      this.bankForm = true;
-    } else {
+    if (cod["code"] == "01") {
       this.bankForm = false;
+      this.edc = false;
+    } else if (cod["code"] == "02") {
+      this.bankForm = true;
+      this.edc = false;
+    } else if (cod["code"] == "03"){
+      this.bankForm = true;
+      this.edc = true;
     }
+  }
+  bankAdm(val){
+    let J = JSON.parse(atob(val));
+
+    if (this.edc == true) {
+      if (J["code"] == "01") {
+        this.administrasi = (0.15/100)*this.totalBelanja;
+        this.formData.patchValue({admBank: this.administrasi});
+      }else if (J["code"] == "02"){
+        this.administrasi = (1/100)*this.totalBelanja;
+        this.formData.patchValue({admBank: this.administrasi});
+      }else{
+        this.administrasi= 0;
+      }
+    }else{
+      this.administrasi= 0;
+    }    
   }
 
   diterimaUang(total){
@@ -202,12 +225,11 @@ export class CheckoutComponent implements OnInit {
   }
 
   storeTransaction(){
-
+  
     let data = this.formData.getRawValue();    
-    data.product = btoa(JSON.stringify({PERHIASAN})) ;
+    data.product = btoa(JSON.stringify({PERHIASAN,LM})) ;
     data.product_encoded = "base64";
     console.debug(data,"ISI FORMDATA");
-
     // data.metodeBayar =
 
     
