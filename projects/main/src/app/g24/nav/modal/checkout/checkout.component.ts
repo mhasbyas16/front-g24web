@@ -52,7 +52,7 @@ export class CheckoutComponent implements OnInit {
    //
    formData: FormGroup = null;
    //
-   isiCif=null;
+   isiClientData=null;
    //
    detail:any;
    bank:any;
@@ -90,7 +90,6 @@ export class CheckoutComponent implements OnInit {
       client_encoded: new FormControl("base64"),
       metodeBayar: new FormControl ("", [Validators.required]),
       metodeBayar_encoded: new FormControl ("base64"),
-      tglLahir: new FormControl ("", [Validators.required]),
       bankTujuan: new FormControl (""),
       bankAsal: new FormControl (""),
       bankTujuan_encoded: new FormControl ("base64"),
@@ -168,27 +167,6 @@ export class CheckoutComponent implements OnInit {
     this.kembali = total-this.totalBelanja;
   }
 
-  getCif(){
-    const params = this.formData.get("cif").value; 
-    this.clientService.list("?cif="+params).subscribe((response:any) => {
-      this.isiCif = response;
-      if (response != false) {
-        this.detail = response["0"];
-        this.formData.patchValue({client: btoa(JSON.stringify(this.detail))});
-        this.formData.patchValue({name: this.detail["name"]});
-        // this.formData.patchValue({unit: this.detail["unit"]});
-        this.formData.patchValue({tglLahir: this.detail["tglLahir"]});
-        this.toastr.success(this.clientService.message(), "Client Data");
-      }else if(this.isiCif.length == 0){
-        this.formData.patchValue({name: this.detail[""]});
-        this.formData.patchValue({tglLahir: this.detail[""]});     
-      }else{
-        this.toastr.error(this.clientService.message(), "Client Data");
-        return;
-      }
-    });
-  }
-
   getBank(){
     this.bankService.list("?_hash=1").subscribe((response:any)=> {
       if (response != false) {
@@ -229,6 +207,7 @@ export class CheckoutComponent implements OnInit {
     let data = this.formData.getRawValue();    
     data.product = btoa(JSON.stringify({PERHIASAN,LM})) ;
     data.product_encoded = "base64";
+    delete data["cif"];
     console.debug(data,"ISI FORMDATA");
     // data.metodeBayar =
 
@@ -244,5 +223,25 @@ export class CheckoutComponent implements OnInit {
       }
     })
 
+  }
+
+  //
+  getClientData(val){
+    if (val != null) {
+      this.isiClientData = val;
+      this.formData.patchValue({
+      cif: val["cif"],
+      client: btoa(JSON.stringify(val)),
+      name: val["name"]
+     })
+    }else{
+      this.formData.patchValue({
+        cif: "",
+        client: "",
+        name: ""
+       })
+    }
+    
+    console.debug(val,"HASIL EMMMMMMIT")
   }
 }

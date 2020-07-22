@@ -14,14 +14,13 @@
                                 <div class="clr-col-5">
                                     <clr-input-container>
                                         <label>CIF</label>
-                                        <input clrInput type="text" formControlName="cif" (keyup)="getCif()">
-                                        <clr-control-helper>Please Input CIF</clr-control-helper>
+                                        <input clrInput type="text" formControlName="cif">
                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                         <clr-control-error *clrIfError="'pattern'">This is a required field 0 - 9</clr-control-error>
                                     </clr-input-container> 
                                 </div>
                                 <div class="clr-col-3">
-                                    <button type="button" class="btn btn-primary" (click)="getCif()">Cari</button>
+                                    <button type="button" class="btn btn-primary" (click)="searchNasabah.openModal()">Cari</button>
                                     <button type="button" class="btn btn-primary" (click)="addNasabah.openModal()">Tambah</button>
                                 </div>
                             </div>
@@ -31,12 +30,6 @@
                                 <clr-control-helper>Please Input Nama Nasabah</clr-control-helper>
                                 <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                             </clr-input-container> 
-                            <clr-date-container>
-                                <label>Tanggal Lahir</label>
-                                <input clrDate type="date" formControlName="tglLahir">
-                                <clr-control-helper>Please Input date</clr-control-helper>
-                                <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
-                            </clr-date-container>
                         </div> 
                         <!-- hidden field put here-->
                         <input type="hidden" formaControlName="idPenjualan_validation">                                                             
@@ -307,3 +300,4 @@
 
 
 <app-add-nasabah #addNasabah></app-add-nasabah>
+<app-search-nasabah #searchNasabah (clientData)="getClientData($event)"></app-search-nasabah>

@@ -74,6 +74,33 @@ export class CommonService {
     });    
   }
 
+  public count(key: string): Observable<any> {
+    return new Observable(observer => {
+
+      let url;
+        url = `${this.sessionService.server}/${key}/count`;
+
+      const request = this.http.get(url, { headers: this.sessionService.getHeader() });
+
+      request.subscribe((respond: any) => {
+        console.debug("list", url, respond);
+        if (respond.status == "failed") {
+
+          this.message = respond.message;
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();;
+        }
+
+        this.originalResult = respond;
+
+        observer.next(respond.data);
+        observer.complete();
+        return (observer).unsubscribe();;
+      });
+    });
+  }
+
   public list(key: string, params?: string): Observable<any> {
     return new Observable(observer => {
 

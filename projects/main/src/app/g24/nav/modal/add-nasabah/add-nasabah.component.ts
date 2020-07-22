@@ -562,6 +562,12 @@ export class AddNasabahComponent implements OnInit {
     }
   }
 
+  closeModal(){
+    this.addNasabahModal = false;
+    this.hide = false;
+    this.person.reset();
+    this.badanUsaha.reset();
+  }
 
 }
 

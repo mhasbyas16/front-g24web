@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 
+import { ClientService } from '../../services/client/client.service';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -18,9 +20,16 @@ export class CifGeneratorService {
   mString:string;
   l:string;
   hasil:string;
-  constructor() { }
+  constructor(
+    private clientService: ClientService,
+  ) { }
 
   cifNumber (){
+
+    this.clientService.list().subscribe((response:any)=>{
+      console.debug(response,"ISICOUNT");
+    });
+
     let  yearString:string;
     this.year = Number(this.y)+6;
     let randomNumString: string;
