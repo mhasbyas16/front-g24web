@@ -91,7 +91,10 @@ export class AddNasabahComponent implements OnInit {
   }
 
   openModal() {
-    this.cifHasil = this.cifNumber.cifNumber();
+    this.mainClient.count().subscribe((response:any)=>{
+      this.cifHasil = this.cifNumber.cifNumber(response["count"]);
+    });
+    
 
     this.badanUsaha = new FormGroup({
       // header

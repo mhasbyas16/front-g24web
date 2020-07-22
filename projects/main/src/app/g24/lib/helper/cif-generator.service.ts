@@ -17,6 +17,7 @@ export class CifGeneratorService {
   sLength:any;
   sStirng:string;
   
+  co:any;
   mString:string;
   l:string;
   hasil:string;
@@ -24,17 +25,13 @@ export class CifGeneratorService {
     private clientService: ClientService,
   ) { }
 
-  cifNumber (){
 
-    this.clientService.list().subscribe((response:any)=>{
-      console.debug(response,"ISICOUNT");
-    });
-
+  cifNumber (numb:any){ 
     let  yearString:string;
     this.year = Number(this.y)+6;
     let randomNumString: string;
     this.m = Math.floor(Math.random()*(99-10+1)+10);
-    this.rand = Math.floor(Math.random()*(99999-1+1)+1);
+    this.rand = numb+2;
     this.l = this.rand.toString();
     switch (this.l.length) {
       case 5:
