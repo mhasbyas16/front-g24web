@@ -15,6 +15,7 @@ export class SearchNasabahComponent implements OnInit {
 
   emitData:any;
   searchNasabahModal: boolean = false;
+  selectClient: boolean =false;
   tipeClient:any;
   // select
   listClient = null;
