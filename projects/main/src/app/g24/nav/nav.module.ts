@@ -11,10 +11,11 @@ import { CartComponent } from './modal/cart/cart.component';
 import { CheckoutComponent } from './modal/checkout/checkout.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddNasabahComponent } from './modal/add-nasabah/add-nasabah.component';
+import { SearchNasabahComponent } from './modal/search-nasabah/search-nasabah.component';
 
 
 @NgModule({
-  declarations: [HeaderComponent, SidebarComponent, ContentComponent, FooterComponent, ModalComponent, CartComponent, CheckoutComponent, AddNasabahComponent],
+  declarations: [HeaderComponent, SidebarComponent, ContentComponent, FooterComponent, ModalComponent, CartComponent, CheckoutComponent, AddNasabahComponent, SearchNasabahComponent],
   imports: [
     CommonModule,
     RouterModule,

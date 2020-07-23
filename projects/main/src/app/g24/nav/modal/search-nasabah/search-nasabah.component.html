@@ -1,0 +1,95 @@
+<ng-container *ngIf="searchNasabahModal">
+    <clr-modal [(clrModalOpen)]="searchNasabahModal" [clrModalSize]="'xl'" [clrModalClosable]="false">
+        <h3 class="modal-title" >Search Nasabah <clr-icon shape="users" class="is-solid"></clr-icon></h3>
+        <div class="modal-body">
+            <form clrForm class="clr-form-compact" [formGroup]="formSearch">
+                <div class="card">
+                    <div class="card-header">
+                        Kriteria Pencarian
+                    </div>
+                    <div class="card-block">
+                        <div class="card-text">
+                            <div class="clr-row">
+                                <div class="clr-col-lg-12">
+                                    <clr-select-container>
+                                        <label>Tipe Nasabah</label>
+                                        <select clrSelect formControlName="tipeClient">
+                                            <option selected value="" disabled>-- Select One --</option>
+                                            <option *ngFor="let item of listTipeClient" [value]="item.code">{{item.name}}</option>
+                                        </select>
+                                        <clr-control-helper>*</clr-control-helper>
+                                    </clr-select-container>
+                                </div>
+                                <div class="clr-col-lg-12">
+                                    <clr-input-container>
+                                        <label>No CIF</label>
+                                        <input clrInput type="text" formControlName="cif" readonly>
+                                    </clr-input-container>
+                                </div>
+                                <div class="clr-col-lg-12">
+                                    <clr-input-container>
+                                        <label>Nama Nasabah</label>
+                                            <input clrInput type="text" formControlName="namaNasabah">
+                                        <clr-control-helper>*</clr-control-helper>
+                                    </clr-input-container>                                     
+                                </div>
+                                <div class="clr-col-lg-12">
+                                    <clr-date-container>
+                                        <label>Tanggal Lahir</label>
+                                        <input clrDate type="date" formControlName="tglLahir" readonly> 
+                                    </clr-date-container>
+                                </div>
+                                <div class="clr-col-lg-12">
+                                    <clr-input-container>
+                                        <label>Nama Ibu Kandung</label>
+                                        <input clrInput type="text" formControlName="namaIbuKandung" readonly>
+                                    </clr-input-container>
+                                </div>
+                                <div class="clr-col-lg-12">
+                                    <button type="button" class="btn btn-primary" (click)="getClient()">Cari</button>
+                                    <button type="button" class="btn btn-warning-outline" (click)="clearForm()">Reset</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!---->
+                <div class="card">
+                    <div class="card-header">  
+                        Hasil Pencarian
+                    </div>
+                    <div class="card-block">
+                        <div class="card-text">
+                            <clr-datagrid [clrDgSingleSelected]="selectClient" (clrDgSingleSelectedChange)="selectDg($event)">
+                                <clr-dg-column>No CIF</clr-dg-column>
+                                <clr-dg-column>NAMA NASABAH</clr-dg-column>
+                                <clr-dg-column>TGL LAHIR</clr-dg-column>
+                                <clr-dg-column>NO IDENTITAS</clr-dg-column>
+                                <clr-dg-column>NAMA IBU KANDUNG</clr-dg-column>
+                                <clr-dg-column>JENIS KELAMIN</clr-dg-column>
+                                <clr-dg-column>PEKERJAAN</clr-dg-column>
+                            
+                                <clr-dg-row *ngFor="let client of listClient" [clrDgItem]="client">
+                                    <clr-dg-cell>{{client.cif}}</clr-dg-cell>
+                                    <clr-dg-cell>{{client.name}}</clr-dg-cell>
+                                    <clr-dg-cell>{{client.tglLahir}}</clr-dg-cell>
+                                    <clr-dg-cell>{{client.tipeID.name}} - {{client.noID}}</clr-dg-cell>
+                                    <clr-dg-cell>{{client.namaIbuKandung}}</clr-dg-cell>
+                                    <clr-dg-cell>{{client.jenisKelamin}}</clr-dg-cell>
+                                    <clr-dg-cell>{{client.pekerjaan.name}}</clr-dg-cell>
+                                </clr-dg-row>
+                            
+                                <clr-dg-footer>users</clr-dg-footer>
+                            </clr-datagrid>
+                        </div>
+                    </div>
+                </div>
+
+            </form>               
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-warning-outline" (click)="closeModal(1)">Cancel</button>
+            <button type="button" class="btn btn-primary" (click)="closeModal(2)">Pilih</button>
+        </div>
+    </clr-modal>
+</ng-container>

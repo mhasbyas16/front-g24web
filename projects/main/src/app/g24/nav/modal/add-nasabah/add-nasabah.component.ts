@@ -1,4 +1,4 @@
-import { Component, OnInit, Attribute } from '@angular/core';
+import { Component, OnInit, Attribute, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormControlName } from '@angular/forms';
 import { CifGeneratorService } from '../../../lib/helper/cif-generator.service';
 import { ToastrService } from 'ngx-toastr';
@@ -27,6 +27,8 @@ import { JsonPipe } from '@angular/common';
   styleUrls: ['./add-nasabah.component.scss']
 })
 export class AddNasabahComponent implements OnInit {
+  @Output() clientData:any = new EventEmitter;
+
   tipe: boolean = false;
   hide: boolean = false;
   isChecked:boolean = false;
@@ -91,7 +93,12 @@ export class AddNasabahComponent implements OnInit {
   }
 
   openModal() {
-    this.cifHasil = this.cifNumber.cifNumber();
+    this.mainClient.count().subscribe((response:any)=>{
+      this.badanUsaha.patchValue({cif:this.cifNumber.cifNumber(response["count"])});
+      this.person.patchValue({cif:this.cifNumber.cifNumber(response["count"])});
+      this.cifHasil = this.cifNumber.cifNumber(response["count"]) ;
+    });
+    
 
     this.badanUsaha = new FormGroup({
       // header
@@ -348,6 +355,7 @@ export class AddNasabahComponent implements OnInit {
       } else {
         this.addNasabahModal = false;
         this.hide = false;
+        this.clientData.emit(data);
         this.toastr.success("Data addition was success", "Client Data Add Success");
       }
     });
@@ -542,14 +550,19 @@ export class AddNasabahComponent implements OnInit {
   AddressKTP(e){
     this.isChecked = e;
     if (e == true) {
-      this.person.patchValue({alamat2:this.person.get("alamat").value});
-      this.person.patchValue({rt2:this.person.get("rt").value});
-      this.person.patchValue({rw2:this.person.get("rw").value});
-      this.person.patchValue({kodePos2:this.person.get("kodePos").value});
-      this.person.patchValue({provinsi2:this.person.get("provinsi").value});
-      this.person.patchValue({kabupaten2:this.person.get("kabupaten").value});
-      this.person.patchValue({kecamatan2:this.person.get("kecamatan").value});
-      this.person.patchValue({kelurahan2:this.person.get("kelurahan").value});
+      this.person.patchValue({
+        alamat2:this.person.get("alamat").value,
+        rt2:this.person.get("rt").value,
+        rw2:this.person.get("rw").value,
+        kodePos2:this.person.get("kodePos").value,
+        provinsi2:this.person.get("provinsi").value,
+        kabupaten2:this.person.get("kabupaten").value,
+        kecamatan2:this.person.get("kecamatan").value,
+        kelurahan2:this.person.get("kelurahan").value});
+
+      // this.getRegency(this.person.get("kabupaten").value,2);
+      // this.getDistrict(this.person.get("kecamatan").value,2);
+      // this.getVillage(this.person.get("kelurahan").value,2);
     }else{
       this.person.patchValue({alamat2:""});
       this.person.patchValue({rt2:""});
@@ -562,6 +575,12 @@ export class AddNasabahComponent implements OnInit {
     }
   }
 
+  closeModal(){
+    this.addNasabahModal = false;
+    this.hide = false;
+    this.person.reset();
+    this.badanUsaha.reset();
+  }
 
 }
 

@@ -9,6 +9,9 @@ export class ClientService {
   key = "master-api/client";
 
   constructor(private commonService:CommonService) { }
+  count(){
+    return this.commonService.count(this.key);
+  }
 
   list(params?) {
     return this.commonService.list(this.key, params);

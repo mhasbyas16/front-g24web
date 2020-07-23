@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { MainComponent } from './main/main.component';
 import { RouterModule, Routes } from '@angular/router';
 import { NavModule } from '../nav/nav.module';
@@ -45,6 +45,7 @@ const routes : Routes =
     MainComponent,
     AuthLayoutComponent,
     NotFoundPageComponent
-  ]
+  ],
+  providers: [DatePipe]
 })
 export class LayoutModule { }
