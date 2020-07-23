@@ -1,5 +1,6 @@
 import { Component, OnInit, EventEmitter, Output, Input} from '@angular/core';
 import { NgForm, Form, FormGroup } from '@angular/forms';
+import { ToastrService } from "ngx-toastr";
 
 // Database
 import { VendorService } from '../../../../services/vendor.service';
@@ -59,6 +60,9 @@ export class PerhiasanComponent implements OnInit {
     private prmJualService : PrmJualService,
     private prmMarginService: PrmMarginService,
     private prmPpnService : PrmPpnService,
+
+    //ng
+    private toastrService: ToastrService,
   ) { }
   searchModel : any = {vendors:"all", jenisperhiasan: "all"};
 
@@ -85,7 +89,6 @@ export class PerhiasanComponent implements OnInit {
 
   onCariPerhiasan(data)
     {
-      console.debug(data, "DNADHHHHHH")
       this.params = null;
       let vendor = data.input_vendor_perhiasan;
       let jenis = data.input_jenis_perhiasan;
@@ -152,11 +155,14 @@ export class PerhiasanComponent implements OnInit {
       // product
       this.productService.list(this.params).subscribe((response: any) => {
         if (response == false) {
-            // error jika tidak ada data
-        }    
+          this.toastrService.error("Data Not Found", "Perhiasan");
+          return;
+        }  
+        if (response["length"] == 0) {
+          this.toastrService.error("Data Not Found", "Perhiasan");
+          return;
+        }  
         this.perhiasans = response;
-
-
         // pricing
         this.prmJualService.list("?product-category.code=00").subscribe((Jualresponse: any) => {
           if (Jualresponse != false) {
@@ -182,17 +188,11 @@ export class PerhiasanComponent implements OnInit {
             });          
           });
         }); 
+        this.toastrService.success("Load "+response["length"]+" Data", "Perhiasan");
       });  
       
      
       // const filteredperhiasan = this.getPerhiasan.filter(kamu =>  kamu.jenis == jenis && kamu.vendor == vendor);
-      
-     
-      console.log(jenis);
-      console.log(vendor);
-      console.log(berat);
-      // console.log(this.getPerhiasan);
-      console.log(filteredperhiasan.length);
     }
 
     addCart(code: any,vendor: any, jenis: any, 

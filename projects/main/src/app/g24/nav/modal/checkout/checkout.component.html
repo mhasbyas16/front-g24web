@@ -210,6 +210,7 @@
                                 <clr-control-helper>Please Select One</clr-control-helper>
                                 <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                             </clr-select-container>
+
                             <ng-container *ngIf="bankForm">
                                 <clr-select-container>
                                     <label>Jenis Pembayaran</label>
@@ -220,17 +221,21 @@
                                     <clr-control-helper>Please Select One</clr-control-helper>
                                     <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                 </clr-select-container>
-                                <div class="clr-row">                                
-                                    <div class="clr-col-6">
-                                        <clr-select-container>
-                                            <label>Bank Asal</label>
-                                            <select clrSelect formControlName="bankAsal">
-                                                <option *ngFor="let bank of bank" [value]="bank.name">{{bank.name}}</option>
-                                            </select>
-                                            <clr-control-helper>Please Select One</clr-control-helper>
-                                            <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
-                                        </clr-select-container>
-                                    </div>
+                                <div class="clr-row">
+                                    <ng-container *ngIf="bankA">
+                                        <div class="clr-col-6">
+                                            <clr-select-container>
+                                                <label>Bank Asal</label>
+                                                <select clrSelect formControlName="bankAsal">
+                                                    <option *ngFor="let bank of bank" [value]="bank.name">{{bank.name}}</option>
+                                                </select>
+                                                <clr-control-helper>Please Select One</clr-control-helper>
+                                                <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                            </clr-select-container>
+                                        </div>
+                                    </ng-container>                               
+                                    
+
                                     <div class="clr-col-6">
                                         <clr-select-container>
                                             <label>Bank Tujuan</label>

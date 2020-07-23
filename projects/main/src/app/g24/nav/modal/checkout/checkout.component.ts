@@ -61,6 +61,8 @@ export class CheckoutComponent implements OnInit {
    kembali:any;
    diterima:any;
 
+   bankA:boolean=false;
+
   constructor(
     private clientService: ClientService,
     private bankService: BankService,
@@ -134,7 +136,7 @@ export class CheckoutComponent implements OnInit {
 
   bankValid(val){
     let cod = JSON.parse(atob(val));
-    if (cod["code"] == "01") {
+    if (cod["code"] == "01" || cod["code"] == "04" ) {
       this.bankForm = false;
       this.edc = false;
     } else if (cod["code"] == "02") {
@@ -167,7 +169,13 @@ export class CheckoutComponent implements OnInit {
       }
     }else{
       this.administrasi= 0;
-    }    
+    } 
+    
+    if (J["code"] == "01") {
+      this.bankA = false;
+    }else if (J["code"] == "02"){
+      this.bankA = true;
+    }
   }
 
   diterimaUang(total){

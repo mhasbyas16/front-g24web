@@ -1,71 +1,106 @@
-
-<!-- Navigation #2f323a -->
-<div class="main-container">
-<ul class="navbar-nav" >
-        
-    <section class="nav-group">
-        <a clrVerticalNavLink href="javascript:void(0)" class="nav-link" (click)="ChangeContentArea('0000')">
-            <label class="nav-link-text">Dashboard</label>
-        </a>
-    </section>
+<clr-vertical-nav [clrVerticalNavCollapsible]="true">
 
     <ng-container *ngFor="let menu of menus.values()">
+        <clr-vertical-nav-group routerLinkActive="active">
+            <!--icon-->
+            <clr-icon [attr.shape]="menu.icons" clrVerticalNavIcon></clr-icon>
+            {{menu.name}} 
+            <clr-vertical-nav-group-children>
+                <ng-container *ngFor="let submenu of menu.children">
+                    <ng-container *ngIf="submenu.type=='sub-menu' && submenu.parentId==menu.componentId">
+                        <a clrVerticalNavLink 
+                            routerLinkActive="active"
+                            (click)="ChangeContentArea(submenu.componentId)">
+                            {{submenu.name}}
+                        </a>
+                    </ng-container>
+                    
+                    <ng-template #navGroupEmpty>
+                        <a clrVerticalNavLink
+                            routerLinkActive="active">
+                            {{submenu.name}}
+                        </a>
+                    </ng-template>
+                </ng-container>                
+            </clr-vertical-nav-group-children>
+        </clr-vertical-nav-group>
 
-        <section class="nav-group collapsible">
-            <!-- collapsible -->
-            <input type="checkbox" id="{{menu.name}}" checked>
-            <label for="{{menu.name}}" class="nav-link-text">{{menu.name}}</label>
-            <!-- collapsible -->
+        <ng-container *ngFor="let menu of noParent">
+            <a clrVerticalNavLink (click)="ChangeContentArea(menu.componentId)" routerLinkActive="active">{{menu.name}}</a>    
+        </ng-container>
+        
+    </ng-container >
+</clr-vertical-nav>
 
-            <!-- sidebar -->
-            <ul class="nav-list flex-column">
-                    <ng-container *ngFor="let submenu of menu.children">
-                        <li class="nav-item" *ngIf="submenu.type=='sub-menu' && submenu.parentId==menu.componentId">
-                            <a href="javascript:void(0)" (click)="ChangeContentArea(submenu.componentId)" class="nav-link">
-                                <span class="sidenav-normal"> {{submenu.name}} </span>
-                            </a>
-                        </li>
-                        <ng-template #navGroupEmpty>
-                            <li class="nav-item">
-                                <a href="javascript:void(0)" class="nav-link">
+
+
+<!-- Navigation #2f323a -->
+<!-- <div class="main-container">
+    <ul class="navbar-nav" >
+            
+        <section class="nav-group">
+            <a clrVerticalNavLink href="javascript:void(0)" class="nav-link" (click)="ChangeContentArea('0000')">
+                <label class="nav-link-text">Dashboard</label>
+            </a>
+        </section>
+    
+        <ng-container *ngFor="let menu of menus.values()">
+    
+            <section class="nav-group collapsible"> -->
+                <!-- collapsible -->
+                <!-- <input type="checkbox" id="{{menu.name}}" checked>
+                <label for="{{menu.name}}" class="nav-link-text">{{menu.name}}</label> -->
+                <!-- collapsible -->
+    
+                <!-- sidebar -->
+                <!-- <ul class="nav-list flex-column">
+                        <ng-container *ngFor="let submenu of menu.children">
+                            <li class="nav-item" *ngIf="submenu.type=='sub-menu' && submenu.parentId==menu.componentId">
+                                <a href="javascript:void(0)" (click)="ChangeContentArea(submenu.componentId)" class="nav-link">
                                     <span class="sidenav-normal"> {{submenu.name}} </span>
                                 </a>
                             </li>
-                        </ng-template>
-                    </ng-container>
-            </ul>
-            <!-- sidebar -->
-        </section>   
+                            <ng-template #navGroupEmpty>
+                                <li class="nav-item">
+                                    <a href="javascript:void(0)" class="nav-link">
+                                        <span class="sidenav-normal"> {{submenu.name}} </span>
+                                    </a>
+                                </li>
+                            </ng-template>
+                        </ng-container>
+                </ul> -->
+                <!-- sidebar -->
+            <!-- </section>   
+            
+        </ng-container >
         
-    </ng-container >
+        <ng-container *ngFor="let menu of noParent">
     
-    <ng-container *ngFor="let menu of noParent">
-
-        <section class="nav-group" >
-            <a class="nav-link" href="javascript:void(0)" (click)="ChangeContentArea(menu.componentId)">
-                <label class="nav-link-text">{{menu.name}}</label>
+            <section class="nav-group" >
+                <a class="nav-link" href="javascript:void(0)" (click)="ChangeContentArea(menu.componentId)">
+                    <label class="nav-link-text">{{menu.name}}</label>
+                </a>
+            </section>
+    
+        </ng-container> -->
+        
+        <!-- <section class="nav-group" >
+            <a class="nav-link" href="javascript:void(0)">
+                <label class="nav-link-text">Templates</label>
             </a>
         </section>
-
-    </ng-container>
+        <section class="nav-group" >
+            <a class="nav-link" href="javascript:void(0)">
+                <label class="nav-link-text">Docs</label>
+            </a>
+        </section>
+        <section class="nav-group" >
+            <a class="nav-link" href="javascript:void(0)">
+                <label class="nav-link-text">Logout</label>
+            </a>
+        </section> -->
+        <!-- <input type="text" #json>
+        <input type="button" (click)="addOutput()" value="add"> -->
+    <!-- </ul>
     
-    <!-- <section class="nav-group" >
-        <a class="nav-link" href="javascript:void(0)">
-            <label class="nav-link-text">Templates</label>
-        </a>
-    </section>
-    <section class="nav-group" >
-        <a class="nav-link" href="javascript:void(0)">
-            <label class="nav-link-text">Docs</label>
-        </a>
-    </section>
-    <section class="nav-group" >
-        <a class="nav-link" href="javascript:void(0)">
-            <label class="nav-link-text">Logout</label>
-        </a>
-    </section> -->
-    <!-- <input type="text" #json>
-    <input type="button" (click)="addOutput()" value="add"> -->
-</ul>
-
-</div>
+    </div> -->

@@ -11,7 +11,7 @@
                 </select>
             </clr-select-container>
         </div>
-        <div class="clr-col-3">
+        <div class="clr-col-2">
             <clr-select-container class="clr-form-control">
                 <label class="clr-control-label">Jenis</label>
                 <select [(ngModel)]="searchModel.jenisperhiasan" #product clrSelect name="input_jenis_perhiasan" ngModel>
@@ -30,20 +30,20 @@
                 </div>
             </div>
         </div>
-        <div class="clr-col-1">
-            <div class="clr-form-control">
-                <div class="clr-control-container">
-                    <button class="btn btn-info-outline btn-sm">Cari</button>
-                </div>
-            </div>
-        </div>
-    </div> 
-    <div class="clr-row">
         <div class="clr-col-4">
             <div class="clr-form-control">
                 <label class="clr-control-label">ID Produk</label>
                 <div class="clr-control-container">
                     <input  class="clr-input" type="text" name="input_idProduk" [(ngModel)]="searchModel.idProduk" required/>
+                </div>
+            </div>
+        </div>
+    </div> 
+    <div class="clr-row">
+        <div class="clr-col-1">
+            <div class="clr-form-control">
+                <div class="clr-control-container">
+                    <button class="btn btn-info-outline btn-sm">Cari</button>
                 </div>
             </div>
         </div>
