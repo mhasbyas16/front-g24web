@@ -521,7 +521,7 @@
                                                     <div class="clr-col-6">
                                                         <clr-input-container>
                                                             <label>No. Telepon</label>
-                                                            <input clrInput type="text" formControlName="noTelp">
+                                                            <input clrInput type="text" formControlName="noTelp" maxlength="12">
                                                             <clr-control-error *clrIfError="'maxlength'; error as err">Must be at least {{ err.requiredLength }} characters</clr-control-error>
                                                             <clr-control-error *clrIfError="'pattern'; error as err">It must '{{ err.requiredPattern }}'</clr-control-error>
                                                             <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
@@ -530,7 +530,7 @@
                                                     <div class="clr-col-6">
                                                         <clr-input-container>
                                                             <label>No. HP</label>
-                                                            <input clrInput type="text" formControlName="noHP">
+                                                            <input clrInput type="text" formControlName="noHP" maxlength="12">
                                                             <clr-control-helper>*</clr-control-helper>
                                                             <clr-control-error *clrIfError="'maxlength'; error as err">Must be at least {{ err.requiredLength }} characters</clr-control-error>
                                                             <clr-control-error *clrIfError="'pattern'; error as err">It must '{{ err.requiredPattern }}'</clr-control-error>

@@ -100,8 +100,9 @@ export class CheckoutComponent implements OnInit {
       maker_encoded: new FormControl("base64"),
       makeDate: new FormControl(this.datePipe.transform(Date.now(),'yyyy/MM/dd, h:mm:ss a'), Validators.required),
       jumlahTerima: new FormControl (totalHarga, Validators.required),
-      unit: new FormControl("")
-      
+      unit: new FormControl(""),
+      diterimaDari: new FormControl (""),
+      kembali: new FormControl (""),
     });
     //
     this.P = this.perhiasan.length;
@@ -143,6 +144,13 @@ export class CheckoutComponent implements OnInit {
       this.bankForm = true;
       this.edc = true;
     }
+    this.formData.patchValue({
+      transaksiMetodeBank: "",
+      bankAsal:"",
+      bankTujuan:"",
+      diterimaDari: "",
+      kembali:""
+    });
   }
   bankAdm(val){
     let J = JSON.parse(atob(val));

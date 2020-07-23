@@ -37,11 +37,22 @@
                 </div>
             </div>
         </div>
-    </div>     
+    </div> 
+    <div class="clr-row">
+        <div class="clr-col-4">
+            <div class="clr-form-control">
+                <label class="clr-control-label">ID Produk</label>
+                <div class="clr-control-container">
+                    <input  class="clr-input" type="text" name="input_idProduk" [(ngModel)]="searchModel.idProduk" required/>
+                </div>
+            </div>
+        </div>
+    </div>    
 </form>
 <clr-datagrid>
     <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
 
+    <clr-dg-column>ID Produk</clr-dg-column>
     <clr-dg-column>Kode</clr-dg-column>
     <clr-dg-column>Vendor</clr-dg-column>
     <clr-dg-column>Jenis</clr-dg-column>
@@ -52,6 +63,7 @@
     <clr-dg-column class="right"></clr-dg-column>
 
     <clr-dg-row *clrDgItems="let d of dataperhiasans">
+        <clr-dg-cell>{{d.id}}</clr-dg-cell>
         <clr-dg-cell>{{d.code}}</clr-dg-cell>
         <clr-dg-cell>{{d.vendor.name}}</clr-dg-cell>
         <clr-dg-cell>{{d['product-jenis'].name}}</clr-dg-cell>
