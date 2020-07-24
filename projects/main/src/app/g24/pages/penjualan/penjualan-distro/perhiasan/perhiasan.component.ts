@@ -28,7 +28,8 @@ export class PerhiasanComponent implements OnInit {
 
   //placeholder 
   placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
-  
+  // ClrDatagrid
+  loadingDg: boolean = false;
   //list
   vendors = null;
   jenis = null;
@@ -87,8 +88,10 @@ export class PerhiasanComponent implements OnInit {
     });
   }
 
-  onCariPerhiasan(data)
-    {
+  onCariPerhiasan(data)    {
+    // CLR Datagrid loading
+      this.loadingDg = true;
+
       this.params = null;
       let vendor = data.input_vendor_perhiasan;
       let jenis = data.input_jenis_perhiasan;
@@ -156,10 +159,12 @@ export class PerhiasanComponent implements OnInit {
       this.productService.list(this.params).subscribe((response: any) => {
         if (response == false) {
           this.toastrService.error("Data Not Found", "Perhiasan");
+          this.loadingDg = false;
           return;
         }  
         if (response["length"] == 0) {
           this.toastrService.error("Data Not Found", "Perhiasan");
+          this.loadingDg = false;
           return;
         }  
         this.perhiasans = response;
@@ -185,10 +190,11 @@ export class PerhiasanComponent implements OnInit {
               }
 
               this.dataperhiasans = this.perhiasans;
+              this.toastrService.success("Load "+response["length"]+" Data", "Perhiasan");
+              this.loadingDg = false;
             });          
           });
         }); 
-        this.toastrService.success("Load "+response["length"]+" Data", "Perhiasan");
       });  
       
      

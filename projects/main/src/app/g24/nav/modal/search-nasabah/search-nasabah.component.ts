@@ -13,6 +13,7 @@ import { ClientService } from '../../../services/client/client.service';
 export class SearchNasabahComponent implements OnInit {
   @Output() clientData:any = new EventEmitter();  
 
+  loadDg:boolean = false;
   emitData:any;
   searchNasabahModal: boolean = false;
   selectClient: boolean =false;
@@ -59,9 +60,11 @@ export class SearchNasabahComponent implements OnInit {
   }
 
   getClient(){
+    this.loadDg = true;
 
     if (!this.formSearch.valid) {
-      this.toastrService.error("Form Not Valid", "Check Again")
+      this.toastrService.error("Form Not Valid", "Check Again");
+      this.loadDg = false;
       return;
     }
     let Icif = this.formSearch.get("cif").value;
@@ -81,7 +84,8 @@ export class SearchNasabahComponent implements OnInit {
     
     this.clientService.list(params).subscribe((response:any) => {
       this.listClient = response;
-     
+      this.loadDg = false;
+      this.toastrService.success("Show "+this.listClient["length"]+" Data", "CLient Data");
     });
   }
 

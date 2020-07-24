@@ -17,7 +17,7 @@
                 <select [(ngModel)]="searchModel.jenisperhiasan" #product clrSelect name="input_jenis_perhiasan" ngModel>
                     <option value="all" selected>All</option>
                     <ng-container *ngFor="let J of jenis">
-                        <option value="{{J.code}}">{{J.name}}-{{J.code}}</option>
+                        <option value="{{J.code}}">{{J.name}}</option>
                     </ng-container>
                 </select>
             </clr-select-container>
@@ -49,7 +49,7 @@
         </div>
     </div>    
 </form>
-<clr-datagrid>
+<clr-datagrid [clrDgLoading]="loadingDg">
     <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
 
     <clr-dg-column>ID Produk</clr-dg-column>
