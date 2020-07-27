@@ -6,6 +6,7 @@ import { ClarityModule } from '@clr/angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PerhiasanComponent } from './penjualan-distro/perhiasan/perhiasan.component';
 import { NavModule } from '../../nav/nav.module';
+import { NgxBarcodeModule } from 'ngx-barcode';
 
 @NgModule({
   declarations: [PenjualanDistroComponent, PerhiasanComponent],
@@ -14,7 +15,8 @@ import { NavModule } from '../../nav/nav.module';
     PenjualanRoutingModule,
     ClarityModule,
     FormsModule,
-    NavModule
+    NavModule,
+    NgxBarcodeModule,
   ],
   exports : [
     PenjualanDistroComponent,

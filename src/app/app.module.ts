@@ -16,6 +16,9 @@ import { MainModule } from 'projects/main/src/app/main.module';
 import { PlatformModule } from 'projects/platform/src/app/platform.module';
 import { FormsModule } from '@angular/forms';
 
+//barcode
+import { NgxBarcodeModule } from 'ngx-barcode';
+
 @NgModule({
   declarations: [
     AppComponent
@@ -37,6 +40,8 @@ import { FormsModule } from '@angular/forms';
     PlatformModule,
     MainModule,
 
+    //barcode
+    NgxBarcodeModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -60,7 +60,7 @@
                     </div>
                     <div class="card-block">
                         <div class="card-text">
-                            <clr-datagrid [clrDgSingleSelected]="selectClient" (clrDgSingleSelectedChange)="selectDg($event)">
+                            <clr-datagrid [clrDgLoading]="loadDg" [clrDgSingleSelected]="selectClient" (clrDgSingleSelectedChange)="selectDg($event)">
                                 <clr-dg-column>No CIF</clr-dg-column>
                                 <clr-dg-column>NAMA NASABAH</clr-dg-column>
                                 <clr-dg-column>TGL LAHIR</clr-dg-column>
