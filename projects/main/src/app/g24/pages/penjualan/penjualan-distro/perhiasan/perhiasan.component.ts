@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter, Output, Input} from '@angular/core';
-import { NgForm, Form, FormGroup } from '@angular/forms';
 import { ToastrService } from "ngx-toastr";
+import { CountCartService } from '../../../../services/count-cart.service';
 
 // Database
 import { VendorService } from '../../../../services/vendor.service';
@@ -39,6 +39,7 @@ export class PerhiasanComponent implements OnInit {
 
   //params
   params = null;
+  vendorCategory= "product-category.code=00";
   category = "?product-category.code=00&flag=stock";
 
   //parameter
@@ -64,6 +65,9 @@ export class PerhiasanComponent implements OnInit {
 
     //ng
     private toastrService: ToastrService,
+
+    //count cart
+    private countService: CountCartService,
   ) { }
   searchModel : any = {vendors:"all", jenisperhiasan: "all"};
 
@@ -73,7 +77,7 @@ export class PerhiasanComponent implements OnInit {
   }
 
   onListVendor(){
-    this.vendorService.list("?_hash=1").subscribe((response: any) => {
+    this.vendorService.list("?_hash=1&"+this.vendorCategory).subscribe((response: any) => {
       if (response != false) {
         this.vendors = response;
       }      
@@ -160,11 +164,13 @@ export class PerhiasanComponent implements OnInit {
         if (response == false) {
           this.toastrService.error("Data Not Found", "Perhiasan");
           this.loadingDg = false;
+          this.dataperhiasans= null;
           return;
         }  
         if (response["length"] == 0) {
           this.toastrService.error("Data Not Found", "Perhiasan");
           this.loadingDg = false;
+          this.dataperhiasans= null;
           return;
         }  
         this.perhiasans = response;
@@ -218,7 +224,7 @@ export class PerhiasanComponent implements OnInit {
         this.refresh(harga, "p")
         //
         this.perhiasan.emit(this.cartList.length);
-        this.data.emit(this.cartList.length);
+        this.data.emit(this.countService.countCart());
 
        // this.cekItemArray(code);
     }
