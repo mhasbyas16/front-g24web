@@ -39,7 +39,7 @@ export class PerhiasanComponent implements OnInit {
 
   //params
   params = null;
-  category = "?product-category.code=00";
+  category = "?product-category.code=00&flag=stock";
 
   //parameter
   margin = null;

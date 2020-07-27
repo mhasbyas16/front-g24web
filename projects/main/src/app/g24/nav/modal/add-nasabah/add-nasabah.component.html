@@ -94,7 +94,7 @@
                                     <div class="card-block">
                                         <div class="card-text">
                                             <div class="clr-row">
-                                                <div class="clr-col-3">
+                                                <div class="clr-col-6">
                                                     <clr-select-container>
                                                         <label class="clr-col-5">Tipe ID/No</label>
                                                         <select class="clr-col-7" clrSelect formControlName="tipeID">
@@ -103,12 +103,14 @@
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                                     </clr-select-container>                                                    
                                                 </div>
-                                                <div class ="clr-col-3">
+                                                <div class ="clr-col-6">
                                                     <clr-input-container>
                                                         <input clrInput type="text" formControlName="tipeNo">
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                                     </clr-input-container>
-                                                </div>
+                                                </div>                                                
+                                            </div>
+                                            <div class="clr-row">
                                                 <div class="clr-col-6">
                                                     <clr-date-container>
                                                         <label>Tanggal Berlaku Sampai</label>
