@@ -29,7 +29,7 @@
             
             <ng-container *ngIf="hide">
                 <!-- Badan Usaha -->
-            <form class="clr-form clr-form-horizontal" [formGroup]="badanUsaha">
+            <form class="clr-form clr-form-compact" [formGroup]="badanUsaha">
                 <ng-container *ngIf="tipe; else perorangan ">
                     <div class="card" style="margin-top: 0;">
                         <div class="card-header">
@@ -55,6 +55,7 @@
                                                     <clr-input-container>
                                                         <label>Nama Badan Usaha</label>
                                                         <input clrInput type="text" formControlName="namaBU">
+                                                        <clr-control-helper>*</clr-control-helper>
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                                     </clr-input-container>
                                                 </div>
@@ -62,7 +63,7 @@
                                                     <clr-date-container>
                                                         <label>Tanggal Berdiri</label>
                                                         <input clrDate type="date" formControlName="tglBerdiri"> 
-                                                        <clr-control-helper>Please Input date</clr-control-helper>
+                                                        <clr-control-helper>*</clr-control-helper>
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                                     </clr-date-container>
                                                 </div>
@@ -100,12 +101,14 @@
                                                         <select class="clr-col-7" clrSelect formControlName="tipeID">
                                                             <option *ngFor="let id of IdType"  [value]="id._hash" >{{id.name}}</option>
                                                         </select>
+                                                        <clr-control-helper>*</clr-control-helper>
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                                     </clr-select-container>                                                    
                                                 </div>
                                                 <div class ="clr-col-6">
                                                     <clr-input-container>
                                                         <input clrInput type="text" formControlName="tipeNo">
+                                                        <clr-control-helper>*</clr-control-helper>
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                                     </clr-input-container>
                                                 </div>                                                
@@ -115,7 +118,7 @@
                                                     <clr-date-container>
                                                         <label>Tanggal Berlaku Sampai</label>
                                                         <input clrDate type="date" formControlName="tglBerlaku"> 
-                                                        <clr-control-helper>Please Input date</clr-control-helper>
+                                                        <clr-control-helper>*</clr-control-helper>
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                                     </clr-date-container>
                                                 </div>
@@ -125,8 +128,9 @@
                                                     <clr-select-container>
                                                         <label>Jenis Perusahaan</label>
                                                         <select clrSelect formControlName="jenisPerusahaan">
-                                                            <option selected></option>
+                                                            <option *ngFor="let jp of businessType" selected [value]="jp._hash">{{jp.name}}</option>
                                                         </select>
+                                                        <clr-control-helper>*</clr-control-helper>
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                                     </clr-select-container>                                                    
                                                 </div>
@@ -134,8 +138,9 @@
                                                     <clr-select-container>
                                                         <label>Jenis Badan Hukum</label>
                                                         <select clrSelect formControlName="jenisBadanHukum">
-                                                            <option selected></option>
+                                                            <option *ngFor="let h of legalType" selected [value]="h._hash">{{h.name}}</option>
                                                         </select>
+                                                        <clr-control-helper>*</clr-control-helper>
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                                     </clr-select-container>
                                                 </div>
@@ -145,8 +150,9 @@
                                                     <clr-select-container>
                                                         <label>Bidang Usaha</label>
                                                         <select clrSelect formControlName="bidangUsaha">
-                                                            <option selected></option>
+                                                            <option *ngFor="let bu of businessField" selected [value]="bu._hash">{{bu.name}}</option>
                                                         </select>
+                                                        <clr-control-helper>*</clr-control-helper>
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                                     </clr-select-container>                                                    
                                                 </div>
@@ -154,6 +160,7 @@
                                                     <clr-input-container>
                                                         <label>No. Akte</label>
                                                         <input clrInput type="text" formControlName="noAkte">
+                                                        <clr-control-helper>*</clr-control-helper>
                                                         <clr-control-error *clrIfError="'required'">This isi a required field</clr-control-error>
                                                     </clr-input-container>
                                                 </div>
@@ -179,8 +186,9 @@
                                                     <clr-select-container>
                                                         <label>Sumber Dana</label>
                                                         <select clrSelect formControlName="sumberDana">
-                                                            <option selected></option>
+                                                            <option selected *ngFor="let sumber of sumberDana" [value]="sumber._hash">{{sumber.name}}</option>
                                                         </select>
+                                                        <clr-control-helper>*</clr-control-helper>
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                                     </clr-select-container>                                                    
                                                 </div>
@@ -190,6 +198,7 @@
                                                     <clr-input-container>
                                                         <label>No. NPWP</label>
                                                         <input clrInput type="text" formControlName="noNPWP">
+                                                        <clr-control-helper>*</clr-control-helper>
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                                     </clr-input-container>                                                    
                                                 </div>
@@ -205,6 +214,7 @@
                                                 <div class="clr-col-6">
                                                     <clr-input-container>
                                                         <label>Nama Penanggung Jawab 1</label>
+                                                        <clr-control-helper>*</clr-control-helper>
                                                         <input clrInput type="text" formControlName="namaPJ1">
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                                     </clr-input-container>                                                    
@@ -213,6 +223,7 @@
                                                     <clr-input-container>
                                                         <label>HP Penanggung Jawab 1</label>
                                                         <input clrInput type="text" formControlName="hpPJ1">
+                                                        <clr-control-helper>*</clr-control-helper>
                                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                                     </clr-input-container>
                                                 </div>

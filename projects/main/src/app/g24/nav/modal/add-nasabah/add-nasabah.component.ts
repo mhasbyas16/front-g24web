@@ -19,7 +19,9 @@ import { ClientProfessionService } from '../../../services/client/client-profess
 import { ClientMaritalStatusService } from '../../../services/client/client-marital-status.service';
 import { ClientTypeService } from '../../../services/client/client-type.service';
 import { ClientEducationService } from '../../../services/client/client-education.service';
-import { JsonPipe } from '@angular/common';
+import { ClientBusinessFieldService } from '../../../services/client/client-business-field.service';
+import { ClientBusinessTypeService } from '../../../services/client/client-business-type.service';
+import { ClientLegalTypeService } from '../../../services/client/client-legal-type.service';
 
 @Component({
   selector: 'app-add-nasabah',
@@ -65,6 +67,9 @@ export class AddNasabahComponent implements OnInit {
   status: any;
   typeClient: any;
   education: any;
+  businessField:any;
+  businessType:any;
+  legalType:any;
 
   constructor(
     private cifNumber: CifGeneratorService,
@@ -83,6 +88,9 @@ export class AddNasabahComponent implements OnInit {
     private clietnMarital: ClientMaritalStatusService,
     private clientType: ClientTypeService,
     private clientEducation: ClientEducationService,
+    private clientBusinessField :ClientBusinessFieldService,
+    private clientBusinessType :ClientBusinessTypeService,
+    private clientLegalType :ClientLegalTypeService,
 
     //ng
     private toastr: ToastrService
@@ -230,35 +238,12 @@ export class AddNasabahComponent implements OnInit {
 
     // client
     this.getProvinsi();
-    this.getClientIdType();
-    this.getClientFunds();
     this.getNationality();
     this.getPopulation();
     this.getClientReligion();
     this.getProfession();
     this.getMaritalStatus();
     this.getEducation();
-  }
-
-  getTipe(value: any) {
-    if (value == 1) {
-      this.clientType.list("?code=" + value + "&code_encoded=int&_hash=1").subscribe((response: any) => {
-        for (let index of response) {
-          this.tipeClientHash = index["_hash"];
-          this.person.patchValue({tipeClient: this.tipeClientHash});
-        }
-      });
-      this.tipe = false;
-    } else if (value == 2) {
-      this.clientType.list("?code=" + value + "&code_encoded=int&_hash=1").subscribe((response: any) => {
-        for (let index of response) {
-          this.tipeClientHash = index["_hash"];
-          this.badanUsaha.patchValue({tipeClient: this.tipeClientHash});
-        }
-      });
-      this.tipe = true;
-    }
-    this.hide = true;
   }
 
   // store to DB
@@ -361,6 +346,61 @@ export class AddNasabahComponent implements OnInit {
     });
   }
 
+  getTipe(value: any) {
+    if (value == 1) {
+      this.clientType.list("?code=" + value + "&code_encoded=int&_hash=1").subscribe((response: any) => {
+        for (let index of response) {
+          this.tipeClientHash = index["_hash"];
+          this.person.patchValue({tipeClient: this.tipeClientHash});
+          // filter
+          this.getClientIdType(value);
+          this.getClientFunds(value);
+        }
+      });
+      this.tipe = false;
+    } else if (value == 2) {
+      this.clientType.list("?code=" + value + "&code_encoded=int&_hash=1").subscribe((response: any) => {
+        for (let index of response) {
+          this.tipeClientHash = index["_hash"];
+          this.badanUsaha.patchValue({tipeClient: this.tipeClientHash});
+          //filter
+          this.getClientIdType(value);
+          this.getClientFunds(value);
+          this.getBusinessField();
+          this.getBusinessType();
+          this.getLegalType();
+        }
+      });
+      this.tipe = true;
+    }
+    this.hide = true;
+  }
+  
+  // client badan usaha
+  getBusinessField(){
+    this.clientBusinessField.list("?_hash=1").subscribe((response:any)=>{
+      if (response != false) {
+        this.businessField = response;
+      }
+    });
+  }
+
+  getBusinessType(){
+    this.clientBusinessType.list("?_hash=1").subscribe((response:any)=>{
+      if (response != false) {
+        this.businessType = response;
+      }
+    });
+  }
+
+  getLegalType(){
+    this.clientLegalType.list("?_hash=1").subscribe((response:any)=>{
+      if (response != false) {
+        this.legalType = response;
+      }
+    });
+  }
+
   // Client
   getEducation() {
     this.clientEducation.list("?_hash=1").subscribe((response: any) => {
@@ -390,16 +430,16 @@ export class AddNasabahComponent implements OnInit {
       }
     });
   }
-  getClientIdType() {
-    this.clientIdType.list("?_hash=1").subscribe((response: any) => {
+  getClientIdType(code) {
+    this.clientIdType.list("?_hash=1&client-type.code="+code+"&client-type.code_encoded=int").subscribe((response: any) => {
       if (response != false) {
         this.IdType = response;
       }
     });
   }
 
-  getClientFunds() {
-    this.clientFunds.list("?_hash=1").subscribe((response: any) => {
+  getClientFunds(code) {
+    this.clientFunds.list("?_hash=1&client-type.code="+code+"&client-type.code_encoded=int").subscribe((response: any) => {
       if (response != false) {
         this.sumberDana = response;
       }

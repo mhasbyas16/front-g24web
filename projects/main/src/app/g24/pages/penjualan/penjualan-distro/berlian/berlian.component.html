@@ -60,9 +60,10 @@
     <clr-dg-column>Kadar</clr-dg-column>
     <clr-dg-column>Warna</clr-dg-column>
     <clr-dg-column>Harga</clr-dg-column>
+    <clr-dg-column>Harga</clr-dg-column>
     <clr-dg-column class="right"></clr-dg-column>
 
-    <clr-dg-row *clrDgItems="let d of databerlians">
+    <clr-dg-row *clrDgItems="let d of databerlians" [clrDgItem]="berlian">
         <clr-dg-cell>{{d.id}}</clr-dg-cell>
         <clr-dg-cell>{{d.code}}</clr-dg-cell>
         <clr-dg-cell>{{d.vendor.name}}</clr-dg-cell>
@@ -81,11 +82,23 @@
                 <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.code,d.vendor.name,d['product-jenis'].name,d['product-gold-color'].name, d.berat, d['product-purity'].name, d.hargaJual)">
                     <clr-icon shape="plus"></clr-icon>
                 </button>  
-            </ng-template>
-            
+            </ng-template>            
         </span>
         </clr-dg-cell>
     </clr-dg-row>
+    <clr-dg-detail *clrIfDetail="let databerlians">
+        <clr-dg-detail-header>hai</clr-dg-detail-header>
+    <clr-dg-detail-body>
+        <clr-datagrid>
+            
+        </clr-datagrid>
+    </clr-dg-detail-body>
+    </clr-dg-detail>
+    <!-- <clr-dg-column>Cut</clr-dg-column>
+    <clr-dg-column>Colour</clr-dg-column>
+    <clr-dg-column>Clarity</clr-dg-column>
+    <clr-dg-column>Carat</clr-dg-column>
+    <clr-dg-column>Jumlah Berlian</clr-dg-column> -->
     <clr-dg-footer>
         <clr-dg-pagination #pagination [clrDgPageSize]="5">
           <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Users per page</clr-dg-page-size>
