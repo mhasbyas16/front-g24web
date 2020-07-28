@@ -49,7 +49,7 @@
         </div>
     </div>    
 </form>
-<clr-datagrid [clrDgLoading]="loadingDg">
+<clr-datagrid [clrDgLoading]="loadingDg" [(clrDgSelected)]="selected">
     <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
 
     <clr-dg-column>ID Produk</clr-dg-column>
@@ -60,10 +60,9 @@
     <clr-dg-column>Kadar</clr-dg-column>
     <clr-dg-column>Warna</clr-dg-column>
     <clr-dg-column>Harga</clr-dg-column>
-    <clr-dg-column>Harga</clr-dg-column>
     <clr-dg-column class="right"></clr-dg-column>
 
-    <clr-dg-row *clrDgItems="let d of databerlians" [clrDgItem]="berlian">
+    <clr-dg-row *clrDgItems="let d of databerlians" [clrDgItem]="d">
         <clr-dg-cell>{{d.id}}</clr-dg-cell>
         <clr-dg-cell>{{d.code}}</clr-dg-cell>
         <clr-dg-cell>{{d.vendor.name}}</clr-dg-cell>
@@ -86,19 +85,31 @@
         </span>
         </clr-dg-cell>
     </clr-dg-row>
-    <clr-dg-detail *clrIfDetail="let databerlians">
-        <clr-dg-detail-header>hai</clr-dg-detail-header>
-    <clr-dg-detail-body>
-        <clr-datagrid>
-            
-        </clr-datagrid>
-    </clr-dg-detail-body>
-    </clr-dg-detail>
-    <!-- <clr-dg-column>Cut</clr-dg-column>
-    <clr-dg-column>Colour</clr-dg-column>
-    <clr-dg-column>Clarity</clr-dg-column>
-    <clr-dg-column>Carat</clr-dg-column>
-    <clr-dg-column>Jumlah Berlian</clr-dg-column> -->
+    <clr-dg-detail *clrIfDetail="let detail">
+        <clr-dg-detail-header>Berlian</clr-dg-detail-header>
+        <clr-dg-detail-body>
+            <span>
+                ID Produk : {{detail.id}} <br>
+                Kode : {{detail.code}}
+            </span>
+          <clr-datagrid>
+            <clr-dg-column>Cut</clr-dg-column>
+            <clr-dg-column>Colour</clr-dg-column>
+            <clr-dg-column>Clarity</clr-dg-column>
+            <clr-dg-column>Carat</clr-dg-column>
+            <clr-dg-column>Jumlah Berlian</clr-dg-column>
+
+            <clr-dg-row>
+                <clr-dg-cell>{{detail['product-cut'].name}}</clr-dg-cell>
+                <clr-dg-cell>{{detail['product-diamond-color'].name}}</clr-dg-cell>
+                <clr-dg-cell>{{detail['product-clarity'].name}}</clr-dg-cell>
+                <clr-dg-cell>{{detail.carat}}</clr-dg-cell>
+                <clr-dg-cell>{{detail.jml_berlian}}</clr-dg-cell>
+            </clr-dg-row>
+          </clr-datagrid>
+        </clr-dg-detail-body>
+      </clr-dg-detail>
+    <!--  -->
     <clr-dg-footer>
         <clr-dg-pagination #pagination [clrDgPageSize]="5">
           <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Users per page</clr-dg-page-size>
