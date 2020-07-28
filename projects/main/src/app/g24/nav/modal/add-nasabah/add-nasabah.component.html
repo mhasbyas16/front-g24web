@@ -29,8 +29,9 @@
             
             <ng-container *ngIf="hide">
                 <!-- Badan Usaha -->
-            <form class="clr-form clr-form-compact" [formGroup]="badanUsaha">
-                <ng-container *ngIf="tipe; else perorangan ">
+            
+            <ng-container *ngIf="tipe; else perorangan " >
+                <form class="clr-form clr-form-compact" [formGroup]="badanUsaha" (ngSubmit)="badanUsahaAddSubmit()">
                     <div class="card" style="margin-top: 0;">
                         <div class="card-header">
                             Badan Usaha
@@ -338,6 +339,12 @@
                                             <input type="hidden" formControlName="kabupaten_encoded">
                                             <input type="hidden" formControlName="kecamatan_encoded">
                                             <input type="hidden" formControlName="kelurahan_encoded">
+                                            <input type="hidden" formControlName="tipeClient_encoded">
+                                            <input type="hidden" formControlName="tipeID_encoded">
+                                            <input type="hidden" formControlName="sumberDana_encoded">
+                                            <input type="hidden" formControlName="jenisPerusahaan_encoded">
+                                            <input type="hidden" formControlName="jenisBadanHukum_encoded">
+                                            <input type="hidden" formControlName="bidangUsaha_encoded">
 
 
                                         </div>                                                              
@@ -345,9 +352,14 @@
                                 </div>
                             </div>                                                              
                         </div>
+                        <div class="card-footer">
+                            <!--<button type="button" class="btn btn-warning" (click)="removeCart()">Clear</button> -->
+                            <button type="submit" class="btn btn-success" >Submit</button>
+                        </div>
                     </div>
-                </ng-container>
-            </form>
+                </form>
+            </ng-container>
+            
             
             
                 <!-- perorangan -->

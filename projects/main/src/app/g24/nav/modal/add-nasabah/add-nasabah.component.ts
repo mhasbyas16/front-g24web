@@ -102,9 +102,10 @@ export class AddNasabahComponent implements OnInit {
 
   openModal() {
     this.mainClient.count().subscribe((response:any)=>{
-      this.badanUsaha.patchValue({cif:this.cifNumber.cifNumber(response["count"])});
-      this.person.patchValue({cif:this.cifNumber.cifNumber(response["count"])});
-      this.cifHasil = this.cifNumber.cifNumber(response["count"]) ;
+      let cifNum = this.cifNumber.cifNumber(response["count"]);
+      this.badanUsaha.patchValue({cif:cifNum});
+      this.person.patchValue({cif:cifNum});
+      this.cifHasil = cifNum ;
     });
     
 
@@ -113,6 +114,7 @@ export class AddNasabahComponent implements OnInit {
       cif: new FormControl(this.cifHasil, [Validators.required, Validators.pattern(/^[0-9]*$/)]),
       cif_validation: new FormControl("unique:cif"),
       tipeClient: new FormControl("", Validators.required),
+      tipeClient_encoded: new FormControl("base64"),
       //tipeNasabah: new FormControl("",[Validators.required]),
 
       // informasi cepat data nasabah badan usaha
@@ -123,19 +125,24 @@ export class AddNasabahComponent implements OnInit {
 
       // detail data nasabah
       tipeID: new FormControl("", Validators.required),
+      tipeID_encoded: new FormControl("base64"),
       tipeNo: new FormControl("", Validators.required),
       tipeNo_validation: new FormControl("unique:tipeNo"),
       jenisPerusahaan: new FormControl("", Validators.required),
+      jenisPerusahaan_encoded: new FormControl("base64"),
       bidangUsaha: new FormControl("", Validators.required),
+      bidangUsaha_encoded: new FormControl("base64"),
       noAkteT: new FormControl(""),
       noAkteT_validation: new FormControl("unique:noAkteT"),
       sumberDana: new FormControl("", Validators.required),
+      sumberDana_encoded: new FormControl("base64"),
       noNPWP: new FormControl("", Validators.required),
       noNPWP_validation: new FormControl("unique:noNPWP"),
       namaPJ1: new FormControl("", Validators.required),
       namaPJ2: new FormControl(""),
       tglBerlaku: new FormControl("", Validators.required),
       jenisBadanHukum: new FormControl("", Validators.required),
+      jenisBadanHukum_encoded: new FormControl("base64"),
       noAkte: new FormControl("", Validators.required),
       noAkte_validation: new FormControl("unique:noAkte"),
       tglPerubahanAkte: new FormControl(""),
@@ -247,7 +254,86 @@ export class AddNasabahComponent implements OnInit {
   }
 
   // store to DB
+  badanUsahaAddSubmit(){
+    if (!this.badanUsaha.valid) {
+      this.toastr.error("Form not complete yet", "Add Client");
+      console.debug("Form not complete yet", this.badanUsaha.getRawValue());
+      return;
+    }
 
+    let data = {
+      // header
+      cif: this.badanUsaha.get("cif").value,
+      cif_validation: this.badanUsaha.get("cif_validation").value,
+      tipeClient: this.badanUsaha.get("tipeClient").value,
+      tipeClient_encoded: this.badanUsaha.get("tipeClient_encoded").value,
+
+      // informasi cepat data nasabah badan usaha
+      namaBadanUsaha: this.badanUsaha.get("namaBU").value,
+      tglBerdiri: this.badanUsaha.get("tglBerdiri").value,
+      kodeUnitKerja: this.badanUsaha.get("kodeUnitKerja").value,
+      namaUnitKerja: this.badanUsaha.get("namaUnitKerja").value,
+
+      // detail data nasabah
+      tipeID: this.badanUsaha.get("tipeID").value,
+      tipeID_encoded: this.badanUsaha.get("tipeID_encoded").value,
+      tipeNo: this.badanUsaha.get("tipeNo").value,
+      tipeNo_validation: this.badanUsaha.get("tipeNo_validation").value,
+      jenisPerusahaan: this.badanUsaha.get("jenisPerusahaan").value,
+      jenisPerusahaan_encoded: this.badanUsaha.get("jenisPerusahaan_encoded").value,
+      bidangUsaha: this.badanUsaha.get("bidangUsaha").value,
+      bidangUsaha_encoded: this.badanUsaha.get("bidangUsaha_encoded").value,
+      noAkteT: this.badanUsaha.get("noAkteT").value,
+      noAkteT_validation: this.badanUsaha.get("noAkteT_validation").value,
+      sumberDana: this.badanUsaha.get("sumberDana").value,
+      sumberDana_encoded: this.badanUsaha.get("sumberDana_encoded").value,
+      noNPWP: this.badanUsaha.get("noNPWP").value,
+      noNPWP_validation: this.badanUsaha.get("noNPWP_validation").value,
+      namaPJ1: this.badanUsaha.get("namaPJ1").value,
+      namaPJ2: this.badanUsaha.get("namaPJ2").value,
+      tglBerlaku: this.badanUsaha.get("tglBerlaku").value,
+      jenisBadanHukum: this.badanUsaha.get("jenisBadanHukum").value,
+      jenisBadanHukum_encoded: this.badanUsaha.get("jenisBadanHukum_encoded").value,
+      noAkte: this.badanUsaha.get("noAkte").value,
+      noAkte_validation: this.badanUsaha.get("noAkte_validation").value,
+      tglPerubahanAkte: this.badanUsaha.get("tglPerubahanAkte").value,
+      telp: this.badanUsaha.get("telp").value,
+      telp_validation: this.badanUsaha.get("telp_validation").value,
+      hpPJ1: this.badanUsaha.get("hpPJ1").value,
+      hpPJ1_validation: this.badanUsaha.get("hpPJ1_validation").value,
+      hpPJ2: this.badanUsaha.get("hpPJ2").value,
+      hpPJ2_validation: this.badanUsaha.get("hpPJ2_validation").value,
+
+      // alamat
+      alamatKtp:btoa(JSON.stringify({
+        alamat: this.badanUsaha.get("alamat").value,
+        rt: this.badanUsaha.get("rt").value,
+        rw: this.badanUsaha.get("rw").value,
+        kodePos: this.badanUsaha.get("kodePos").value,
+        provinsi: JSON.parse(atob(this.badanUsaha.get("provinsi").value)),
+        //provinsi_encoded: new FormControl("base64"),
+        kabupaten: JSON.parse(atob(this.badanUsaha.get("kabupaten").value)),
+        //kabupaten_encoded: new FormControl("base64"),
+        kecamatan: JSON.parse(atob(this.badanUsaha.get("kecamatan").value)),
+        //kecamatan_encoded: new FormControl("base64"),
+        kelurahan: JSON.parse(atob(this.badanUsaha.get("kelurahan").value)),
+        //kelurahan_encoded: new FormControl("base64"),
+      })),
+      alamatKtp_encoded:"base64" 
+    }
+
+    this.mainClient.add(data).subscribe((response:any)=>{
+      if (response == false) {
+        this.toastr.error(this.mainClient.message(), "Add Client");
+        return;
+      } else {
+        this.addNasabahModal = false;
+        this.hide = false;
+        this.clientData.emit(data);
+        this.toastr.success("Data addition was success", "Client Data Add Success");
+      }
+    })
+  }
   peroranganAddSubmit() {
     if (!this.person.valid) {
       this.toastr.error("Form not complete yet", "Add Client");
