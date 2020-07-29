@@ -40,7 +40,7 @@ export class PerhiasanComponent implements OnInit {
   //params
   params = null;
   vendorCategory= "product-category.code=00";
-  category = "?product-category.code=00&flag=stock";
+  category = "?_hash=1&product-category.code=00&flag=stock";
 
   //parameter
   margin = null;
@@ -126,38 +126,6 @@ export class PerhiasanComponent implements OnInit {
       } else if (id != null ){
         this.params = this.params+"&"+urlid;
       }
-
-
-      // if (vendor != 'all' && jenis != 'all' && berat != null && id != null) {
-      //   this.params = this.category+"&"+urlVendor+"&"+urlJenis+"&"+urlBerat+"&"+urlid;
-      //    // filteredperhiasan = this.getPerhiasan.filter(produk =>  produk.jenis == jenis && produk.vendor == vendor && produk.berat == berat);
-      // }else if (vendor == 'all' && jenis != 'all' && berat != null && id != null) {
-      //   this.params = this.category+"&"+urlJenis+"&"+urlBerat+"&"+urlid;
-      //    // filteredperhiasan = this.getPerhiasan.filter(produk =>  produk.jenis == jenis && produk.berat == berat)
-      // }else if (vendor != 'all' && jenis == 'all' && berat != null && id != null) {
-      //   this.params = this.category+"&"+urlVendor+"&"+urlBerat+"&"+urlid;
-      //     //filteredperhiasan = this.getPerhiasan.filter(produk =>  produk.vendor == vendor && produk.berat == berat)
-      // }else if (vendor != 'all' && jenis != 'all' && berat == null && id != null) {
-      //   this.params = this.category+"&"+urlVendor+"&"+urlJenis+"&"+urlid;
-      //    // filteredperhiasan = this.getPerhiasan.filter(produk =>  produk.vendor == vendor && produk.jenis == jenis)
-      // }else if (vendor != 'all' && jenis != 'all' && berat != null && id == null){
-      //   this.params = this.category+"&"+urlVendor+"&"+urlJenis+"&"+urlBerat;
-      // }else if (vendor != 'all' && jenis == 'all' && berat == null) {
-      //   this.params = this.category+"&"+urlVendor;
-      //     //filteredperhiasan = this.getPerhiasan.filter(produk =>  produk.vendor == vendor )
-      // }else if (vendor == 'all' && jenis != 'all' && berat == null) {
-      //   this.params = this.category+"&"+urlJenis;
-      //     //filteredperhiasan = this.getPerhiasan.filter(produk =>  produk.jenis == jenis )
-      // }else if (vendor == 'all' && jenis == 'all' && berat != null) {
-      //   this.params = this.category+"&"+urlBerat;
-      //   //filteredperhiasan = this.getPerhiasan.filter(produk =>  produk.berat == berat )
-      // }else if (vendor == 'all' && jenis == 'all' && berat == null ) {
-      //   this.params = this.category;
-      //     //filteredperhiasan = this.getPerhiasan
-      // }else{
-        
-      // }
-
       
       // product
       this.productService.list(this.params).subscribe((response: any) => {
@@ -208,7 +176,7 @@ export class PerhiasanComponent implements OnInit {
     }
 
     addCart(code: any,vendor: any, jenis: any, 
-      warna: any, berat: any, kadar: any, harga: any){
+      warna: any, berat: any, kadar: any, harga: any, _hash:any){
       
       this.cartList.push({
         'code': code, 
@@ -218,8 +186,9 @@ export class PerhiasanComponent implements OnInit {
         'berat' : berat,
         'kadar': kadar, 
         'harga': harga,
+        'detail': JSON.parse(atob(_hash)),
         'qty': 1});
-
+        console.debug(this.cartList,"ISI HASH CART")
         // harga
         this.refresh(harga, "p")
         //

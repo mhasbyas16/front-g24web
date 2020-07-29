@@ -20,6 +20,8 @@ export class BerlianComponent implements OnInit {
   @Output() berlian = new EventEmitter();
   @Output() totalHarga = new EventEmitter();
 
+  selected:any;
+
   //placeholder 
   placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
   // ClrDatagrid
@@ -27,7 +29,7 @@ export class BerlianComponent implements OnInit {
   //params
   params = null;
   vendorCategory= "product-category.code=01";
-  category = "?product-category.code=01&flag=stock";
+  category = "?_hash=1&product-category.code=01&flag=stock";
   //list
   vendors = null;
   jenis = null;
@@ -109,13 +111,13 @@ export class BerlianComponent implements OnInit {
       // product
       this.productService.list(this.params).subscribe((response: any) => {
         if (response == false) {
-          this.toastrService.error("Data Not Found", "Perhiasan");
+          this.toastrService.error("Data Not Found", "Berlian");
           this.loadingDg = false;
           this.databerlians = null;
           return;
         }  
         if (response["length"] == 0) {
-          this.toastrService.error("Data Not Found", "Perhiasan");
+          this.toastrService.error("Data Not Found", "Berlian");
           this.loadingDg = false;
           this.databerlians = null;
           return;
@@ -143,7 +145,7 @@ export class BerlianComponent implements OnInit {
         //       }
 
               this.databerlians = this.berlians;
-              this.toastrService.success("Load "+response["length"]+" Data", "Perhiasan");
+              this.toastrService.success("Load "+response["length"]+" Data", "Berlian");
               this.loadingDg = false;
             });          
       //     });
@@ -152,7 +154,7 @@ export class BerlianComponent implements OnInit {
     }
 
     addCart(code: any,vendor: any, jenis: any, 
-      warna: any, berat: any, kadar: any, harga: any){
+      warna: any, berat: any, kadar: any, harga: any, _hash:any){
       
       this.cartList.push({
         'code': code, 
@@ -162,6 +164,7 @@ export class BerlianComponent implements OnInit {
         'berat' : berat,
         'kadar': kadar, 
         'harga': harga,
+        'detail':JSON.parse(atob(_hash)),
         'qty': 1});
 
         // harga

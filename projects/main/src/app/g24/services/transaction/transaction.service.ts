@@ -10,6 +10,9 @@ export class TransactionService {
 
   constructor(private commonService:CommonService) { }
 
+  count(params?) {
+    return this.commonService.count(this.key, params);
+  }
   list(params?) {
     return this.commonService.list(this.key, params);
   }
