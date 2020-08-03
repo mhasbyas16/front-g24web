@@ -1,0 +1,63 @@
+<form #searchMulia="ngForm" id="perhiasan" clrForm (ngSubmit)="onCariMulia(searchModel)">
+    <div class="clr-row">
+        <div class="clr-col-3">
+            <clr-select-container class="clr-form-control">
+                <label class="clr-control-label">Vendor</label>
+                <select [(ngModel)]="searchModel.vendors" clrSelect name="input_vendor_mulia" ngModel>
+                    <option value="all" >All</option>
+                    <ng-container *ngFor="let vendor of vendors">
+                        <option value="{{vendor.code}}">{{vendor.name}}</option>
+                    </ng-container>
+                </select>
+            </clr-select-container>
+        </div>
+        <div class="clr-col-2">
+            <clr-select-container class="clr-form-control">
+                <label class="clr-control-label">Denom</label>
+                <select [(ngModel)]="searchModel.denoms" #product clrSelect name="input_denom_mulia" ngModel>
+                    <option value="all" selected>All</option>
+                    <ng-container *ngFor="let J of denoms">
+                        <option value="{{J.code}}">{{J.name}}</option>
+                    </ng-container>
+                </select>
+            </clr-select-container>
+        </div>
+    </div> 
+    <div class="clr-row">
+        <div class="clr-col-1">
+            <div class="clr-form-control">
+                <div class="clr-control-container">
+                    <button class="btn btn-info-outline btn-sm">Cari</button>
+                </div>
+            </div>
+        </div>
+    </div>    
+</form>
+<clr-datagrid [clrDgLoading]="loadingDg" >
+    <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
+
+    <clr-dg-column>ID Produk</clr-dg-column>
+    
+    <clr-dg-column>Harga</clr-dg-column>
+
+    <clr-dg-row *clrDgItems="let d of datamulias" [clrDgItem]="datamulias">
+        <clr-dg-cell>{{d.id}}</clr-dg-cell>
+        
+        <clr-dg-cell>Rp. 10000000</clr-dg-cell>
+       
+    </clr-dg-row>
+    <clr-dg-detail *clrIfDetail="let d of datamulias">
+        <clr-dg-detail-header>{{d.id}}</clr-dg-detail-header>
+        
+        <clr-dg-detail-body>
+        
+        </clr-dg-detail-body>
+    </clr-dg-detail>
+    <clr-dg-footer>
+        <clr-dg-pagination #pagination [clrDgPageSize]="5">
+          <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Users per page</clr-dg-page-size>
+          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+          of {{pagination.totalItems}} Produk
+        </clr-dg-pagination>
+      </clr-dg-footer>
+</clr-datagrid>

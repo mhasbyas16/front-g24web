@@ -32,6 +32,7 @@ export class PenjualanDistroComponent implements OnInit {
 
   // jumlah isi cart
   perhiasan:any;
+  mulia:any;
 
   // total harga per kategori
   hargaPerhiasan:any;

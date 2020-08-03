@@ -16,44 +16,11 @@
                 <clr-tabs>
                     <clr-tab>
                         <button clrTabLink>Logam Mulia </button>
-                        <clr-tab-content >
-                            <clr-datagrid>
-                                <clr-dg-placeholder><!--placeholdergrid--></clr-dg-placeholder>
-    
-                                <clr-dg-column>Kode</clr-dg-column>
-                                <clr-dg-column>Vendor</clr-dg-column>
-                                <clr-dg-column>Jenis</clr-dg-column>
-                                <clr-dg-column>Berat</clr-dg-column>
-                                <clr-dg-column>Kadar</clr-dg-column>
-                                <clr-dg-column>Warna</clr-dg-column>
-                                <clr-dg-column>Harga</clr-dg-column>
-                                <clr-dg-column class="right"></clr-dg-column>
-                            
-                                <clr-dg-row *clrDgItems="let d of perhiasans">
-                                    <clr-dg-cell>{{d.kode}}</clr-dg-cell>
-                                    <clr-dg-cell>{{d.vendor}}</clr-dg-cell>
-                                    <clr-dg-cell>{{d.jenis}}</clr-dg-cell>
-                                    <clr-dg-cell>{{d.berat}}</clr-dg-cell>
-                                    <clr-dg-cell>{{d.kadar}}</clr-dg-cell>
-                                    <clr-dg-cell>{{d.warna}}</clr-dg-cell>
-                                    <clr-dg-cell><span style="float: right;">Rp. {{d.harga | number}}</span></clr-dg-cell>
-                                    <clr-dg-cell><span style="float: left;">
-                                        <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart()">
-                                            <clr-icon shape="plus"></clr-icon>
-                                        </button>
-                                    </span>
-                                    </clr-dg-cell>
-                                </clr-dg-row>
-                                <clr-dg-footer>
-                                    <clr-dg-pagination #pagination [clrDgPageSize]="5">
-                                      <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Users per page</clr-dg-page-size>
-                                      {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
-                                      of {{pagination.totalItems}} Produk
-                                    </clr-dg-pagination>
-                                  </clr-dg-footer>
-                            </clr-datagrid>
+                        <clr-tab-content >     
+                           <app-mulia>
 
-
+                               
+                           </app-mulia>  
                         </clr-tab-content>
                     </clr-tab>
                     <clr-tab>
