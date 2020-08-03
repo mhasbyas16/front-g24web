@@ -97,5 +97,6 @@ export enum EMenuID {
 
     DISTRO              = '10001',
     ROLE                = '10002',
+    LAPORAN             = '10003'
 
 }

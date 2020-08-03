@@ -7,9 +7,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PerhiasanComponent } from './penjualan-distro/perhiasan/perhiasan.component';
 import { NavModule } from '../../nav/nav.module';
 import { NgxBarcodeModule } from 'ngx-barcode';
+import { BerlianComponent } from './penjualan-distro/berlian/berlian.component';
 
 @NgModule({
-  declarations: [PenjualanDistroComponent, PerhiasanComponent],
+  declarations: [PenjualanDistroComponent, PerhiasanComponent, BerlianComponent],
   imports: [
     CommonModule,
     PenjualanRoutingModule,

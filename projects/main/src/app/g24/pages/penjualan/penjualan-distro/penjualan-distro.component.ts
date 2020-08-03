@@ -26,12 +26,13 @@ export class PenjualanDistroComponent implements OnInit {
   //params
   params = null;
 
-  total:any;
+  total = 0;
   badge:any;
   price:any;
 
   // jumlah isi cart
   perhiasan:any;
+  berlian:any;
 
   // total harga per kategori
   hargaPerhiasan:any;
@@ -54,6 +55,24 @@ export class PenjualanDistroComponent implements OnInit {
     this.perhiasan = isi;
   }
 
+  // total isi cart berlian
+  totalBerlian(isi: any){
+    this.berlian = isi;
+  }
+
+  //CLEAR
+  // clear total cart
+  clearTotal(num){
+    this.total = num;
+  }
+  clearBerlian(isi: any){
+    this.berlian = isi;
+  }
+  clearPerhiasan(isi: any){
+    this.perhiasan = isi;
+  }
+
+  
   //total harga cart
   HPerhiasan(harga: any){
     this.hargaPerhiasan = harga;

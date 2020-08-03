@@ -8,6 +8,9 @@ import { PERHIASAN, LM, GS, BERLIAN, DINAR } from '../../../sample/cart';
   styleUrls: ['./cart.component.scss']
 })
 export class CartComponent implements OnInit {
+  @Output() clearParentCart:any = new EventEmitter();
+  @Output() clearBerlian:any = new EventEmitter();
+  @Output() clearPerhiasan:any = new EventEmitter();
   //
   @Input() total:any=0;
   @Input() perhiasan:any;
@@ -45,6 +48,7 @@ export class CartComponent implements OnInit {
   removeCart(){
     // remove all item in array    
     this.cartPerhiasan.splice(0);
+    this.cartBerlian.splice(0);
     // reset card modal
     this.perhiasan = 0;
     this.logam = 0;
@@ -61,6 +65,28 @@ export class CartComponent implements OnInit {
 
     // refresh
     this.total=0;
+    // clear
+    this.clearParentCart.emit(0);
+    this.clearBerlian.emit(0);
+    this.clearPerhiasan.emit(0);
+  }
+
+  // remove item berlian 
+  removeItemBerlian(key: any, harga:any ){
+    this.cartBerlian.splice(key,1);
+
+    //pengrurangan harga
+    // this.hargaPerhiasan = this.hargaPerhiasan-harga;
+    //pengurangan jumlah cart
+    this.total-=1;
+    this.berlian = this.berlian-1;
+    if (this.total == 0) {
+      console.debug("totallll 0");
+      this.clearParentCart.emit(0);
+    }
+    if (this.berlian == 0) {
+      this.clearBerlian.emit(0);
+    }
   }
 
   // remove item perhiasan
@@ -72,6 +98,13 @@ export class CartComponent implements OnInit {
     //pengurangan jumlah cart
     this.total-=1;
     this.perhiasan = this.perhiasan-1;
+    if (this.total == 0) {
+      console.debug("totallll 0");
+      this.clearParentCart.emit(0);
+    }
+    if (this.perhiasan == 0) {
+      this.clearPerhiasan.emit(0);
+    }
   }
   modalView(isi: any){
     this.cartModal = isi;

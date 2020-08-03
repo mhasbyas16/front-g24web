@@ -74,12 +74,15 @@ export class CommonService {
     });    
   }
 
-  public count(key: string): Observable<any> {
+  public count(key: string, params?: string): Observable<any> {
     return new Observable(observer => {
 
       let url;
+      if (params!=undefined) {
+        url = `${this.sessionService.server}/${key}/count` + params;
+      } else {
         url = `${this.sessionService.server}/${key}/count`;
-
+      }
       const request = this.http.get(url, { headers: this.sessionService.getHeader() });
 
       request.subscribe((respond: any) => {

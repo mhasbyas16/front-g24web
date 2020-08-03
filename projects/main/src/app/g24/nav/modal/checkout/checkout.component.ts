@@ -219,9 +219,9 @@ export class CheckoutComponent implements OnInit {
   }
 
   storeTransaction(){
-  
-    let data = this.formData.getRawValue();    
-    data.product = btoa(JSON.stringify({PERHIASAN,LM})) ;
+    let data = this.formData.getRawValue();  
+    // 
+    data.product = btoa(JSON.stringify({PERHIASAN,LM,BERLIAN,GS,DINAR})) ;
     data.product_encoded = "base64";
     delete data["cif"];
     console.debug(data,"ISI FORMDATA");
