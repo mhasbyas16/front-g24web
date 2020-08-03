@@ -4,9 +4,9 @@ import { CommonService } from 'projects/platform/src/app/core-services/common.se
 @Injectable({
   providedIn: 'root'
 })
-export class ProvinceService {
+export class ClientBusinessFieldService {
 
-  key = "master-api/province-old";
+  key = "master-api/client-business-field";
 
   constructor(private commonService:CommonService) { }
 

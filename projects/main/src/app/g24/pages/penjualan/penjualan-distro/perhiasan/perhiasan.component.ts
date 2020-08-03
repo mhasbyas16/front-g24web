@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter, Output, Input} from '@angular/core';
-import { NgForm, Form, FormGroup } from '@angular/forms';
 import { ToastrService } from "ngx-toastr";
+import { CountCartService } from '../../../../services/count-cart.service';
 
 // Database
 import { VendorService } from '../../../../services/vendor.service';
@@ -39,7 +39,8 @@ export class PerhiasanComponent implements OnInit {
 
   //params
   params = null;
-  category = "?product-category.code=00&flag=stock";
+  vendorCategory= "product-category.code=00";
+  category = "?_hash=1&product-category.code=00&flag=stock";
 
   //parameter
   margin = null;
@@ -64,6 +65,9 @@ export class PerhiasanComponent implements OnInit {
 
     //ng
     private toastrService: ToastrService,
+
+    //count cart
+    private countService: CountCartService,
   ) { }
   searchModel : any = {vendors:"all", jenisperhiasan: "all"};
 
@@ -73,7 +77,7 @@ export class PerhiasanComponent implements OnInit {
   }
 
   onListVendor(){
-    this.vendorService.list("?_hash=1").subscribe((response: any) => {
+    this.vendorService.list("?_hash=1&"+this.vendorCategory).subscribe((response: any) => {
       if (response != false) {
         this.vendors = response;
       }      
@@ -122,49 +126,19 @@ export class PerhiasanComponent implements OnInit {
       } else if (id != null ){
         this.params = this.params+"&"+urlid;
       }
-
-
-      // if (vendor != 'all' && jenis != 'all' && berat != null && id != null) {
-      //   this.params = this.category+"&"+urlVendor+"&"+urlJenis+"&"+urlBerat+"&"+urlid;
-      //    // filteredperhiasan = this.getPerhiasan.filter(produk =>  produk.jenis == jenis && produk.vendor == vendor && produk.berat == berat);
-      // }else if (vendor == 'all' && jenis != 'all' && berat != null && id != null) {
-      //   this.params = this.category+"&"+urlJenis+"&"+urlBerat+"&"+urlid;
-      //    // filteredperhiasan = this.getPerhiasan.filter(produk =>  produk.jenis == jenis && produk.berat == berat)
-      // }else if (vendor != 'all' && jenis == 'all' && berat != null && id != null) {
-      //   this.params = this.category+"&"+urlVendor+"&"+urlBerat+"&"+urlid;
-      //     //filteredperhiasan = this.getPerhiasan.filter(produk =>  produk.vendor == vendor && produk.berat == berat)
-      // }else if (vendor != 'all' && jenis != 'all' && berat == null && id != null) {
-      //   this.params = this.category+"&"+urlVendor+"&"+urlJenis+"&"+urlid;
-      //    // filteredperhiasan = this.getPerhiasan.filter(produk =>  produk.vendor == vendor && produk.jenis == jenis)
-      // }else if (vendor != 'all' && jenis != 'all' && berat != null && id == null){
-      //   this.params = this.category+"&"+urlVendor+"&"+urlJenis+"&"+urlBerat;
-      // }else if (vendor != 'all' && jenis == 'all' && berat == null) {
-      //   this.params = this.category+"&"+urlVendor;
-      //     //filteredperhiasan = this.getPerhiasan.filter(produk =>  produk.vendor == vendor )
-      // }else if (vendor == 'all' && jenis != 'all' && berat == null) {
-      //   this.params = this.category+"&"+urlJenis;
-      //     //filteredperhiasan = this.getPerhiasan.filter(produk =>  produk.jenis == jenis )
-      // }else if (vendor == 'all' && jenis == 'all' && berat != null) {
-      //   this.params = this.category+"&"+urlBerat;
-      //   //filteredperhiasan = this.getPerhiasan.filter(produk =>  produk.berat == berat )
-      // }else if (vendor == 'all' && jenis == 'all' && berat == null ) {
-      //   this.params = this.category;
-      //     //filteredperhiasan = this.getPerhiasan
-      // }else{
-        
-      // }
-
       
       // product
       this.productService.list(this.params).subscribe((response: any) => {
         if (response == false) {
           this.toastrService.error("Data Not Found", "Perhiasan");
           this.loadingDg = false;
+          this.dataperhiasans= null;
           return;
         }  
         if (response["length"] == 0) {
           this.toastrService.error("Data Not Found", "Perhiasan");
           this.loadingDg = false;
+          this.dataperhiasans= null;
           return;
         }  
         this.perhiasans = response;
@@ -202,7 +176,7 @@ export class PerhiasanComponent implements OnInit {
     }
 
     addCart(code: any,vendor: any, jenis: any, 
-      warna: any, berat: any, kadar: any, harga: any){
+      warna: any, berat: any, kadar: any, harga: any, _hash:any){
       
       this.cartList.push({
         'code': code, 
@@ -212,13 +186,14 @@ export class PerhiasanComponent implements OnInit {
         'berat' : berat,
         'kadar': kadar, 
         'harga': harga,
+        'detail': JSON.parse(atob(_hash)),
         'qty': 1});
-
+        console.debug(this.cartList,"ISI HASH CART")
         // harga
         this.refresh(harga, "p")
         //
         this.perhiasan.emit(this.cartList.length);
-        this.data.emit(this.cartList.length);
+        this.data.emit(this.countService.countCart());
 
        // this.cekItemArray(code);
     }

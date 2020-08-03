@@ -61,7 +61,7 @@ export class AppRoutingModule
 
     ModuleLoader.register('x1', () => import('./pages/inventory-addition/inventory-addition.module').then(m => m.InventoryAdditionModule))
     ModuleLoader.register('pj', () => import('./pages/penjualan/penjualan.module').then(m => m.PenjualanModule))
-    
+    ModuleLoader.register('lp', () => import('./pages/laporan/laporan.module').then(m => m.LaporanModule))
     if (getRole["name"] == "Management"){    
       ModuleLoader.register('rl', () => import('./pages/security/security.module').then(m => m.SecurityModule))
     }   

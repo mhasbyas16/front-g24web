@@ -4,8 +4,12 @@
             Penjualan
             <div class="cart-style"> <!-- total isi cart              total harga cart                           -->
                 <app-cart [total]="total"
-                [perhiasan]="perhiasan" 
+                [perhiasan]="perhiasan"
+                [berlian]="berlian" 
                 [hargaPerhiasan]="hargaPerhiasan"
+                (clearParentCart)="clearTotal($event)"
+                (clearBerlian)="clearBerlian($event)"
+                (clearPerhiasan)="clearPerhiasan($event)"
                 ></app-cart>
             </div>
                
@@ -36,7 +40,10 @@
                     <clr-tab>
                         <button clrTabLink>Berlian</button>
                         <clr-tab-content >
-                            ...
+                            <app-berlian
+                            (data)="cartData($event)" 
+                            (berlian)="totalBerlian($event)" 
+                            ></app-berlian>
                         </clr-tab-content>
                     </clr-tab>
                     <clr-tab>
