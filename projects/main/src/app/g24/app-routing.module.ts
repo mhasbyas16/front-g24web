@@ -7,7 +7,6 @@ import { MainComponent } from './layout/main/main.component';
 import { NotFoundPageComponent } from './layout/not-found-page/not-found-page.component';
 
 // Authguard
-import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 
 import {AuthGuard } from 'projects/platform/src/app/guard/auth.guard';
 import {AuthGuardGuard } from 'projects/platform/src/app/guard/auth-guard.guard';
@@ -54,16 +53,14 @@ const routes: Routes =
 })
 export class AppRoutingModule
 {
-  constructor(private router : Router, private sessionService: SessionService)
+  constructor(private router : Router, )
   {
     // roles
-    const getRole = this.sessionService.getRole();
+    
 
     ModuleLoader.register('x1', () => import('./pages/inventory-addition/inventory-addition.module').then(m => m.InventoryAdditionModule))
     ModuleLoader.register('pj', () => import('./pages/penjualan/penjualan.module').then(m => m.PenjualanModule))
-    ModuleLoader.register('lp', () => import('./pages/laporan/laporan.module').then(m => m.LaporanModule))
-    if (getRole["name"] == "Management"){    
-      ModuleLoader.register('rl', () => import('./pages/security/security.module').then(m => m.SecurityModule))
-    }   
+    ModuleLoader.register('lp', () => import('./pages/laporan/laporan.module').then(m => m.LaporanModule))  
+    ModuleLoader.register('rl', () => import('./pages/security/security.module').then(m => m.SecurityModule))
   }
 }
