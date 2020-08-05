@@ -76,9 +76,9 @@ export class LaporanPenjualanComponent implements OnInit {
 
     if (data.text != "") {
       if (val == 'id') {
-        this.transactionService.list("?"+params+"&id_regex=1&id="+data.text).subscribe((response:any)=>{
+        this.transactionService.list("?"+params+"&idTransaction_regex=1&idTransaction="+data.text).subscribe((response:any)=>{
           if (response["length"] != 0) {
-            params = params+"&id_regex=1&id="+data.text;
+            params = params+"&idTransaction_regex=1&idTransaction="+data.text;
             this.getTransaction(params);
             return
           }else{

@@ -219,6 +219,10 @@
                     </div>
                     <div class="card-block">
                         <div class="card-text">
+                            <clr-input-container>
+                                <label>ID Transaksi</label>
+                                <input clrInput type="text" [value]="idtransaksi" fromControlName="idTransaction">
+                            </clr-input-container>
                             <clr-select-container>
                                 <label>Metode bayar</label>
                                 <select clrSelect formControlName="metodeBayar" (click)="bankValid($event.target.value)">
