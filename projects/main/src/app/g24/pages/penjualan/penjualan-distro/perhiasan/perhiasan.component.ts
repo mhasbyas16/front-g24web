@@ -2,6 +2,8 @@ import { Component, OnInit, EventEmitter, Output, Input} from '@angular/core';
 import { ToastrService } from "ngx-toastr";
 import { CountCartService } from '../../../../services/count-cart.service';
 
+//Session
+import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 // Database
 import { VendorService } from '../../../../services/vendor.service';
 import { ProductService } from '../../../../services/product/product.service';
@@ -68,6 +70,8 @@ export class PerhiasanComponent implements OnInit {
 
     //count cart
     private countService: CountCartService,
+    //session
+    private sessionService: SessionService,
   ) { }
   searchModel : any = {vendors:"all", jenisperhiasan: "all"};
 
@@ -110,6 +114,10 @@ export class PerhiasanComponent implements OnInit {
 
       let filteredperhiasan = [];
       this.params = this.category;
+
+      // Session
+      const getUnit = this.sessionService.getUnit();
+      this.params = this.params+"&unit.code="+getUnit["code"];
 
       if (vendor != 'all') {
         this.params = this.params+"&"+urlVendor;

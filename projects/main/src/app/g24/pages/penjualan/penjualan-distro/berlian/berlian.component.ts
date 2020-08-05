@@ -8,6 +8,8 @@ import { ProductService } from '../../../../services/product/product.service';
 import { ProductJenisService } from '../../../../services/product/product-jenis.service';
 //
 import { BERLIAN } from '../../../../sample/cart';
+//Session
+import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 
 @Component({
   selector: 'app-berlian',
@@ -47,7 +49,9 @@ export class BerlianComponent implements OnInit {
     private toastrService: ToastrService,
 
     //count cart
-    private countService: CountCartService
+    private countService: CountCartService,
+    //session
+    private sessionService: SessionService,
 
   ) { }
   searchModel : any = {vendors:"all", jenisperhiasan: "all"};
@@ -91,6 +95,10 @@ export class BerlianComponent implements OnInit {
 
       let filteredperhiasan = [];
       this.params = this.category;
+      
+      // Session
+      const getUnit = this.sessionService.getUnit();
+      this.params = this.params+"&unit.code="+getUnit["code"];
 
       if (vendor != 'all') {
         this.params = this.params+"&"+urlVendor;

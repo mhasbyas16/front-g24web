@@ -105,6 +105,10 @@ export class AuthService {
         // role
         this.sessionService.setRole(json.data.user.role);
 
+        // unit
+        // role
+        this.sessionService.setUnit(json.data.user.unit);
+
         observer.next(json.data);
         observer.complete();
         return (observer).unsubscribe();        

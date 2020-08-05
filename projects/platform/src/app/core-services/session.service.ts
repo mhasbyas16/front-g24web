@@ -76,6 +76,14 @@ export class SessionService {
     return JSON.parse(this.decrypt(sessionStorage.getItem('__role')));
   }
 
+  public setUnit(user: any) {
+    sessionStorage.setItem('__unit', this.encrypt(JSON.stringify(user)));
+  }
+
+  getUnit() {
+    return JSON.parse(this.decrypt(sessionStorage.getItem('__unit')));
+  }
+
   logout() {
     sessionStorage.clear();
   }

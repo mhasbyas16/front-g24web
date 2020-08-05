@@ -8,6 +8,7 @@ import { PerhiasanComponent } from './penjualan-distro/perhiasan/perhiasan.compo
 import { NavModule } from '../../nav/nav.module';
 import { NgxBarcodeModule } from 'ngx-barcode';
 import { BerlianComponent } from './penjualan-distro/berlian/berlian.component';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [PenjualanDistroComponent, PerhiasanComponent, BerlianComponent],
@@ -21,6 +22,9 @@ import { BerlianComponent } from './penjualan-distro/berlian/berlian.component';
   ],
   exports : [
     PenjualanDistroComponent,
+  ],
+  providers:[
+    DatePipe
   ]
 })
 export class PenjualanModule { }
