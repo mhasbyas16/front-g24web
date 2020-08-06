@@ -27,7 +27,10 @@ export class LaporanPenjualanComponent implements OnInit {
   selected:any;
   testarr =[];
 
+  // Harga
   totalP=0;
+  totalBerlian=0;
+  listTotalHarga=[];
 
   //
   transactions = [];
@@ -44,7 +47,9 @@ export class LaporanPenjualanComponent implements OnInit {
   ngOnInit(): void {
     this.from();
   }
-
+  totalHarga(val){
+    this.totalP = this.totalP+Number(val);
+  }
   from(){
     this.search = new FormGroup({
       from: new FormControl(this.datePipe.transform(Date.now(),'MM/dd/yyyy')),
@@ -119,7 +124,7 @@ export class LaporanPenjualanComponent implements OnInit {
   }
 
   getTransaction(params){       
-
+    this.listTotalHarga.splice(0);
     this.transactionService.list("?"+params).subscribe((response:any)=>{
       if (response == false) {
         this.toastrService.error("Data Not Found", "Transaction");
@@ -137,6 +142,23 @@ export class LaporanPenjualanComponent implements OnInit {
       this.loadingDg = false;
       this.transactions = response;
       this.toastrService.success("Load "+this.transactions.length+" Data", "Transaction");
+
+      for (let isi of this.transactions) {
+        this.totalP = 0;
+        this.totalBerlian=0;
+        for (let hp of isi.product["PERHIASAN"]) {
+          this.totalP = this.totalP + hp.harga;
+        }
+        for (let hb of isi.product["BERLIAN"]) {
+          this.totalBerlian = this.totalBerlian + hb.harga;
+        }
+        this.listTotalHarga.push({
+          "idTransaction":isi.idTransaction,
+          "hargaP":this.totalP,
+          "hargaB":this.totalBerlian,
+        });
+      }
+      console.debug(this.listTotalHarga ,"alkjfdljajkladkljadkla")
     })
   }
 

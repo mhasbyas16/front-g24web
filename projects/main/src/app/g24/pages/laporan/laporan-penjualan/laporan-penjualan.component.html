@@ -63,7 +63,6 @@
                     <clr-dg-detail *clrIfDetail="let detail">
                         <clr-dg-detail-header>List Product</clr-dg-detail-header>
                         <clr-dg-detail-body>
-                            
                         <div class="clr-row" *ngFor="let ip of detail.product.PERHIASAN | keyvalue" style="padding-top: 0;"> 
                             
                             <div class="clr-col-2" >
@@ -88,14 +87,16 @@
                                
                             </div>
                             <div class="clr-col-3">
-                                <span class="left"> Rp. {{ip.value.harga| number}}</span>
-                                
-                                
+                                <span class="left" > Rp. {{ip.value.harga| number}} </span>         
                             </div>
                         </div>
                         <div class="clr-row" style="padding-top: 0;">
                             <div class="clr-col-12">
-                                <span class="left"> TOTAL PERHIASAN Rp. {{totalP}}</span>
+                                <span class="left" *ngFor="let isi of listTotalHarga"> 
+                                    <ng-container *ngIf="isi.idTransaction == detail.idTransaction" >
+                                        TOTAL PERHIASAN Rp. {{isi.hargaP | number}} 
+                                    </ng-container>
+                                </span>
                             </div>
                         </div>
 
@@ -126,6 +127,15 @@
                             </div>
                             <div class="clr-col-3">
                                 <span class="left"> Rp. {{ip.value.harga| number}}</span>
+                            </div>
+                        </div>
+                        <div class="clr-row" style="padding-top: 0;">
+                            <div class="clr-col-12">
+                                <span class="left" *ngFor="let isi of listTotalHarga"> 
+                                    <ng-container *ngIf="isi.idTransaction == detail.idTransaction" >
+                                        TOTAL PERHIASAN Rp. {{isi.hargaB | number}} 
+                                    </ng-container>
+                                </span>
                             </div>
                         </div>
                         </clr-dg-detail-body>
