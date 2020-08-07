@@ -5,7 +5,7 @@
         </div>
         <div class="card-block">
             <div class="card-text">
-                <form clrForm [formGroup]="search" (ngSubmit)="getTransaction()">
+                <form clrForm [formGroup]="search" (ngSubmit)="filterTransaction('id')">
                     <div class="clr-row clr-align-items-center">
                         <div class="clr-col-3">
                             <clr-date-container>
@@ -19,7 +19,7 @@
                         </div>
                         <div class="clr-col-3">
                             <clr-input-container>
-                                <input clrInput type="text" formControlName="text" placeholder="search">
+                                <input clrInput type="text" formControlName="text" placeholder="search" autofocus>
                             </clr-input-container>
                         </div>
                         <div class="clr-col-2">
@@ -28,7 +28,7 @@
                     </div>                   
                 </form>
                 <!-- Data Grid -->
-                <clr-datagrid [clrDgLoading]="false" [(clrDgSelected)]="selected">
+                <clr-datagrid [clrDgLoading]="loadingDg" [(clrDgSelected)]="selected">
                     <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
 
                     <clr-dg-column>Tanggal</clr-dg-column>
@@ -36,18 +36,33 @@
                     <clr-dg-column>Nama Customer</clr-dg-column>
                     <clr-dg-column>CIF Customer</clr-dg-column>
                     <clr-dg-column>Total Penjualan</clr-dg-column>
+                    <clr-dg-column class="right"></clr-dg-column>
 
                     <clr-dg-row *clrDgItems="let isi of transactions" [clrDgItem]="isi"> 
-                        <clr-dg-cell>{{isi.makeDate}}</clr-dg-cell>
-                        <clr-dg-cell></clr-dg-cell>
+                        <clr-dg-cell>{{isi.makerDate}}, {{isi.makerTime}}</clr-dg-cell>
+                        <clr-dg-cell>{{isi.idTransaction}}</clr-dg-cell>
                         <clr-dg-cell>{{isi.client.name}}</clr-dg-cell>
                         <clr-dg-cell>{{isi.client.cif}}</clr-dg-cell>
-                        <clr-dg-cell>Rp. {{isi.diterimaDari | number}}</clr-dg-cell>
+                        <clr-dg-cell>Rp. {{isi.jumlahTerima | number}}</clr-dg-cell>
+                        <clr-dg-cell>
+                        <!-- <span style="float: left;">
+                            <ng-container *ngIf="cekItemArray(d.code); else plus">
+                                <button type="button" class="btn btn-icon btn-sm btn-danger disabled" aria-label="home" >
+                                    <clr-icon shape="minus"></clr-icon>
+                                </button>                
+                            </ng-container>
+                            <ng-template #plus>
+                                <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.code,d.vendor.name,d['product-jenis'].name,d['product-gold-color'].name, d.berat, d['product-purity'].name, d.hargaJual, d._hash)">
+                                    <clr-icon shape="plus"></clr-icon>
+                                </button>  
+                            </ng-template>
+                            
+                        </span> -->
+                        </clr-dg-cell>
                     </clr-dg-row>
                     <clr-dg-detail *clrIfDetail="let detail">
                         <clr-dg-detail-header>List Product</clr-dg-detail-header>
                         <clr-dg-detail-body>
-                            
                         <div class="clr-row" *ngFor="let ip of detail.product.PERHIASAN | keyvalue" style="padding-top: 0;"> 
                             
                             <div class="clr-col-2" >
@@ -72,14 +87,16 @@
                                
                             </div>
                             <div class="clr-col-3">
-                                <span class="left"> Rp. {{ip.value.harga| number}}</span>
-                                
-                                
+                                <span class="left" > Rp. {{ip.value.harga| number}} </span>         
                             </div>
                         </div>
                         <div class="clr-row" style="padding-top: 0;">
                             <div class="clr-col-12">
-                                <span class="left"> TOTAL PERHIASAN Rp. {{totalP}}</span>
+                                <span class="left" *ngFor="let isi of listTotalHarga"> 
+                                    <ng-container *ngIf="isi.idTransaction == detail.idTransaction" >
+                                        TOTAL PERHIASAN Rp. {{isi.hargaP | number}} 
+                                    </ng-container>
+                                </span>
                             </div>
                         </div>
 
@@ -110,6 +127,15 @@
                             </div>
                             <div class="clr-col-3">
                                 <span class="left"> Rp. {{ip.value.harga| number}}</span>
+                            </div>
+                        </div>
+                        <div class="clr-row" style="padding-top: 0;">
+                            <div class="clr-col-12">
+                                <span class="left" *ngFor="let isi of listTotalHarga"> 
+                                    <ng-container *ngIf="isi.idTransaction == detail.idTransaction" >
+                                        TOTAL BERLIAN Rp. {{isi.hargaB | number}} 
+                                    </ng-container>
+                                </span>
                             </div>
                         </div>
                         </clr-dg-detail-body>

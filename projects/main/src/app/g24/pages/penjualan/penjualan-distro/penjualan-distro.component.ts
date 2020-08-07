@@ -36,6 +36,7 @@ export class PenjualanDistroComponent implements OnInit {
 
   // total harga per kategori
   hargaPerhiasan:any;
+  hargaBatuMulia:any;
 
   //remove price
   RPricePerhiasan:any;
@@ -76,6 +77,9 @@ export class PenjualanDistroComponent implements OnInit {
   //total harga cart
   HPerhiasan(harga: any){
     this.hargaPerhiasan = harga;
+  }
+  HBatuMulia(harga: any){
+    this.hargaBatuMulia = harga;
   }
   
   static key = EMenuID.DISTRO;

@@ -23,4 +23,20 @@ export class PricingService {
     
     return harga_jual;
   }
+  priceBatuMulia(harga_baku:any,kadar:any,berat:any,margin:any,hppBatu:any,marginBatu:any,hppBerlian:any,marginBerlian:any,ongkos:any){
+    // ((((HARGA DASAR UNTUK PERHIASAN BATU PERMATA*kadar*berat emas)*
+        // (100%+Margin Jenis Penjualan ))+
+        // HPP batu+margin batu+HPP berlian+margin berlian+ongkos pembuatan))
+      let param1 = harga_baku*(kadar/1000)*berat;
+      let param2 = (100/100)+(margin/100);
+      let param3 = hppBatu+marginBatu+hppBerlian+marginBerlian;
+      let param4 = ongkos;
+      // let param1 = 715000*(880/1000)*3.2;
+      // let param2 = (100/100)+(3.5/100);
+      // let param3 = 2000000+2000000+6250000+1875000;
+      // let param4 = 1750000;
+      let total = (param1*param2)+param3+param4;
+
+      return total;
+  }
 }
