@@ -41,8 +41,8 @@ export class PerhiasanComponent implements OnInit {
 
   //params
   params = null;
-  vendorCategory= "product-category.code=00";
-  category = "?_hash=1&product-category.code=00&flag=stock";
+  vendorCategory= "product-category.code=c00";
+  category = "?_hash=1&product-category.code=c00&flag=stock";
 
   //parameter
   margin = null;
@@ -151,7 +151,7 @@ export class PerhiasanComponent implements OnInit {
         }  
         this.perhiasans = response;
         // pricing
-        this.prmJualService.list("?product-category.code=00").subscribe((Jualresponse: any) => {
+        this.prmJualService.list("?"+this.vendorCategory).subscribe((Jualresponse: any) => {
           if (Jualresponse != false) {
             this.hargaBaku = Jualresponse;
           }

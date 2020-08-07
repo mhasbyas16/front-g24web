@@ -7,6 +7,7 @@
                 [perhiasan]="perhiasan"
                 [berlian]="berlian" 
                 [hargaPerhiasan]="hargaPerhiasan"
+                [hargaBerlian]="hargaBatuMulia"
                 (clearParentCart)="clearTotal($event)"
                 (clearBerlian)="clearBerlian($event)"
                 (clearPerhiasan)="clearPerhiasan($event)"
@@ -76,6 +77,7 @@
                             <app-berlian
                             (data)="cartData($event)" 
                             (berlian)="totalBerlian($event)" 
+                            (totalHarga)="HBatuMulia($event)"
                             ></app-berlian>
                         </clr-tab-content>
                     </clr-tab>
