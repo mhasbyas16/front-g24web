@@ -52,8 +52,10 @@ export class LaporanPenjualanComponent implements OnInit {
   }
   from(){
     this.search = new FormGroup({
-      from: new FormControl(this.datePipe.transform(Date.now(),'MM/dd/yyyy')),
-      to: new FormControl(this.datePipe.transform(Date.now(),'MM/dd/yyyy')),
+      // from: new FormControl(this.datePipe.transform(Date.now(),'MM/dd/yyyy')),
+      // to: new FormControl(this.datePipe.transform(Date.now(),'MM/dd/yyyy')),
+      from: new FormControl(""),
+      to: new FormControl(""),
       text: new FormControl("")
     });
   }
@@ -68,6 +70,12 @@ export class LaporanPenjualanComponent implements OnInit {
     // Session
     const getUnit = this.sessionService.getUnit();
     params = params+"&maker.unit.code="+getUnit["code"];
+
+    if (data.from == "" && data.to == "" && data.text == "") {
+      this.toastrService.error("Please Fill This From", "Transaction");
+      this.loadingDg = false;
+       return;
+    }
 
     if (data.from != "") {
       if (data.to == "") {
