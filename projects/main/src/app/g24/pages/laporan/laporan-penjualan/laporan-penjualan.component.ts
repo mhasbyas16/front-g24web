@@ -71,8 +71,8 @@ export class LaporanPenjualanComponent implements OnInit {
     const getUnit = this.sessionService.getUnit();
     params = params+"&maker.unit.code="+getUnit["code"];
 
-    if (data.from == "" && data.to == "" && data.text == "") {
-      this.toastrService.error("Please Fill This From", "Transaction");
+    if (data.from == "" && data.text == "") {
+      this.toastrService.error("Please Complete Fill This From", "Transaction");
       this.loadingDg = false;
        return;
     }
