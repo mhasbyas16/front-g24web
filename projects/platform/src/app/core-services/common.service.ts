@@ -79,15 +79,9 @@ export class CommonService {
 
       let url;
       if (params!=undefined) {
-<<<<<<< HEAD
-        url = `${this.sessionService.server}/${key}/search` + params;
-      } else {
-        url = `${this.sessionService.server}/${key}/search`;
-=======
         url = `${this.sessionService.server}/${key}/count` + params;
       } else {
         url = `${this.sessionService.server}/${key}/count`;
->>>>>>> 87b7966c55df3f537fea940c1059fa0e271ef880
       }
       const request = this.http.get(url, { headers: this.sessionService.getHeader() });
 
