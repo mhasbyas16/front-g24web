@@ -46,13 +46,7 @@
         <clr-dg-cell>Rp. 10000000</clr-dg-cell>
        
     </clr-dg-row>
-    <clr-dg-detail *clrIfDetail="let d of datamulias">
-        <clr-dg-detail-header>{{d.id}}</clr-dg-detail-header>
-        
-        <clr-dg-detail-body>
-        
-        </clr-dg-detail-body>
-    </clr-dg-detail>
+    
     <clr-dg-footer>
         <clr-dg-pagination #pagination [clrDgPageSize]="5">
           <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Users per page</clr-dg-page-size>
