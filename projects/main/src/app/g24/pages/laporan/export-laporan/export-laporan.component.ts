@@ -109,7 +109,7 @@ export class ExportLaporanComponent implements OnInit {
           body: [
             [{text:'* harga Termasuk pajak',style:'footer'}, 
               {
-                fontSize: 9,
+                fontSize: 7,
 							  rowSpan: 3,
 							  border: [true, true, true, true],
                 text:[
