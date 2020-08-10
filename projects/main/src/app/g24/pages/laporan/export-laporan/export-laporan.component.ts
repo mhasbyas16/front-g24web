@@ -5,6 +5,9 @@ import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
+// service
+import { TransactionService } from '../../../services/transaction/transaction.service';
+
 
 @Component({
   selector: 'app-export-laporan',
@@ -14,34 +17,48 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 export class ExportLaporanComponent implements OnInit {
 
   innerDoc = {};
+  transactionList = [];
 
-  constructor() { }
+  constructor(
+    private transactionService: TransactionService,
+  ) { }
 
   ngOnInit(): void {
-    const JsBarcode = require('jsbarcode');
-    JsBarcode("#barcode", "1234567890123456",{height:17, width:1,fontSize: 11, margin:0,displayValue:false});
-    this.thisContent();
+    //this.thisContent();
   }
   @ViewChild('barcode') barcode: ElementRef; 
 
-  PDFData(){
-    this.thisContent();
+  PDFData(idTransaction){
+    this.transactionService.list('?_hash=1&idTransaction='+idTransaction).subscribe((response:any)=>{
+      if (response != false) {
+        this.transactionList = response;
+        this.thisContent(this.transactionList[0]);
+      }
+    })
+    
   }
 
-  thisContent(){
-    delete this.innerDoc;
+  thisContent(data){
+    console.debug(data, data.idTransaction,"isi data PDF")
+
+    // Barcode
+    const JsBarcode = require('jsbarcode');
+    JsBarcode("#barcode", data.idTransaction,{height:17, width:1,fontSize: 11, margin:0,displayValue:false});
     const canvas = document.getElementById('barcode') as HTMLCanvasElement;
     const jpegUrl = canvas.toDataURL('image/jpeg');
 
+    // Content
+    delete this.innerDoc;
+
     this.innerDoc ={pageSize: 'A5', pageOrientation: 'portrait',pageMargins: [ 20, 60, 20, 40 ],};
-    this.innerDoc['info'] = {title: 'awesome Document' }; 
+    this.innerDoc['info'] = {title: data.client.cif+" - "+data.idTransaction }; 
 
     // Head Content
     this.innerDoc['content'] = [
       {
         style: 'head',
 			  columns: [
-				  {text: '1234567890123456'},
+				  {text: data.idTransaction},
 				  {image: jpegUrl}
 			  ]
       },
@@ -49,22 +66,22 @@ export class ExportLaporanComponent implements OnInit {
       {
         style:'detail',
         columns:[
-          {text: 'Nama Unit : Unknown'},
-          {text: ' Nama Nasabah : Unknown'}
+          {text: 'Nama Unit : '+data.unit.nama},
+          {text: ' Nama Nasabah : '+ data.client.name}
 			  ]
       },
       {
         style:'detail',
         columns:[
-          {text: 'Tanggal Pembelian : Unknown'},
-          {text: 'Alamat : asdasd dasdasdasdas dasd adaasdafsgfsdg dgdfg dfgh fdhfh h fh f'}
+          {text: 'Tanggal Pembelian : '+data.makerDate+', '+data.makerTime},
+          {text: 'Alamat : '+data.client.alamatSaatIni.alamat}
 			  ]
       },
       {
         style:'detail',
         columns:[
-          {text: 'CIF : Unknown'},
-          {text: 'No. Hp : unknown'}
+          {text: 'CIF : '+data.client.cif},
+          {text: 'No. Hp : '+data.client.noHP}
 			  ]
       },'\n'  
     ];
@@ -75,7 +92,7 @@ export class ExportLaporanComponent implements OnInit {
       },
       {
         style:'detail',
-        text: 'Alamat : asdasd dasdasdasdas dasd adaasdafsgfsdg dgdfg dfgh fdhfh h fh f'
+        text: 'emas'
       },'\n'
     ]);
 
@@ -121,6 +138,8 @@ export class ExportLaporanComponent implements OnInit {
       }
 
     };
+
+    // End Content
 
     this.ExportPDF(this.innerDoc);
   }

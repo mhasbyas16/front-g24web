@@ -45,7 +45,7 @@
                         <clr-dg-cell>{{isi.client.cif}}</clr-dg-cell>
                         <clr-dg-cell>Rp. {{isi.jumlahTerima | number}}</clr-dg-cell>
                         <clr-dg-cell>
-                                <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home"  (click)="exportPDF.PDFData()">
+                                <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home"  (click)="exportPDF.PDFData(isi.idTransaction)">
                                     PDF
                                 </button>
                         </clr-dg-cell>
