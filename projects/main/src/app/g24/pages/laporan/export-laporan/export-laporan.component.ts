@@ -7,6 +7,8 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 // service
 import { TransactionService } from '../../../services/transaction/transaction.service';
+// rupiah terbilang
+import { HargaTerbilangService } from '../../../lib/helper/harga-terbilang.service';
 
 
 @Component({
@@ -21,9 +23,11 @@ export class ExportLaporanComponent implements OnInit {
 
   constructor(
     private transactionService: TransactionService,
+    private terbilangService: HargaTerbilangService,
   ) { }
 
   ngOnInit(): void {
+    console.debug(this.terbilangService.terbilang(101500000),"hasil persenan")
     //this.thisContent();
   }
   @ViewChild('barcode') barcode: ElementRef; 
@@ -49,7 +53,7 @@ export class ExportLaporanComponent implements OnInit {
 
     // Content
     delete this.innerDoc;
-
+    let hargaFormat = new Intl.NumberFormat(['ban', 'id']).format(data.jumlahTerima);
     this.innerDoc ={pageSize: 'A5', pageOrientation: 'portrait',pageMargins: [ 20, 60, 20, 40 ],};
     this.innerDoc['info'] = {title: data.client.cif+" - "+data.idTransaction }; 
 
@@ -106,10 +110,14 @@ export class ExportLaporanComponent implements OnInit {
             [{text:'* harga Termasuk pajak',style:'footer'}, 
               {
                 fontSize: 9,
-                bold:true,
 							  rowSpan: 3,
 							  border: [true, true, true, true],
-							  text: 'Total Harga : \n Terbilang :\n'
+                text:[
+                {text:'Total Harga :', bold:true},
+                ' Rp. '+hargaFormat,
+                {text:'\n Terbilang : ', bold:true},
+                this.terbilangService.terbilang(Number(data.jumlahTerima))
+                ]                
               }
             ],
             [{text:'* bukti pembelian ini merupakan kuitansi pembelian emas',style:'footer'}],
