@@ -39,7 +39,7 @@ export class SearchNasabahComponent implements OnInit {
       tipeClient: new FormControl ("", Validators.required),
       // tipeClient_encoded: new FormControl ("base64"),
       cif: new FormControl (""),
-      namaNasabah: new FormControl ("", Validators.required),
+      namaNasabah: new FormControl (""),
       tglLahir: new FormControl (""),
       namaIbuKandung: new FormControl (""),
     });
@@ -72,14 +72,16 @@ export class SearchNasabahComponent implements OnInit {
     let ItipeC = this.formSearch.get("tipeClient").value;
     let params="";
 
+    params ="?tipeClient.code="+ItipeC+"&tipeClient.code_encoded=int";
+
     if (Icif != "") {
-      params ="?tipeClient.code="+ItipeC+"&tipeClient.code_encoded=int&cif="+Icif;
-    } else if (Iname != "") {
-      params ="?tipeClient.code="+ItipeC+"&tipeClient.code_encoded=int&name_regex=1&name="+Iname;
-    } else if (Icif != "" && Iname != ""){
-      params ="?tipeClient.code="+ItipeC+"&tipeClient.code_encoded=int&name_regex=1&name="+Iname+"&cif="+Icif;
-    }else{
-      params ="?tipeClient.code="+ItipeC+"&tipeClient.code_encoded=int";
+      params =params+"&cif_regex=1&cif="+Icif;
+    }  
+    if (Iname != "") {
+      params =params+"&name_regex=1&name="+Iname;
+    } 
+    if (Icif != "" && Iname != ""){
+      params =params+"&name_regex=1&name="+Iname+"&cif_regex=1&cif="+Icif;
     }
     
     this.clientService.list(params).subscribe((response:any) => {
