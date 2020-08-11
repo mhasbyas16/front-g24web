@@ -4,6 +4,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
+declare let require: any;
 
 // service
 import { TransactionService } from '../../../services/transaction/transaction.service';
@@ -48,7 +49,7 @@ export class ExportLaporanComponent implements OnInit {
     // Barcode
     const JsBarcode = require('jsbarcode');
     JsBarcode("#barcode", data.idTransaction,{height:17, width:1,fontSize: 11, margin:0,displayValue:false});
-    const canvas = document.getElementById('barcode') as HTMLCanvasElement;
+    const canvas = this.barcode.nativeElement as HTMLCanvasElement;
     const jpegUrl = canvas.toDataURL('image/jpeg');
 
     // Content
@@ -89,19 +90,87 @@ export class ExportLaporanComponent implements OnInit {
 			  ]
       },'\n'  
     ];
+
     // body Content
-    this.innerDoc['content'].push([
-      {
-        style:'head', alignment:'left',text:'Logam Mulia'
-      },
-      {
-        style:'detail',
-        text: 'emas'
-      },'\n'
-    ]);
+    if (data.product.PERHIASAN.length != 0) {
+      this.innerDoc['content'].push([
+        {
+          style:'head',fontSize:8, alignment:'left',text:'Perhiasan'
+        }
+      ]);
+      for (let perhiasan of data.product.PERHIASAN) {
+        //console.debug(data.product.PERHIASAN.length,product,"list product");  
+        this.innerDoc['content'].push([
+          {
+            style:'detail',
+            table: {
+              headerRows: 1,
+              widths: ['auto','auto','auto','auto','auto','auto','auto',80],
+              body: [
+                [
+                  {text:perhiasan.detail.code},
+                  {text:perhiasan.detail.vendor.name},
+                  {text:perhiasan.detail['product-jenis'].name},
+                  {text:perhiasan.detail['product-gold-color'].name},
+                  {text:perhiasan.kadar},
+                  {text:perhiasan.berat},
+                  {text:'Harga : Rp. '+new Intl.NumberFormat(['ban', 'id']).format(perhiasan.harga), noWrap: true}, 
+                  {fillColor: '#ede5ce',fontSize:3,alignment: 'center', text:'tanggal buyback'}
+                ],
+                [{colSpan: 6,text: ''},'','','','','',{colSpan: 2,fontSize:5,text: 'Diskon :'},''],
+                [{colSpan: 6,text: ''},'','','','','',{colSpan: 2,fontSize:5,text: 'Voucher :'},''],
+                [{colSpan: 6,text: ''},'','','','','',{colSpan: 2,fontSize:5,text: 'Harga :'},''],
+              ]
+            },
+            layout: 'noBorders'
+          }
+        ]);   
+      }
+    }
+
+    if (data.product.BERLIAN.length != 0) {
+      this.innerDoc['content'].push([
+        {
+          style:'head',fontSize:8, alignment:'left',text:'Berlian'
+        }
+      ]);
+      for (let berlian of data.product.BERLIAN) {
+        //console.debug(data.product.PERHIASAN.length,product,"list product");  
+        this.innerDoc['content'].push([
+          {
+            style:'detail',
+            table: {
+              headerRows: 1,
+              widths: ['auto','auto','auto','auto','auto','auto','auto','auto','auto','auto',80],
+              body: [
+                [
+                  {text:berlian.detail.code},
+                  {text:berlian.detail.vendor.name},
+                  {text:berlian.detail['product-jenis'].name},
+                  {text:berlian.detail['product-gold-color'].name},
+                  {text:berlian.detail['product-diamond-color'].name},
+                  {text:berlian.detail['product-clarity'].name},
+                  {text:berlian.detail.carat},
+                  {text:berlian.kadar},
+                  {text:berlian.berat},
+                  {text:'Harga : Rp. '+new Intl.NumberFormat(['ban', 'id']).format(berlian.harga), noWrap: true}, 
+                  {fillColor: '#ede5ce',fontSize:3,alignment: 'center', text:'tanggal buyback'}
+                ],
+                [{colSpan: 9,text: ''},'','','','','','','','',{colSpan: 2,fontSize:5,text: 'Diskon :'},''],
+                [{colSpan: 9,text: ''},'','','','','','','','',{colSpan: 2,fontSize:5,text: 'Voucher :'},''],
+                [{colSpan: 9,text: ''},'','','','','','','','',{colSpan: 2,fontSize:5,text: 'Harga :'},''],
+              ]
+            },
+            layout: 'noBorders'
+          }
+        ]);   
+      }
+    }
+    
 
     // footer content
     this.innerDoc['content'].push([
+      '\n',
       {
         table: {
           headerRows: 1,
@@ -131,8 +200,8 @@ export class ExportLaporanComponent implements OnInit {
     // style
     this.innerDoc['styles']={
       detail: {
-        fontSize: 8,
-        bold: true,
+        fontSize: 6,
+        bold: false,
         alignment: 'left',
       },
       head:{
