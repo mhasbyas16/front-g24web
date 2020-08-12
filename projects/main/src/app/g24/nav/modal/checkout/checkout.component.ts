@@ -62,7 +62,8 @@ export class CheckoutComponent implements OnInit {
    diterima:any;
 
    bankA:boolean=false;
-
+   
+   idtransaksi:any;
   constructor(
     private clientService: ClientService,
     private bankService: BankService,
@@ -80,12 +81,52 @@ export class CheckoutComponent implements OnInit {
     this.nikUser = this.sessionService.getUser();
     this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser)),"nik":this.nikUser["username"]} ;
   }
+
+  idTransaksi(){
+    this.idtransaksi = null;
+    let inc = null;
+    let d1 = this.datePipe.transform(Date.now(),'01/01/yyyy');
+    let d2 = this.datePipe.transform(Date.now(),'12/31/yyyy');
+    let d3 = this.datePipe.transform(Date.now(),'yy');
+    let unit = this.sessionService.getUnit();
+
+    let params="?_between=makerDate&_start="+d1+"&_end="+d2;
+    this.transactionService.count(params).subscribe((response:any)=>{  
+      let count = JSON.stringify(response["count"]+1);
+      switch (count.length) {
+        case 1:
+          inc = "000000"+count;
+          break;
+        case 2:
+          inc = "00000"+count;
+          break;
+        case 3:
+          inc = "0000"+count;
+          break;
+        case 4:
+          inc = "000"+count;
+          break;
+        case 5:
+          inc = "00"+count;
+          break;
+        case 6:
+          inc = "0"+count;
+          break;
+        case 7:
+          inc = count;
+          break;
+        default:
+          break;
+      }
+      this.idtransaksi = unit.code+"06"+d3+inc;
+      this.formData.patchValue({idTransaction:this.idtransaksi});
+    })
+  }
   
-  openModal(totalHarga: any){
-    
+  openModal(totalHarga: any){    
     this.formData = new FormGroup({
-      // idPenjualan: new FormControl(""),
-      // idPenjualan_validation: new FormControl("unique:idPenjualan"),
+      idTransaction: new FormControl(""),
+      idTransaction_validation: new FormControl("unique:idPenjualan"),
       cif: new FormControl ("", [Validators.required, Validators.pattern(/^[0-9]*$/)]),
       name: new FormControl ("",[ Validators.required]),
       client: new FormControl ("", Validators.required),
@@ -100,12 +141,16 @@ export class CheckoutComponent implements OnInit {
       admBank: new FormControl(""),
       maker: new FormControl (this.nikUser["_hash"], [Validators.required]),
       maker_encoded: new FormControl("base64"),
-      makeDate: new FormControl(this.datePipe.transform(Date.now(),'yyyy/MM/dd, h:mm:ss a'), Validators.required),
+      makerDate: new FormControl(this.datePipe.transform(Date.now(),'MM/dd/yyyy'), Validators.required),
+      makerTime: new FormControl(this.datePipe.transform(Date.now(),'h:mm:ss a'), Validators.required),
       jumlahTerima: new FormControl (totalHarga, Validators.required),
       unit: new FormControl(""),
+      unit_encoded: new FormControl("base64"),
       diterimaDari: new FormControl (""),
       kembali: new FormControl (""),
     });
+    this.idTransaksi();
+    this.getUnit();
     //
     this.P = this.perhiasan.length;
     this.logam = this.lm.length;
@@ -119,6 +164,10 @@ export class CheckoutComponent implements OnInit {
     this.getBank(); 
     this.getTransactionMethod();   
     this.getTransactionBankMethod();
+  }
+  getUnit(){
+    const unitString = btoa(JSON.stringify(this.sessionService.getUnit()));
+    this.formData.patchValue({unit: unitString});
   }
 
   closeModal(){
@@ -211,6 +260,7 @@ export class CheckoutComponent implements OnInit {
   transaction(){
     if (!this.formData.valid) {
       this.toastr.error("form Not Completed","Transaction");
+      console.debug(this.formData.getRawValue());
       return;
     }    
 

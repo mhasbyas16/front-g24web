@@ -97,11 +97,12 @@ export class MuliaComponent implements OnInit {
     
   // }
 
+  
   onCariMulia(data){
     this.loadingDg = true;
     let vendor = data.vendors;
     let denom = data.denoms;
-
+    let kamu : any;
     console.debug(denom);
     const urlVendor = "vendor.code="+vendor;
     const urlDenom = "denom.code="+denom;
@@ -114,6 +115,10 @@ export class MuliaComponent implements OnInit {
       this.params = this.params+"&"+urlDenom;
     }
 
+    this.vendorService.list("?_hash=1&"+this.vendorCategory).subscribe((response: any) => {
+      kamu = response;
+    });
+    console.debug(kamu, "ka");
 
 
     this.productService.list(this.params).subscribe((response: any) => {
@@ -127,33 +132,37 @@ export class MuliaComponent implements OnInit {
         this.loadingDg = false;
         return;
       }  
+      
+      
+
+
       this.mulias = response;
       this.datamulias = this.mulias;
       this.toastrService.success("Load "+response["length"]+" Data", "Mulia");
       this.loadingDg = false;
-      let is = 0;
+      // let is = 0;
 
-      const groupBy = (array, key) => {
-        // Return the end result
-        return array.reduce((result, currentValue) => {
-          // If an array already present for key, push it to the array. Else create an array and push the object
-          (result[currentValue[key]] = result[currentValue[key]] || []).push(
-            currentValue
-          );
-          // Return the current iteration `result` value, this will be taken as next iteration `result` value and accumulate
-          return result;
-        }, {}); // empty object is the initial value for result object
-      };
+      // const groupBy = (array, key) => {
+      //   // Return the end result
+      //   return array.reduce((result, currentValue) => {
+      //     // If an array already present for key, push it to the array. Else create an array and push the object
+      //     (result[currentValue[key]] = result[currentValue[key]] || []).push(
+      //       currentValue
+      //     );
+      //     // Return the current iteration `result` value, this will be taken as next iteration `result` value and accumulate
+      //     return result;
+      //   }, {}); // empty object is the initial value for result object
+      // };
 
-      let dia = groupBy(this.mulias, "vendor.name")//
-      // for (let i=0, iLen=this.mulias.length; i<iLen; i++) {
+      // let dia = groupBy(this.mulias, "vendor.name")//
+      // // for (let i=0, iLen=this.mulias.length; i<iLen; i++) {
 
-      //   if (this.mulias[i].vendor.name == "Antam") 
-      //   dia = this.mulias[i].vendor.name 
-      //   console.debug(dia, "ka");
-      // }
-      console.debug(dia, "ka");
-      // let kamus = this.mulias.find(o => o.flag === 'stock')
+      // //   if (this.mulias[i].vendor.name == "Antam") 
+      // //   dia = this.mulias[i].vendor.name 
+      // //   console.debug(dia, "ka");
+      // // }
+      
+      // // let kamus = this.mulias.find(o => o.flag === 'stock')
       
       
     });

@@ -6,8 +6,14 @@ import { CountCartService } from '../../../../services/count-cart.service';
 import { VendorService } from '../../../../services/vendor.service';
 import { ProductService } from '../../../../services/product/product.service';
 import { ProductJenisService } from '../../../../services/product/product-jenis.service';
+import { PrmJualService } from '../../../../services/parameter/prm-jual.service';
+import { PrmMarginService } from '../../../../services/parameter/prm-margin.service';
+import { PrmPpnService } from '../../../../services/parameter/prm-ppn.service';
 //
 import { BERLIAN } from '../../../../sample/cart';
+import { PricingService }  from '../../../../services/pricing.service';
+//Session
+import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 
 @Component({
   selector: 'app-berlian',
@@ -28,8 +34,8 @@ export class BerlianComponent implements OnInit {
   loadingDg: boolean = false;
   //params
   params = null;
-  vendorCategory= "product-category.code=01";
-  category = "?_hash=1&product-category.code=01&flag=stock";
+  vendorCategory= "product-category.code=c01";
+  category = "?_hash=1&product-category.code=c01&flag=stock";
   //list
   vendors = null;
   jenis = null;
@@ -39,6 +45,10 @@ export class BerlianComponent implements OnInit {
 
   cartList = BERLIAN;
   total = 0;
+
+  //parameter
+  margin = null;
+  hargaBaku = null;
   constructor(
     private vendorService: VendorService,
     private productJenisService: ProductJenisService,
@@ -47,7 +57,16 @@ export class BerlianComponent implements OnInit {
     private toastrService: ToastrService,
 
     //count cart
-    private countService: CountCartService
+    private countService: CountCartService,
+    //session
+    private sessionService: SessionService,
+    //pricing
+    private pricingService: PricingService,
+
+    //parameter
+    private prmJualService : PrmJualService,
+    private prmMarginService: PrmMarginService,
+    private prmPpnService : PrmPpnService,
 
   ) { }
   searchModel : any = {vendors:"all", jenisperhiasan: "all"};
@@ -91,6 +110,10 @@ export class BerlianComponent implements OnInit {
 
       let filteredperhiasan = [];
       this.params = this.category;
+      
+      // Session
+      const getUnit = this.sessionService.getUnit();
+      this.params = this.params+"&unit.code="+getUnit["code"];
 
       if (vendor != 'all') {
         this.params = this.params+"&"+urlVendor;
@@ -124,33 +147,44 @@ export class BerlianComponent implements OnInit {
         }  
         this.berlians = response;
         // pricing
-        // this.prmJualService.list("?product-category.code=00").subscribe((Jualresponse: any) => {
-        //   if (Jualresponse != false) {
-        //     this.hargaBaku = Jualresponse;
-        //   }
-        //   this.prmPpnService.list().subscribe((PPNresponse: any) => {
-        //     if (PPNresponse != false) {
-        //       ppn = PPNresponse['0']['ppn'];
-        //     }      
-        //     this.prmMarginService.list().subscribe((Marginresponse: any) => {
-        //       if (Marginresponse != false) {
-        //         this.margin = Marginresponse;
-        //       }      
+        this.prmJualService.list("?"+this.vendorCategory).subscribe((Jualresponse: any) => {
+          if (Jualresponse != false) {
+            this.hargaBaku = Jualresponse;
+          }
+          this.prmPpnService.list().subscribe((PPNresponse: any) => {
+            if (PPNresponse != false) {
+              ppn = PPNresponse['0']['ppn'];
+            }      
+            this.prmMarginService.list().subscribe((Marginresponse: any) => {
+              if (Marginresponse != false) {
+                this.margin = Marginresponse;
+              }      
   
-        //       for (let index = 0, len = this.berlians.length; index < len; index++) {
-                
-        //         this.datalist=this.pricingService.pricePerhiasan(Number(this.berlians[index]['berat']),this.hargaBaku['0']['harga-baku'],this.berlians[index]['baku-tukar'],this.margin['0']['margin'],ppn);
-                
-        //         this.berlians[index].hargaJual =  Math.ceil(this.datalist/1000)*1000;
-        //       }
+              for (let index = 0, len = this.berlians.length; index < len; index++) {
+               this.datalist=this.pricingService.priceBatuMulia(
+                 this.hargaBaku['0']['harga-baku'],
+                 this.berlians[index]['product-purity']['name'],
+                 Number(this.berlians[index]['berat']),
+                 this.margin['0']['margin'],
+                 Number(this.berlians[index]['hppBatu']),
+                 Number(this.berlians[index]['marginBatu']),
+                 Number(this.berlians[index]['hppBerlian']),
+                 Number(this.berlians[index]['marginBerlian']),
+                 Number(this.berlians[index]['ongkosPembuatan']));
+                // harga_baku:any,kadar:any,berat:any,margin:any,hppBatu:any,marginBatu:any,hppBerlian:any,marginBerlian:any,ongkos:any
+                this.datalist = this.datalist*((100/100)+(Number(ppn)/100));
+                this.berlians[index].hargaJual = Math.ceil(this.datalist/10000)*10000  ;
+                //Math.ceil(this.datalist/100000)*100000
+                console.debug(this.berlians,"itungan")
+              }
 
               this.databerlians = this.berlians;
               this.toastrService.success("Load "+response["length"]+" Data", "Berlian");
               this.loadingDg = false;
             });          
-      //     });
-      //   }); 
-      // }); 
+          });
+        }); 
+      }); 
     }
 
     addCart(code: any,vendor: any, jenis: any, 

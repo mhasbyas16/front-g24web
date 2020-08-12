@@ -2,6 +2,8 @@ import { Component, OnInit, EventEmitter, Output, Input} from '@angular/core';
 import { ToastrService } from "ngx-toastr";
 import { CountCartService } from '../../../../services/count-cart.service';
 
+//Session
+import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 // Database
 import { VendorService } from '../../../../services/vendor.service';
 import { ProductService } from '../../../../services/product/product.service';
@@ -39,8 +41,8 @@ export class PerhiasanComponent implements OnInit {
 
   //params
   params = null;
-  vendorCategory= "product-category.code=00";
-  category = "?_hash=1&product-category.code=00&flag=stock";
+  vendorCategory= "product-category.code=c00";
+  category = "?_hash=1&product-category.code=c00&flag=stock";
 
   //parameter
   margin = null;
@@ -68,6 +70,8 @@ export class PerhiasanComponent implements OnInit {
 
     //count cart
     private countService: CountCartService,
+    //session
+    private sessionService: SessionService,
   ) { }
   searchModel : any = {vendors:"all", jenisperhiasan: "all"};
 
@@ -111,6 +115,10 @@ export class PerhiasanComponent implements OnInit {
       let filteredperhiasan = [];
       this.params = this.category;
 
+      // Session
+      const getUnit = this.sessionService.getUnit();
+      this.params = this.params+"&unit.code="+getUnit["code"];
+
       if (vendor != 'all') {
         this.params = this.params+"&"+urlVendor;
       }
@@ -143,7 +151,7 @@ export class PerhiasanComponent implements OnInit {
         }  
         this.perhiasans = response;
         // pricing
-        this.prmJualService.list("?product-category.code=00").subscribe((Jualresponse: any) => {
+        this.prmJualService.list("?"+this.vendorCategory).subscribe((Jualresponse: any) => {
           if (Jualresponse != false) {
             this.hargaBaku = Jualresponse;
           }
