@@ -45,19 +45,9 @@
                         <clr-dg-cell>{{isi.client.cif}}</clr-dg-cell>
                         <clr-dg-cell>Rp. {{isi.jumlahTerima | number}}</clr-dg-cell>
                         <clr-dg-cell>
-                        <!-- <span style="float: left;">
-                            <ng-container *ngIf="cekItemArray(d.code); else plus">
-                                <button type="button" class="btn btn-icon btn-sm btn-danger disabled" aria-label="home" >
-                                    <clr-icon shape="minus"></clr-icon>
-                                </button>                
-                            </ng-container>
-                            <ng-template #plus>
-                                <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.code,d.vendor.name,d['product-jenis'].name,d['product-gold-color'].name, d.berat, d['product-purity'].name, d.hargaJual, d._hash)">
-                                    <clr-icon shape="plus"></clr-icon>
-                                </button>  
-                            </ng-template>
-                            
-                        </span> -->
+                                <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home"  (click)="exportPDF.PDFData(isi.idTransaction)">
+                                    PDF
+                                </button>
                         </clr-dg-cell>
                     </clr-dg-row>
                     <clr-dg-detail *clrIfDetail="let detail">
@@ -146,5 +136,6 @@
     </div>
 
 </div>
+<app-export-laporan #exportPDF></app-export-laporan>
 <!-- 
 -->

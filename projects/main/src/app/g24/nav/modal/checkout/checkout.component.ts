@@ -145,10 +145,12 @@ export class CheckoutComponent implements OnInit {
       makerTime: new FormControl(this.datePipe.transform(Date.now(),'h:mm:ss a'), Validators.required),
       jumlahTerima: new FormControl (totalHarga, Validators.required),
       unit: new FormControl(""),
+      unit_encoded: new FormControl("base64"),
       diterimaDari: new FormControl (""),
       kembali: new FormControl (""),
     });
     this.idTransaksi();
+    this.getUnit();
     //
     this.P = this.perhiasan.length;
     this.logam = this.lm.length;
@@ -162,6 +164,10 @@ export class CheckoutComponent implements OnInit {
     this.getBank(); 
     this.getTransactionMethod();   
     this.getTransactionBankMethod();
+  }
+  getUnit(){
+    const unitString = btoa(JSON.stringify(this.sessionService.getUnit()));
+    this.formData.patchValue({unit: unitString});
   }
 
   closeModal(){

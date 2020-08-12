@@ -166,7 +166,7 @@ export class LaporanPenjualanComponent implements OnInit {
           "hargaB":this.totalBerlian,
         });
       }
-      console.debug(this.listTotalHarga ,"alkjfdljajkladkljadkla")
+     // console.debug(this.listTotalHarga ,"alkjfdljajkladkljadkla")
     })
   }
 

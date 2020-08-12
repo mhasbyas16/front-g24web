@@ -6,7 +6,6 @@ import { ClarityModule } from '@clr/angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PerhiasanComponent } from './penjualan-distro/perhiasan/perhiasan.component';
 import { NavModule } from '../../nav/nav.module';
-import { NgxBarcodeModule } from 'ngx-barcode';
 import { BerlianComponent } from './penjualan-distro/berlian/berlian.component';
 import { DatePipe } from '@angular/common';
 
@@ -18,7 +17,6 @@ import { DatePipe } from '@angular/common';
     ClarityModule,
     FormsModule,
     NavModule,
-    NgxBarcodeModule,
   ],
   exports : [
     PenjualanDistroComponent,

@@ -221,7 +221,7 @@
                         <div class="card-text">
                             <clr-input-container>
                                 <label>ID Transaksi</label>
-                                <input clrInput type="text" [value]="idtransaksi" fromControlName="idTransaction">
+                                <input clrInput type="text" [value]="idtransaksi" fromControlName="idTransaction" readonly>
                             </clr-input-container>
                             <clr-select-container>
                                 <label>Metode bayar</label>
@@ -299,6 +299,7 @@
                     <input type="hidden" formControlName="client">
                     <input type="hidden" formControlName="client_encoded">
                     <input type="hidden" formControlName="unit">
+                    <input type="hidden" formControlName="unit_encoded">
                     <div class="card-footer">
                         <button type="button" class="btn btn-primary" (click)="transaction()">Submit</button>
                     </div>
