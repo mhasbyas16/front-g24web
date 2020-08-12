@@ -196,7 +196,7 @@ export class ExportLaporanComponent implements OnInit {
               {
                 width:"*",
                 columns:[
-                  {width:41,text:berlian.detail.code},
+                  {width:55,text:berlian.detail.code},
                   {width:20,text:' '+berlian.detail.vendor.name},
                   {width:24,text:' '+berlian.detail['product-jenis'].name},
                   {width:19,text:' '+berlian.detail['product-gold-color'].name},
