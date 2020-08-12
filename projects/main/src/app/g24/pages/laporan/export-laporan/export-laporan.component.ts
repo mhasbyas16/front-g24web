@@ -10,6 +10,7 @@ declare let require: any;
 import { TransactionService } from '../../../services/transaction/transaction.service';
 // rupiah terbilang
 import { HargaTerbilangService } from '../../../lib/helper/harga-terbilang.service';
+import { TanggalService } from '../../../lib/helper/tanggal.service';
 
 
 @Component({
@@ -25,10 +26,12 @@ export class ExportLaporanComponent implements OnInit {
   constructor(
     private transactionService: TransactionService,
     private terbilangService: HargaTerbilangService,
+    private tanggalService:TanggalService,
   ) { }
 
   ngOnInit(): void {
     console.debug(this.terbilangService.terbilang(101500000),"hasil persenan")
+  
     //this.thisContent();
   }
   @ViewChild('barcode') barcode: ElementRef; 
@@ -44,8 +47,15 @@ export class ExportLaporanComponent implements OnInit {
   }
 
   thisContent(data){
-    console.debug(data, data.idTransaction,"isi data PDF")
-
+    
+    // tanggal
+    let tgl =data.makerDate;
+    let tglSplit = tgl.split("/");
+    let bulan = Number(tglSplit["0"]);
+    let hari = tglSplit["1"];
+    let tahun = tglSplit["2"];
+    let bulanTerbilang = this.tanggalService.bulanGenerate(bulan);
+   // let hariTerbilang = this.tanggalService.hariGenerate(Number(hari));
     // Barcode
     const JsBarcode = require('jsbarcode');
     JsBarcode("#barcode", data.idTransaction,{height:17, width:1,fontSize: 11, margin:0,displayValue:false});
@@ -63,7 +73,7 @@ export class ExportLaporanComponent implements OnInit {
       {
         style: 'head',
 			  columns: [
-				  {text: data.idTransaction},
+				  {text: 'ID Transaction : '+data.idTransaction},
 				  {image: jpegUrl}
 			  ]
       },
@@ -71,22 +81,46 @@ export class ExportLaporanComponent implements OnInit {
       {
         style:'detail',
         columns:[
-          {text: 'Nama Unit : '+data.unit.nama},
-          {text: ' Nama Nasabah : '+ data.client.name}
+          {
+            columns:[
+              {width:53,bold:true,text:'Nama Unit'},{width:5,bold:true,text:': '},{width:'*',text:data.unit.nama}
+            ]
+          },
+          {
+            columns:[
+              {width:53,bold:true,text:'Nama Nasabah'},{width:5,bold:true,text:': '},{width:'*',text:data.client.name}
+            ]
+          }
 			  ]
       },
       {
         style:'detail',
         columns:[
-          {text: 'Tanggal Pembelian : '+data.makerDate+', '+data.makerTime},
-          {text: 'Alamat : '+data.client.alamatSaatIni.alamat}
+          {
+            columns:[
+              {width:53,bold:true,text:'Tanggal Pembelian'},{width:5,bold:true,text:': '},{width:'*',text:hari+' '+bulanTerbilang+' '+tahun}
+            ]
+          },
+          {
+            columns:[
+              {width:53,bold:true,text:'Alamat'},{width:5,bold:true,text:': '},{width:'*',text:data.client.alamatSaatIni.alamat}
+            ]
+          }
 			  ]
       },
       {
         style:'detail',
         columns:[
-          {text: 'CIF : '+data.client.cif},
-          {text: 'No. Hp : '+data.client.noHP}
+          {
+            columns:[
+              {width:53,bold:true,text:'CIF'},{width:5,bold:true,text:': '},{width:'*',text:data.client.cif}
+            ]
+          },
+          {
+            columns:[
+              {width:53,bold:true,text:'No. Hp'},{width:5,bold:true,text:': '},{width:'*',text:data.client.noHP}
+            ]
+          }
 			  ]
       },'\n'  
     ];
@@ -205,7 +239,7 @@ export class ExportLaporanComponent implements OnInit {
         alignment: 'left',
       },
       head:{
-        fontSize: 12,
+        fontSize: 10,
         bold: true,
         alignment: 'center',
       },
