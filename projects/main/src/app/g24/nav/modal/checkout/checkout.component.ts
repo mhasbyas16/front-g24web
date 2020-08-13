@@ -14,6 +14,7 @@ import { TransactionService } from '../../../services/transaction/transaction.se
 // session service
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { DatePipe } from '@angular/common';
+import { ContentPage } from '../../../lib/helper/content-page';
 
 @Component({
   selector: 'app-checkout',
@@ -281,8 +282,16 @@ export class CheckoutComponent implements OnInit {
     this.transactionService.add(data).subscribe((response:any)=> {
       if (response != false) {
         this.validModel = false;
-        this.toastr.success(this.transactionService.message(), "Transaction");
-        
+        this.toastr.success(this.transactionService.message(), "Transaction Success");
+        this.checkoutModal = false;
+        // remove isi cart
+        PERHIASAN.splice(0);
+        BERLIAN.splice(0);
+        LM.splice(0);
+        DINAR.splice(0);
+        GS.splice(0);
+        this.cartModal.emit(false);
+        this.ChangeContentArea('10003');
       }else{
         this.toastr.error(this.transactionService.message(), "Transaction");
         return;
@@ -309,5 +318,10 @@ export class CheckoutComponent implements OnInit {
     }
     
     console.debug(val,"HASIL EMMMMMMIT")
+  }
+  ChangeContentArea(pageId : string)
+  {
+    if(pageId.startsWith("x")) return;
+    ContentPage.ChangeContent(pageId, true)
   }
 }
