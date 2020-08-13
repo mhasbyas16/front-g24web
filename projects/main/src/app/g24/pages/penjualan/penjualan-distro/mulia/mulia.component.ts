@@ -131,12 +131,12 @@ export class MuliaComponent implements OnInit {
         this.qty = response;
         this.mulias[0].qty = this.qty.count;
         this.datamulias = this.mulias.slice(0,1);
-       
+        this.loadingDg = false;
       });
       
       
 
-      this.loadingDg = false;
+      
       
       
       
