@@ -23,9 +23,10 @@ export class MuliaComponent implements OnInit {
   loadingDg = null; 
   mulias = null;
   datamulias= null;
-
+  tempdatamulias = null;
   vendor = null;
   denom = null;
+  qty = null;
   placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
 
 
@@ -51,7 +52,7 @@ export class MuliaComponent implements OnInit {
 
 
   ) { }
-  searchModel : any = {vendors:"all", denoms: "all"};
+  searchModel : any = {vendors:"Pilih Vendor", denoms: "Pilih Denom"};
   
   ngOnInit(): void {
     this.onListVendor();
@@ -75,9 +76,9 @@ export class MuliaComponent implements OnInit {
     this.denomService.list("?_hash=1").subscribe((response: any) => {
       if (response != false) {
         this.denoms = response;
-        this.denoms.sort(function (a, b) {
-          if (a.name < b.name) { return -1; }
-          if (a.name > b.name) { return 1; }
+        this.denoms.sort(function (c, d) {
+          if (c.name < d.name) { return -1; }
+          if (c.name > d.name) { return 1; }
           return 0;
         })
       }      
@@ -102,10 +103,10 @@ export class MuliaComponent implements OnInit {
     this.loadingDg = true;
     let vendor = data.vendors;
     let denom = data.denoms;
-    let kamu : any;
-    console.debug(denom);
+    
+
     const urlVendor = "vendor.code="+vendor;
-    const urlDenom = "denom.code="+denom;
+    const urlDenom = "product-denom.code="+denom;
 
     this.params = this.category;
     if (vendor != 'all') {
@@ -113,14 +114,7 @@ export class MuliaComponent implements OnInit {
     }
     if (denom != 'all'){
       this.params = this.params+"&"+urlDenom;
-    }
-
-    this.vendorService.list("?_hash=1&"+this.vendorCategory).subscribe((response: any) => {
-      kamu = response;
-    });
-    console.debug(kamu, "ka");
-
-
+    }    
     this.productService.list(this.params).subscribe((response: any) => {
       if (response == false) {
         this.toastrService.error("Data Not Found", "Mulia");
@@ -132,37 +126,18 @@ export class MuliaComponent implements OnInit {
         this.loadingDg = false;
         return;
       }  
-      
-      
-
-
       this.mulias = response;
-      this.datamulias = this.mulias;
-      this.toastrService.success("Load "+response["length"]+" Data", "Mulia");
-      this.loadingDg = false;
-      // let is = 0;
-
-      // const groupBy = (array, key) => {
-      //   // Return the end result
-      //   return array.reduce((result, currentValue) => {
-      //     // If an array already present for key, push it to the array. Else create an array and push the object
-      //     (result[currentValue[key]] = result[currentValue[key]] || []).push(
-      //       currentValue
-      //     );
-      //     // Return the current iteration `result` value, this will be taken as next iteration `result` value and accumulate
-      //     return result;
-      //   }, {}); // empty object is the initial value for result object
-      // };
-
-      // let dia = groupBy(this.mulias, "vendor.name")//
-      // // for (let i=0, iLen=this.mulias.length; i<iLen; i++) {
-
-      // //   if (this.mulias[i].vendor.name == "Antam") 
-      // //   dia = this.mulias[i].vendor.name 
-      // //   console.debug(dia, "ka");
-      // // }
+      this.productService.count(this.params).subscribe((response: any) => {
+        this.qty = response;
+        this.mulias[0].qty = this.qty.count;
+        this.datamulias = this.mulias.slice(0,1);
+       
+      });
       
-      // // let kamus = this.mulias.find(o => o.flag === 'stock')
+      
+
+      this.loadingDg = false;
+      
       
       
     });

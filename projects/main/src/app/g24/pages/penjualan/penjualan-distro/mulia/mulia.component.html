@@ -4,26 +4,24 @@
             <clr-select-container class="clr-form-control">
                 <label class="clr-control-label">Vendor</label>
                 <select [(ngModel)]="searchModel.vendors" clrSelect name="input_vendor_mulia" ngModel>
-                    <option value="all" >All</option>
+                    <option >Pilih Vendor</option>
                     <ng-container *ngFor="let vendor of vendors">
                         <option value="{{vendor.code}}">{{vendor.name}}</option>
                     </ng-container>
                 </select>
             </clr-select-container>
         </div>
-        <div class="clr-col-2">
+        <div class="clr-col-3">
             <clr-select-container class="clr-form-control">
                 <label class="clr-control-label">Denom</label>
-                <select [(ngModel)]="searchModel.denoms" #product clrSelect name="input_denom_mulia" ngModel>
-                    <option value="all" selected>All</option>
-                    <ng-container *ngFor="let J of denoms">
-                        <option value="{{J.code}}">{{J.name}}</option>
+                <select [(ngModel)]="searchModel.denoms" clrSelect name="input_denom_mulia" ngModel>
+                    <option >Pilih Denom</option>
+                    <ng-container *ngFor="let denom of denoms">
+                        <option value="{{denom.code}}">{{denom.name}}</option>
                     </ng-container>
                 </select>
             </clr-select-container>
         </div>
-    </div> 
-    <div class="clr-row">
         <div class="clr-col-1">
             <div class="clr-form-control">
                 <div class="clr-control-container">
@@ -35,16 +33,14 @@
 </form>
 <clr-datagrid [clrDgLoading]="loadingDg" >
     <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
-
-    <clr-dg-column>ID Produk</clr-dg-column>
-    
-    <clr-dg-column>Harga</clr-dg-column>
+    <clr-dg-column>Vendor</clr-dg-column>
+    <clr-dg-column>Denom</clr-dg-column>
+    <clr-dg-column>Quantity</clr-dg-column>
 
     <clr-dg-row *clrDgItems="let d of datamulias" [clrDgItem]="datamulias">
-        <clr-dg-cell>{{d.id}}</clr-dg-cell>
-        
-        <clr-dg-cell>Rp. 10000000</clr-dg-cell>
-       
+        <clr-dg-cell>{{d.vendor.name}}</clr-dg-cell>
+        <clr-dg-cell>{{d['product-denom'].name}}</clr-dg-cell>
+        <clr-dg-cell>{{d.qty}}</clr-dg-cell>
     </clr-dg-row>
     
     <clr-dg-footer>
