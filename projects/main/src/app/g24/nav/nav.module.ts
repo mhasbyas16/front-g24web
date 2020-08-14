@@ -12,10 +12,11 @@ import { CheckoutComponent } from './modal/checkout/checkout.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddNasabahComponent } from './modal/add-nasabah/add-nasabah.component';
 import { SearchNasabahComponent } from './modal/search-nasabah/search-nasabah.component';
+import { PilihPembayaranComponent } from './modal/pilih-pembayaran/pilih-pembayaran.component';
 
 
 @NgModule({
-  declarations: [HeaderComponent, SidebarComponent, ContentComponent, FooterComponent, ModalComponent, CartComponent, CheckoutComponent, AddNasabahComponent, SearchNasabahComponent],
+  declarations: [HeaderComponent, SidebarComponent, ContentComponent, FooterComponent, ModalComponent, CartComponent, CheckoutComponent, AddNasabahComponent, SearchNasabahComponent, PilihPembayaranComponent],
   imports: [
     CommonModule,
     RouterModule,

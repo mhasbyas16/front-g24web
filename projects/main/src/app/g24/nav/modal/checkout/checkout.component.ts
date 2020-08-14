@@ -132,7 +132,7 @@ export class CheckoutComponent implements OnInit {
       name: new FormControl ("",[ Validators.required]),
       client: new FormControl ("", Validators.required),
       client_encoded: new FormControl("base64"),
-      metodeBayar: new FormControl ("", [Validators.required]),
+      metodeBayar: new FormControl (""),
       metodeBayar_encoded: new FormControl ("base64"),
       bankTujuan: new FormControl (""),
       bankAsal: new FormControl (""),
@@ -185,6 +185,7 @@ export class CheckoutComponent implements OnInit {
   }
 
   bankValid(val){
+    console.debug(val,"bank valid");
     let cod = JSON.parse(atob(val));
     if (cod["code"] == "01" || cod["code"] == "04" ) {
       this.bankForm = false;
