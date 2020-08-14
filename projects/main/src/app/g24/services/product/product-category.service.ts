@@ -4,9 +4,9 @@ import { CommonService } from 'projects/platform/src/app/core-services/common.se
 @Injectable({
   providedIn: 'root'
 })
-export class ProductGoldColorService {
+export class ProductCategoryService {
 
-  key = "master-api/product-gold-color";
+  key = "master-api/product-category";
 
   constructor(private commonService:CommonService) { }
 
@@ -33,4 +33,5 @@ export class ProductGoldColorService {
   delete(data) {
     return this.commonService.delete(this.key, data);
   }
+
 }

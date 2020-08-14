@@ -1,40 +1,23 @@
 import { Component, OnInit, ComponentFactoryResolver, ViewChild, Input, ElementRef, AfterViewInit, TemplateRef, ChangeDetectionStrategy, ViewContainerRef, Output } from '@angular/core';
-import { DContent } from 'src/app/decorators/content/pages';
-import { EMenuID } from 'src/app/lib/enums/emenu-id.enum';
 import { NgForm, Form, FormGroup, FormBuilder } from '@angular/forms';
-import { InitiationType } from 'src/app/lib/enums/initiation-type';
-import { PaymentType } from 'src/app/lib/enums/payment-type';
-import { ModalErrorType } from 'src/app/lib/enums/modal-error-type.enum';
-import { DocumentStatus } from 'src/app/lib/enums/document-status.enum';
-import { BasePersistentFields } from 'src/app/lib/base/base-persistent-fields';
-import { UnitService } from 'src/app/services/resource/unit.service';
-import { InisiasiService } from 'src/app/services/resource/inisiasi.service';
-import { Modals } from 'src/app/decorators/modal/modals';
 
-import * as stringify from "stringify-object-keys";
 import { isArray } from 'util';
-import { DataTypeUtil } from 'src/app/lib/helper/data-type-util';
-import { ProductCategoryService } from 'src/app/services/resource/product-category.service';
-import { JenisService } from 'src/app/services/resource/jenis.service';
-import { KadarService } from 'src/app/services/resource/kadar.service';
-import { GoldColorService } from 'src/app/services/resource/gold-color.service';
-import { VendorService } from 'src/app/services/resource/vendor.service';
-import { SessionService } from 'src/app/lib/common/session.service';
-import { DenomService } from 'src/app/services/resource/denom.service';
-import { CutService } from 'src/app/services/resource/cut.service';
-import { AlphaNumeric } from 'src/app/lib/helper/alpha-numeric';
-import { ShapeService } from 'src/app/services/resource/shape.service';
-import { DiamondColorService } from 'src/app/services/resource/diamond-color.service';
 import { ClarityModule } from '@clr/angular';
-import { ClarityService } from 'src/app/services/resource/clarity.service';
-import { NotificationUtil, Notification, NotificationSize } from 'src/app/lib/helper/notification-util';
-import { ModalOutlet, IModals } from 'src/app/lib/helper/modal-outlet';
-import { DetailInitPerhiasanComponent } from 'src/app/modals/inisiasi/detail-init-perhiasan/detail-init-perhiasan.component';
-import { EPriviledge } from 'src/app/lib/enums/epriviledge.enum';
 import { EventEmitter } from 'protractor';
 import { ToastrService } from 'ngx-toastr';
-import { LogService } from 'src/app/services/resource/log.service';
-import { SeriesService } from 'src/app/services/resource/series.service';
+import { InitiationType } from '../../../../lib/enums/initiation-type';
+import { PaymentType } from '../../../../lib/enums/payment-type';
+import { DocumentStatus } from '../../../../lib/enums/document-status.enum';
+import { ModalErrorType } from '../../../../lib/enums/modal-error-type.enum';
+import { EMenuID } from '../../../../lib/enums/emenu-id.enum';
+import { ProductSeriesService } from '../../../../services/product/product-series.service';
+import { VendorService } from '../../../../services/vendor.service';
+import { ProductDenomService } from '../../../../services/product/product-denom.service';
+import { InisiasiService } from '../../../../services/stock/inisiasi.service';
+import { ProductCategoryService } from '../../../../services/product/product-category.service';
+import { SessionService } from 'projects/platform/src/app/core-services/session.service';
+import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
+import { BasePersistentFields } from '../../../../lib/base/base-persistent-fields';
 
 @Component({
   selector: 'detail-inisiasi-souvenir',
@@ -244,12 +227,12 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
   constructor(
     private resolver : ComponentFactoryResolver,
     // private unitService : UnitService,
-    private seriesService : SeriesService,
+    private seriesService : ProductSeriesService,
     private vendorService : VendorService,
-    private denomService : DenomService,
+    private denomService : ProductDenomService,
     private inisiasiService : InisiasiService,
     private productCatService : ProductCategoryService,
-    private logService : LogService,
+    // private logService : LogService,
 
     private toastr : ToastrService,
     private session : SessionService)

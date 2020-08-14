@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { DContent } from 'src/app/decorators/content/pages';
-import { EMenuID } from 'src/app/lib/enums/emenu-id.enum';
+import { DContent } from '../../../decorators/content/pages';
+import { EMenuID } from '../../../lib/enums/emenu-id.enum';
 
 @Component({
   selector: 'app-pemesanan',

@@ -1,21 +1,19 @@
 import { Component, OnInit, ComponentFactoryResolver, ViewChild, Input, ElementRef, AfterViewInit, TemplateRef, ChangeDetectionStrategy, ViewContainerRef, Output } from '@angular/core';
-import { DContent } from 'src/app/decorators/content/pages';
-import { EMenuID } from 'src/app/lib/enums/emenu-id.enum';
 import { NgForm } from '@angular/forms';
-import { BasePersistentFields } from 'src/app/lib/base/base-persistent-fields';
-import { ProductCategoryService } from 'src/app/services/resource/product-category.service';
-import { JenisService } from 'src/app/services/resource/jenis.service';
-import { KadarService } from 'src/app/services/resource/kadar.service';
-import { GoldColorService } from 'src/app/services/resource/gold-color.service';
-import { VendorService } from 'src/app/services/resource/vendor.service';
-import { SessionService } from 'src/app/lib/common/session.service';
-import { DenomService } from 'src/app/services/resource/denom.service';
-import { ShapeService } from 'src/app/services/resource/shape.service';
-import { DiamondColorService } from 'src/app/services/resource/diamond-color.service';
-import { ClarityService } from 'src/app/services/resource/clarity.service';
 import { ToastrService } from 'ngx-toastr';
-import { LogService } from 'src/app/services/resource/log.service';
-import { DateService } from 'src/app/services/resource/date.service';
+import { DContent } from '../../../decorators/content/pages';
+import { BasePersistentFields } from '../../../lib/base/base-persistent-fields';
+import { EMenuID } from '../../../lib/enums/emenu-id.enum';
+import { ProductJenisService } from '../../../services/product/product-jenis.service';
+import { ProductPurityService } from '../../../services/product/product-purity.service';
+import { ProductGoldColorService } from '../../../services/product/product-gold-color.service';
+import { ProductDiamondColorService } from '../../../services/product/product-diamond-color.service';
+import { VendorService } from '../../../services/vendor.service';
+import { ProductDenomService } from '../../../services/product/product-denom.service';
+import { ProductClarityService } from '../../../services/product/product-clarity.service';
+import { ProductCategoryService } from '../../../services/product/product-category.service';
+import { DateService } from '../../../services/system/date.service';
+import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 
 @Component({
   selector: 'app-inisiasi',
@@ -83,14 +81,14 @@ export class InisiasiComponent extends BasePersistentFields implements OnInit, A
   constructor(
     private resolver : ComponentFactoryResolver,
     // private unitService : UnitService,
-    private jenisService : JenisService,
-    private kadarService : KadarService,
-    private gColorService : GoldColorService,
-    private dColorService : DiamondColorService,
+    private jenisService : ProductJenisService,
+    private kadarService : ProductPurityService,
+    private gColorService : ProductGoldColorService,
+    private dColorService : ProductDiamondColorService,
     private vendorService : VendorService,
-    private denomService : DenomService,
-    private shapeService : ShapeService,
-    private clarityService : ClarityService,
+    private denomService : ProductDenomService,
+    // private shapeService : productsha,
+    private clarityService : ProductClarityService,
     private productCatService : ProductCategoryService,
     private dateService : DateService,
 
@@ -135,107 +133,9 @@ export class InisiasiComponent extends BasePersistentFields implements OnInit, A
     this.products.sort((a, b) => ('' + a.name).localeCompare(b.name));
   }
 
-  async LoadJenis()
-  {
-    let jeniss = await this.jenisService.list("?").toPromise();
-    for(let i = 0; i < jeniss.length; i++)
-    {
-      this.jeniss.push(jeniss[i]);
-    }
-    this.jeniss.sort((a,b) => ('' + a.name).localeCompare(b.name));
-  }
-
-  async LoadKadar()
-  {
-    let kadars = await this.kadarService.list("?").toPromise();
-    for(let i = 0; i < kadars.length; i++)
-    {
-      this.kadars.push(kadars[i]);
-    }
-    this.kadars.sort((a,b) => parseInt(a.name) - parseInt(b.name))
-  }
-
-  async LoadGWarna()
-  {
-    let warnas = await this.gColorService.list("?").toPromise();
-    for(let i = 0; i < warnas.length; i++)
-    {
-      this.warnas.push(warnas[i]);
-    }
-    this.warnas.sort((a,b) => ('' + a.name).localeCompare(b.name))
-  }
-
-  async LoadColor()
-  {
-    let colors = await this.dColorService.list("?").toPromise();
-    for(let i = 0; i < colors.length; i++)
-    {
-      this.colors.push(colors[i]);
-    }
-    this.colors.sort((a,b) => ('' + a.name).localeCompare(b.name));
-  }
-
-  async LoadVendor()
-  {
-    let vendors = await this.vendorService.list("?").toPromise();
-    for(let i = 0; i < vendors.length; i++)
-    {
-      this.vendors.push(vendors[i]);
-    }
-    this.vendors.sort((a,b) => ('' + a.name).localeCompare(b.name))
-  }
-
-  async LoadDenom()
-  {
-    let denoms = await this.denomService.list("?").toPromise();
-    for(let i = 0; i < denoms.length; i++)
-    {
-      this.denoms.push(denoms[i]);
-    }
-    this.denoms.sort((a,b) => ('' + a.name).localeCompare(b.name))
-  }
-  
-  async LoadShape()
-  {
-    let shapes = await this.shapeService.list("?").toPromise();
-    for(let i = 0; i < shapes.length; i++)
-    {
-      this.shapes.push(shapes[i]);
-    }
-    this.shapes.sort((a,b) => ('' + a.name).localeCompare(b.name))
-  }
-  
-  async LoadClarity()
-  {
-    let claritys = await this.clarityService.list("?").toPromise();
-    for(let i = 0; i < claritys.length; i++)
-    {
-      this.claritys.push(claritys[i]);
-    }
-    this.claritys.sort((a,b) => ('' + a.name).localeCompare(b.name))
-  }
-  
-  async LoadSeries()
-  {
-    let series = await this.clarityService.list("?").toPromise();
-    for(let i = 0; i < series.length; i++)
-    {
-      this.series.push(series[i]);
-    }
-    this.series.sort((a,b) => ('' + a.name).localeCompare(b.name))
-  }
-
   async LoadAllParameter()
   {
     this.LoadProductCategory();
-    // this.LoadVendor();
-    // this.LoadJenis();
-    // this.LoadKadar();
-    // this.LoadGWarna();
-    // this.LoadColor()
-    // this.LoadDenom();
-    // this.LoadShape();
-    // this.LoadClarity();
 
     
     this.onProductChanged();
