@@ -1,12 +1,13 @@
+
 import { Injectable } from '@angular/core';
 import { CommonService } from 'projects/platform/src/app/core-services/common.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProductGoldColorService {
+export class ProductSeriesService {
 
-  key = "master-api/product-gold-color";
+  key = "master-api/product-series";
 
   constructor(private commonService:CommonService) { }
 

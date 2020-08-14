@@ -1,39 +1,27 @@
 import { Component, OnInit, ComponentFactoryResolver, ViewChild, Input, ElementRef, AfterViewInit, TemplateRef, ChangeDetectionStrategy, ViewContainerRef, Output } from '@angular/core';
-import { DContent } from 'src/app/decorators/content/pages';
-import { EMenuID } from 'src/app/lib/enums/emenu-id.enum';
 import { NgForm, Form, FormGroup, FormBuilder } from '@angular/forms';
-import { InitiationType } from 'src/app/lib/enums/initiation-type';
-import { PaymentType } from 'src/app/lib/enums/payment-type';
-import { ModalErrorType } from 'src/app/lib/enums/modal-error-type.enum';
-import { DocumentStatus } from 'src/app/lib/enums/document-status.enum';
-import { BasePersistentFields } from 'src/app/lib/base/base-persistent-fields';
-import { UnitService } from 'src/app/services/resource/unit.service';
-import { InisiasiService } from 'src/app/services/resource/inisiasi.service';
-import { Modals } from 'src/app/decorators/modal/modals';
 
-import * as stringify from "stringify-object-keys";
 import { isArray } from 'util';
-import { DataTypeUtil } from 'src/app/lib/helper/data-type-util';
-import { ProductCategoryService } from 'src/app/services/resource/product-category.service';
-import { JenisService } from 'src/app/services/resource/jenis.service';
-import { KadarService } from 'src/app/services/resource/kadar.service';
-import { GoldColorService } from 'src/app/services/resource/gold-color.service';
-import { VendorService } from 'src/app/services/resource/vendor.service';
-import { SessionService } from 'src/app/lib/common/session.service';
-import { DenomService } from 'src/app/services/resource/denom.service';
-import { CutService } from 'src/app/services/resource/cut.service';
-import { AlphaNumeric } from 'src/app/lib/helper/alpha-numeric';
-import { ShapeService } from 'src/app/services/resource/shape.service';
-import { DiamondColorService } from 'src/app/services/resource/diamond-color.service';
 import { ClarityModule } from '@clr/angular';
-import { ClarityService } from 'src/app/services/resource/clarity.service';
-import { NotificationUtil, Notification, NotificationSize } from 'src/app/lib/helper/notification-util';
-import { ModalOutlet, IModals } from 'src/app/lib/helper/modal-outlet';
-import { DetailInitPerhiasanComponent } from 'src/app/modals/inisiasi/detail-init-perhiasan/detail-init-perhiasan.component';
-import { EPriviledge } from 'src/app/lib/enums/epriviledge.enum';
 import { EventEmitter } from 'protractor';
 import { ToastrService } from 'ngx-toastr';
-import { LogService } from 'src/app/services/resource/log.service';
+import { BasePersistentFields } from '../../../../lib/base/base-persistent-fields';
+import { InitiationType } from '../../../../lib/enums/initiation-type';
+import { PaymentType } from '../../../../lib/enums/payment-type';
+import { DocumentStatus } from '../../../../lib/enums/document-status.enum';
+import { ModalErrorType } from '../../../../lib/enums/modal-error-type.enum';
+import { EMenuID } from '../../../../lib/enums/emenu-id.enum';
+import { VendorService } from '../../../../services/vendor.service';
+import { InisiasiService } from '../../../../services/stock/inisiasi.service';
+import { ProductCategoryService } from '../../../../services/product/product-category.service';
+import { SessionService } from 'projects/platform/src/app/core-services/session.service';
+import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
+import { ProductJenisService } from '../../../../services/product/product-jenis.service';
+import { ProductPurityService } from '../../../../services/product/product-purity.service';
+import { ProductGoldColorService } from '../../../../services/product/product-gold-color.service';
+import { ProductDiamondColorService } from '../../../../services/product/product-diamond-color.service';
+import { ProductDenomService } from '../../../../services/product/product-denom.service';
+import { ProductClarityService } from '../../../../services/product/product-clarity.service';
 
 @Component({
   selector: 'detail-inisiasi-perhiasan',
@@ -244,17 +232,17 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   constructor(
     private resolver : ComponentFactoryResolver,
     // private unitService : UnitService,
-    private jenisService : JenisService,
-    private kadarService : KadarService,
-    private gColorService : GoldColorService,
-    private dColorService : DiamondColorService,
+    private jenisService : ProductJenisService,
+    private kadarService : ProductPurityService,
+    private gColorService : ProductGoldColorService,
+    private dColorService : ProductDiamondColorService,
     private vendorService : VendorService,
-    private denomService : DenomService,
-    private shapeService : ShapeService,
-    private clarityService : ClarityService,
+    private denomService : ProductDenomService,
+    // private shapeService : ShapeService,
+    private clarityService : ProductClarityService,
     private inisiasiService : InisiasiService,
     private productCatService : ProductCategoryService,
-    private logService : LogService,
+    // private logService : LogService,
 
     private toastr : ToastrService,
     private session : SessionService)
@@ -326,16 +314,6 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     this.warnas.sort((a,b) => ('' + a.name).localeCompare(b.name))
   }
 
-  async LoadColor()
-  {
-    let colors = await this.dColorService.list("?").toPromise();
-    for(let i = 0; i < colors.length; i++)
-    {
-      this.colors.push(colors[i]);
-    }
-    this.colors.sort((a,b) => ('' + a.name).localeCompare(b.name));
-  }
-
   async LoadVendor()
   {
     let vendors = await this.vendorService.list("?product-category.code=c00").toPromise();
@@ -346,46 +324,6 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     this.vendors.sort((a,b) => ('' + a.name).localeCompare(b.name))
   }
 
-  async LoadDenom()
-  {
-    let denoms = await this.denomService.list("?").toPromise();
-    for(let i = 0; i < denoms.length; i++)
-    {
-      this.denoms.push(denoms[i]);
-    }
-    this.denoms.sort((a,b) => ('' + a.name).localeCompare(b.name))
-  }
-  
-  async LoadShape()
-  {
-    let shapes = await this.shapeService.list("?").toPromise();
-    for(let i = 0; i < shapes.length; i++)
-    {
-      this.shapes.push(shapes[i]);
-    }
-    this.shapes.sort((a,b) => ('' + a.name).localeCompare(b.name))
-  }
-  
-  async LoadClarity()
-  {
-    let claritys = await this.clarityService.list("?").toPromise();
-    for(let i = 0; i < claritys.length; i++)
-    {
-      this.claritys.push(claritys[i]);
-    }
-    this.claritys.sort((a,b) => ('' + a.name).localeCompare(b.name))
-  }
-  
-  async LoadSeries()
-  {
-    let series = await this.clarityService.list("?").toPromise();
-    for(let i = 0; i < series.length; i++)
-    {
-      this.series.push(series[i]);
-    }
-    this.series.sort((a,b) => ('' + a.name).localeCompare(b.name))
-  }
-
   async LoadAllParameter()
   {
     this.LoadProductCategory();
@@ -393,10 +331,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     this.LoadJenis();
     this.LoadKadar();
     this.LoadGWarna();
-    this.LoadColor()
-    this.LoadDenom();
-    this.LoadShape();
-    this.LoadClarity();
+    // this.LoadShape();
     
     this.onProductChanged();
   }

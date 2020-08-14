@@ -4,17 +4,15 @@
             Mutasi
         </div>
         <div class="card-block">
-            <form clrForm>
                 <div class="clr-row">
                     <div class="clr-col-6">
                         <div class="clr-form-control">
-                            <label class="clr-control-label">Unit Asal</label>
+                            <label class="clr-control-label">Unit Tujuan</label>
                             <div class="clr-control-container">
-                                <select [(ngModel)]="input.unit_asal" #unit_asal clrSelect name="unit_asal" required>
-                                    <option value=""></option>
-                                <ng-container *ngFor="let unit of units">
-                                    <option [ngValue]="unit">{{unit.nama}}</option>
-                                    <clr-control-error>Mohon Pilih Unit Asal</clr-control-error>
+                                <select [(ngModel)]="input.unit_tujuan" #unit_tujuan clrSelect name="unit_tujuan">
+                                <option [ngValue]=""></option>
+                                <ng-container *ngFor="let utj of unit_tj">
+                                    <option [ngValue]="utj">{{utj.nama}}</option>
                                 </ng-container>
                             </select>
                             </div>
@@ -22,15 +20,13 @@
                     </div>
                     <div class="clr-col-6">
                         <div class="clr-form-control">
-                            <label class="clr-control-label">Unit Tujuan</label>
-                            <div class="clr-control-container">
-                                <select [(ngModel)]="input.unit_tujuan" #unit_tujuan clrSelect name="unit_tujuan">
-                                <option value=""></option>
-                                <ng-container *ngFor="let utj of unit_tj">
-                                    <option [ngValue]="utj">{{utj.nama}}</option>
+                            <label class="clr-control-label">Tipe Flag</label>
+                            <select [(ngModel)]="input.flag" #flag clrSelect name="flag">
+                                <option [ngValue]=null></option>
+                                <ng-container *ngFor="let flagku of Flag">
+                                    <option [ngValue]="flagku">{{flagku.name}}</option>
                                 </ng-container>
                             </select>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -40,8 +36,7 @@
                         <div class="clr-form-control">
                             <label class="clr-control-label">Tanggal Terima</label>
                             <div class="clr-control-container">
-                                <input  [(ngModel)]="input.get_date" class="clr-input" type="date" name="create_date" required />
-                                <span class="clr-subtext">Tanggal Terima dilakukan</span>
+                                <input  [(ngModel)]="input.tgl_terima" class="clr-input" type="date" name="tgl_terima" required />
                             </div>
                         </div>
                     </div>
@@ -49,23 +44,8 @@
                         <div class="clr-form-control">
                             <label class="clr-control-label">Tanggal Kirim</label>
                             <div class="clr-control-container">
-                                <input  [(ngModel)]="input.send_date" class="clr-input" type="date" name="create_date" required />
-                                <span class="clr-subtext">Tanggal Kirim dilakukan</span>
+                                <input  [(ngModel)]="input.created_date" class="clr-input" type="date" name="created_date" required />
                             </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="clr-row">
-                    <div class="clr-col-6">
-                        <div class="clr-form-control">
-                            <label class="clr-control-label">Tipe Flag</label>
-                            <select [(ngModel)]="input.flag" #flag clrSelect name="flag">
-                                <option value=null></option>
-                                <ng-container *ngFor="let flagku of Flag">
-                                    <option [ngValue]="flagku">{{flagku.name}}</option>
-                                </ng-container>
-                            </select>
                         </div>
                     </div>
                 </div>
@@ -78,7 +58,6 @@
                 Reset
             </button>
         </div>
-    </form>
     </div>
 </div>
 </div>
@@ -88,12 +67,11 @@
     <div class="card-header">
             Hasil Pencarian
     </div>
-    <clr-datagrid>
+    <clr-datagrid [(clrDgSingleSelected)]="data_view">  
         <clr-dg-action-bar>
             <div class="btn-group">
                 <button type="button" class="btn btn-sm btn-secondary" (click)="onAdd()" ><clr-icon shape="plus"></clr-icon>Tambah</button>
-                <button type="button" class="btn btn-sm btn-secondary" (click)="delete()"><clr-icon shape="close"></clr-icon> Hapus</button>
-                <button type="button" class="btn btn-sm btn-secondary" ><clr-icon shape="pencil"></clr-icon>Ubah</button>
+                <button type="button" class="btn btn-sm btn-secondary" (click)="onView()"><clr-icon shape="eye"></clr-icon> Lihat Data</button>
             </div>
             <div class="btn-group">
                 <clr-dropdown>
@@ -126,22 +104,16 @@
             Tipe Flag
         </clr-dg-column>
 
-        <clr-dg-row *clrDgItems="let data of listdt" [clrDgItem]="listdt">
+        <clr-dg-row *clrDgItems="let data of listdt" [clrDgItem]="data">
             <clr-dg-cell>{{data.unit_asal.nama}}</clr-dg-cell>
             <clr-dg-cell>{{data.unit_tujuan.nama}}</clr-dg-cell>
             <clr-dg-cell>{{data.tgl_terima}}</clr-dg-cell>
-            <clr-dg-cell *ngIf="data.tgl_terima == ''">-------</clr-dg-cell>
-            <clr-dg-cell>{{data.tgl_kirim}}</clr-dg-cell>
-            <clr-dg-cell *ngIf="data.tgl_kirim == ''">-------</clr-dg-cell>
+            <clr-dg-cell>{{data.created_date}}</clr-dg-cell>
             <clr-dg-cell>{{data.flag}}</clr-dg-cell>
-
-            <clr-dg-action-overflow>
-                <button class="action-item" (click)="mainEdit(data)">Edit Data</button>
-                <button class="action-item" (click)="mainDelete(data)">Hapus Data</button>
-            </clr-dg-action-overflow>
         </clr-dg-row>
 
         <clr-dg-footer>
+            {{listdt.length}} data
         </clr-dg-footer>
     </clr-datagrid>
 </div>
@@ -155,24 +127,11 @@
             <p>Silahkan isi data dibawah ini </p>
             <form clrform>
                 <div class="clr-row">
-                    <div class="clr-col-6">
-                        <div class="clr-form-control">
-                            <label>Unit Asal</label>
-                            <div class="clr-control-container">
-                                <select [(ngModel)]="input.unit_asal" #unit_asal clrSelect name="unit_asal" required>
-                                <ng-container *ngFor="let unit of units">
-                                    <option [ngValue]="unit">{{unit.nama}}</option>
-                                </ng-container>
-                            </select>
-                            </div>
-                        </div>
-                        <div *ngIf="error" class="alert alert-danger">Unit Asal Belum di pilih</div>
-                </div>
                 <div class="clr-col-6">
                     <div class="clr-form-control">
                         <label>Unit Tujuan</label>
                         <div class="clr-control-container">
-                            <select [(ngModel)]="input.unit_tujuan" #unit_tujuan clrSelect name="unit_tujuan" required>
+                            <select [(ngModel)]="addinput.unit_tujuan" #unit_tujuan clrSelect name="unit_tujuan" required>
                             <ng-container *ngFor="let utj of unit_tj">
                                 <option [ngValue]="utj">{{utj.nama}}</option>
                             </ng-container>
@@ -180,51 +139,18 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="clr-row">
-            <div class="clr-col-6">
-                <div class="clr-form-control">
-                    <clr-input-container>
-                    <label>Jumlah Item</label>
-                    <input clrInput type="text" name="jml_item" [(ngModel)]="input.jml_item" required>
-                    <clr-control-error>Mohon isi jumlah item</clr-control-error>
-                    </clr-input-container>
+                <div class="clr-col-6">
+                    <div class="clr-form-control">
+                        <label>Product Kategori</label>
+                        <select [(ngModel)]="searchModel['product-category']" clrSelect name="kategori" (change)="onChange()">
+                            <ng-container *ngFor="let prd of products2">
+                                <option [ngValue]="prd">{{prd.name}}</option>
+                            </ng-container>
+                        </select>
+                    </div>
                 </div>
             </div>
-            <div class="clr-col-6">
-                <div class="clr-form-control">
-                    <clr-input-container>
-                    <label>Total Berat</label>
-                    <input clrInput type="text" name="total_berat" [(ngModel)]="input.total_berat" required>
-                    <clr-control-error>mohon isi total berat</clr-control-error>
-                    </clr-input-container>
-                </div>
-            </div>
-        </div>
         
-        <div class="clr-row">
-            <div class="clr-col-6">
-                <div class="clr-form-control">
-                    <label>Product Kategori</label>
-                    <select [(ngModel)]="searchModel['product-category']" clrSelect name="kategori" (change)="onChange()">
-                        <ng-container *ngFor="let prd of products2">
-                            <option value="{{prd.code}}">{{prd.name}}</option>
-                        </ng-container>
-                    </select>
-                </div>
-            </div>
-            <div class="clr-col-6">
-                <div class="clr-form-control">
-                    <label>Flag</label>
-                    <select [(ngModel)]="input.flag" clrSelect name="flag">
-                        <option value="null"></option>
-                        <ng-container *ngFor="let flag of Flag">
-                            <option value="{{flag.code}}">{{flag.name}}</option>
-                        </ng-container>
-                    </select>
-                </div>
-            </div>
-        </div>
 
         <ng-container *ngTemplateOutlet="formInput">
 
@@ -242,7 +168,7 @@
                             <clr-select-container>
                                 <label class="clr-control-label" style="padding-left: 10px">Kadar</label>
                                 <select [(ngModel)]="searchModel.kadar" #kadar clrSelect name="kadar">
-                                    <option value="null"></option>
+                                    <option [ngValue]="null"></option>
                                     <ng-container *ngFor="let kadar of kadars">
                                         <option [ngValue]="kadar">{{kadar.name}}</option>
                                     </ng-container>
@@ -253,7 +179,7 @@
                             <clr-select-container>
                                 <label class="clr-control-label" style="padding-left: 10px">Warna</label>
                                 <select [(ngModel)]="searchModel.warna" #warna clrSelect name="warna">
-                                    <option value="null"></option>
+                                    <option [ngValue]="null"></option>
                                     <ng-container *ngFor="let warna of warnas">
                                         <option [ngValue]="warna">{{warna.name}}</option>
                                     </ng-container>
@@ -266,9 +192,9 @@
                                 <clr-select-container>
                                     <label class="clr-control-label" style="padding-left: 10px">Jenis</label>
                                     <select [(ngModel)]="searchModel.jenis" #jenis clrSelect name="jenis">
-                                        <option value="null"></option>
+                                        <option [ngValue]="null"></option>
                                         <ng-container *ngFor="let jenis of jeniss">
-                                            <option value="{{jenis.code}}">{{jenis.name}}</option>
+                                            <option [ngValue]="jenis">{{jenis.name}}</option>
                                         </ng-container>
                                     </select>
                                 </clr-select-container>
@@ -312,9 +238,9 @@
                             <clr-select-container class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Kadar</label>
                                 <select [(ngModel)]="searchModel.kadar" #kadar clrSelect name="kadar">
-                                    <option value="null"></option>
+                                    <option [ngValue]="null"></option>
                                     <ng-container *ngFor="let kadar of kadars">
-                                        <option value="{{kadar.code}}">{{kadar.name}}</option>
+                                        <option [ngValue]="kadar">{{kadar.name}}</option>
                                     </ng-container>
                                 </select>
                             </clr-select-container>
@@ -323,9 +249,9 @@
                             <clr-select-container class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Warna</label>
                                 <select [(ngModel)]="searchModel.warna" #jenis clrSelect name="warna">
-                                    <option value="null"></option>
+                                    <option [ngValue]="null"></option>
                                     <ng-container *ngFor="let warna of warnas">
-                                        <option value="{{warna.code}}">{{warna.name}}</option>
+                                        <option [ngValue]="warna">{{warna.name}}</option>
                                     </ng-container>
                                 </select>
                             </clr-select-container>
@@ -336,9 +262,9 @@
                                 <clr-select-container class="clr-form-control">
                                     <label class="clr-control-label" style="padding-left: 10px">Jenis</label>
                                     <select [(ngModel)]="searchModel.jenis" #jenis clrSelect name="jenis">
-                                        <option value="null"></option>
+                                        <option [ngValue]="null"></option>
                                         <ng-container *ngFor="let jenis of jeniss">
-                                            <option value="{{jenis.code}}">{{jenis.name}}</option>
+                                            <option [ngValue]="jenis">{{jenis.name}}</option>
                                         </ng-container>
                                     </select>
                                 </clr-select-container>
@@ -369,9 +295,9 @@
                                 <clr-select-container class="clr-form-control">
                                     <label class="clr-control-label" style="padding-left: 10px">Color</label>
                                     <select [(ngModel)]="searchModel.color" #color clrSelect name="color">
-                                        <option value="null"></option>
+                                        <option [ngValue]="null"></option>
                                         <ng-container *ngFor="let color of colors">
-                                            <option value="{{color.code}}">{{color.name}}</option>
+                                            <option [ngValue]="color">{{color.name}}</option>
                                         </ng-container>
                                     </select>
                                 </clr-select-container>
@@ -384,9 +310,9 @@
                                 <clr-select-container class="clr-form-control">
                                     <label class="clr-control-label" style="padding-left: 10px">Clarity</label>
                                     <select [(ngModel)]="searchModel.clarity" #clarity clrSelect name="clarity">
-                                        <option value="null"></option>
+                                        <option [ngValue]="null"></option>
                                         <ng-container *ngFor="let clarity of claritys">
-                                            <option value="{{clarity.code}}">{{clarity.name}}</option>
+                                            <option [ngValue]="clarity">{{clarity.name}}</option>
                                         </ng-container>
                                     </select>
                                 </clr-select-container>
@@ -431,9 +357,9 @@
                             <clr-select-container class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Seri</label>
                                 <select [(ngModel)]="searchModel.seri" #seri clrSelect name="seri">
-                                    <option value="null"></option>
+                                    <option [ngValue]="null"></option>
                                     <ng-container *ngFor="let seri of series">
-                                        <option value="{{seri.code}}">{{seri.name}}</option>
+                                        <option [ngValue]="seri">{{seri.name}}</option>
                                     </ng-container>
                                 </select>
                             </clr-select-container>
@@ -442,9 +368,9 @@
                             <clr-select-container class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Denom</label>
                                 <select [(ngModel)]="searchModel.denom" #denom clrSelect name="denom">
-                                    <option value="null"></option>
+                                    <option [ngValue]="null"></option>
                                     <ng-container *ngFor="let denom of denoms">
-                                        <option value="{{denom.code}}">{{denom.name}}</option>
+                                        <option [ngValue]="denom">{{denom.name}}</option>
                                     </ng-container>
                                 </select>
                             </clr-select-container>
@@ -481,9 +407,9 @@
                             <clr-select-container class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Seri</label>
                                 <select [(ngModel)]="searchModel.seri" #seri clrSelect name="seri">
-                                    <option value="null"></option>
+                                    <option [ngValue]="null"></option>
                                     <ng-container *ngFor="let seri of series">
-                                        <option value="{{seri.code}}">{{seri.name}}</option>
+                                        <option [ngValue]="seri">{{seri.name}}</option>
                                     </ng-container>
                                 </select>
                             </clr-select-container>
@@ -492,9 +418,9 @@
                             <clr-select-container class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Denom</label>
                                 <select [(ngModel)]="searchModel.denom" #denom clrSelect name="denom">
-                                    <option value="null"></option>
+                                    <option [ngValue]="null"></option>
                                     <ng-container *ngFor="let denom of denoms">
-                                        <option value="{{denom.code}}">{{denom.name}}</option>
+                                        <option [ngValue]="denom">{{denom.name}}</option>
                                     </ng-container>
                                 </select>
                             </clr-select-container>
@@ -530,9 +456,9 @@
                             <clr-select-container class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Seri</label>
                                 <select [(ngModel)]="searchModel.seri" #seri clrSelect name="seri">
-                                    <option value="null"></option>
+                                    <option [ngValue]="null"></option>
                                     <ng-container *ngFor="let seri of series">
-                                        <option value="{{seri.code}}">{{seri.name}}</option>
+                                        <option [ngValue]="seri">{{seri.name}}</option>
                                     </ng-container>
                                 </select>
                             </clr-select-container>
@@ -541,9 +467,9 @@
                             <clr-select-container class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Denom</label>
                                 <select [(ngModel)]="searchModel.denom" #denom clrSelect name="denom">
-                                    <option value="null"></option>
+                                    <option [ngValue]="null"></option>
                                     <ng-container *ngFor="let denom of denoms">
-                                        <option value="{{denom.code}}">{{denom.name}}</option>
+                                        <option [ngValue]="denom">{{denom.name}}</option>
                                     </ng-container>
                                 </select>
                             </clr-select-container>
@@ -579,9 +505,9 @@
                             <clr-select-container class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Seri</label>
                                 <select [(ngModel)]="searchModel.seri" #seri clrSelect name="seri">
-                                    <option value="null"></option>
+                                    <option [ngValue]="null"></option>
                                     <ng-container *ngFor="let seri of series">
-                                        <option value="{{seri.code}}">{{seri.name}}</option>
+                                        <option [ngValue]="seri">{{seri.name}}</option>
                                     </ng-container>
                                 </select>
                             </clr-select-container>
@@ -590,9 +516,9 @@
                             <clr-select-container class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Denom</label>
                                 <select [(ngModel)]="searchModel.denom" #denom clrSelect name="denom">
-                                    <option value="null"></option>
+                                    <option [ngValue]="null"></option>
                                     <ng-container *ngFor="let denom of denoms">
-                                        <option value="{{denom.code}}">{{denom.name}}</option>
+                                        <option [ngValue]="denom">{{denom.name}}</option>
                                     </ng-container>
                                 </select>
                             </clr-select-container>
@@ -627,9 +553,9 @@
                             <clr-select-container class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Kadar</label>
                                 <select [(ngModel)]="searchModel.kadar" #kadar clrSelect name="kadar">
-                                    <option value="null"></option>
+                                    <option [ngValue]="null"></option>
                                     <ng-container *ngFor="let kadar of kadars">
-                                        <option value="{{kadar.code}}">{{kadar.name}}</option>
+                                        <option [ngValue]="kadar">{{kadar.name}}</option>
                                     </ng-container>
                                 </select>
                             </clr-select-container>
@@ -638,9 +564,9 @@
                             <clr-select-container class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Warna</label>
                                 <select [(ngModel)]="searchModel.warna" #warna clrSelect name="warna">
-                                    <option value="null"></option>
+                                    <option [ngValue]="null"></option>
                                     <ng-container *ngFor="let warna of warnas">
-                                        <option value="{{warna.code}}">{{warna.name}}</option>
+                                        <option [ngValue]="warna">{{warna.name}}</option>
                                     </ng-container>
                                 </select>
                             </clr-select-container>
@@ -651,9 +577,9 @@
                                 <clr-select-container class="clr-form-control">
                                     <label class="clr-control-label" style="padding-left: 10px">Jenis</label>
                                     <select [(ngModel)]="searchModel.jenis" #jenis clrSelect name="jenis">
-                                        <option value="null"></option>
+                                        <option [ngValue]]="null"></option>
                                         <ng-container *ngFor="let jenis of jeniss">
-                                            <option value="{{jenis.code}}">{{jenis.name}}</option>
+                                            <option [ngValue]="jenis">{{jenis.name}}</option>
                                         </ng-container>
                                     </select>
                                 </clr-select-container>
@@ -684,9 +610,9 @@
                                 <clr-select-container class="clr-form-control">
                                     <label class="clr-control-label" style="padding-left: 10px">Color</label>
                                     <select [(ngModel)]="searchModel.color" #color clrSelect name="color">
-                                        <option value="null"></option>
+                                        <option [ngValue]="null"></option>
                                         <ng-container *ngFor="let color of colors">
-                                            <option value="{{color.code}}">{{color.name}}</option>
+                                            <option [ngValue]="color">{{color.name}}</option>
                                         </ng-container>
                                     </select>
                                 </clr-select-container>
@@ -699,9 +625,9 @@
                                 <clr-select-container class="clr-form-control">
                                     <label class="clr-control-label" style="padding-left: 10px">Clarity</label>
                                     <select [(ngModel)]="searchModel.clarity" #clarity clrSelect name="clarity">
-                                        <option value="null"></option>
+                                        <option [ngValue]="null"></option>
                                         <ng-container *ngFor="let clarity of claritys">
-                                            <option value="{{clarity.code}}">{{clarity.name}}</option>
+                                            <option [ngValue]="clarity">{{clarity.name}}</option>
                                         </ng-container>
                                     </select>
                                 </clr-select-container>
@@ -740,7 +666,7 @@
                 <div class="btn-group">
                     <button type="button" class="btn btn-sm btn-secondary" (click)="searchProduct()"><clr-icon shape="search"></clr-icon>Cari</button>
                     <button type="button" class="btn btn-sm btn-secondary" (click)="Addmutasi()"><clr-icon shape="plus"></clr-icon>Tambah</button>
-                    <button type="button" class="btn btn-sm btn-secondary"><clr-icon shape="close"></clr-icon> Hapus</button>
+                    <button type="button" class="btn btn-sm btn-secondary" (click)="refresh()"><clr-icon shape="refresh"></clr-icon> Reset</button>
                 </div>
                 </clr-dg-action-bar>
 
@@ -773,26 +699,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Nama Produk Kategori</td>
-                            <td>{{data['product-category'].name}}</td>
+                        <ng-container *ngFor = "let oj of Object.keys(data)">
+                        <tr *ngIf="except(oj)">
+                            <td>{{GetDisplayName(oj)}}</td>
+                            <td>{{GetDisplayValue(data[oj])}}</td>
                         </tr>
-                        <tr>
-                            <td>Jenis Perhiasan</td>
-                            <td>{{data['product-jenis'] == undefined ? "-" : data['product-jenis'].name}}</td>
-                        </tr>
-                        <tr>
-                            <td>Berat</td>
-                            <td>{{data.berat}}</td>
-                        </tr>
-                        <tr>
-                            <td>Baku Tukar</td>
-                            <td>{{data['baku-tukar']}}</td>
-                        </tr>
-                        <tr>
-                            <td>Produk Gold Color</td>
-                            <td>{{data['product-gold-color'] == undefined ? "-" : data['product-gold-color'].name}}</td>
-                        </tr>
+                        </ng-container>
                     </tbody>
                 </table>
             </clr-dg-detail>
@@ -872,20 +784,84 @@
         </div>
     </clr-modal>
 
-<!--MODAL SHOW EDIT DATA-->
-    <ng-container *ngIf="modaleditdialog">
-        <clr-modal [(clrModalOpen)]="modaleditdialog" [clrModalClosable]="false" [clrModalSize]="'lg'">
-            <h3 class="modal-title">Edit Data</h3>
-            <div class="modal-body">
-                    
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light" (click)="modaleditdialog = false">Batal</button>
-            </div>
-        </clr-modal>
-    </ng-container>
 
-<!--MODAL SHOW DATA TIDAK DITEMUKAN-->
+<!--MODAL SHOW VIEW DATA-->
+<clr-modal *ngIf="modalview" [(clrModalOpen)]="modalview" [clrModalSize]="'lg'">
+    <h3 class="modal-title">Data Detail</h3>
+    <div class="modal-body">
+        <clr-datagrid>
+            <clr-dg-column>
+                Unit Asal
+            </clr-dg-column>
+            <clr-dg-column>
+                Unit Tujuan
+            </clr-dg-column>
+            <clr-dg-column>
+                Tanggal Terima
+            </clr-dg-column>
+            <clr-dg-column>
+                Tanggal Kirim
+            </clr-dg-column>
+            <clr-dg-column>
+                Flag
+            </clr-dg-column>
+            <clr-dg-row *clrDgItems="let data of details" [clrDgItem]="data">
+                <clr-dg-cell>{{data.unit_asal.nama}}</clr-dg-cell>
+                <clr-dg-cell>{{data.unit_tujuan.nama}}</clr-dg-cell>
+                <clr-dg-cell>{{data.tgl_kirim}}</clr-dg-cell>
+                <clr-dg-cell>{{data.created_date}}</clr-dg-cell>
+                <clr-dg-cell>{{data.flag}}</clr-dg-cell>
+            </clr-dg-row>
+        
+        </clr-datagrid>
+
+        <clr-datagrid>
+            <clr-dg-column>
+                KODE
+            </clr-dg-column>
+            <clr-dg-column>
+                SKU
+            </clr-dg-column>
+            <clr-dg-column>
+                VENDOR
+            </clr-dg-column>
+            <clr-dg-column>
+                BRANCH
+            </clr-dg-column>
+            <clr-dg-row *clrDgItems="let data of itemsview" [clrDgItem]="data">
+                <clr-dg-cell>{{data.code}}</clr-dg-cell>
+                <clr-dg-cell>{{data.sku}}</clr-dg-cell>
+                <clr-dg-cell>{{data.vendor == undefined ? "-" : data.vendor.name}}</clr-dg-cell>
+                <clr-dg-cell>{{data.branch == undefined ? "-" : data.branch.name}}</clr-dg-cell>
+            </clr-dg-row>
+        
+            <clr-dg-detail *clrIfDetail="let data">
+                <clr-dg-detail-header>Detail data</clr-dg-detail-header>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Attribut</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let oj of Object.keys(data)">
+                        <tr *ngIf="except(oj)">
+                            <td>{{GetDisplayName(oj)}}</td>
+                            <td>{{GetDisplayValue(data[oj])}}</td>
+                        </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </clr-dg-detail>
+        </clr-datagrid>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-light" (click)="modalview = false">Tutup</button>
+    </div>
+</clr-modal>
+
+<!--MODAL SHOW DATA NOT FOUND-->
 <clr-modal *ngIf="modal" [(clrModalOpen)]="modal">
     <h3 class="modal-title">Data Tidak Ditemukan</h3>
     <div class="modal-body">
