@@ -2,7 +2,7 @@
 <div class="clr-row">
     <div class="card" style="margin-top: 0em;">
         <div class="card-header">
-            Inisiasi Perhiasan
+            Inisiasi Souvenir
         </div>
         <div class="card-block">
             <form #inisiasi id="inisiasi" clrForm>
@@ -98,7 +98,7 @@
                     </div>
                 </div>
 
-                <ng-container *ngTemplateOutlet="Perhiasan">
+                <ng-container *ngTemplateOutlet="Souvenir">
 
                 </ng-container>
 
@@ -133,25 +133,13 @@
                                 SKU
                             </clr-dg-column>
                             <clr-dg-column>
-                                Kadar
+                                Denom
                             </clr-dg-column>
                             <clr-dg-column>
-                                Jenis
-                            </clr-dg-column>
-                            <clr-dg-column>
-                                Warna
-                            </clr-dg-column>
-                            <clr-dg-column>
-                                Berat
+                                Series
                             </clr-dg-column>
                             <clr-dg-column>
                                 Pieces
-                            </clr-dg-column>
-                            <clr-dg-column>
-                                Baku Tukar
-                            </clr-dg-column>
-                            <clr-dg-column>
-                                Gram Tukar
                             </clr-dg-column>
                             <clr-dg-column>
                                 Ongkos
@@ -163,13 +151,9 @@
                             <clr-dg-row *clrDgItems="let data of input.items; let i = index;" [clrDgItem]="data">
                                 <!-- <input readonly type="text" class="clr-input" [(ngModel)]="input.items[i]['sku']" [ngModelOptions]="{standalone:true}"> -->
                                 <clr-dg-cell>{{data?.sku}} </clr-dg-cell>
-                                <clr-dg-cell>{{GetDisplayValue(data['product-purity'])}}</clr-dg-cell>
-                                <clr-dg-cell>{{GetDisplayValue(data['product-jenis'])}}</clr-dg-cell>
-                                <clr-dg-cell>{{GetDisplayValue(data['product-gold-color'])}}</clr-dg-cell>
-                                <clr-dg-cell>{{data?.berat}}</clr-dg-cell>
+                                <clr-dg-cell>{{GetDisplayValue(data['product-denom'])}}</clr-dg-cell>
+                                <clr-dg-cell>{{GetDisplayValue(data['product-series'])}}</clr-dg-cell>
                                 <clr-dg-cell>{{data?.pieces}}</clr-dg-cell>
-                                <clr-dg-cell>{{data?.baku_tukar}}</clr-dg-cell>
-                                <clr-dg-cell>{{data?.gram_tukar}}</clr-dg-cell>
                                 <clr-dg-cell>{{data?.ongkos}}</clr-dg-cell>
                                 <!-- <clr-dg-cell>{{data.gram_tukar}}</clr-dg-cell><input readonly type="number" class="clr-input" [ngModel]="input.items[i]['pajak'] = 0" [ngModelOptions]="{standalone:true}"> -->
                                 <clr-dg-cell>{{data?.pajak | number : '2.'}} </clr-dg-cell>
@@ -192,10 +176,6 @@
                                     <div class="clr-col-2"><p [ngStyle]="beratStyleValid()">{{getBeratFromItems()}} gram.</p></div>
                                     <div class="clr-col-1">Total Pieces: </div>
                                     <div class="clr-col-2"><p [ngStyle]="piecesStyleValid()">{{getPiecesFromItems()}} piece.</p></div>
-                                    <div class="clr-col-1">Total Baku Tukar: </div>
-                                    <div class="clr-col-2"><p [ngStyle]="bakuTukarStyleValid()">{{getBakuTukarFromItems()}}.</p></div>
-                                    <div class="clr-col-1">Total Gram Tukar: </div>
-                                    <div class="clr-col-2"><p [ngStyle]="gramTukarStyleValid()">{{getGramTukarFromItems()}} gram.</p></div>
                                 </div>
                                 <div class="clr-row">
                                     <div class="clr-col-1">Total Ongkos: </div>
@@ -237,10 +217,10 @@
     </div>
 </div>
 
-<ng-template #Perhiasan>
+<ng-template #Souvenir>
 <div class="card">
     <div class="card-header">
-        Attribute Perhiasan
+        Attribute Souvenir
     </div>
     <div class="card-body">
         <div class="clr-row">
@@ -257,20 +237,20 @@
         <div class="clr-row">
             <div class="clr-col-6">
                 <clr-select-container>
-                    <label class="clr-control-label" style="padding-left: 10px">Kadar</label>
-                    <select [(ngModel)]="Selected['product-purity']" #kadar clrSelect name="kadar">
-                        <ng-container *ngFor="let kadar of kadars">
-                            <option [ngValue]="kadar">{{kadar.name}}</option>
+                    <label class="clr-control-label" style="padding-left: 10px">Denom</label>
+                    <select [(ngModel)]="Selected['product-denom']" #denom clrSelect name="denom">
+                        <ng-container *ngFor="let denom of denoms">
+                            <option [ngValue]="denom">{{denom?.name}}</option>
                         </ng-container>
                     </select>
                 </clr-select-container>
             </div>
             <div class="clr-col-6">
                 <clr-select-container>
-                    <label class="clr-control-label" style="padding-left: 10px">Warna</label>
-                    <select [(ngModel)]="Selected['product-gold-color']" #jenis clrSelect name="warna">
-                        <ng-container *ngFor="let warna of warnas">
-                            <option [ngValue]="warna">{{warna.name}}</option>
+                    <label class="clr-control-label" style="padding-left: 10px">Series</label>
+                    <select [(ngModel)]="Selected['product-series']" #serie clrSelect name="serie">
+                        <ng-container *ngFor="let serie of series">
+                            <option [ngValue]="serie">{{serie.name}}</option>
                         </ng-container>
                     </select>
                 </clr-select-container>
@@ -278,51 +258,10 @@
         </div>
         <div class="clr-row">
             <div class="clr-col-6">
-                    <clr-select-container>
-                        <label class="clr-control-label" style="padding-left: 10px">Jenis</label>
-                        <select [(ngModel)]="Selected['product-jenis']" #jenis clrSelect name="jenis">
-                            <ng-container *ngFor="let jenis of jeniss">
-                                <option [ngValue]="jenis">{{jenis.name}}</option>
-                            </ng-container>
-                        </select>
-                    </clr-select-container>
-            </div>
-            <div class="clr-col-6">
-                <div class="clr-form-control">
-                    <label class="clr-control-label" style="padding-left: 10px">Berat</label>
-                    <div class="clr-control-container">
-                        <input [(ngModel)]="Selected['berat']" min="0"  (ngModelChange)="hitungPajak(selected)" class="clr-input" type="number" name="berat" placeholder="5.51" />
-                        <span class="clr-subtext">Harap gunakan titik (.)</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="clr-row">
-            <div class="clr-col-6">
                 <div class="clr-form-control">
                     <label class="clr-control-label" style="padding-left: 10px">Pieces</label>
                     <div class="clr-control-container">
                         <input [(ngModel)]="Selected['pieces']" min="0"  class="clr-input" type="number" name="pieces" placeholder="5" />
-                    </div>
-                </div>
-            </div>
-            <div class="clr-col-6">
-                <div class="clr-form-control">
-                    <label class="clr-control-label" style="padding-left: 10px">Baku Tukar</label>
-                    <div class="clr-control-container">
-                        <input [(ngModel)]="Selected['baku_tukar']" min="0"  class="clr-input" type="number" name="baku_tukar" placeholder="5000.00" />
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="clr-row">
-            <div class="clr-col-6">
-                <div class="clr-form-control">
-                    <label class="clr-control-label" style="padding-left: 10px">Gram Tukar</label>
-                    <div class="clr-control-container">
-                        <input [(ngModel)]="Selected['gram_tukar']" min="0"  class="clr-input" type="number" name="gram_tukar" placeholder="5" />
                     </div>
                 </div>
             </div>

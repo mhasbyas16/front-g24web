@@ -34,15 +34,16 @@ import { EPriviledge } from 'src/app/lib/enums/epriviledge.enum';
 import { EventEmitter } from 'protractor';
 import { ToastrService } from 'ngx-toastr';
 import { LogService } from 'src/app/services/resource/log.service';
+import { SeriesService } from 'src/app/services/resource/series.service';
 
 @Component({
-  selector: 'detail-inisiasi-perhiasan',
-  templateUrl: './detail-inisiasi-perhiasan.component.html',
-  styleUrls: ['./detail-inisiasi-perhiasan.component.scss']
+  selector: 'detail-inisiasi-souvenir',
+  templateUrl: './detail-inisiasi-souvenir.component.html',
+  styleUrls: ['./detail-inisiasi-souvenir.component.scss']
   // changeDetection: ChangeDetectionStrategy.OnPush
 })
 // @DContent(InisiasiComponent.key)
-export class DetailInisiasiPerhiasanComponent extends BasePersistentFields implements OnInit, AfterViewInit
+export class DetailInisiasiSouvenirComponent extends BasePersistentFields implements OnInit, AfterViewInit
 {
   @ViewChild('container', { read: ViewContainerRef}) container : ViewContainerRef;
 
@@ -51,7 +52,6 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   @ViewChild('product') product : ElementRef;
 
   @ViewChild('Perhiasan', {static:false}) perhiasanInput : TemplateRef<any>;
-  @ViewChild('Mulia', {static:false}) muliaInput : TemplateRef<any>;
   @ViewChild('Berlian', {static: false}) berlianInput : TemplateRef<any>;
   @ViewChild('Adiratna', {static: false}) adiratnaInput : TemplateRef<any>;
   @ViewChild('Souvenir', {static: false}) souvenirInput : TemplateRef<any>;
@@ -244,14 +244,9 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   constructor(
     private resolver : ComponentFactoryResolver,
     // private unitService : UnitService,
-    private jenisService : JenisService,
-    private kadarService : KadarService,
-    private gColorService : GoldColorService,
-    private dColorService : DiamondColorService,
+    private seriesService : SeriesService,
     private vendorService : VendorService,
     private denomService : DenomService,
-    private shapeService : ShapeService,
-    private clarityService : ClarityService,
     private inisiasiService : InisiasiService,
     private productCatService : ProductCategoryService,
     private logService : LogService,
@@ -285,7 +280,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     {
       this.products.pop();
     }
-    let products = await this.productCatService.list("?code=c00").toPromise();
+    let products = await this.productCatService.list("?code=c02").toPromise();
 
     console.log(products);
 
@@ -296,49 +291,9 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     this.products.sort((a, b) => ('' + a.name).localeCompare(b.name));
   }
 
-  async LoadJenis()
-  {
-    let jeniss = await this.jenisService.list("?").toPromise();
-    for(let i = 0; i < jeniss.length; i++)
-    {
-      this.jeniss.push(jeniss[i]);
-    }
-    this.jeniss.sort((a,b) => ('' + a.name).localeCompare(b.name));
-  }
-
-  async LoadKadar()
-  {
-    let kadars = await this.kadarService.list("?").toPromise();
-    for(let i = 0; i < kadars.length; i++)
-    {
-      this.kadars.push(kadars[i]);
-    }
-    this.kadars.sort((a,b) => parseInt(a.name) - parseInt(b.name))
-  }
-
-  async LoadGWarna()
-  {
-    let warnas = await this.gColorService.list("?").toPromise();
-    for(let i = 0; i < warnas.length; i++)
-    {
-      this.warnas.push(warnas[i]);
-    }
-    this.warnas.sort((a,b) => ('' + a.name).localeCompare(b.name))
-  }
-
-  async LoadColor()
-  {
-    let colors = await this.dColorService.list("?").toPromise();
-    for(let i = 0; i < colors.length; i++)
-    {
-      this.colors.push(colors[i]);
-    }
-    this.colors.sort((a,b) => ('' + a.name).localeCompare(b.name));
-  }
-
   async LoadVendor()
   {
-    let vendors = await this.vendorService.list("?product-category.code=c00").toPromise();
+    let vendors = await this.vendorService.list("?product-category.code=c02").toPromise();
     for(let i = 0; i < vendors.length; i++)
     {
       this.vendors.push(vendors[i]);
@@ -348,7 +303,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
 
   async LoadDenom()
   {
-    let denoms = await this.denomService.list("?").toPromise();
+    let denoms = await this.denomService.list("?product-category.code=c02").toPromise();
     for(let i = 0; i < denoms.length; i++)
     {
       this.denoms.push(denoms[i]);
@@ -356,29 +311,9 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     this.denoms.sort((a,b) => ('' + a.name).localeCompare(b.name))
   }
   
-  async LoadShape()
-  {
-    let shapes = await this.shapeService.list("?").toPromise();
-    for(let i = 0; i < shapes.length; i++)
-    {
-      this.shapes.push(shapes[i]);
-    }
-    this.shapes.sort((a,b) => ('' + a.name).localeCompare(b.name))
-  }
-  
-  async LoadClarity()
-  {
-    let claritys = await this.clarityService.list("?").toPromise();
-    for(let i = 0; i < claritys.length; i++)
-    {
-      this.claritys.push(claritys[i]);
-    }
-    this.claritys.sort((a,b) => ('' + a.name).localeCompare(b.name))
-  }
-  
   async LoadSeries()
   {
-    let series = await this.clarityService.list("?").toPromise();
+    let series = await this.seriesService.list("?").toPromise();
     for(let i = 0; i < series.length; i++)
     {
       this.series.push(series[i]);
@@ -390,13 +325,8 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   {
     this.LoadProductCategory();
     this.LoadVendor();
-    this.LoadJenis();
-    this.LoadKadar();
-    this.LoadGWarna();
-    this.LoadColor()
     this.LoadDenom();
-    this.LoadShape();
-    this.LoadClarity();
+    this.LoadSeries();
     
     this.onProductChanged();
   }
