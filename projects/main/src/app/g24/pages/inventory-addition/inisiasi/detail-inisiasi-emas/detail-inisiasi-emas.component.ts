@@ -34,15 +34,16 @@ import { EPriviledge } from 'src/app/lib/enums/epriviledge.enum';
 import { EventEmitter } from 'protractor';
 import { ToastrService } from 'ngx-toastr';
 import { LogService } from 'src/app/services/resource/log.service';
+import { DateService } from 'src/app/services/resource/date.service';
 
 @Component({
-  selector: 'detail-inisiasi-perhiasan',
-  templateUrl: './detail-inisiasi-perhiasan.component.html',
-  styleUrls: ['./detail-inisiasi-perhiasan.component.scss']
+  selector: 'detail-inisiasi-emas',
+  templateUrl: './detail-inisiasi-emas.component.html',
+  styleUrls: ['./detail-inisiasi-emas.component.scss']
   // changeDetection: ChangeDetectionStrategy.OnPush
 })
 // @DContent(InisiasiComponent.key)
-export class DetailInisiasiPerhiasanComponent extends BasePersistentFields implements OnInit, AfterViewInit
+export class DetailInisiasiEmasComponent extends BasePersistentFields implements OnInit, AfterViewInit
 {
   @ViewChild('container', { read: ViewContainerRef}) container : ViewContainerRef;
 
@@ -66,6 +67,17 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   user : any = {};
 
   datas : any[] = [];
+  
+  current_date : string = "";
+  async CurrentDate() : Promise<string>
+  {
+    if(this.current_date == null || this.current_date == "")
+    {
+      this.current_date = await this.dateService.task().toPromise();
+    }
+
+    return this.current_date;
+  }
 
   products : any[] = [];
   vendors : any[] = [];
@@ -97,15 +109,18 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
 
   // searchModel : Map<string, any> = new Map<string, any>();
   input : any = {items : []};
-  defaultInput() : any
+  async defaultInput() : Promise<any>
   {
-    return {
-      nomor_nota : null, tgl_inisiasi : new Date().toISOString().split("T")[0],  harga_baku : 0, pajak : 0, 
+    let def = {
+      nomor_nota : null, tgl_inisiasi : null,  harga_baku : 0, pajak : 0, 
       'product-category' : null, vendor : null, tipe_bayar : null,
       total_berat : 0, total_piece : 0, total_baku_tukar : 0, total_gram_tukar : 0,
       total_ongkos : 0, total_pajak : 0, total_harga : 0,
       items : []
     };
+    let date : string = (await this.CurrentDate());
+    def.tgl_inisiasi = date.split("T")[0];
+    return 
   }
 
   defaultItem() :any
@@ -255,6 +270,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     private inisiasiService : InisiasiService,
     private productCatService : ProductCategoryService,
     private logService : LogService,
+    private dateService : DateService,
 
     private toastr : ToastrService,
     private session : SessionService)
@@ -414,16 +430,16 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     console.log(form2reset.valid, this.input)
   }
 
-  onProductChanged()
+  async onProductChanged()
   {
-    this.input['create_date'] = new Date().toISOString().split("T")[0];
+    this.input['create_date'] = (await this.CurrentDate()).split("T")[0];
 
     for(let i = 0; i < this.products.length; i++)
     {
-      let perhiasan = this.products[i];
-      if(perhiasan.code == "c00")
+      let emas = this.products[i];
+      if(emas?.code.includes("05"))
       {
-        this.input['product-category'] = perhiasan;
+        this.input['product-category'] = emas;
         break;
       }
     }
@@ -561,8 +577,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     }
 
 
-    let now : Date = new Date;
-    let sNow = now.toISOString().split("T");
+    let sNow = (await this.CurrentDate()).split("T");
     let date = sNow[0];
     let time = sNow[1].split(".")[0];
 
@@ -578,7 +593,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     let def = 
     {
       // init_no : "PO" + this.user.unit.code + "",//"IN0000512",
-      create_date : this.input['create_date'],
+      create_date : date,
       create_time : time,
       create_by : this.user.username,
       unit : this.user.unit.code,

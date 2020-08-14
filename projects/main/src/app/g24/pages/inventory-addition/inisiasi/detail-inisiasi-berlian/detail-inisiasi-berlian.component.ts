@@ -1,18 +1,14 @@
 import { Component, OnInit, ComponentFactoryResolver, ViewChild, Input, ElementRef, AfterViewInit, TemplateRef, ChangeDetectionStrategy, ViewContainerRef, Output } from '@angular/core';
-import { DContent } from 'src/app/decorators/content/pages';
 import { EMenuID } from 'src/app/lib/enums/emenu-id.enum';
-import { NgForm, Form, FormGroup, FormBuilder } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import { InitiationType } from 'src/app/lib/enums/initiation-type';
 import { PaymentType } from 'src/app/lib/enums/payment-type';
 import { ModalErrorType } from 'src/app/lib/enums/modal-error-type.enum';
 import { DocumentStatus } from 'src/app/lib/enums/document-status.enum';
 import { BasePersistentFields } from 'src/app/lib/base/base-persistent-fields';
-import { UnitService } from 'src/app/services/resource/unit.service';
 import { InisiasiService } from 'src/app/services/resource/inisiasi.service';
 import { Modals } from 'src/app/decorators/modal/modals';
 
-import * as stringify from "stringify-object-keys";
-import { isArray } from 'util';
 import { DataTypeUtil } from 'src/app/lib/helper/data-type-util';
 import { ProductCategoryService } from 'src/app/services/resource/product-category.service';
 import { JenisService } from 'src/app/services/resource/jenis.service';
@@ -21,28 +17,19 @@ import { GoldColorService } from 'src/app/services/resource/gold-color.service';
 import { VendorService } from 'src/app/services/resource/vendor.service';
 import { SessionService } from 'src/app/lib/common/session.service';
 import { DenomService } from 'src/app/services/resource/denom.service';
-import { CutService } from 'src/app/services/resource/cut.service';
-import { AlphaNumeric } from 'src/app/lib/helper/alpha-numeric';
 import { ShapeService } from 'src/app/services/resource/shape.service';
 import { DiamondColorService } from 'src/app/services/resource/diamond-color.service';
-import { ClarityModule } from '@clr/angular';
 import { ClarityService } from 'src/app/services/resource/clarity.service';
-import { NotificationUtil, Notification, NotificationSize } from 'src/app/lib/helper/notification-util';
-import { ModalOutlet, IModals } from 'src/app/lib/helper/modal-outlet';
-import { DetailInitPerhiasanComponent } from 'src/app/modals/inisiasi/detail-init-perhiasan/detail-init-perhiasan.component';
-import { EPriviledge } from 'src/app/lib/enums/epriviledge.enum';
-import { EventEmitter } from 'protractor';
 import { ToastrService } from 'ngx-toastr';
 import { LogService } from 'src/app/services/resource/log.service';
 
 @Component({
-  selector: 'detail-inisiasi-perhiasan',
-  templateUrl: './detail-inisiasi-perhiasan.component.html',
-  styleUrls: ['./detail-inisiasi-perhiasan.component.scss']
+  selector: 'detail-inisiasi-berlian',
+  templateUrl: './detail-inisiasi-berlian.component.html',
+  styleUrls: ['./detail-inisiasi-berlian.component.scss']
   // changeDetection: ChangeDetectionStrategy.OnPush
 })
-// @DContent(InisiasiComponent.key)
-export class DetailInisiasiPerhiasanComponent extends BasePersistentFields implements OnInit, AfterViewInit
+export class DetailInisiasiBerlianComponent extends BasePersistentFields implements OnInit, AfterViewInit
 {
   @ViewChild('container', { read: ViewContainerRef}) container : ViewContainerRef;
 
@@ -50,7 +37,6 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   // @ViewChild('inisiasi', {static: false}) inisiasi : NgForm;
   @ViewChild('product') product : ElementRef;
 
-  @ViewChild('Perhiasan', {static:false}) perhiasanInput : TemplateRef<any>;
   @ViewChild('Mulia', {static:false}) muliaInput : TemplateRef<any>;
   @ViewChild('Berlian', {static: false}) berlianInput : TemplateRef<any>;
   @ViewChild('Adiratna', {static: false}) adiratnaInput : TemplateRef<any>;
@@ -403,7 +389,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
 
   ngAfterViewInit()
   {
-    window['perhiasan'] = this.perhiasanInput;
+    window['perhiasan'] = this.berlianInput;
   }
 
   ResetAll(form2reset : NgForm)
@@ -561,7 +547,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     }
 
 
-    let now : Date = new Date;
+    let now : Date = new Date();
     let sNow = now.toISOString().split("T");
     let date = sNow[0];
     let time = sNow[1].split(".")[0];
@@ -569,15 +555,9 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     let no = this.input['init_no'];
     console.log(no, "no")
 
-    if(this.user.unit == null)
-    {
-      this.toastr.warning("Unit dari User belum di-Assign. Harap hubungi IT Support/Helpdesk.", "Error!");
-      return;
-    }
-
     let def = 
     {
-      // init_no : "PO" + this.user.unit.code + "",//"IN0000512",
+      init_no : this.input['init_no'],//"IN0000512",
       create_date : this.input['create_date'],
       create_time : time,
       create_by : this.user.username,
@@ -585,8 +565,8 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
       flag : "submit",
       __version : new Date().getMilliseconds(),
       __version_d : "0",
-      // vendor : null,
-      // 'product-category' : null,
+      vendor : null,
+      'product-category' : null,
     };
     let init = DataTypeUtil.Encode(def);
 
