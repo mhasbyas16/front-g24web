@@ -1,10 +1,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { CoreResourceService } from 'src/app/lib/common/core-resource.service';
-import { AuthService } from 'src/app/lib/common/auth.service';
-import { PasswordRequirementService } from 'src/app/lib/common/password-requirement.service';
-import { CommonResourceService } from 'src/app/lib/common/common-resource.service';
+import { AuthService } from 'projects/platform/src/app/core-services/auth.service';
 
 @Component({
   selector: 'app-signin-page',

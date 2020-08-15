@@ -21,3 +21,7 @@ export const management = [
 export const keuangan = [
     
 ];
+
+export const stock = [
+    {_id: "0003", type: "menu", name : "Penjualan", icons: "shopping-cart", color : "warna-warni", componentId : "S10001", parentId: "", module: "pj"},
+];
