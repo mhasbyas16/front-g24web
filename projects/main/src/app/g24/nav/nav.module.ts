@@ -6,7 +6,7 @@ import { ContentComponent } from './content/content.component';
 import { FooterComponent } from './footer/footer.component';
 import { RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
-import { ModalComponent } from './modal/modal.component';
+
 import { CartComponent } from './modal/cart/cart.component';
 import { CheckoutComponent } from './modal/checkout/checkout.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -16,7 +16,7 @@ import { ModalOutletComponent } from './modal-outlet/modal-outlet.component';
 
 
 @NgModule({
-  declarations: [HeaderComponent, SidebarComponent, ContentComponent, FooterComponent, ModalComponent, CartComponent, CheckoutComponent, AddNasabahComponent, SearchNasabahComponent, ModalOutletComponent],
+  declarations: [HeaderComponent, SidebarComponent, ContentComponent, FooterComponent, CartComponent, CheckoutComponent, AddNasabahComponent, SearchNasabahComponent, ModalOutletComponent],
   imports: [
     CommonModule,
     RouterModule,
