@@ -22,34 +22,33 @@
                 </select>
             </clr-select-container>
         </div>
-        <div class="clr-col-2">
-            <div class="clr-form-control">
+        <div class="clr-col-3">
+            <clr-input-container class="clr-form-control">
                 <label class="clr-control-label">Jumlah</label>
-                <input  class="clr-input" type="text" name="input_jumlah" [(ngModel)]="searchModel.jumlah" required/>
-            </div>
+                <input  class="clr-control-label clr-col-1 clr-md-3" clrInput type="text" name="input_jumlah" [(ngModel)]="searchModel.jumlah" required/>
+            </clr-input-container>
         </div>
-        <div class="clr-col-1">
+        <div class="clr-col-3">
             <div class="clr-form-control">
-                <div class="clr-control-container">
-                    <button class="btn btn-info-outline btn-sm">Cari</button>
+                <div class="clr-control-container" >
+                    <button class="btn btn-info-outline btn-sm float-right">Cari</button>
                 </div>
             </div>
         </div>
     </div>    
 </form>
-<clr-datagrid [clrDgLoading]="loadingDg" >
+<clr-datagrid [(clrDgSelected)]="selected" [clrDgLoading]="loadingDg"  [(clrDgSelected)]="selected" [clrDgRowSelection]="true">
     <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
+    <clr-dg-column>Product Id</clr-dg-column>
     <clr-dg-column>Vendor</clr-dg-column>
     <clr-dg-column>Denom</clr-dg-column>
     <clr-dg-column>Harga</clr-dg-column>
-    <clr-dg-column>Quantity</clr-dg-column>
-    <clr-dg-column class="right"></clr-dg-column>
 
-    <clr-dg-row *clrDgItems="let d of datamulias" [clrDgItem]="datamulias">
+    <clr-dg-row *clrDgItems="let d of datamulias" [clrDgItem]="d">
+        <clr-dg-cell>{{d.id}}</clr-dg-cell>
         <clr-dg-cell>{{d.vendor.name}}</clr-dg-cell>
         <clr-dg-cell>{{d['product-denom'].name}}</clr-dg-cell>
         <clr-dg-cell>102.322.555</clr-dg-cell>
-        <clr-dg-cell>{{d.qty}}</clr-dg-cell>
     </clr-dg-row>
     
     <clr-dg-footer>
@@ -58,5 +57,11 @@
           {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
           of {{pagination.totalItems}} Produk
         </clr-dg-pagination>
-      </clr-dg-footer>
+    </clr-dg-footer>
+
+    <clr-dg-action-bar style="float: right;">
+        <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-success" ><clr-icon shape="plus"></clr-icon> Add to Chart</button>
+        </div>
+    </clr-dg-action-bar>
 </clr-datagrid>

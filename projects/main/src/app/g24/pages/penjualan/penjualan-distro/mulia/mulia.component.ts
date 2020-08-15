@@ -44,6 +44,8 @@ export class MuliaComponent implements OnInit {
   tampilMulia = [];
   cartList = LM;
 
+  selected: string[] = [];
+
   //category
   vendorCategory = "product-category.code=05";
   category = "?product-category.code=05";
@@ -102,31 +104,18 @@ export class MuliaComponent implements OnInit {
       }      
     });
   }
-  // checkProduct(){
-  //   this.productService.list(this.category).subscribe((response: any) => {
-  //     this.mulias = response;
-  //     this.datamulias = this.mulias;
-  //     console.debug(this.datamulias, "wo")
-
-  //   });  
-  // }
-
- 
-  // filterVendor(wow){
-    
-  // }
 
   
   onCariMulia(data){
     this.loadingDg = true;
     let vendor = data.input_vendor_mulia;
     let denom = data.input_denom_mulia;
-    let kamu = data.input_jumlah ;
+    let jumlah = data.input_jumlah ;
     
 
     const urlVendor = "vendor.code="+vendor;
     const urlDenom = "product-denom.code="+denom;
-    const urlQty = "_rows="+this.qty;
+    const urlQty = "_rows="+jumlah;
 
     this.params = this.category;
     if (vendor == "pilih" || denom == "pilih") {
@@ -135,6 +124,7 @@ export class MuliaComponent implements OnInit {
     } else {
         this.params = this.params+"&"+urlVendor;
         this.params = this.params+"&"+urlDenom;
+        this.params = this.params+"&"+urlQty;
         this.productService.list(this.params).subscribe((response: any) => {
           
           if (response == false) {
@@ -148,19 +138,21 @@ export class MuliaComponent implements OnInit {
             return;
           }  
 
-          this.prmJualService.list(this.params).subscribe((Jualresponse: any) => {
-            if (Jualresponse != false) {
-              this.hargaBaku = Jualresponse;
-            }
-            console.debug(this.hargaBaku,"wow");
+          // this.prmJualService.list(this.params).subscribe((Jualresponse: any) => {
+          //   if (Jualresponse != false) {
+          //     this.hargaBaku = Jualresponse;
+          //   }
+           
             this.mulias = response;
-            this.productService.count(this.params).subscribe((response: any) => {
-            this.qty = response;
-            this.mulias[0].qty = this.qty.count;
-            this.datamulias = this.mulias.slice(0,1);
+            this.datamulias = this.mulias;
+            console.debug(this.mulias)
+            // this.productService.count(this.params).subscribe((response: any) => {
+            // this.qty = response;
+            // this.mulias[0].qty = this.qty.count;
+            // this.datamulias = this.mulias.slice(0,1);
             this.loadingDg = false;
-          });
-        });
+          // });
+        // });
       });
     }
       // const filteredperhiasan = this.getPerhiasan.filter(kamu =>  kamu.jenis == jenis && kamu.vendor == vendor);
