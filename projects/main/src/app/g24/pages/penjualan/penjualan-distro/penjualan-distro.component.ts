@@ -52,6 +52,11 @@ export class PenjualanDistroComponent implements OnInit {
     this.total = data;  
   }
 
+  // total isi cart logamMulia
+  totallogamMulia(isi: any){
+    this.mulia = isi;
+  }
+
   // total isi cart perhiasan
   totalPerhiasan(isi: any){
     this.perhiasan = isi;

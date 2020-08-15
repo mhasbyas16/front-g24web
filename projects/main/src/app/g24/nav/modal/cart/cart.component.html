@@ -68,16 +68,31 @@
                             Logam Mulia
                         </div>
                         <div class="card-block">
-                            <div class="card-media-block">
-                                <img src="..." class="card-media-image">
-                                <div class="card-media-description">
-                                    <span class="card-media-title">
-                                        Project A
-                                    </span>
-                                    <span class="card-media-text">
-                                        Owner: John Doe
-                                    </span>
-                                </div>
+                            <div class="card-block">
+                                <ul class="list-group">
+                                    <ng-container *ngFor="let ip of cartLogam | keyvalue">
+                                        <li class="list-group-item">
+                                            <div class="clr-row" style="padding-top: 0;">
+                                               
+                                                <div class="clr-col-1">
+                                                    <span>{{ip.value.vendor}}</span>
+                                                </div>
+                                                <div class="clr-col-1">
+                                                    <span>{{ip.value.denom}}</span>
+                                                </div>
+                                                <div class="clr-col-1">
+                                                   
+                                                </div>
+                                               
+                                                <div class="clr-col-1">
+                                                    <button type="button" class="btn btn-icon btn-sm btn-danger" aria-label="home" (click)="removeItemPerhiasan(ip.key, ip.value.harga )">
+                                                        <clr-icon shape="minus"></clr-icon>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </li>                                        
+                                    </ng-container>
+                                </ul>
                             </div>
                             <div class="card-text">
                                 ...
