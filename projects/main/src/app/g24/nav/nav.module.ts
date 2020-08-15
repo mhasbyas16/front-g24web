@@ -6,7 +6,10 @@ import { ContentComponent } from './content/content.component';
 import { FooterComponent } from './footer/footer.component';
 import { RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
+<<<<<<< HEAD
 
+=======
+>>>>>>> c7bd0f8c8c3ae5b157b4703fb71a5906bfd4cce2
 import { CartComponent } from './modal/cart/cart.component';
 import { CheckoutComponent } from './modal/checkout/checkout.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
