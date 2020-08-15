@@ -6,7 +6,7 @@ import { CommonService } from 'projects/platform/src/app/core-services/common.se
 })
 export class ProvinceService {
 
-  key = "master-api/province-old";
+  key = "master-api/province";
 
   constructor(private commonService:CommonService) { }
 
