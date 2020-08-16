@@ -7,9 +7,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { NavModule } from './nav/nav.module';
 
 import {NgxBarcodeModule} from 'ngx-barcode';
+import { RekeningKoranComponent } from './pages/keuangan/laporan/rekening-koran/rekening-koran/rekening-koran.component';
 
 @NgModule({
-  declarations: [],
+  declarations: [RekeningKoranComponent],
   imports: [
     AppRoutingModule,
     ClarityModule,
