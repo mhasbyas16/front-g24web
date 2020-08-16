@@ -211,7 +211,7 @@
         </div>
         <div class="modal-footer">
             <ng-container *ngIf="total > 0">
-                <span>Total : Rp. {{hargaPerhiasan+hargaLogam+hargaBerlian+hargaGift+hargaDinar | number}}</span>
+                <span>Total : Rp. {{hargaPerhiasan+hargaLogamMulia+hargaBerlian+hargaGift+hargaDinar | number}}</span>
             <button type="button" class="btn btn-warning" (click)="removeCart()">Clear</button>
             <!-- <button type="button" class="btn btn-outline" (click)="cartModal = false">Cancel</button> -->
                 <button type="button" class="btn btn-primary" (click)="CO.openModal(hargaPerhiasan+hargaLogam+hargaBerlian+hargaGift+hargaDinar)">Check Out</button>

@@ -36,6 +36,7 @@ export class PenjualanDistroComponent implements OnInit {
   berlian:any;
 
   // total harga per kategori
+  hargaLogamMulia:any
   hargaPerhiasan:any;
   hargaBatuMulia:any;
 
@@ -89,6 +90,9 @@ export class PenjualanDistroComponent implements OnInit {
   }
   HBatuMulia(harga: any){
     this.hargaBatuMulia = harga;
+  }
+  HMulia(harga: any){
+    this.hargaLogamMulia = harga;
   }
   
   static key = EMenuID.DISTRO;

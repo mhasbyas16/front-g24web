@@ -175,6 +175,7 @@ export class MuliaComponent implements OnInit {
 
   addCart(vendorLM: any, denomLM: any, qtyLM: any){
     this.loadingDg = true;
+    this.total = 0;
     
 
     if (qtyLM < this.jumlahLM) {
@@ -203,6 +204,7 @@ export class MuliaComponent implements OnInit {
           lm.splice(cekItem, 1)
         }
         let maks : any;
+        let hargaTotalLM : number;
         if (lm.length == 0 || lm.length < this.jumlahLM) {
           this.toastrService.error("Jumlah Tidak Mencukupi", "Mulia");  
         } else {
@@ -215,9 +217,11 @@ export class MuliaComponent implements OnInit {
                 'denom' : lm[index]['product-denom'].name,
                 'harga' : harga
             })
+            
           }
+         
         }
-        
+        console.debug(this.cartList)
         this.refresh(harga, "p")
         this.logamMulia.emit(this.cartList.length);
         this.data.emit(this.countService.countCart());
@@ -230,12 +234,17 @@ export class MuliaComponent implements OnInit {
   refresh(harga: any, sum: any){
     
     if (sum == "p") {
-     this.total =0;
-     for (const i of this.cartList) {
-       this.total += i.harga;
+    
+     for (let i of this.cartList) {
+       this.total += Number(i.harga);
+       console.debug(this.cartList)
+       
      }
     }
+    
+    console.debug(this.total)
     this.totalHarga.emit(this.total);
-   // this.totalHarga.emit(this.total);
+    
+   
  }
 }
