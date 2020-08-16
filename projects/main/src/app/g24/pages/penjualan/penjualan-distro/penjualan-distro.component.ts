@@ -78,6 +78,9 @@ export class PenjualanDistroComponent implements OnInit {
   clearPerhiasan(isi: any){
     this.perhiasan = isi;
   }
+  clearMulia(isi: any){
+    this.mulia = isi;
+  }
 
   
   //total harga cart

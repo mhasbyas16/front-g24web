@@ -11,6 +11,7 @@ export class CartComponent implements OnInit {
   @Output() clearParentCart:any = new EventEmitter();
   @Output() clearBerlian:any = new EventEmitter();
   @Output() clearPerhiasan:any = new EventEmitter();
+  @Output() clearMulia:any = new EventEmitter();
   //
   @Input() total:any=0;
   @Input() perhiasan:any;
@@ -49,6 +50,7 @@ export class CartComponent implements OnInit {
     // remove all item in array    
     this.cartPerhiasan.splice(0);
     this.cartBerlian.splice(0);
+    this.cartLogam.splice(0);
     // reset card modal
     this.perhiasan = 0;
     this.logam = 0;
@@ -69,6 +71,7 @@ export class CartComponent implements OnInit {
     this.clearParentCart.emit(0);
     this.clearBerlian.emit(0);
     this.clearPerhiasan.emit(0);
+    this.clearMulia.emit(0);
   }
 
   // remove item berlian 
@@ -104,6 +107,23 @@ export class CartComponent implements OnInit {
     }
     if (this.perhiasan == 0) {
       this.clearPerhiasan.emit(0);
+    }
+  }
+
+  removeItemMulia(key: any, harga:any ){
+    this.cartLogam.splice(key,1);
+    console.debug(this.logam)
+    //pengrurangan harga
+    // this.hargaPerhiasan = this.hargaPerhiasan-harga;
+    //pengurangan jumlah cart
+    this.total-=1;
+    this.logam = this.logam-1;
+    if (this.total == 0) {
+      console.debug("totallll 0");
+      this.clearParentCart.emit(0);
+    }
+    if (this.logam == 0) {
+      this.clearMulia.emit(0);
     }
   }
   modalView(isi: any){

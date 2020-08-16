@@ -15,6 +15,7 @@ import { PrmPpnService } from '../../../../services/parameter/prm-ppn.service';
 import { PricingService }  from '../../../../services/pricing.service';
 
 import { LM } from '../../../../sample/cart';
+import { CountCartService } from '../../../../services/count-cart.service';
 
 
 
@@ -43,8 +44,9 @@ export class MuliaComponent implements OnInit {
   placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
   tampilMulia = [];
   cartList = LM;
-
-  selected: string[] = [];
+  jumlahLM : number ;
+  total = 0;
+  selected: any[] = [];
 
   //category
   vendorCategory = "product-category.code=05";
@@ -67,6 +69,8 @@ export class MuliaComponent implements OnInit {
   //toast
   private toastrService: ToastrService,
 
+  //count cart
+  private countService: CountCartService,
   
   
 
@@ -110,12 +114,13 @@ export class MuliaComponent implements OnInit {
     this.loadingDg = true;
     let vendor = data.input_vendor_mulia;
     let denom = data.input_denom_mulia;
-    let jumlah = data.input_jumlah ;
+    // let jumlah = data.input_jumlah ;
+    let cariMulia : any[] = [];
     
 
     const urlVendor = "vendor.code="+vendor;
     const urlDenom = "product-denom.code="+denom;
-    const urlQty = "_rows="+jumlah;
+    // const urlQty = "_rows="+jumlah;
 
     this.params = this.category;
     if (vendor == "pilih" || denom == "pilih") {
@@ -124,7 +129,7 @@ export class MuliaComponent implements OnInit {
     } else {
         this.params = this.params+"&"+urlVendor;
         this.params = this.params+"&"+urlDenom;
-        this.params = this.params+"&"+urlQty;
+        // this.params = this.params+"&"+urlQty;
         this.productService.list(this.params).subscribe((response: any) => {
           
           if (response == false) {
@@ -142,17 +147,20 @@ export class MuliaComponent implements OnInit {
           //   if (Jualresponse != false) {
           //     this.hargaBaku = Jualresponse;
           //   }
-           
-            this.mulias = response;
-            this.datamulias = this.mulias;
-            console.debug(this.mulias)
-            // this.productService.count(this.params).subscribe((response: any) => {
-            // this.qty = response;
-            // this.mulias[0].qty = this.qty.count;
-            // this.datamulias = this.mulias.slice(0,1);
+          this.mulias = response;
+          this.productService.count(this.params).subscribe((response: any) => {
+          this.qty = response.count;
+          cariMulia.push({
+            "vendor" : this.mulias[0].vendor.name,
+            "denom" : this.mulias[0]['product-denom'].name,
+            "qty" : this.qty
+
+          });
+            // this.mulias = response;
+            this.datamulias = cariMulia;
             this.loadingDg = false;
           // });
-        // });
+        });
       });
     }
       // const filteredperhiasan = this.getPerhiasan.filter(kamu =>  kamu.jenis == jenis && kamu.vendor == vendor);
@@ -165,20 +173,69 @@ export class MuliaComponent implements OnInit {
     return ARR;
   }
 
-  addCart(vendor: any ,
-     denom: any){
+  addCart(vendorLM: any, denomLM: any, qtyLM: any){
+    this.loadingDg = true;
     
-    this.cartList.push({
-     
-      'vendor': vendor, 
-      
-      'denom' : denom,
-      
-      'qty': 1});
-      console.debug(this.cartList,"ISI HASH CART")
 
-      this.logamMulia.emit(this.cartList.length);
+    if (qtyLM < this.jumlahLM) {
+      this.toastrService.error("Jumlah Tidak Mencukupi", "Mulia");
+    }else{
+      let params : any;
+      let urlVendor = "vendor.name="+vendorLM;
+      let urlDenom = "product-denom.name="+denomLM;
+      let lm: any;
 
-     // this.cekItemArray(code);
+      params = this.category;
+      params = params+"&"+urlVendor;
+      params = params+"&"+urlDenom;
+      
+      let codeLM = this.cartList.map(el => el.code);
+      let cekItem : any;
+
+      console.debug(this.cartList, 'cart')
+      console.debug(codeLM, 'codeLM')
+      // lm = this.mulias
+      let harga = 20000000;
+      this.productService.list(params).subscribe((response: any) => {
+        lm = response
+        for (let index = 0; index < codeLM.length; index++) {
+          cekItem = lm.map(e => e.code).indexOf(codeLM[index])
+          lm.splice(cekItem, 1)
+        }
+        let maks : any;
+        if (lm.length == 0 || lm.length < this.jumlahLM) {
+          this.toastrService.error("Jumlah Tidak Mencukupi", "Mulia");  
+        } else {
+           maks = this.jumlahLM
+           
+           for (let index = 0; index < maks ; index++) {
+            this.cartList.push({
+                'code': lm[index].code,
+                'vendor' : lm[index].vendor.name,
+                'denom' : lm[index]['product-denom'].name,
+                'harga' : harga
+            })
+          }
+        }
+        
+        this.refresh(harga, "p")
+        this.logamMulia.emit(this.cartList.length);
+        this.data.emit(this.countService.countCart());
+        this.loadingDg = false;
+      });
+
+    }
+    
   }
+  refresh(harga: any, sum: any){
+    
+    if (sum == "p") {
+     this.total =0;
+     for (const i of this.cartList) {
+       this.total += i.harga;
+     }
+    }
+    this.totalHarga.emit(this.total);
+   // this.totalHarga.emit(this.total);
+ }
 }

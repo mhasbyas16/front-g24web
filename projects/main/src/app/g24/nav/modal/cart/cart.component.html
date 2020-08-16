@@ -68,24 +68,29 @@
                             Logam Mulia
                         </div>
                         <div class="card-block">
-                            <div class="card-block">
+                            <div class="card-block" style="padding: 0">
                                 <ul class="list-group">
-                                    <ng-container *ngFor="let ip of cartLogam | keyvalue">
+                                    <ng-container *ngFor="let ip of cartLogam | keyvalue" style="padding: 0;">
                                         <li class="list-group-item">
                                             <div class="clr-row" style="padding-top: 0;">
                                                
-                                                <div class="clr-col-1">
+                                                <div class="clr-col-2">
+                                                    <span>{{ip.value.code}}</span>
+                                                </div>
+                                                <div class="clr-col-2">
                                                     <span>{{ip.value.vendor}}</span>
                                                 </div>
-                                                <div class="clr-col-1">
+                                                <div class="clr-col-2">
                                                     <span>{{ip.value.denom}}</span>
                                                 </div>
-                                                <div class="clr-col-1">
+                                                <div class="clr-col-2">
                                                    
                                                 </div>
-                                               
+                                                <div class="clr-col-3">
+                                                    <span class="left"> Rp. {{ip.value.harga| number}}</span>
+                                                </div>
                                                 <div class="clr-col-1">
-                                                    <button type="button" class="btn btn-icon btn-sm btn-danger" aria-label="home" (click)="removeItemPerhiasan(ip.key, ip.value.harga )">
+                                                    <button type="button" class="btn btn-icon btn-sm btn-danger" aria-label="home" (click)="removeItemMulia(ip.key, ip.value.harga )">
                                                         <clr-icon shape="minus"></clr-icon>
                                                     </button>
                                                 </div>
