@@ -95,7 +95,7 @@ export class CartComponent implements OnInit {
     this.cartBerlian.splice(key,1);
 
     //pengrurangan harga
-    // this.hargaPerhiasan = this.hargaPerhiasan-harga;
+    this.hargaPerhiasan = this.hargaPerhiasan-harga;
     //pengurangan jumlah cart
     this.total-=1;
     this.berlian = this.berlian-1;
