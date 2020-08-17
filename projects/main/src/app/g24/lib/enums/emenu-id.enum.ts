@@ -97,6 +97,10 @@ export enum EMenuID {
 
     DISTRO              = '10001',
     ROLE                = '10002',
-    LAPORAN             = '10003'
+    LAPORAN             = '10003',
+
+    // LAPORAN KEUANGAN
+    LAPORAN_KEUANGAN = '21000',
+    REKENING_KORAN = '21001'
 
 }
