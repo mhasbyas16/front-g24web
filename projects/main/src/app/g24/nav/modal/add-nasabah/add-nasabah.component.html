@@ -637,12 +637,20 @@
                                                         </clr-select-container>                                                  
                                                     </div>
                                                     <div class="clr-col-6">
-                                                        <clr-input-container>
+                                                        <clr-select-container>
+                                                            <label>Pendapatan Per Bulan</label>
+                                                            <select clrSelect formControlName="pendapatan">
+                                                                <option selected value=""></option>
+                                                            </select>
+                                                            <clr-control-helper>*</clr-control-helper>
+                                                            <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                                        </clr-select-container>
+                                                        <!-- <clr-input-container>
                                                             <label>Pendapatan Per Bulan</label>
                                                             <input clrInput type="text" formControlName="pendapatan">
                                                             <clr-control-helper>*</clr-control-helper>
                                                             <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
-                                                        </clr-input-container>
+                                                        </clr-input-container> -->
                                                     </div>
                                                 </div>
                                                                        

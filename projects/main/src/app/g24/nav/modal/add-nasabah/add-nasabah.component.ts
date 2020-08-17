@@ -22,7 +22,7 @@ import { ClientEducationService } from '../../../services/client/client-educatio
 import { ClientBusinessFieldService } from '../../../services/client/client-business-field.service';
 import { ClientBusinessTypeService } from '../../../services/client/client-business-type.service';
 import { ClientLegalTypeService } from '../../../services/client/client-legal-type.service';
-
+import { ClientIncomeService } from '../../../services/client/client-income.service';
 @Component({
   selector: 'app-add-nasabah',
   templateUrl: './add-nasabah.component.html',
@@ -70,6 +70,7 @@ export class AddNasabahComponent implements OnInit {
   businessField:any;
   businessType:any;
   legalType:any;
+  income:any;
 
   constructor(
     private cifNumber: CifGeneratorService,
@@ -91,6 +92,7 @@ export class AddNasabahComponent implements OnInit {
     private clientBusinessField :ClientBusinessFieldService,
     private clientBusinessType :ClientBusinessTypeService,
     private clientLegalType :ClientLegalTypeService,
+    private clientIncomeService: ClientIncomeService,
 
     //ng
     private toastr: ToastrService
@@ -251,6 +253,7 @@ export class AddNasabahComponent implements OnInit {
     this.getProfession();
     this.getMaritalStatus();
     this.getEducation();
+    this.getClientIncome();
   }
 
   // store to DB
@@ -488,6 +491,14 @@ export class AddNasabahComponent implements OnInit {
   }
 
   // Client
+  getClientIncome(){
+    this.clientIncomeService.list("?_hash=1").subscribe((response:any)=>{
+      if (response != false) {
+        this.income = response;
+        console.debug(this.income,"income client");
+      }
+    });
+  }
   getEducation() {
     this.clientEducation.list("?_hash=1").subscribe((response: any) => {
       if (response != false) {
