@@ -115,7 +115,7 @@ export class CartComponent implements OnInit {
     this.cartLogam.splice(key,1);
     console.debug(this.logam)
     //pengrurangan harga
-    this.hargaLogamMulia = this.hargaLogamMulia-harga;
+    // this.hargaLogamMulia = this.hargaLogamMulia-harga;
 
     
     //pengurangan jumlah cart

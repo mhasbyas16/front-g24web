@@ -6,7 +6,6 @@ import { ProductService } from '../../../../services/product/product.service';
 import { ProductDenomService } from '../../../../services/product/product-denom.service';
 import { ToastrService } from 'ngx-toastr';
 
-import { ProductJenisService } from '../../../../services/product/product-jenis.service';
 import { PrmJualService } from '../../../../services/parameter/prm-jual.service';
 import { PrmMarginService } from '../../../../services/parameter/prm-margin.service';
 import { PrmPpnService } from '../../../../services/parameter/prm-ppn.service';
