@@ -215,7 +215,7 @@
 
                 <div class="card" style="margin-top: 0;">
                     <div class="card-header">
-                        Total : Rp. {{totalBelanja | number}}
+                        Total : Rp. {{totalBelanja | number}} 
                     </div>
                     <div class="card-block">
                         <div class="card-text">
@@ -227,39 +227,35 @@
                                 <label>Metode Bayar</label>
                     
                                 <clr-radio-wrapper *ngFor="let i of transactionMethod" >
-                                    <input type="radio" clrRadio formControlName="metodeBayar" required [value]="i._hash" (click)="bankValid(i._hash)"/>
+                                    <input type="radio" clrRadio formControlName="metodeBayar" name="metodeBayar" [value]="i._hash" (click)="bankValid(i._hash)"/>
                                     <label>
                                         <img class="img-responsive" [attr.src]="'assets/images/metode/'+i.icon" alt="">
                                         {{i.name}}</label>
                                 </clr-radio-wrapper>
                             </clr-radio-container>
-                            <!-- <clr-select-container>
-                                <label>Metode bayar</label>
-                                <select clrSelect formControlName="metodeBayar" (click)="bankValid($event.target.value)">
-                                    <option selected [value]="" hidden>-- Select One --</option>
-                                    <option *ngFor="let i of transactionMethod" [value]="i._hash">{{i.name}}</option>
-                                </select>
-                                <clr-control-helper>Please Select One</clr-control-helper>
-                                <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
-                            </clr-select-container> -->
 
                             <ng-container *ngIf="bankForm">
-                                <clr-select-container>
-                                    <label>Jenis Pembayaran</label>
-                                    <select clrSelect formControlName="transaksiMetodeBank" (click)="bankAdm($event.target.value)">
-                                        <option selected [value]="" hidden>-- Select One --</option>
-                                        <option *ngFor="let t of transactionBankMethod" selected [value]="t._hash">{{t.name}}</option>
-                                    </select>
-                                    <clr-control-helper>Please Select One</clr-control-helper>
-                                    <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
-                                </clr-select-container>
+                                <ng-container *ngIf="jenisPembayaran" >
+                                    <clr-select-container>
+                                        <label>Jenis Pembayaran</label>
+                                        <select clrSelect formControlName="transaksiMetodeBank" (click)="bankAdm($event.target.value)">
+                                            <option selected [value]="" hidden>-- Select One --</option>
+                                            <option *ngFor="let t of transactionBankMethod" selected [value]="t._hash">{{t.name}}</option>
+                                        </select>
+                                        <clr-control-helper>Please Select One</clr-control-helper>
+                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                    </clr-select-container>
+                                </ng-container>
+                                
                                 <div class="clr-row">
                                     <ng-container *ngIf="bankA">
                                         <div class="clr-col-6">
                                             <clr-select-container>
                                                 <label>Bank Asal</label>
                                                 <select clrSelect formControlName="bankAsal">
-                                                    <option *ngFor="let bank of bank" [value]="bank.name">{{bank.name}}</option>
+                                                    <option *ngFor="let bank of bank" [value]="bank.name" >
+                                                        {{bank.name}}
+                                                    </option>
                                                 </select>
                                                 <clr-control-helper>Please Select One</clr-control-helper>
                                                 <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
@@ -282,8 +278,8 @@
                             </ng-container>                            
                             
                             <clr-input-container>
-                                <label>Diterima Dari</label>
-                                <input clrInput type="text" formControlName="diterimaDari" (keyup)="diterimaUang($event.target.value)">
+                                <label>Nominal Transaksi</label>
+                                <input clrInput type="text" formControlName="nominalTransaksi" (keyup)="diterimaUang($event.target.value)">
                             </clr-input-container>
                             <clr-input-container>
                                 <label>Kembali</label>

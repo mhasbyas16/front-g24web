@@ -29,6 +29,7 @@ export class CheckoutComponent implements OnInit {
 
   validModel:boolean= false;
   bankForm:boolean = false;
+  jenisPembayaran:boolean = false;
   // cart
    edc:any;
    administrasi = 0;
@@ -147,7 +148,7 @@ export class CheckoutComponent implements OnInit {
       jumlahTerima: new FormControl (totalHarga, Validators.required),
       unit: new FormControl(""),
       unit_encoded: new FormControl("base64"),
-      diterimaDari: new FormControl (""),
+      nominalTransaksi: new FormControl (""),
       kembali: new FormControl (""),
     });
     this.idTransaksi();
@@ -190,18 +191,23 @@ export class CheckoutComponent implements OnInit {
     if (cod["code"] == "01" || cod["code"] == "04" ) {
       this.bankForm = false;
       this.edc = false;
+      this.bankA = false;
     } else if (cod["code"] == "02") {
       this.bankForm = true;
       this.edc = false;
+      this.jenisPembayaran = false;
+      this.bankA = true;
     } else if (cod["code"] == "03"){
       this.bankForm = true;
       this.edc = true;
+      this.jenisPembayaran = true;
+      this.bankA = false;
     }
     this.formData.patchValue({
       transaksiMetodeBank: "",
       bankAsal:"",
       bankTujuan:"",
-      diterimaDari: "",
+      nominalTransaksi: "",
       kembali:""
     });
   }
@@ -222,9 +228,9 @@ export class CheckoutComponent implements OnInit {
       this.administrasi= 0;
     } 
     
-    if (J["code"] == "01") {
+    if (J["code"] == "01" || J["code"] == "03") {
       this.bankA = false;
-    }else if (J["code"] == "02"){
+    }else if (J["code"] == "02" || J["code"] == "04" ){
       this.bankA = true;
     }
   }
