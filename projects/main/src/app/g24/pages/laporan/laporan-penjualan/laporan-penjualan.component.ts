@@ -34,6 +34,7 @@ export class LaporanPenjualanComponent implements OnInit {
 
   //
   transactions = [];
+  fromPick:any;
 
   constructor(
     private transactionService: TransactionService,
@@ -46,6 +47,7 @@ export class LaporanPenjualanComponent implements OnInit {
 
   ngOnInit(): void {
     this.from();
+    this.datepick();
   }
   totalHarga(val){
     this.totalP = this.totalP+Number(val);
@@ -59,6 +61,15 @@ export class LaporanPenjualanComponent implements OnInit {
       text: new FormControl("")
     });
   }
+
+  datepick(){
+    let bulan= Number(this.datePipe.transform(Date.now(),'MM'))-3;
+    let hari = this.datePipe.transform(Date.now(),'dd');
+    let tahun = this.datePipe.transform(Date.now(),'yyyy');
+    this.fromPick = tahun+'-'+bulan+'-'+hari;
+    // console.debug(,"format tanggal");
+  }
+
 
   filterTransaction(val){
     // CLR Datagrid loading

@@ -4,12 +4,9 @@ import { CommonService } from 'projects/platform/src/app/core-services/common.se
 @Injectable({
   providedIn: 'root'
 })
-export class ProvinceService {
-
-  key = "master-api/province";
-
+export class ClientIncomeService {
+  key = "master-api/client-income";
   constructor(private commonService:CommonService) { }
-
   list(params?) {
     return this.commonService.list(this.key, params);
   }

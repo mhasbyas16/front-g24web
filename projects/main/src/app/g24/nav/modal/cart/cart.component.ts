@@ -11,6 +11,7 @@ export class CartComponent implements OnInit {
   @Output() clearParentCart:any = new EventEmitter();
   @Output() clearBerlian:any = new EventEmitter();
   @Output() clearPerhiasan:any = new EventEmitter();
+  @Output() clearMulia:any = new EventEmitter();
   //
   @Input() total:any=0;
   @Input() perhiasan:any;
@@ -69,8 +70,26 @@ export class CartComponent implements OnInit {
     this.clearParentCart.emit(0);
     this.clearBerlian.emit(0);
     this.clearPerhiasan.emit(0);
+    this.clearMulia.emit(0);
   }
 
+  // remove item mulia
+  removeItemMulia(key: any, harga:any){
+    this.cartLogam.splice(key,1);
+
+    //pengrurangan harga
+    // this.hargaPerhiasan = this.hargaPerhiasan-harga;
+    //pengurangan jumlah cart
+    this.total-=1;
+    this.logam = this.logam-1;
+    if (this.total == 0) {
+      console.debug("totallll 0");
+      this.clearParentCart.emit(0);
+    }
+    if (this.logam == 0) {
+      this.clearMulia.emit(0);
+    }
+  }
   // remove item berlian 
   removeItemBerlian(key: any, harga:any ){
     this.cartBerlian.splice(key,1);

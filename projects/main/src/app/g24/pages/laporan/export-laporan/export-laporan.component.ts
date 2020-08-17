@@ -65,7 +65,7 @@ export class ExportLaporanComponent implements OnInit {
     // Content
     delete this.innerDoc;
     let hargaFormat = new Intl.NumberFormat(['ban', 'id']).format(data.jumlahTerima);
-    this.innerDoc ={pageSize: 'A5', pageOrientation: 'portrait',pageMargins: [ 20, 60, 20, 40 ],};
+    this.innerDoc ={pageSize: 'A5', pageOrientation: 'landscape',pageMargins: [ 20, 60, 20, 40 ],};
     this.innerDoc['info'] = {title: data.client.cif+" - "+data.idTransaction }; 
 
     // Head Content
@@ -83,12 +83,12 @@ export class ExportLaporanComponent implements OnInit {
         columns:[
           {
             columns:[
-              {width:53,bold:true,text:'Nama Unit'},{width:5,bold:true,text:': '},{width:'*',text:data.unit.nama}
+              {width:88,bold:true,text:'Nama Unit'},{width:5,bold:true,text:': '},{width:'*',text:data.unit.nama}
             ]
           },
           {
             columns:[
-              {width:53,bold:true,text:'Nama Nasabah'},{width:5,bold:true,text:': '},{width:'*',text:data.client.name}
+              {width:88,bold:true,text:'Nama Nasabah'},{width:5,bold:true,text:': '},{width:'*',text:data.client.name}
             ]
           }
 			  ]
@@ -98,12 +98,12 @@ export class ExportLaporanComponent implements OnInit {
         columns:[
           {
             columns:[
-              {width:53,bold:true,text:'Tanggal Pembelian'},{width:5,bold:true,text:': '},{width:'*',text:hari+' '+bulanTerbilang+' '+tahun}
+              {width:88,bold:true,text:'Tanggal Pembelian'},{width:5,bold:true,text:': '},{width:'*',text:hari+' '+bulanTerbilang+' '+tahun}
             ]
           },
           {
             columns:[
-              {width:53,bold:true,text:'Alamat'},{width:5,bold:true,text:': '},{width:'*',text:data.client.alamatSaatIni.alamat}
+              {width:88,bold:true,text:'Alamat'},{width:5,bold:true,text:': '},{width:'*',text:data.client.alamatSaatIni.alamat}
             ]
           }
 			  ]
@@ -113,12 +113,12 @@ export class ExportLaporanComponent implements OnInit {
         columns:[
           {
             columns:[
-              {width:53,bold:true,text:'CIF'},{width:5,bold:true,text:': '},{width:'*',text:data.client.cif}
+              {width:88,bold:true,text:'CIF'},{width:5,bold:true,text:': '},{width:'*',text:data.client.cif}
             ]
           },
           {
             columns:[
-              {width:53,bold:true,text:'No. Hp'},{width:5,bold:true,text:': '},{width:'*',text:data.client.noHP}
+              {width:88,bold:true,text:'No. Hp'},{width:5,bold:true,text:': '},{width:'*',text:data.client.noHP}
             ]
           }
 			  ]
@@ -141,23 +141,22 @@ export class ExportLaporanComponent implements OnInit {
               {
                 width:"*",
                 columns:[
-                  {width:55,text:perhiasan.detail.code},
-                  {width:25,text:perhiasan.detail.vendor.name},
-                  {width:25,text:perhiasan.detail['product-jenis'].name},
-                  {width:25,text:perhiasan.detail['product-gold-color'].name},
-                  {width:18,text:perhiasan.kadar},
-                  {width:20,text:perhiasan.berat}
+                  {width:85,text:perhiasan.detail.code},
+                  {width:33,text:perhiasan.detail.vendor.name},
+                  {width:35,text:perhiasan.detail['product-jenis'].name},
+                  {width:23,text:perhiasan.kadar},
+                  {width:30,text:perhiasan.berat}
                 ]
               },
               {
-                width:160,
+                width:250,
                 columns:[
                   {text:'Harga : Rp. '+new Intl.NumberFormat(['ban', 'id']).format(perhiasan.harga)},
                   {
                     table:{
-                      widths: [60],
+                      widths: [85],
                       body:[
-                        [{fillColor: '#ede5ce',fontSize:3,alignment: 'center', text:'tanggal buyback'}]
+                        [{fillColor: '#ede5ce',alignment: 'center'}]
                       ]
                     }
                   }
@@ -196,26 +195,27 @@ export class ExportLaporanComponent implements OnInit {
               {
                 width:"*",
                 columns:[
-                  {width:55,text:berlian.detail.code},
+                  {width:85,text:berlian.detail.code},
+                  {width:20,text:' '+berlian.detail['product-diamond-color'].name},
+                  {width:20,text:' '+berlian.detail['product-cut'].name},
+                  {width:23,text:' '+berlian.detail['product-clarity'].name},
+                  // total berlian ,
                   {width:20,text:' '+berlian.detail.vendor.name},
                   {width:24,text:' '+berlian.detail['product-jenis'].name},
-                  {width:19,text:' '+berlian.detail['product-gold-color'].name},
-                  {width:20,text:' '+berlian.detail['product-diamond-color'].name},
-                  {width:23,text:' '+berlian.detail['product-clarity'].name},
                   {width:15,text:' '+berlian.detail.carat},
                   {width:12,text:' '+berlian.kadar},
                   {width:12,text:' '+berlian.berat}
                 ]
               },
               {
-                width:160,
+                width:250,
                 columns:[
                   {text:'Harga : Rp. '+new Intl.NumberFormat(['ban', 'id']).format(berlian.harga)},
                   {
                     table:{
-                      widths: [60],
+                      widths: [85],
                       body:[
-                        [{fillColor: '#ede5ce',fontSize:3,alignment: 'center', text:'tanggal buyback'}]
+                        [{fillColor: '#ede5ce',alignment: 'center'}]
                       ]
                     }
                   }
@@ -269,17 +269,17 @@ export class ExportLaporanComponent implements OnInit {
     // style
     this.innerDoc['styles']={
       detail: {
-        fontSize: 6,
+        fontSize: 10,
         bold: false,
         alignment: 'left',
       },
       head:{
         fontSize: 10,
         bold: true,
-        alignment: 'center',
+        alignment: 'left',
       },
       footer:{
-        fontSize: 6,
+        fontSize: 10,
         alignment: 'left',
       }
 
