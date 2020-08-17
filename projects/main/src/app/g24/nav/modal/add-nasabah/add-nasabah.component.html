@@ -640,7 +640,7 @@
                                                         <clr-select-container>
                                                             <label>Pendapatan Per Bulan</label>
                                                             <select clrSelect formControlName="pendapatan">
-                                                                <option selected value=""></option>
+                                                                <option *ngFor="let income of income" selected [value]="income._hash">{{income.name}}</option>
                                                             </select>
                                                             <clr-control-helper>*</clr-control-helper>
                                                             <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
@@ -858,10 +858,8 @@
                                                 <input type="hidden" formControlName="kabupaten_encoded">
                                                 <input type="hidden" formControlName="provinsi_encoded">
                                                 <input type="hidden" formControlName="tipeClient_encoded">
-                                                <input type="hidden" formControlName="noNPWP_validation">
                                                 <input type="hidden" formControlName="email_validation">
                                                 <input type="hidden" formControlName="noHP_validation">
-                                                <input type="hidden" formControlName="noTelp_validation">
                                                 <input type="hidden" formControlName="noID_validation">
                                                 <input type="hidden" formControlName="cif_validation">
                                                 <input type="hidden" formControlName="tipeID_encoded">
@@ -871,6 +869,7 @@
                                                 <input type="hidden" formControlName="tipeKependudukan_encoded">
                                                 <input type="hidden" formControlName="sumberDana_encoded">
                                                 <input type="hidden" formControlName="pekerjaan_encoded">
+                                                <input type="hidden" formControlName="pendapatan_encoded">
                                             </div>                                                              
                                         </div>
                                     </div>
