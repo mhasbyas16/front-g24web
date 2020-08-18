@@ -250,9 +250,27 @@ export class ExportLaporanComponent implements OnInit {
             '* harap bukti pembelian ini disimpan jangan sampai hilang/rusak'],style:'footer'},
           {
             columns:[
-              {width:45,text:'Total Harga\nTerbilang', bold:true},
-              {width:5,text:':\n:',bold:true},
-              {width:'*',text:' Rp. '+hargaFormat+'\n'+this.terbilangService.terbilang(Number(data.jumlahTerima))}
+              {width:45,text:[
+                'Harga\n',
+                'Diskon\n',
+                'Voucher\n',
+                '\n',
+                'Jumlah Bayar \n',
+                'Terbilang'], bold:true},
+              {width:5,text:[
+                ':\n',
+                ':\n',
+                ':\n',
+                '\n',
+                ':\n',
+                ':'],bold:true},
+              {width:'*',text:[
+                ' Rp. '+hargaFormat+'\n',
+                ' Rp. '+hargaFormat+'\n',
+                ' Rp. '+hargaFormat+'\n',
+                '\n',
+                ' Rp. '+hargaFormat+'\n',
+                this.terbilangService.terbilang(Number(data.jumlahTerima))]}
             ]
             // text:[
             // {text:'Total Harga :', bold:true},
@@ -278,7 +296,7 @@ export class ExportLaporanComponent implements OnInit {
         alignment: 'left',
       },
       footer:{
-        fontSize: 10,
+        fontSize: 7,
         alignment: 'left',
       }
 

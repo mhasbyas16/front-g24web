@@ -10,6 +10,9 @@ import { BankService } from '../../../services/transaction/bank.service';
 import { TransactionMethodService } from '../../../services/transaction/transaction-method.service';
 import { TransactionBankMethodService } from '../../../services/transaction/transaction-bank-method.service';
 import { TransactionService } from '../../../services/transaction/transaction.service';
+import { TransactionEdcTypeService } from '../../../services/transaction/transaction-edc-type.service';
+import { TransactionCardTypeService } from '../../../services/transaction/transaction-card-type.service';
+import { TransactionBankInstallmentService } from '../../../services/transaction/transaction-bank-installment.service';
 
 // session service
 import { UserService } from 'projects/platform/src/app/services/security/user.service';
@@ -30,9 +33,13 @@ export class CheckoutComponent implements OnInit {
 
   validModel:boolean= false;
   bankForm:boolean = false;
+  edc:boolean = false;
+  edc2:boolean = false;
+  edc3:boolean = false;
+  installmentCont:boolean = false;
+  periodeIns:boolean = false;
   // cart
-   edc:any;
-   administrasi = 0;
+   administrasi:string = "";
    perhiasan = PERHIASAN;
    lm = LM;
    gs = GS;
@@ -58,8 +65,12 @@ export class CheckoutComponent implements OnInit {
    //
    detail:any;
    bank:any;
+   edcTipe:any;
+   cardTipe:any;
+   bankInstallment:any;
    transactionMethod:any;
    transactionBankMethod:any;
+   installmentPeriod:any;
    kembali:any;
    diterima:any;
    
@@ -70,6 +81,9 @@ export class CheckoutComponent implements OnInit {
     private transactionMethodService : TransactionMethodService,
     private transactionBankMethodService : TransactionBankMethodService,
     private transactionService: TransactionService,
+    private transactionEdcType: TransactionEdcTypeService,
+    private transactionCardType: TransactionCardTypeService,
+    private transactionBankInstallment: TransactionBankInstallmentService,
     private userService: UserService,
 
     //ng
@@ -137,8 +151,8 @@ export class CheckoutComponent implements OnInit {
       bankTujuan: new FormControl (""),
       bankAsal: new FormControl (""),
       bankTujuan_encoded: new FormControl ("base64"),
-      transaksiMetodeBank: new FormControl (""),
-      transaksiMetodeBank_encoded: new FormControl ("base64"),
+      transactionMetodeBank: new FormControl (""),
+      transactionMetodeBank_encoded: new FormControl ("base64"),
       admBank: new FormControl(""),
       maker: new FormControl (this.nikUser["_hash"], [Validators.required]),
       maker_encoded: new FormControl("base64"),
@@ -150,12 +164,15 @@ export class CheckoutComponent implements OnInit {
       nominalTransaksi: new FormControl (""),
       kembali: new FormControl (""),
       nik: new FormControl (""),
-      nikPemasar: new FormControl (""),
+      nikPemasar: new FormControl ("", Validators.required),
       nikPemasar_encoded: new FormControl ("base64"),
       edcType: new FormControl (""),
       edcType_encoded: new FormControl ("base64"),
       cardType: new FormControl(""),
       cardType_encoded: new FormControl ("base64"),
+      installment:new FormControl (""),
+      installment_encoded: new FormControl ("base64"),
+      periodePayment: new FormControl ("")
     });
     this.idTransaksi();
     this.getUnit();
@@ -196,6 +213,11 @@ export class CheckoutComponent implements OnInit {
   }
 
   closeModal(){
+    this.edc = false;
+    this.edc2 = false;
+    this.edc3 = false;
+    this.bankForm = false;
+    this.installmentCont =false;
     this.checkoutModal = false;
     this.cartModal.emit(true);
   }
@@ -208,18 +230,50 @@ export class CheckoutComponent implements OnInit {
     this.dinar;
   }
 
+  // pembayaran
+
+  getBankInstallment(){
+    this.transactionBankInstallment.list("?_hash=1").subscribe((response:any)=>{
+      if (response != false) {
+        this.bankInstallment = response;
+      }
+    });
+  }
+
+  periodeInstallment(val){
+    this.transactionBankInstallment.list("?_hash=1&code="+val).subscribe((response:any)=>{
+      if (response != false) {
+        this.installmentPeriod = response;
+      }
+    });
+    this.periodeIns = true;
+  }
+
   bankValid(val){
+    this.administrasi= "";
+    this.formData.patchValue({admBank: this.administrasi});
+    this.edc2 = false;
+    this.edc3 = false;
     console.debug(val,"bank valid");
     let cod = JSON.parse(atob(val));
-    if (cod["code"] == "01" || cod["code"] == "04" ) {
+    if (cod["code"] == "01") {
       this.bankForm = false;
       this.edc = false;
+      this.installmentCont =false;
     } else if (cod["code"] == "02") {
       this.bankForm = true;
       this.edc = false;
+      this.installmentCont =false;
     } else if (cod["code"] == "03"){
-      this.bankForm = true;
+      this.bankForm = false;
       this.edc = true;
+      this.installmentCont =false;
+    }
+    else if (cod["code"] == "04"){
+      this.getBankInstallment();
+      this.bankForm = false;
+      this.edc = false;
+      this.installmentCont =true;
     }
     this.formData.patchValue({
       transaksiMetodeBank: "",
@@ -229,30 +283,54 @@ export class CheckoutComponent implements OnInit {
       kembali:""
     });
   }
+  jenisEdc(){
+    this.transactionEdcType.list("?_hash=1").subscribe((response:any)=>{
+      if (response != false) {
+        this.edcTipe = response;
+      }
+    });
+    this.edc2 = true;
+  }
+  jenisKartu(){
+    this.transactionCardType.list("?_hash=1").subscribe((response:any)=>{
+      if (response != false) {
+        this.cardTipe = response;
+      }
+    });
+    this.edc3 = true;
+    console.debug(this.formData.get('edcType').value,"EDCTYOE");
+  }
 
   bankAdm(val){
-    let J = JSON.parse(atob(val));
-
-    // biaya admin
-    if (this.edc == true) {
-      if (J["code"] == "01") {
-        this.administrasi = (0.15/100)*this.totalBelanja;
-        this.formData.patchValue({admBank: this.administrasi});
-      }else if (J["code"] == "02"){
-        this.administrasi = (1/100)*this.totalBelanja;
+    this.administrasi= "";
+    this.formData.patchValue({admBank: this.administrasi});
+    let Jc = JSON.parse(atob(val));
+    let Je = JSON.parse(atob(this.formData.get('edcType').value));
+    let Pem = JSON.parse(atob(this.formData.get('transaksiMetodeBank').value));
+    //debit
+    if (Pem["code"] == "02") {
+      if (Jc["code"] == Je["code"]) {
+        this.administrasi= "";
         this.formData.patchValue({admBank: this.administrasi});
       }else{
-        this.administrasi= 0;
+        
+        this.administrasi = JSON.stringify((0.15/100)*this.totalBelanja);
+        this.formData.patchValue({admBank: this.administrasi});
+      }
+      // kredit
+    }else if(Pem["code"] == "01"){
+      if (Jc["code"] == Je["code"]) {
+        this.administrasi= "";
+        this.formData.patchValue({admBank: this.administrasi});
+      }else{
+        this.administrasi = JSON.stringify((1/100)*this.totalBelanja);
+        this.formData.patchValue({admBank: this.administrasi});
       }
     }else{
-      this.administrasi= 0;
+      this.administrasi= "";
+      this.formData.patchValue({admBank: this.administrasi});
     } 
     
-    // if (J["code"] == "01" || J["code"] == "03") {
-    //   this.bankA = false;
-    // }else if (J["code"] == "02" || J["code"] == "04" ){
-    //   this.bankA = true;
-    // }
   }
 
   diterimaUang(total){
@@ -260,6 +338,20 @@ export class CheckoutComponent implements OnInit {
     this.kembali = total-this.totalBelanja;
   }
 
+  getEdcType(){
+    this.transactionEdcType.list("?_hash=1").subscribe((response:any)=>{
+      if (response != false) {
+        this.edcTipe = response;
+      }
+    });
+  }
+  getCardType(){
+    this.transactionCardType.list("?_hash=1").subscribe((response:any)=>{
+      if (response != false) {
+        this.cardTipe = response;
+      }
+    });
+  }
   getBank(){
     this.bankService.list("?_hash=1").subscribe((response:any)=> {
       if (response != false) {
