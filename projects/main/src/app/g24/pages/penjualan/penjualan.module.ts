@@ -10,11 +10,12 @@ import { NgxBarcodeModule } from 'ngx-barcode';
 import { MuliaComponent } from './penjualan-distro/mulia/mulia.component';
 import { BerlianComponent } from './penjualan-distro/berlian/berlian.component';
 import { DatePipe } from '@angular/common';
+import { SouvenirComponent } from './penjualan-distro/souvenir/souvenir.component';
 
 
 
 @NgModule({
-  declarations: [PenjualanDistroComponent, PerhiasanComponent, BerlianComponent, MuliaComponent],
+  declarations: [PenjualanDistroComponent, PerhiasanComponent, BerlianComponent, MuliaComponent, SouvenirComponent],
   imports: [
     CommonModule,
     PenjualanRoutingModule,

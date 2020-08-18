@@ -13,42 +13,42 @@ import { PrmPpnService } from '../../../../services/parameter/prm-ppn.service';
 //rumus harga 
 import { PricingService }  from '../../../../services/pricing.service';
 
-import { LM } from '../../../../sample/cart';
+import { GS } from '../../../../sample/cart';
 import { CountCartService } from '../../../../services/count-cart.service';
 
 
 @Component({
-  selector: 'app-mulia',
-  templateUrl: './mulia.component.html',
-  styleUrls: ['./mulia.component.scss']
+  selector: 'app-souvenir',
+  templateUrl: './souvenir.component.html',
+  styleUrls: ['./souvenir.component.scss']
 })
-export class MuliaComponent implements OnInit {
+export class SouvenirComponent implements OnInit {
   @Output() data = new EventEmitter();
-  @Output() logamMulia = new EventEmitter();
+  @Output() souvenir = new EventEmitter();
   @Output() totalHarga = new EventEmitter();
 
   vendors = null;
   jenis = null;
   denoms = null;
   loadingDg = null; 
-  mulias = null;
-  datamulias= null;
-  tempdatamulias = null;
+  souvenirs = null;
+  datasouvenirs= null;
+  tempdatasouvenirs = null;
   vendor = null;
   denom = null;
   qty = null;
   jumlah = null;
   hargaBaku = null;
   placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
-  tampilMulia = [];
-  cartList = LM;
-  jumlahLM : number ;
+  tampilSouvenirs = [];
+  cartList = GS;
+  jumlahSouvenir : number ;
   total = 0;
   selected: any[] = [];
 
   //category
-  vendorCategory = "product-category.code=05";
-  category = "?product-category.code=05";
+  vendorCategory = "product-category.code=c02";
+  category = "?product-category.code=c02";
 
    //params
    params = null;
@@ -108,12 +108,12 @@ export class MuliaComponent implements OnInit {
   }
 
   
-  onCariMulia(data){
+  onCariSouvenir(data){
     this.loadingDg = true;
-    let vendor = data.input_vendor_mulia;
-    let denom = data.input_denom_mulia;
+    let vendor = data.input_vendor_souvenir;
+    let denom = data.input_denom_souvenir;
     // let jumlah = data.input_jumlah ;
-    let cariMulia : any[] = [];
+    let cariSouvenir : any[] = [];
     
 
     const urlVendor = "vendor.code="+vendor;
@@ -131,12 +131,12 @@ export class MuliaComponent implements OnInit {
         this.productService.list(this.params).subscribe((response: any) => {
           
           if (response == false) {
-            this.toastrService.error("Data Not Found", "Mulia");
+            this.toastrService.error("Data Not Found", "Souvenir");
             this.loadingDg = false;
             return;
           }
           if (response["length"] == 0) {
-            this.toastrService.error("Data Not Found", "Mulia");
+            this.toastrService.error("Data Not Found", "Souvenir");
             this.loadingDg = false;
             return;
           }  
@@ -145,17 +145,17 @@ export class MuliaComponent implements OnInit {
           //   if (Jualresponse != false) {
           //     this.hargaBaku = Jualresponse;
           //   }
-          this.mulias = response;
+          this.souvenirs = response;
           this.productService.count(this.params).subscribe((response: any) => {
           this.qty = response.count;
-          cariMulia.push({
-            "vendor" : this.mulias[0].vendor.name,
-            "denom" : this.mulias[0]['product-denom'].name,
+          cariSouvenir.push({
+            "vendor" : this.souvenirs[0].vendor.name,
+            "denom" : this.souvenirs[0]['product-denom'].name,
             "qty" : this.qty
 
           });
-            // this.mulias = response;
-            this.datamulias = cariMulia;
+            // this.Souvenir = response;
+            this.datasouvenirs = cariSouvenir;
             this.loadingDg = false;
           // });
         });
@@ -176,8 +176,8 @@ export class MuliaComponent implements OnInit {
     this.total = 0;
     
 
-    if (qtyLM < this.jumlahLM) {
-      this.toastrService.error("Jumlah Tidak Mencukupi", "Mulia");
+    if (qtyLM < this.jumlahSouvenir) {
+      this.toastrService.error("Jumlah Tidak Mencukupi", "Souvenir");
     }else{
       let params : any;
       let urlVendor = "vendor.name="+vendorLM;
@@ -193,7 +193,7 @@ export class MuliaComponent implements OnInit {
 
       console.debug(this.cartList, 'cart')
       console.debug(codeLM, 'codeLM')
-      // lm = this.mulias
+      // lm = this.Souvenir
       let harga = 20000000;
       this.productService.list(params).subscribe((response: any) => {
         lm = response
@@ -203,10 +203,10 @@ export class MuliaComponent implements OnInit {
         }
         let maks : any;
         let hargaTotalLM : number;
-        if (lm.length == 0 || lm.length < this.jumlahLM) {
-          this.toastrService.error("Jumlah Tidak Mencukupi", "Mulia");  
+        if (lm.length == 0 || lm.length < this.jumlahSouvenir) {
+          this.toastrService.error("Jumlah Tidak Mencukupi", "Souvenir");  
         } else {
-           maks = this.jumlahLM
+           maks = this.jumlahSouvenir
            
            for (let index = 0; index < maks ; index++) {
             this.cartList.push({
@@ -221,7 +221,7 @@ export class MuliaComponent implements OnInit {
         }
         console.debug(this.cartList)
         this.refresh(harga, "p")
-        this.logamMulia.emit(this.cartList.length);
+        this.souvenir.emit(this.cartList.length);
         this.data.emit(this.countService.countCart());
         this.loadingDg = false;
       });
@@ -230,12 +230,19 @@ export class MuliaComponent implements OnInit {
     
   }
   refresh(harga: any, sum: any){
+    
     if (sum == "p") {
+    
      for (let i of this.cartList) {
        this.total += Number(i.harga);
+       console.debug(this.cartList)
+       
      }
     }
+    
     console.debug(this.total)
     this.totalHarga.emit(this.total);
+    
+   
  }
 }

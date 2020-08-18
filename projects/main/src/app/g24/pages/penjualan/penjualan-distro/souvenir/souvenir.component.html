@@ -1,9 +1,9 @@
-<form #searchMulia="ngForm" id="mulia" clrForm (ngSubmit)="onCariMulia(searchMulia.value)">
+<form #searchSouvenir="ngForm" id="souvenir" clrForm (ngSubmit)="onCariSouvenir(searchSouvenir.value)">
     <div class="clr-row">
         <div class="clr-col-3">
             <clr-select-container class="clr-form-control">
                 <label class="clr-control-label">Vendor</label>
-                <select [(ngModel)]="searchModel.vendors" clrSelect name="input_vendor_mulia" ngModel>
+                <select [(ngModel)]="searchModel.vendors" clrSelect name="input_vendor_souvenir" ngModel>
                     <option  value="pilih" >Pilih Vendor</option>
                     <ng-container *ngFor="let vendor of vendors">
                         <option value="{{vendor.code}}">{{vendor.name}}</option>
@@ -14,7 +14,7 @@
         <div class="clr-col-3">
             <clr-select-container class="clr-form-control">
                 <label class="clr-control-label">Denom</label>
-                <select [(ngModel)]="searchModel.denoms" clrSelect name="input_denom_mulia" ngModel>
+                <select [(ngModel)]="searchModel.denoms" clrSelect name="input_denom_souvenir" ngModel>
                     <option value="pilih">Pilih Denom</option>
                     <ng-container *ngFor="let denom of denoms">
                         <option value="{{denom.code}}">{{denom.name}}</option>
@@ -42,7 +42,7 @@
     <clr-dg-column>Harga</clr-dg-column>
     <clr-dg-column ></clr-dg-column>
 
-    <clr-dg-row *clrDgItems="let d of datamulias" [clrDgItem]="d">
+    <clr-dg-row *clrDgItems="let d of datasouvenirs" [clrDgItem]="d">
         <!-- <clr-dg-cell>{{d.id}}</clr-dg-cell> -->
         <clr-dg-cell>{{d.vendor}}</clr-dg-cell>
         <clr-dg-cell>{{d.denom}}</clr-dg-cell>
@@ -52,7 +52,7 @@
             <div class="clr-row" style="text-align: center;">
                 <div class="clr-col">
                     <clr-input-container style="margin-top: 0; margin-left: 10%; margin-right: 10%;" >
-                            <input clrInput type="text" style=" width: 50%;" name="jumlah" [(ngModel)]="jumlahLM">
+                            <input clrInput type="text" style=" width: 50%;" name="jumlah" [(ngModel)]="jumlahSouvenir">
                     </clr-input-container>
                 </div>
                 <div class="clr-col">

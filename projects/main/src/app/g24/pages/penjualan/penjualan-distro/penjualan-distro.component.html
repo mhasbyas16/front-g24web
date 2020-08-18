@@ -28,7 +28,7 @@
                            <app-mulia 
                            (data)="cartData($event)" 
                            (logamMulia)="totallogamMulia($event)" 
-                           (totalHarga)="HPerhiasan($event)">
+                           (totalHarga)="HMulia($event)">
                             
                                
                            </app-mulia>  
@@ -40,7 +40,7 @@
                             <app-perhiasan 
                             (data)="cartData($event)" 
                             (perhiasan)="totalPerhiasan($event)" 
-                            (totalHarga)="HMulia($event)"
+                            (totalHarga)="HPerhiasan($event)"
                             ></app-perhiasan>  
                         </clr-tab-content>
                     </clr-tab>
@@ -57,7 +57,11 @@
                     <clr-tab>
                         <button clrTabLink>Gift dan Souvenir</button>
                         <clr-tab-content >
-                           ...
+                            <app-souvenir
+                            (data)="cartData($event)" 
+                            (berlian)="totalBerlian($event)" 
+                            (totalHarga)="HBatuMulia($event)"
+                            ></app-souvenir>
                         </clr-tab-content>
                     </clr-tab>
                     <clr-tab>
