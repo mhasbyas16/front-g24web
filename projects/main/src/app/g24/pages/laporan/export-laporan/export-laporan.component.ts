@@ -129,7 +129,7 @@ export class ExportLaporanComponent implements OnInit {
     if (data.product.PERHIASAN.length != 0) {
       this.innerDoc['content'].push([
         {
-          style:'head',fontSize:8, alignment:'left',text:'Perhiasan'
+          style:'head', alignment:'left',text:'Perhiasan'
         }
       ]);
       for (let perhiasan of data.product.PERHIASAN) {
@@ -142,8 +142,8 @@ export class ExportLaporanComponent implements OnInit {
                 width:"*",
                 columns:[
                   {width:85,text:perhiasan.detail.code},
-                  {width:33,text:perhiasan.detail.vendor.name},
-                  {width:35,text:perhiasan.detail['product-jenis'].name},
+                  {width:42,text:perhiasan.detail.vendor.name},
+                  {width:41,text:perhiasan.detail['product-jenis'].name},
                   {width:23,text:perhiasan.kadar},
                   {width:30,text:perhiasan.berat}
                 ]
@@ -156,7 +156,7 @@ export class ExportLaporanComponent implements OnInit {
                     table:{
                       widths: [85],
                       body:[
-                        [{fillColor: '#ede5ce',alignment: 'center'}]
+                        [{fillColor: '#ede5ce',alignment: 'center',fontSize:1,text:"tanggal buyback"}]
                       ]
                     }
                   }
@@ -183,7 +183,7 @@ export class ExportLaporanComponent implements OnInit {
     if (data.product.BERLIAN.length != 0) {
       this.innerDoc['content'].push([
         {
-          style:'head',fontSize:8, alignment:'left',text:'Berlian'
+          style:'head', alignment:'left',text:'Berlian'
         }
       ]);
       for (let berlian of data.product.BERLIAN) {
@@ -195,16 +195,15 @@ export class ExportLaporanComponent implements OnInit {
               {
                 width:"*",
                 columns:[
-                  {width:85,text:berlian.detail.code},
-                  {width:20,text:' '+berlian.detail['product-diamond-color'].name},
-                  {width:20,text:' '+berlian.detail['product-cut'].name},
-                  {width:23,text:' '+berlian.detail['product-clarity'].name},
-                  // total berlian ,
-                  {width:20,text:' '+berlian.detail.vendor.name},
-                  {width:24,text:' '+berlian.detail['product-jenis'].name},
-                  {width:15,text:' '+berlian.detail.carat},
-                  {width:12,text:' '+berlian.kadar},
-                  {width:12,text:' '+berlian.berat}
+                  {width:70,text:berlian.detail.code},
+                  {width:25,text:' '+berlian.detail.vendor.name},
+                  {width:35,text:' '+berlian.detail['product-diamond-color'].name},
+                  {width:25,text:' '+berlian.detail['product-cut'].name},
+                  {width:38,text:' '+berlian.detail['product-clarity'].name},
+                  // total berlian ,          
+                  {width:20,text:' '+berlian.kadar},
+                  {width:20,text:' '+berlian.berat},
+                  {width:40,text:'= '+berlian.detail.carat+' CT'},
                 ]
               },
               {
@@ -215,7 +214,7 @@ export class ExportLaporanComponent implements OnInit {
                     table:{
                       widths: [85],
                       body:[
-                        [{fillColor: '#ede5ce',alignment: 'center'}]
+                        [{fillColor: '#ede5ce',alignment: 'center',fontSize:1,text:"tanggal buyback"}]
                       ]
                     }
                   }

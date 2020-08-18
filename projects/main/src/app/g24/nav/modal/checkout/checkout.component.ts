@@ -12,6 +12,7 @@ import { TransactionBankMethodService } from '../../../services/transaction/tran
 import { TransactionService } from '../../../services/transaction/transaction.service';
 
 // session service
+import { UserService } from 'projects/platform/src/app/services/security/user.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { DatePipe } from '@angular/common';
 import { ContentPage } from '../../../lib/helper/content-page';
@@ -29,7 +30,6 @@ export class CheckoutComponent implements OnInit {
 
   validModel:boolean= false;
   bankForm:boolean = false;
-  jenisPembayaran:boolean = false;
   // cart
    edc:any;
    administrasi = 0;
@@ -62,8 +62,6 @@ export class CheckoutComponent implements OnInit {
    transactionBankMethod:any;
    kembali:any;
    diterima:any;
-
-   bankA:boolean=false;
    
    idtransaksi:any;
   constructor(
@@ -72,6 +70,7 @@ export class CheckoutComponent implements OnInit {
     private transactionMethodService : TransactionMethodService,
     private transactionBankMethodService : TransactionBankMethodService,
     private transactionService: TransactionService,
+    private userService: UserService,
 
     //ng
     private toastr: ToastrService,
@@ -150,6 +149,13 @@ export class CheckoutComponent implements OnInit {
       unit_encoded: new FormControl("base64"),
       nominalTransaksi: new FormControl (""),
       kembali: new FormControl (""),
+      nik: new FormControl (""),
+      nikPemasar: new FormControl (""),
+      nikPemasar_encoded: new FormControl ("base64"),
+      edcType: new FormControl (""),
+      edcType_encoded: new FormControl ("base64"),
+      cardType: new FormControl(""),
+      cardType_encoded: new FormControl ("base64"),
     });
     this.idTransaksi();
     this.getUnit();
@@ -167,6 +173,23 @@ export class CheckoutComponent implements OnInit {
     this.getTransactionMethod();   
     this.getTransactionBankMethod();
   }
+
+  getNikPemasar(){
+    const value = this.formData.get('nik').value;
+    this.userService.list("?_hash=1&username="+value).subscribe((response:any)=>{
+      if (response['length'] != 0) {
+        console.debug(response,"data pemasar");
+        this.toastr.success('Success Get NIK Pemasar Name '+response["0"]["name"],'NIK Pemasar');
+        this.formData.patchValue({nikPemasar:response["0"]['_hash']});
+      }else{
+        this.toastr.error('NIK Pemasar Not Found, Filed Get','NIK Pemasar');
+        this.formData.patchValue({nikPemasar:""});
+        return;
+      }
+      
+    });
+  }
+
   getUnit(){
     const unitString = btoa(JSON.stringify(this.sessionService.getUnit()));
     this.formData.patchValue({unit: unitString});
@@ -191,17 +214,12 @@ export class CheckoutComponent implements OnInit {
     if (cod["code"] == "01" || cod["code"] == "04" ) {
       this.bankForm = false;
       this.edc = false;
-      this.bankA = false;
     } else if (cod["code"] == "02") {
       this.bankForm = true;
       this.edc = false;
-      this.jenisPembayaran = false;
-      this.bankA = true;
     } else if (cod["code"] == "03"){
       this.bankForm = true;
       this.edc = true;
-      this.jenisPembayaran = true;
-      this.bankA = false;
     }
     this.formData.patchValue({
       transaksiMetodeBank: "",
@@ -211,9 +229,11 @@ export class CheckoutComponent implements OnInit {
       kembali:""
     });
   }
+
   bankAdm(val){
     let J = JSON.parse(atob(val));
 
+    // biaya admin
     if (this.edc == true) {
       if (J["code"] == "01") {
         this.administrasi = (0.15/100)*this.totalBelanja;
@@ -228,11 +248,11 @@ export class CheckoutComponent implements OnInit {
       this.administrasi= 0;
     } 
     
-    if (J["code"] == "01" || J["code"] == "03") {
-      this.bankA = false;
-    }else if (J["code"] == "02" || J["code"] == "04" ){
-      this.bankA = true;
-    }
+    // if (J["code"] == "01" || J["code"] == "03") {
+    //   this.bankA = false;
+    // }else if (J["code"] == "02" || J["code"] == "04" ){
+    //   this.bankA = true;
+    // }
   }
 
   diterimaUang(total){

@@ -65,12 +65,16 @@ export class PenjualanDistroComponent implements OnInit {
   // clear total cart
   clearTotal(num){
     this.total = num;
+    this.hargaPerhiasan = 0;
+    this.hargaBatuMulia = 0;
   }
   clearBerlian(isi: any){
     this.berlian = isi;
+    this.hargaBatuMulia = 0;
   }
   clearPerhiasan(isi: any){
     this.perhiasan = isi;
+    this.hargaPerhiasan = 0;
   }
 
   
