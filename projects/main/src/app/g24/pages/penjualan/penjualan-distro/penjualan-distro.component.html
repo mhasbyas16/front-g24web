@@ -10,7 +10,7 @@
                 [hargaBerlian]="hargaBatuMulia"
                 (clearParentCart)="clearTotal($event)"
                 (clearBerlian)="clearBerlian($event)"
-                (clearPerhiasan)="clearPerhiasan($event)"
+                (clearPerhiasan)="totalPerhiasan($event)"
                 ></app-cart>
             </div>
                
@@ -62,7 +62,7 @@
                         </clr-tab-content>
                     </clr-tab>
                     <clr-tab>
-                        <button clrTabLink>Perhiasan</button>
+                        <button clrTabLink>Perhiasan {{hargaPerhiasan}} {{perhiasan}}</button>
                         <clr-tab-content >     
                             <app-perhiasan 
                             (data)="cartData($event)" 

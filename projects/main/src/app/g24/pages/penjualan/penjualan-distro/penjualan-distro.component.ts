@@ -53,7 +53,11 @@ export class PenjualanDistroComponent implements OnInit {
 
   // total isi cart perhiasan
   totalPerhiasan(isi: any){
+      
     this.perhiasan = isi;
+    if (isi == 0) {
+      this.hargaPerhiasan = 0;
+    }
   }
 
   // total isi cart berlian
@@ -71,10 +75,6 @@ export class PenjualanDistroComponent implements OnInit {
   clearBerlian(isi: any){
     this.berlian = isi;
     this.hargaBatuMulia = 0;
-  }
-  clearPerhiasan(isi: any){
-    this.perhiasan = isi;
-    this.hargaPerhiasan = 0;
   }
 
   
