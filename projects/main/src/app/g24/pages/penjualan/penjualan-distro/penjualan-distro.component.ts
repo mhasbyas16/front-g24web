@@ -53,7 +53,9 @@ export class PenjualanDistroComponent implements OnInit {
 
   // total isi cart perhiasan
   totalPerhiasan(isi: any){
+  
     this.perhiasan = isi;
+    
   }
 
   // total isi cart berlian
