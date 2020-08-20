@@ -39,4 +39,9 @@ export class PricingService {
 
       return total;
   }
+
+  priceLogamMulia(harga_baku:any, margin:any){
+     let hargaLM = harga_baku * (1 + (margin / 100))
+     return hargaLM;
+  }
 }

@@ -70,6 +70,8 @@ export class MuliaComponent implements OnInit {
   //count cart
   private countService: CountCartService,
   
+  //pricing 
+  private pricingService: PricingService,
   
 
 
@@ -127,7 +129,8 @@ export class MuliaComponent implements OnInit {
     } else {
         this.params = this.params+"&"+urlVendor;
         this.params = this.params+"&"+urlDenom;
-        // this.params = this.params+"&"+urlQty;
+
+        //cari product
         this.productService.list(this.params).subscribe((response: any) => {
           
           if (response == false) {
@@ -139,29 +142,36 @@ export class MuliaComponent implements OnInit {
             this.toastrService.error("Data Not Found", "Mulia");
             this.loadingDg = false;
             return;
-          }  
-
-          // this.prmJualService.list(this.params).subscribe((Jualresponse: any) => {
-          //   if (Jualresponse != false) {
-          //     this.hargaBaku = Jualresponse;
-          //   }
+          }
           this.mulias = response;
+          //count product
           this.productService.count(this.params).subscribe((response: any) => {
-          this.qty = response.count;
-          cariMulia.push({
-            "vendor" : this.mulias[0].vendor.name,
-            "denom" : this.mulias[0]['product-denom'].name,
-            "qty" : this.qty
-
-          });
-            // this.mulias = response;
-            this.datamulias = cariMulia;
-            this.loadingDg = false;
-          // });
+            this.qty = response.count;
+            // cari prm-jual product
+            this.prmJualService.list(this.params).subscribe((Jualresponse: any) => {
+              let prmJual = Jualresponse;
+              console.debug(prmJual[0]['harga-baku'],'hargabaku')
+              //cari margin penjualan
+              this.prmMarginService.list("?"+this.vendorCategory).subscribe((Marginresponse: any) => {
+                let prmMargin = Marginresponse
+                console.debug(prmMargin[0].margin,'margin')
+                let hargaLM = this.pricingService.priceLogamMulia((prmJual[0]['harga-baku']), Number(prmMargin[0].margin));
+                hargaLM =  Math.ceil(hargaLM/1000)*1000;
+                console.debug( hargaLM,'hargaLM')
+                cariMulia.push({
+                  "vendor" : this.mulias[0].vendor.name,
+                  "denom" : this.mulias[0]['product-denom'].name,
+                  "qty" : this.qty,
+                  "harga" : hargaLM
+                });
+                  this.datamulias = cariMulia;
+                  this.loadingDg = false;
+              });
+            });
         });
       });
     }
-      // const filteredperhiasan = this.getPerhiasan.filter(kamu =>  kamu.jenis == jenis && kamu.vendor == vendor);
+      
   }
   
   cekItemArray(data: any){
@@ -171,13 +181,12 @@ export class MuliaComponent implements OnInit {
     return ARR;
   }
 
-  addCart(vendorLM: any, denomLM: any, qtyLM: any){
+  addCart(vendorLM: any, denomLM: any, qtyLM: any, harga: any){
     this.loadingDg = true;
-    this.total = 0;
-    
 
     if (qtyLM < this.jumlahLM) {
-      this.toastrService.error("Jumlah Tidak Mencukupi", "Mulia");
+      this.toastrService.error("Jumlah Tidak Mencukupis", "Mulia");
+      this.loadingDg = false;
     }else{
       let params : any;
       let urlVendor = "vendor.name="+vendorLM;
@@ -194,17 +203,28 @@ export class MuliaComponent implements OnInit {
       console.debug(this.cartList, 'cart')
       console.debug(codeLM, 'codeLM')
       // lm = this.mulias
-      let harga = 20000000;
+      
       this.productService.list(params).subscribe((response: any) => {
         lm = response
+        let udahDiCart = 0;
+        console.debug(lm, 'awal')
         for (let index = 0; index < codeLM.length; index++) {
           cekItem = lm.map(e => e.code).indexOf(codeLM[index])
-          lm.splice(cekItem, 1)
+          if (cekItem != -1) {
+            lm.splice(cekItem, 1)
+            udahDiCart++
+          }
+          
         }
         let maks : any;
-        let hargaTotalLM : number;
-        if (lm.length == 0 || lm.length < this.jumlahLM) {
-          this.toastrService.error("Jumlah Tidak Mencukupi", "Mulia");  
+
+        let availableItem = qtyLM - udahDiCart ;
+        console.debug(availableItem, 'availableItem')
+        console.debug(lm, 'akhir')
+        console.debug(this.jumlahLM, 'enter')
+        if ( this.jumlahLM > availableItem) {
+          this.toastrService.error("Jumlah Tidak Mencukupip", "Mulia");  
+          this.loadingDg = false;
         } else {
            maks = this.jumlahLM
            
@@ -215,14 +235,15 @@ export class MuliaComponent implements OnInit {
                 'denom' : lm[index]['product-denom'].name,
                 'harga' : harga
             })
-            
+            this.refresh(harga, "p")
+            console.debug(this.cartList)
+        this.logamMulia.emit(this.cartList.length);
+        this.data.emit(this.countService.countCart());
           }
          
         }
-        console.debug(this.cartList)
-        this.refresh(harga, "p")
-        this.logamMulia.emit(this.cartList.length);
-        this.data.emit(this.countService.countCart());
+        
+        
         this.loadingDg = false;
       });
 
@@ -230,10 +251,12 @@ export class MuliaComponent implements OnInit {
     
   }
   refresh(harga: any, sum: any){
+
     if (sum == "p") {
-     for (let i of this.cartList) {
-       this.total += Number(i.harga);
-     }
+      this.total = 0;
+      for (let i of this.cartList) {
+        this.total += Number(i.harga);
+      }
     }
     console.debug(this.total)
     this.totalHarga.emit(this.total);

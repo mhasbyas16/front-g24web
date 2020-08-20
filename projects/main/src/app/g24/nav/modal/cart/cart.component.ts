@@ -21,7 +21,7 @@ export class CartComponent implements OnInit {
   @Input() dinar:any;
   //harga perhiasan
   @Input() hargaPerhiasan:any = 0;
-  @Input() hargaLogamMulia:any ;
+  @Input() hargaLogamMulia:any = 0 ;
   @Input() hargaBerlian:any = 0;
   @Input() hargaGift:any = 0;
   @Input() hargaDinar:any = 0;
@@ -79,7 +79,7 @@ export class CartComponent implements OnInit {
     this.cartBerlian.splice(key,1);
 
     //pengrurangan harga
-    // this.hargaPerhiasan = this.hargaPerhiasan-harga;
+    this.hargaBerlian = this.hargaBerlian-harga;
     //pengurangan jumlah cart
     this.total-=1;
     this.berlian = this.berlian-1;

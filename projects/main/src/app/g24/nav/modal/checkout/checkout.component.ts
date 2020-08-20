@@ -126,7 +126,7 @@ export class CheckoutComponent implements OnInit {
   openModal(totalHarga: any){    
     this.formData = new FormGroup({
       idTransaction: new FormControl(""),
-      idTransaction_validation: new FormControl("unique:idPenjualan"),
+      idTransaction_validation: new FormControl("unique:idTransaction"),
       cif: new FormControl ("", [Validators.required, Validators.pattern(/^[0-9]*$/)]),
       name: new FormControl ("",[ Validators.required]),
       client: new FormControl ("", Validators.required),
