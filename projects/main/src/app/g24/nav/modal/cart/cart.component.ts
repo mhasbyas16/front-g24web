@@ -12,6 +12,7 @@ export class CartComponent implements OnInit {
   @Output() clearBerlian:any = new EventEmitter();
   @Output() clearPerhiasan:any = new EventEmitter();
   @Output() clearMulia:any = new EventEmitter();
+  @Output() data:any = new EventEmitter();
   //
   @Input() total:any=0;
   @Input() perhiasan:any;
@@ -118,12 +119,15 @@ export class CartComponent implements OnInit {
     //pengurangan jumlah cart
     this.total-=1;
     this.perhiasan = this.perhiasan-1;
+    // kurangin parent
+    this.clearPerhiasan.emit({length:this.perhiasan,harga:this.hargaPerhiasan});
+    this.data.emit(this.total);
     if (this.total == 0) {
       console.debug("totallll 0");
       this.clearParentCart.emit(0);
     }
     if (this.perhiasan == 0) {
-      this.clearPerhiasan.emit(0);
+      this.clearPerhiasan.emit(0,0);
     }
   }
   modalView(isi: any){

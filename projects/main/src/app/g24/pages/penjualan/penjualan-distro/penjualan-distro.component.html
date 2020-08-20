@@ -1,16 +1,17 @@
 <div class="clr-row">
     <div class="card" style="margin-top: 0em;">
         <div class="card-header">
-            Penjualan
+            Penjualan {{perhiasanParent}}
             <div class="cart-style"> <!-- total isi cart              total harga cart                           -->
                 <app-cart [total]="total"
-                [perhiasan]="perhiasan"
+                [perhiasan]="perhiasanParent"
                 [berlian]="berlian" 
                 [hargaPerhiasan]="hargaPerhiasan"
                 [hargaBerlian]="hargaBatuMulia"
+                (data)="cartData($event)"
                 (clearParentCart)="clearTotal($event)"
                 (clearBerlian)="clearBerlian($event)"
-                (clearPerhiasan)="totalPerhiasan($event)"
+                (clearPerhiasan)="clearPerhiasan($event)"
                 ></app-cart>
             </div>
                
@@ -62,7 +63,7 @@
                         </clr-tab-content>
                     </clr-tab>
                     <clr-tab>
-                        <button clrTabLink>Perhiasan {{hargaPerhiasan}} {{perhiasan}}</button>
+                        <button clrTabLink>Perhiasan</button>
                         <clr-tab-content >     
                             <app-perhiasan 
                             (data)="cartData($event)" 

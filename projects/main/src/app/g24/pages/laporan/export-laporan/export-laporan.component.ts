@@ -179,7 +179,7 @@ export class ExportLaporanComponent implements OnInit {
       ]);
     }
     
-
+    // Berlian
     if (data.product.BERLIAN.length != 0) {
       this.innerDoc['content'].push([
         {
@@ -210,6 +210,65 @@ export class ExportLaporanComponent implements OnInit {
                 width:250,
                 columns:[
                   {text:'Harga : Rp. '+new Intl.NumberFormat(['ban', 'id']).format(berlian.harga)},
+                  {
+                    table:{
+                      widths: [85],
+                      body:[
+                        [{fillColor: '#ede5ce',alignment: 'center',fontSize:1,text:"tanggal buyback"}]
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]);   
+      }
+      this.innerDoc['content'].push([
+        {
+          style:'detail',
+          fontSize: 5,
+          columns:[
+            {text:'Diskon :'},
+            {text:'Voucher :'},
+            {text:'Harga :'}
+          ]
+        },'\n'
+      ]);
+    }
+
+    // Logam Mulia
+
+    if (data.product.LM.length != 0){
+      this.innerDoc['content'].push([
+        {
+          style:'head', alignment:'left',text:'Mulia'
+        }
+      ]);
+      for (let mulia of data.product.LM) {
+        //console.debug(data.product.PERHIASAN.length,product,"list product");  
+        this.innerDoc['content'].push([
+          {
+            style:'detail',
+            columns:[
+              {
+                width:"*",
+                columns:[
+                  {width:70,text:mulia.detail.code},
+                  {width:25,text:' '+mulia.detail.vendor.name},
+                  {width:35,text:' '+mulia.detail['product-diamond-color'].name},
+                  {width:25,text:' '+mulia.detail['product-cut'].name},
+                  {width:38,text:' '+mulia.detail['product-clarity'].name},
+                  // total berlian ,          
+                  {width:20,text:' '+mulia.kadar},
+                  {width:20,text:' '+mulia.berat},
+                  {width:40,text:'= '+mulia.detail.carat+' CT'},
+                ]
+              },
+              {
+                width:250,
+                columns:[
+                  {text:'Harga : Rp. '+new Intl.NumberFormat(['ban', 'id']).format(mulia.harga)},
                   {
                     table:{
                       widths: [85],
