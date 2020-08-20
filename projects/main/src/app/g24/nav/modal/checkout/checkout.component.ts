@@ -94,7 +94,7 @@ export class CheckoutComponent implements OnInit {
 
   ngOnInit(): void {
     this.nikUser = this.sessionService.getUser();
-    this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser)),"nik":this.nikUser["username"]} ;
+    this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser)),"nik":this.nikUser["username"],"name":this.nikUser["name"],"username":this.nikUser["username"]} ;
   }
 
   idTransaksi(){
@@ -169,8 +169,8 @@ export class CheckoutComponent implements OnInit {
       unit_encoded: new FormControl("base64"),
       nominalTransaksi: new FormControl (""),
       kembali: new FormControl (""),
-      nik: new FormControl (""),
-      nikPemasar: new FormControl (""),
+      nik: new FormControl (this.nikUser["username"]),
+      nikPemasar: new FormControl (this.nikUser["_hash"], Validators.required),
       nikPemasar_encoded: new FormControl ("base64"),
       edcType: new FormControl (""),
       edcType_encoded: new FormControl ("base64"),
@@ -180,8 +180,9 @@ export class CheckoutComponent implements OnInit {
       installment_encoded: new FormControl ("base64"),
       periodePayment: new FormControl (""),
       idAi: new FormControl ("", Validators.required),
-      namaPemasar: new FormControl (""),
+      namaPemasar: new FormControl (this.nikUser["name"]),
     });
+    
     this.idTransaksi();
     this.getUnit();
     //
