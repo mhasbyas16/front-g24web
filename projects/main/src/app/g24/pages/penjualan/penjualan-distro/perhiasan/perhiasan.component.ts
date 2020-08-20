@@ -69,7 +69,7 @@ export class PerhiasanComponent implements OnInit {
     private toastrService: ToastrService,
 
     //count cart
-    private countService: CountCartService,
+    public countService: CountCartService,
     //session
     private sessionService: SessionService,
   ) { }
@@ -185,7 +185,8 @@ export class PerhiasanComponent implements OnInit {
 
     addCart(code: any,vendor: any, jenis: any, 
       warna: any, berat: any, kadar: any, harga: any, _hash:any){
-      
+        this.perhiasan.emit(null);
+        this.data.emit(null);
       this.cartList.push({
         'code': code, 
         'vendor': vendor, 
@@ -198,7 +199,7 @@ export class PerhiasanComponent implements OnInit {
         'qty': 1});
         console.debug(this.cartList,"ISI HASH CART")
         // harga
-        this.refresh(harga, "p")
+        this.refresh("p")
         //
         this.perhiasan.emit(this.cartList.length);
         this.data.emit(this.countService.countCart());
@@ -206,7 +207,8 @@ export class PerhiasanComponent implements OnInit {
        // this.cekItemArray(code);
     }
 
-    refresh(harga: any, sum: any){
+    refresh(sum: any){
+      this.totalHarga.emit(null);
        // harga
 
 

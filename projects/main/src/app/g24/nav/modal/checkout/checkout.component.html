@@ -14,7 +14,7 @@
                                 <div class="clr-col-5">
                                     <clr-input-container>
                                         <label>CIF</label>
-                                        <input clrInput type="text" formControlName="cif">
+                                        <input clrInput type="text" formControlName="cif" readonly>
                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                         <clr-control-error *clrIfError="'pattern'">This is a required field 0 - 9</clr-control-error>
                                     </clr-input-container> 
@@ -26,7 +26,7 @@
                             </div>
                             <clr-input-container>
                                 <label>Nama Nasabah</label>
-                                <input clrInput type="text" formControlName="name">
+                                <input clrInput type="text" formControlName="name" readonly>
                                 <clr-control-helper>Please Input Nama Nasabah</clr-control-helper>
                                 <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                             </clr-input-container> 
@@ -219,60 +219,121 @@
                     </div>
                     <div class="card-block">
                         <div class="card-text">
-                            <clr-input-container>
-                                <label>ID Transaksi</label>
-                                <input clrInput type="text" [value]="idtransaksi" fromControlName="idTransaction" readonly>
-                            </clr-input-container>
+                            <div class="clr-row">
+                                <div class="clr-col-sm-6 clr-col-lg-6">
+                                    <clr-input-container>
+                                        <label>ID Transaksi</label>
+                                        <input clrInput type="text" [value]="idtransaksi" fromControlName="idTransaction" readonly>
+                                    </clr-input-container>
+                                </div>
+                                <div class="clr-col-sm-6 clr-col-lg-6">
+                                    <button type="button" class="btn btn-primary" (click)="refreshId()"><clr-icon shape="refresh"></clr-icon></button>
+                                </div>
+                            </div>
+                            
+
                             <clr-radio-container clrInline>
                                 <label>Metode Bayar</label>
                     
                                 <clr-radio-wrapper *ngFor="let i of transactionMethod" >
                                     <input type="radio" clrRadio formControlName="metodeBayar" name="metodeBayar" [value]="i._hash" (click)="bankValid(i._hash)"/>
                                     <label>
-                                        <img class="img-responsive" [attr.src]="'assets/images/metode/'+i.icon" alt="">
+                                        <img class="img-responsive2" [attr.src]="'assets/images/metode/'+i.icon" alt="">
                                         {{i.name}}</label>
                                 </clr-radio-wrapper>
                             </clr-radio-container>
 
-                            <ng-container *ngIf="bankForm">
-                                <ng-container *ngIf="jenisPembayaran" >
-                                    <clr-select-container>
-                                        <label>Jenis Pembayaran</label>
-                                        <select clrSelect formControlName="transaksiMetodeBank" (click)="bankAdm($event.target.value)">
-                                            <option selected [value]="" hidden>-- Select One --</option>
-                                            <option *ngFor="let t of transactionBankMethod" selected [value]="t._hash">{{t.name}}</option>
-                                        </select>
-                                        <clr-control-helper>Please Select One</clr-control-helper>
-                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
-                                    </clr-select-container>
-                                </ng-container>
-                                
+                            <ng-container *ngIf="installmentCont">
                                 <div class="clr-row">
-                                    <ng-container *ngIf="bankA">
-                                        <div class="clr-col-6">
+                                    <div class="clr-col-sm-6 clr-col-lg-6">
+                                        <clr-radio-container clrInline>
+                                            <label>Bank</label>
+                                            <clr-radio-wrapper *ngFor="let bank of bankInstallment">
+                                                <input clrRadio formControlName="installment" [value]="bank._hash" type="radio" (click)="periodeInstallment(bank.code)">
+                                                <label><img class="img-responsive" [attr.src]="'assets/images/bank/'+bank.icon" alt=""> {{bank.name}}</label>
+                                            </clr-radio-wrapper>
+                                            <clr-control-helper>Please Select One</clr-control-helper>
+                                        </clr-radio-container>
+                                    </div>
+                                    <ng-container *ngIf="periodeIns">
+                                        <div class="clr-col-sm-6 clr-col-lg-6">
                                             <clr-select-container>
-                                                <label>Bank Asal</label>
-                                                <select clrSelect formControlName="bankAsal">
-                                                    <option *ngFor="let bank of bank" [value]="bank.name" >
-                                                        {{bank.name}}
-                                                    </option>
+                                                <label>Jangka Waktu</label>
+                                                <select clrSelect formControlName="periodePayment">
+                                                    <option selected [value]="" hidden>-- Select One --</option>
+                                                    <ng-container *ngFor="let t of installmentPeriod">
+                                                        <option *ngFor="let o of t.period" selected [value]="o">{{o}} Bulan</option>
+                                                    </ng-container>
                                                 </select>
                                                 <clr-control-helper>Please Select One</clr-control-helper>
-                                                <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                             </clr-select-container>
                                         </div>
-                                    </ng-container>                               
-                                    
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="edc">
+                                <clr-select-container>
+                                    <label>Jenis Pembayaran</label>
+                                    <select clrSelect formControlName="transactionMetodeBank" (click)="jenisEdc()">
+                                        <option selected [value]="" hidden>-- Select One --</option>
+                                        <option *ngFor="let t of transactionBankMethod" selected [value]="t._hash">{{t.name}}</option>
+                                    </select>
+                                    <clr-control-helper>Please Select One</clr-control-helper>
+                                    <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                </clr-select-container>
 
+                                <ng-container *ngIf="edc2">
+                                    <div class="clr-row">
+                                        <div class="clr-col-sm-6 clr-col-lg-6">
+                                            <clr-select-container>
+                                                <label>Jenis EDC</label>
+                                                <select clrSelect formControlName="edcType" (click)="jenisKartu()">
+                                                    <option selected [value]="" hidden>-- Select One --</option>
+                                                    <option *ngFor="let t of edcTipe" selected [value]="t._hash">{{t.name}}</option>
+                                                </select>
+                                                <clr-control-helper>Please Select One</clr-control-helper>
+                                            </clr-select-container>                                
+                                        </div>
+                                        <ng-container *ngIf="edc3">
+                                            <div class="clr-col-sm-6 clr-col-lg-6">
+                                                <clr-radio-container clrInline>
+                                                    <label>Jenis Kartu</label>
+                                                    <clr-radio-wrapper *ngFor="let card of cardTipe">
+                                                        <input clrRadio formControlName="cardType" [value]="card._hash" type="radio" (click)="bankAdm(card._hash)">
+                                                        <label><img class="img-responsive" [attr.src]="'assets/images/bank/'+card.icon" alt=""> {{card.name}}</label>
+                                                    </clr-radio-wrapper>
+                                                    <clr-control-helper>Please Select One</clr-control-helper>
+                                                </clr-radio-container>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </ng-container>
+                            </ng-container>
+
+                            <ng-container *ngIf="bankForm">
+                                <div class="clr-row">
                                     <div class="clr-col-6">
-                                        <clr-select-container>
-                                            <label>Bank Tujuan</label>
-                                            <select clrSelect formControlName="bankTujuan">
-                                                <option *ngFor="let bank of bank" [value]="bank._hash">{{bank["mata-anggaran"]}} - {{bank.name}}</option>
-                                            </select>
+                                        <clr-radio-container>
+                                            <label>Bank Asal</label>
+                                            <clr-radio-wrapper *ngFor="let bank of bank">
+                                                <input clrRadio formControlName="bankAsal" [value]="bank.name" type="radio">
+                                                <label><img class="img-responsive" [attr.src]="'assets/images/bank/'+bank.icon" alt=""> {{bank.name}}</label>
+                                            </clr-radio-wrapper>
                                             <clr-control-helper>Please Select One</clr-control-helper>
                                             <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
-                                        </clr-select-container>
+                                        </clr-radio-container>
+                                    </div>                            
+                                    <div class="clr-col-6">
+                                        <clr-radio-container>
+                                            <label>Bank Tujuan</label>
+                                            <clr-radio-wrapper *ngFor="let bank of bank">
+                                                <input clrRadio formControlName="bankTujuan" [value]="bank._hash" type="radio">
+                                                <label><img class="img-responsive" [attr.src]="'assets/images/bank/'+bank.icon" alt="">
+                                                    {{bank["mata-anggaran"]}} - {{bank.name}}</label>
+                                            </clr-radio-wrapper>
+                                            <clr-control-helper>Please Select One</clr-control-helper>
+                                            <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                        </clr-radio-container>
                                     </div>
                                 </div>
                             </ng-container>                            
@@ -285,18 +346,31 @@
                                 <label>Kembali</label>
                                 <input clrInput type="text" formControlName="kembali" [value]="kembali | number" readonly>
                             </clr-input-container>
+
+                            <div class="clr-row">
+                                <div class="clr-col-sm-6 clr-col-lg-6">
+                                    <clr-input-container>
+                                        <label>NIK Pemasar</label>
+                                        <input clrInput type="text" [value]="" formControlName="nik">
+                                    </clr-input-container>
+                                </div>
+                                <div class="clr-col-sm-6 clr-col-lg-6">
+                                    <button type="button" class="btn btn-primary" (click)="getNikPemasar()">Cari</button>
+                                </div>
+                            </div>  
                             <clr-input-container>
-                                <label>NIK Pemasar</label>
-                                <input clrInput type="text" value="{{nikUser.nik}}" readonly>
-                                <clr-control-helper></clr-control-helper>
+                                <label>Nama Pemasar</label>
+                                <input clrInput type="text" [value]="" formControlName="namaPemasar" readonly>
                             </clr-input-container>
+                                               
                         </div>                                                              
                     </div>
                     <!-- Hidden Form -->
                     <input type="hidden" formControlName="admBank">
+                    <input type="hidden" formControlName="idAi">
                     <input type="hidden" formControlName="metodeBayar_encoded">
                     <input type="hidden" formControlName="bankTujuan_encoded">
-                    <input type="hidden" formControlName="transaksiMetodeBank_encoded">
+                    <input type="hidden" formControlName="transactionMetodeBank_encoded">
                     <input type="hidden" formControlName="jumlahTerima">
                     <input type="hidden" formControlName="maker">
                     <input type="hidden" formControlName="makerDate">
@@ -306,6 +380,13 @@
                     <input type="hidden" formControlName="client_encoded">
                     <input type="hidden" formControlName="unit">
                     <input type="hidden" formControlName="unit_encoded">
+                    <input type="hidden" formControlName="nikPemasar">
+                    <input type="hidden" formControlName="nikPemasar_encoded">
+                    <input type="hidden" formControlName="edcType_encoded">
+                    <input type="hidden" formControlName="cardType_encoded">
+                    <input type="hidden" formControlName="installment_encoded">
+                   
+                    
                     <div class="card-footer">
                         <button type="button" class="btn btn-primary" (click)="transaction()">Submit</button>
                     </div>
