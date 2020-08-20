@@ -40,7 +40,8 @@ export class CartComponent implements OnInit {
   // modal 
   checkoutModal:any;
 
-  constructor( ) { }
+  constructor(
+   ) { }
 
   ngOnInit(): void {
     this.removeCart();

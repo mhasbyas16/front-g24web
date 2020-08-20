@@ -106,8 +106,9 @@ export class CheckoutComponent implements OnInit {
     let unit = this.sessionService.getUnit();
 
     let params="?_between=makerDate&_start="+d1+"&_end="+d2;
-    this.transactionService.count(params).subscribe((response:any)=>{  
-      let count = JSON.stringify(response["count"]+1);
+
+    this.transactionService.list(params+'&_sortby=idAi:0&_rows=1').subscribe((response:any)=>{  
+      let count = JSON.stringify(Number(response["0"]["idAi"])+1);
       switch (count.length) {
         case 1:
           inc = "000000"+count;
@@ -134,14 +135,19 @@ export class CheckoutComponent implements OnInit {
           break;
       }
       this.idtransaksi = unit.code+"06"+d3+inc;
-      this.formData.patchValue({idTransaction:this.idtransaksi});
-    })
+      this.formData.patchValue({idTransaction:this.idtransaksi,idAi:Number(response["0"]["idAi"])+1});
+    });
+      
+  }
+
+  refreshId(){
+    this.idTransaksi();
   }
   
   openModal(totalHarga: any){    
     this.formData = new FormGroup({
       idTransaction: new FormControl(""),
-      idTransaction_validation: new FormControl("unique:idPenjualan"),
+      idTransaction_validation: new FormControl("unique:idTransaction"),
       cif: new FormControl ("", [Validators.required, Validators.pattern(/^[0-9]*$/)]),
       name: new FormControl ("",[ Validators.required]),
       client: new FormControl ("", Validators.required),
@@ -164,7 +170,7 @@ export class CheckoutComponent implements OnInit {
       nominalTransaksi: new FormControl (""),
       kembali: new FormControl (""),
       nik: new FormControl (""),
-      nikPemasar: new FormControl ("", Validators.required),
+      nikPemasar: new FormControl (""),
       nikPemasar_encoded: new FormControl ("base64"),
       edcType: new FormControl (""),
       edcType_encoded: new FormControl ("base64"),
@@ -172,7 +178,9 @@ export class CheckoutComponent implements OnInit {
       cardType_encoded: new FormControl ("base64"),
       installment:new FormControl (""),
       installment_encoded: new FormControl ("base64"),
-      periodePayment: new FormControl ("")
+      periodePayment: new FormControl (""),
+      idAi: new FormControl ("", Validators.required),
+      namaPemasar: new FormControl (""),
     });
     this.idTransaksi();
     this.getUnit();
@@ -197,10 +205,10 @@ export class CheckoutComponent implements OnInit {
       if (response['length'] != 0) {
         console.debug(response,"data pemasar");
         this.toastr.success('Success Get NIK Pemasar Name '+response["0"]["name"],'NIK Pemasar');
-        this.formData.patchValue({nikPemasar:response["0"]['_hash']});
+        this.formData.patchValue({nikPemasar:response["0"]['_hash'], namaPemasar:response["0"]["name"]});
       }else{
         this.toastr.error('NIK Pemasar Not Found, Filed Get','NIK Pemasar');
-        this.formData.patchValue({nikPemasar:""});
+        this.formData.patchValue({nikPemasar:"", namaPemasar:""});
         return;
       }
       
@@ -394,6 +402,8 @@ export class CheckoutComponent implements OnInit {
     data.product = btoa(JSON.stringify({PERHIASAN,LM,BERLIAN,GS,DINAR})) ;
     data.product_encoded = "base64";
     delete data["cif"];
+    delete data["namaPemasar"];
+    delete data["nik"];
     console.debug(data,"ISI FORMDATA");
     // data.metodeBayar =
 
@@ -413,6 +423,7 @@ export class CheckoutComponent implements OnInit {
         this.ChangeContentArea('10003');
       }else{
         this.toastr.error(this.transactionService.message(), "Transaction");
+        this.idTransaksi()
         return;
       }
     })

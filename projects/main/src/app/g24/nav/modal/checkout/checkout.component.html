@@ -14,7 +14,7 @@
                                 <div class="clr-col-5">
                                     <clr-input-container>
                                         <label>CIF</label>
-                                        <input clrInput type="text" formControlName="cif">
+                                        <input clrInput type="text" formControlName="cif" readonly>
                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                         <clr-control-error *clrIfError="'pattern'">This is a required field 0 - 9</clr-control-error>
                                     </clr-input-container> 
@@ -26,7 +26,7 @@
                             </div>
                             <clr-input-container>
                                 <label>Nama Nasabah</label>
-                                <input clrInput type="text" formControlName="name">
+                                <input clrInput type="text" formControlName="name" readonly>
                                 <clr-control-helper>Please Input Nama Nasabah</clr-control-helper>
                                 <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                             </clr-input-container> 
@@ -219,10 +219,19 @@
                     </div>
                     <div class="card-block">
                         <div class="card-text">
-                            <clr-input-container>
-                                <label>ID Transaksi</label>
-                                <input clrInput type="text" [value]="idtransaksi" fromControlName="idTransaction" readonly>
-                            </clr-input-container>
+                            <div class="clr-row">
+                                <div class="clr-col-sm-6 clr-col-lg-6">
+                                    <clr-input-container>
+                                        <label>ID Transaksi</label>
+                                        <input clrInput type="text" [value]="idtransaksi" fromControlName="idTransaction" readonly>
+                                    </clr-input-container>
+                                </div>
+                                <div class="clr-col-sm-6 clr-col-lg-6">
+                                    <button type="button" class="btn btn-primary" (click)="refreshId()"><clr-icon shape="refresh"></clr-icon></button>
+                                </div>
+                            </div>
+                            
+
                             <clr-radio-container clrInline>
                                 <label>Metode Bayar</label>
                     
@@ -343,17 +352,22 @@
                                     <clr-input-container>
                                         <label>NIK Pemasar</label>
                                         <input clrInput type="text" [value]="" formControlName="nik">
-                                        <clr-control-helper></clr-control-helper>
                                     </clr-input-container>
                                 </div>
                                 <div class="clr-col-sm-6 clr-col-lg-6">
                                     <button type="button" class="btn btn-primary" (click)="getNikPemasar()">Cari</button>
                                 </div>
-                            </div>                      
+                            </div>  
+                            <clr-input-container>
+                                <label>Nama Pemasar</label>
+                                <input clrInput type="text" [value]="" formControlName="namaPemasar" readonly>
+                            </clr-input-container>
+                                               
                         </div>                                                              
                     </div>
                     <!-- Hidden Form -->
                     <input type="hidden" formControlName="admBank">
+                    <input type="hidden" formControlName="idAi">
                     <input type="hidden" formControlName="metodeBayar_encoded">
                     <input type="hidden" formControlName="bankTujuan_encoded">
                     <input type="hidden" formControlName="transactionMetodeBank_encoded">
@@ -371,6 +385,7 @@
                     <input type="hidden" formControlName="edcType_encoded">
                     <input type="hidden" formControlName="cardType_encoded">
                     <input type="hidden" formControlName="installment_encoded">
+                   
                     
                     <div class="card-footer">
                         <button type="button" class="btn btn-primary" (click)="transaction()">Submit</button>
