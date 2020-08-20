@@ -401,6 +401,12 @@ export class CheckoutComponent implements OnInit {
     // 
     data.product = btoa(JSON.stringify({PERHIASAN,LM,BERLIAN,GS,DINAR})) ;
     data.product_encoded = "base64";
+    data["transaction-type"] = btoa(JSON.stringify({
+      "code" : "t01",
+      "name" : "Penjualan Tunai Cash and Carry",
+      "status" : 1
+    }));
+    data["transaction-type_encoded"]= "base64";
     delete data["cif"];
     delete data["namaPemasar"];
     delete data["nik"];
