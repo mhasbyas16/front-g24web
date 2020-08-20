@@ -32,7 +32,7 @@ export class PenjualanDistroComponent implements OnInit {
 
   // jumlah isi cart
   perhiasanParent:any;
-  berlian:any;
+  berlianParent:any;
 
   // total harga per kategori
   hargaPerhiasan:any;
@@ -59,27 +59,25 @@ export class PenjualanDistroComponent implements OnInit {
 
   // total isi cart berlian
   totalBerlian(isi: any){
-    this.berlian = isi;
+    this.berlianParent = isi;
   }
 
   //CLEAR
   // clear total cart
   clearTotal(num){
     this.total = num;
-    this.hargaPerhiasan = 0;
-    this.hargaBatuMulia = 0;
   }
-  clearBerlian(isi: any){
-    this.berlian = isi;
-    this.hargaBatuMulia = 0;
+
+  clearBerlian(data: any){
+    this.berlianParent = data.length;
+    this.hargaBatuMulia = data.harga;
+  
   }
+
   clearPerhiasan(data:any){
     this.perhiasanParent = data.length;
     this.hargaPerhiasan = data.harga;
     
-    if (data.length == 0) {
-      this.hargaPerhiasan = 0;
-    }
   }
 
   
