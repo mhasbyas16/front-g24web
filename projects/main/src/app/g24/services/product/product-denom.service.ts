@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CommonService } from "../../../../../../platform/src/app/core-services/common.service";
+import { CommonService } from 'projects/platform/src/app/core-services/common.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ export class ProductDenomService {
     return this.commonService.list(this.key, params);
   }
 
-  get(params) {
+  get(params){
     return this.commonService.get(this.key, params);
   }
 
@@ -33,6 +33,4 @@ export class ProductDenomService {
   delete(data) {
     return this.commonService.delete(this.key, data);
   }
-
-  
 }

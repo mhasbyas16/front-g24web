@@ -1,0 +1,60 @@
+<ng-container *ngIf="pilihPembayaran">
+    <clr-modal [(clrModalOpen)]="pilihPembayaran">
+        <h3 class="modal-title" >Pilih Metode Pembayaran <clr-icon shape="bank" class="is-solid"></clr-icon></h3>
+        <div class="modal-body">
+             <div class="clr-row">
+                 <div class="clr-col-md-2 clr-col-lg-2 clr-col-xl-2">
+                    <clr-icon shape="wallet"></clr-icon>
+                 </div>
+                 <div class="clr-col-md-8 clr-col-lg-8 clr-col-xl-8">
+                    Cash
+                 </div>
+                 <div class="clr-col-md-2 clr-col-lg-2 clr-col-xl-2">
+                    Button
+                 </div>
+             </div>   
+             <hr> 
+             <h4><b>Debit</b></h4>
+             <div class="clr-row">
+                 <div class="clr-col-md-2 clr-col-lg-2 clr-col-xl-2">
+                    <img class="img-responsive" src="assets/images/bank/bca.png" alt="">
+                 </div>
+                 <div class="clr-col-md-8 clr-col-lg-8 clr-col-xl-8">
+                    Bank BCA
+                 </div>
+                 <div class="clr-col-md-2 clr-col-lg-2 clr-col-xl-2">
+                    Button
+                 </div>
+             </div>    
+             <hr>
+             <div class="clr-row">
+                <div class="clr-col-md-2 clr-col-lg-2 clr-col-xl-2">
+                   <img class="img-responsive" src="assets/images/bank/bni.png" alt="">
+                </div>
+                <div class="clr-col-md-8 clr-col-lg-8 clr-col-xl-8">
+                   Bank BNI
+                </div>
+                <div class="clr-col-md-2 clr-col-lg-2 clr-col-xl-2">
+                   Button
+                </div>
+            </div>  
+            <hr>
+            <div class="clr-row">
+                <div class="clr-col-md-2 clr-col-lg-2 clr-col-xl-2">
+                   <img class="img-responsive" src="assets/images/bank/mandiri.png" alt="">
+                </div>
+                <div class="clr-col-md-8 clr-col-lg-8 clr-col-xl-8">
+                   Bank Mandiri
+                </div>
+                <div class="clr-col-md-2 clr-col-lg-2 clr-col-xl-2">
+                   Button
+                </div>
+            </div>
+            <hr>         
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-warning-outline" >Cancel</button>
+            <button type="button" class="btn btn-primary">Pilih</button>
+        </div>
+    </clr-modal>
+</ng-container>

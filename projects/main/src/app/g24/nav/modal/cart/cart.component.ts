@@ -12,6 +12,7 @@ export class CartComponent implements OnInit {
   @Output() clearBerlian:any = new EventEmitter();
   @Output() clearPerhiasan:any = new EventEmitter();
   @Output() clearMulia:any = new EventEmitter();
+  @Output() data:any = new EventEmitter();
   //
   @Input() total:any=0;
   @Input() perhiasan:any;
@@ -40,7 +41,8 @@ export class CartComponent implements OnInit {
   // modal 
   checkoutModal:any;
 
-  constructor( ) { }
+  constructor(
+   ) { }
 
   ngOnInit(): void {
     this.removeCart();
@@ -64,14 +66,19 @@ export class CartComponent implements OnInit {
     this.hargaBerlian = 0;
     this.hargaGift = 0;
     this.hargaDinar = 0;
+    // this.hargaPerhiasan = 0;
+    // this.hargaLogam = 0;
+    // this.hargaBerlian = 0;
+    // this.hargaGift = 0;
+    // this.hargaDinar = 0;
 
     // refresh
     this.total=0;
     // clear
     this.clearParentCart.emit(0);
-    this.clearBerlian.emit(0);
-    this.clearPerhiasan.emit(0);
-    this.clearMulia.emit(0);
+    this.clearBerlian.emit({length:0,harga:0});
+    this.clearPerhiasan.emit({length:0,harga:0});
+    this.clearMulia.emit({length:0,harga:0});
   }
 
   // remove item berlian 
@@ -83,12 +90,12 @@ export class CartComponent implements OnInit {
     //pengurangan jumlah cart
     this.total-=1;
     this.berlian = this.berlian-1;
+    // pengurangan parent
+    this.clearBerlian.emit({length:this.berlian,harga:this.hargaBerlian});
+    this.data.emit(this.total);
     if (this.total == 0) {
       console.debug("totallll 0");
       this.clearParentCart.emit(0);
-    }
-    if (this.berlian == 0) {
-      this.clearBerlian.emit(0);
     }
   }
 
@@ -102,12 +109,12 @@ export class CartComponent implements OnInit {
     //pengurangan jumlah cart
     this.total-=1;
     this.perhiasan = this.perhiasan-1;
+    // kurangin parent
+    this.clearPerhiasan.emit({length:this.perhiasan,harga:this.hargaPerhiasan});
+    this.data.emit(this.total);
     if (this.total == 0) {
       console.debug("totallll 0");
       this.clearParentCart.emit(0);
-    }
-    if (this.perhiasan == 0) {
-      this.clearPerhiasan.emit(0);
     }
   }
 

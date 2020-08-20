@@ -420,6 +420,54 @@ export class CommonService {
     });
   }
 
+  public getDate() {
+    return Observable.create(observer => {
+
+      const url = `${this.sessionService.server}/date`;
+
+      let request = this.http.get(url, { headers: this.sessionService.getHeader() });
+
+      request.subscribe((respond: any) => {
+        console.debug("download", url, respond);
+        if (respond.status == "failed") {
+          console.debug(respond.message);
+          this.message = respond.message;
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();
+        }
+
+        observer.next(respond.data);
+        observer.complete();
+        return (observer).unsubscribe();
+      });
+    });
+  }
+
+  public custom(key : string, data : any) {
+    return Observable.create(observer => {
+
+      const url = `${this.sessionService.server}/${key}${data}`;
+
+      let request = this.http.get(url, { headers: this.sessionService.getHeader() });
+
+      request.subscribe((respond: any) => {
+        console.debug("download", url, respond);
+        if (respond.status == "failed") {
+          console.debug(respond.message);
+          this.message = respond.message;
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();
+        }
+
+        observer.next(respond.data);
+        observer.complete();
+        return (observer).unsubscribe();
+      });
+    });
+  }
+
   public getFormUrlEncoded(toConvert) {
     const formBody = [];
     for (const property in toConvert) {

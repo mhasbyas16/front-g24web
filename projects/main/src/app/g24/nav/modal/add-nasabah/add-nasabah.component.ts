@@ -22,7 +22,7 @@ import { ClientEducationService } from '../../../services/client/client-educatio
 import { ClientBusinessFieldService } from '../../../services/client/client-business-field.service';
 import { ClientBusinessTypeService } from '../../../services/client/client-business-type.service';
 import { ClientLegalTypeService } from '../../../services/client/client-legal-type.service';
-
+import { ClientIncomeService } from '../../../services/client/client-income.service';
 @Component({
   selector: 'app-add-nasabah',
   templateUrl: './add-nasabah.component.html',
@@ -70,6 +70,7 @@ export class AddNasabahComponent implements OnInit {
   businessField:any;
   businessType:any;
   legalType:any;
+  income:any;
 
   constructor(
     private cifNumber: CifGeneratorService,
@@ -91,6 +92,7 @@ export class AddNasabahComponent implements OnInit {
     private clientBusinessField :ClientBusinessFieldService,
     private clientBusinessType :ClientBusinessTypeService,
     private clientLegalType :ClientLegalTypeService,
+    private clientIncomeService: ClientIncomeService,
 
     //ng
     private toastr: ToastrService
@@ -193,13 +195,11 @@ export class AddNasabahComponent implements OnInit {
       tglLahirPasangan : new FormControl(""),
       jmlTanggungan : new FormControl(""),
       noTelp : new FormControl("", [Validators.maxLength(12), Validators.pattern(/^[0-9]*$/)]),
-      noTelp_validation : new FormControl("unique:noTelp"),
       noHP : new FormControl("", [Validators.required, Validators.maxLength(12), Validators.pattern(/^[0-9]*$/)]),
       noHP_validation : new FormControl("unique:noHP"),
       email : new FormControl("", Validators.email),
       email_validation : new FormControl("unique:email"),
       noNPWP : new FormControl("", [Validators.maxLength(17), Validators.pattern(/^[0-9]*$/)]),
-      noNPWP_validation : new FormControl("unique:noNPWP"),
       kewarganegaraan : new FormControl("", Validators.required),
       kewarganegaraan_encoded : new FormControl("base64"),
       tipeKependudukan : new FormControl("", Validators.required),
@@ -211,6 +211,7 @@ export class AddNasabahComponent implements OnInit {
       agama : new FormControl("", Validators.required),
       agama_encoded : new FormControl("base64"),
       pendapatan : new FormControl("", Validators.required),
+      pendapatan_encoded : new FormControl("base64"),
 
       // Alamat Sesuai KTP
       alamat : new FormControl("", Validators.required),
@@ -251,6 +252,7 @@ export class AddNasabahComponent implements OnInit {
     this.getProfession();
     this.getMaritalStatus();
     this.getEducation();
+    this.getClientIncome();
   }
 
   // store to DB
@@ -288,7 +290,6 @@ export class AddNasabahComponent implements OnInit {
       sumberDana: this.badanUsaha.get("sumberDana").value,
       sumberDana_encoded: this.badanUsaha.get("sumberDana_encoded").value,
       noNPWP: this.badanUsaha.get("noNPWP").value,
-      noNPWP_validation: this.badanUsaha.get("noNPWP_validation").value,
       namaPJ1: this.badanUsaha.get("namaPJ1").value,
       namaPJ2: this.badanUsaha.get("namaPJ2").value,
       tglBerlaku: this.badanUsaha.get("tglBerlaku").value,
@@ -298,14 +299,13 @@ export class AddNasabahComponent implements OnInit {
       noAkte_validation: this.badanUsaha.get("noAkte_validation").value,
       tglPerubahanAkte: this.badanUsaha.get("tglPerubahanAkte").value,
       telp: this.badanUsaha.get("telp").value,
-      telp_validation: this.badanUsaha.get("telp_validation").value,
       hpPJ1: this.badanUsaha.get("hpPJ1").value,
       hpPJ1_validation: this.badanUsaha.get("hpPJ1_validation").value,
       hpPJ2: this.badanUsaha.get("hpPJ2").value,
       hpPJ2_validation: this.badanUsaha.get("hpPJ2_validation").value,
 
       // alamat
-      alamatKtp:btoa(JSON.stringify({
+      alamatSaatIni:btoa(JSON.stringify({
         alamat: this.badanUsaha.get("alamat").value,
         rt: this.badanUsaha.get("rt").value,
         rw: this.badanUsaha.get("rw").value,
@@ -319,7 +319,7 @@ export class AddNasabahComponent implements OnInit {
         kelurahan: JSON.parse(atob(this.badanUsaha.get("kelurahan").value)),
         //kelurahan_encoded: new FormControl("base64"),
       })),
-      alamatKtp_encoded:"base64" 
+      alamatSaatIni_encoded:"base64" 
     }
 
     this.mainClient.add(data).subscribe((response:any)=>{
@@ -398,6 +398,7 @@ export class AddNasabahComponent implements OnInit {
       pekerjaan: this.person.get("pekerjaan").value,
       pekerjaan_encoded: this.person.get("pekerjaan_encoded").value,
       pendapatan: this.person.get("pendapatan").value,
+      pendapatan_encoded: this.person.get("pendapatan_encoded").value,
       pendidikan: this.person.get("pendidikan").value,
       statusPerkawinan: this.person.get("statusPerkawinan").value,
       statusPerkawinan_encoded: this.person.get("statusPerkawinan_encoded").value,
@@ -488,6 +489,14 @@ export class AddNasabahComponent implements OnInit {
   }
 
   // Client
+  getClientIncome(){
+    this.clientIncomeService.list("?_hash=1").subscribe((response:any)=>{
+      if (response != false) {
+        this.income = response;
+        console.debug(this.income,"income client");
+      }
+    });
+  }
   getEducation() {
     this.clientEducation.list("?_hash=1").subscribe((response: any) => {
       if (response != false) {

@@ -4,7 +4,7 @@ import { ModuleLoader } from '../../lib/helper/module-loader';
 import { Router } from '@angular/router';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 //list side bar
-import { management, kasir } from '../../sample/output-sidebar';
+import { management, kasir, stock } from '../../sample/output-sidebar';
 
 @Component({
   selector: 'app-sidebar',
@@ -27,6 +27,7 @@ export class SidebarComponent implements OnInit {
   //LIST
   listManagement = management;
   listKasir = kasir;
+  stock = stock;
 
   constructor(private cdRef : ChangeDetectorRef, private router : Router,private sessionService: SessionService)
   {
@@ -52,6 +53,9 @@ export class SidebarComponent implements OnInit {
       case "kasir":
         this.output = this.output.concat(this.listKasir);
           break;
+      case "stock":
+        this.output = this.output.concat(this.stock);
+        break;
       default:
           this.output = this.output;
           console.debug("Role Tidak ditemukan gagal load list sidebar");

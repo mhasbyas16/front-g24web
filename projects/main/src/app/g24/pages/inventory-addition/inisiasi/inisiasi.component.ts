@@ -1,28 +1,38 @@
-import { Component, OnInit, ComponentFactoryResolver, ViewChild, Input, ElementRef, AfterViewInit, TemplateRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ComponentFactoryResolver, ViewChild, Input, ElementRef, AfterViewInit, TemplateRef, ChangeDetectionStrategy, ViewContainerRef, Output } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 import { DContent } from '../../../decorators/content/pages';
+import { BasePersistentFields } from '../../../lib/base/base-persistent-fields';
 import { EMenuID } from '../../../lib/enums/emenu-id.enum';
-import { NgForm, Form, FormGroup } from '@angular/forms';
-import { InitiationType } from '../../../lib/enums/initiation-type';
-import { stringify } from 'querystring';
-import { PaymentType } from '../../../lib/enums/payment-type';
-import { ModalErrorType } from '../../..//lib/enums/modal-error-type.enum';
-import { IF_ACTIVE_ID } from '@clr/angular/utils/conditional/if-active.service';
-import { DocumentStatus } from '../../../lib/enums/document-status.enum';
+import { ProductJenisService } from '../../../services/product/product-jenis.service';
+import { ProductPurityService } from '../../../services/product/product-purity.service';
+import { ProductGoldColorService } from '../../../services/product/product-gold-color.service';
+import { ProductDiamondColorService } from '../../../services/product/product-diamond-color.service';
+import { VendorService } from '../../../services/vendor.service';
+import { ProductDenomService } from '../../../services/product/product-denom.service';
+import { ProductClarityService } from '../../../services/product/product-clarity.service';
+import { ProductCategoryService } from '../../../services/product/product-category.service';
+import { DateService } from '../../../services/system/date.service';
+import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 
 @Component({
   selector: 'app-inisiasi',
   templateUrl: './inisiasi.component.html',
-  styleUrls: ['./inisiasi.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./inisiasi.component.scss']
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 @DContent(InisiasiComponent.key)
-export class InisiasiComponent implements OnInit, AfterViewInit
+export class InisiasiComponent extends BasePersistentFields implements OnInit, AfterViewInit
 {
+  static key = EMenuID.INISIASI;
+
+  @ViewChild('container', { read: ViewContainerRef}) container : ViewContainerRef;
+
   @ViewChild('inisiasi') searchForm : any;
   // @ViewChild('inisiasi', {static: false}) inisiasi : NgForm;
   @ViewChild('product') product : ElementRef;
 
-  @ViewChild('Perhiasans', {static:false}) perhiasanInput : TemplateRef<any>;
+  @ViewChild('Perhiasan', {static:false}) perhiasanInput : TemplateRef<any>;
   @ViewChild('Mulia', {static:false}) muliaInput : TemplateRef<any>;
   @ViewChild('Berlian', {static: false}) berlianInput : TemplateRef<any>;
   @ViewChild('Adiratna', {static: false}) adiratnaInput : TemplateRef<any>;
@@ -30,183 +40,132 @@ export class InisiasiComponent implements OnInit, AfterViewInit
   @ViewChild('Gift', {static: false}) giftInput : TemplateRef<any>;
   @ViewChild('Dinar', {static: false}) dinarInput : TemplateRef<any>;
 
+  btoa = btoa;
+  parseInt = parseInt;
+  console = console;
+  Object = Object;
+
+  user : any = {};
+
   datas : any[] = [];
 
   products : any[] = [];
+  vendors : any[] = [];
   jeniss : any[] = [];
   kadars : any[] = [];
   warnas : any[] = [];
   denoms : any[] = [];
   series : any[] = [];
-  cuts : any[] = [];
   colors : any[] = [];
+  shapes : any[] = [];
   claritys : any[] = [];
 
+  parentPage : number = 0;
 
-  selected : any[] = [];
+  selectedId : number;
   productSelected = "";
-  formInput : TemplateRef<any> = null;
 
-  searchModel : any = {};
-
-  InitiationType = Object.values(InitiationType);
-  PaymentType = Object.values(PaymentType);
-  DocumentStatus = Object.values(DocumentStatus);
-  ErrorType = ModalErrorType;
-
-  modalOpen = false;
-  errorTitle = "";
-  errorType = "";
-  errorMessage = "";
-
-  static key = EMenuID.INISIASI;
-
-  constructor(private resolver : ComponentFactoryResolver)
-  { }
-
-  ngOnInit(): void
+  // searchModel : Map<string, any> = new Map<string, any>();
+  input : any = {items : []};
+  defaultInput() : any
   {
-    this.products = 
-    [
-      {code: "00", name: "Perhiasans"},
-      {code: "01", name: "Berlian"},
-      {code: "02", name: "Souvenir"},
-      {code: "03", name: "Adiratna"},
-      {code: "04", name: "Gift"},
-      {code: "05", name: "Mulia"},
-      {code: "06", name: "Dinar"}
-    ]
-    window['perhiasan'] = this.perhiasanInput;
+    return {
+      nomor_nota : null, tgl_inisiasi : this.current_date.split("T")[0],  harga_baku : 0, pajak : 0, 
+      'product-category' : null, vendor : null, tipe_bayar : null,
+      total_berat : 0, total_piece : 0, total_baku_tukar : 0, total_gram_tukar : 0,
+      total_ongkos : 0, total_pajak : 0, total_harga : 0,
+      items : []
+    };
+  }
+
+  constructor(
+    private resolver : ComponentFactoryResolver,
+    // private unitService : UnitService,
+    private jenisService : ProductJenisService,
+    private kadarService : ProductPurityService,
+    private gColorService : ProductGoldColorService,
+    private dColorService : ProductDiamondColorService,
+    private vendorService : VendorService,
+    private denomService : ProductDenomService,
+    // private shapeService : productsha,
+    private clarityService : ProductClarityService,
+    private productCatService : ProductCategoryService,
+    private dateService : DateService,
+
+    private session : SessionService)
+  {
+    super();
+  }
+
+  current_date : string;
+  async ngOnInit(): Promise<void>
+  {
+    this.current_date = await this.dateService.task({}).toPromise();
+    this.input = this.defaultInput();
+    this.user = this.session.getUser();
+    
+    // window['perhiasan'] = this.perhiasanInput;
+
+    await this.LoadAllParameter();
+
+    this.onProductChanged();
+  }
+
+  async LoadProductCategory()
+  {
+    while(this.products.length > 0)
+    {
+      this.products.pop();
+    }
+    let products = await this.productCatService.list("?").toPromise();
+
+    console.log(products);
+
+    for(let i = 0; i < products.length; i++)
+    {
+      this.products.push(products[i]);
+      if(this.products[i].code.includes('00'))
+      {
+        this.input['product-category'] = this.products[i];
+        console.log(this.input);
+      }
+    }
+    this.products.sort((a, b) => ('' + a.name).localeCompare(b.name));
+  }
+
+  async LoadAllParameter()
+  {
+    this.LoadProductCategory();
+
+    
     this.onProductChanged();
   }
 
   ngAfterViewInit()
   {
     window['perhiasan'] = this.perhiasanInput;
-    this.onProductChanged();
   }
 
-  ResetSearch(form2reset : NgForm)
+  ResetAll(form2reset : NgForm)
   {
-    this.formInput = null;
-    this.searchModel = {};
+    this.input = this.defaultInput();
     form2reset.reset();
+    console.log(form2reset.valid, this.input)
   }
 
   onProductChanged()
   {
-    if(this.product == null) return;
-    // console.log(this.product.nativeElement.value)
+    this.input['create_date'] = this.current_date.split("T")[0];
 
-    switch(this.product.nativeElement.value)
+    for(let i = 0; i < this.products.length; i++)
     {
-      case "00":
-        this.formInput = this.perhiasanInput;
+      let perhiasan = this.products[i];
+      if(perhiasan.code == "c00")
+      {
+        this.input['product-category'] = perhiasan;
         break;
-
-      case "01":
-        this.formInput = this.berlianInput;
-        break;
-
-      case "02":
-        this.formInput = this.souvenirInput
-        break;
-
-      case "03":
-        this.formInput = this.adiratnaInput;
-        break;
-
-      case "04":
-        this.formInput = this.giftInput;
-        break;
-
-      case "05":
-        this.formInput = this.muliaInput;
-        break;
-      
-      case "06":
-        this.formInput = this.dinarInput;
-        break;
-
-      default:
-        this.formInput = null;
-        break;
+      }
     }
-
-    if(this.searchModel['init_type'] != InitiationType.STOCK.code)
-    {
-      this.formInput = null;
-    }
-    // console.log(this.formInput)
-  }
-
-  doSearch()
-  {
-    for(let d in this.InitiationType)
-    {
-      console.log(d)
-    }
-    console.dir(JSON.stringify(this.searchModel))
-    if(!this.searchValid(this.searchModel))
-    {
-      return;
-    }
-  }
-
-  searchValid(model : any) : boolean
-  {
-    if(model == null)
-    {
-      this.openMessageBox(ModalErrorType.ERROR, "Pencarian Gagal", "Model null")
-      return false;
-    }
-
-    if(model.init_no == "")
-    {
-      return false;
-    }
-
-    return true;
-  }
-
-  onAdd()
-  {
-    let data = {init_no: "IN0000512345678", init_type: {code: "stock", name: "Stock"}, create_date: "20-02-2020", create_time: "10:51:22", create_by: "K24068", product: {code: "01", name: "Perhiasan"}, tipe_bayar: "E", vendor: {code: "UB", name:"PT. UBS"}, total_berat: 15.00, total_quantity: 20}
-    this.datas.push(data);
-    this.validateSelection();
-  }
-
-  onDelete()
-  {
-
-  }
-
-  onEdit()
-  {
-    if(this.selected.length != 1) return;
-  }
-
-  onExportAll()
-  {
-
-  }
-
-  onExportSelected()
-  {
-
-  }
-
-  validateSelection()
-  {
-
-  }
-
-  openMessageBox(type : string, title: string, message: string)
-  {
-    this.errorType = type
-    this.errorTitle = title
-    this.errorMessage = message
-    this.modalOpen = true
   }
 
 }

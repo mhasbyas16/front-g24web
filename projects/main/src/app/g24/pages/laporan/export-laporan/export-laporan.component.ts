@@ -10,6 +10,7 @@ declare let require: any;
 import { TransactionService } from '../../../services/transaction/transaction.service';
 // rupiah terbilang
 import { HargaTerbilangService } from '../../../lib/helper/harga-terbilang.service';
+import { TanggalService } from '../../../lib/helper/tanggal.service';
 
 
 @Component({
@@ -25,10 +26,12 @@ export class ExportLaporanComponent implements OnInit {
   constructor(
     private transactionService: TransactionService,
     private terbilangService: HargaTerbilangService,
+    private tanggalService:TanggalService,
   ) { }
 
   ngOnInit(): void {
     console.debug(this.terbilangService.terbilang(101500000),"hasil persenan")
+  
     //this.thisContent();
   }
   @ViewChild('barcode') barcode: ElementRef; 
@@ -44,8 +47,15 @@ export class ExportLaporanComponent implements OnInit {
   }
 
   thisContent(data){
-    console.debug(data, data.idTransaction,"isi data PDF")
-
+    
+    // tanggal
+    let tgl =data.makerDate;
+    let tglSplit = tgl.split("/");
+    let bulan = Number(tglSplit["0"]);
+    let hari = tglSplit["1"];
+    let tahun = tglSplit["2"];
+    let bulanTerbilang = this.tanggalService.bulanGenerate(bulan);
+   // let hariTerbilang = this.tanggalService.hariGenerate(Number(hari));
     // Barcode
     const JsBarcode = require('jsbarcode');
     JsBarcode("#barcode", data.idTransaction,{height:17, width:1,fontSize: 11, margin:0,displayValue:false});
@@ -55,7 +65,7 @@ export class ExportLaporanComponent implements OnInit {
     // Content
     delete this.innerDoc;
     let hargaFormat = new Intl.NumberFormat(['ban', 'id']).format(data.jumlahTerima);
-    this.innerDoc ={pageSize: 'A5', pageOrientation: 'portrait',pageMargins: [ 20, 60, 20, 40 ],};
+    this.innerDoc ={pageSize: 'A5', pageOrientation: 'landscape',pageMargins: [ 20, 60, 20, 40 ],};
     this.innerDoc['info'] = {title: data.client.cif+" - "+data.idTransaction }; 
 
     // Head Content
@@ -63,7 +73,7 @@ export class ExportLaporanComponent implements OnInit {
       {
         style: 'head',
 			  columns: [
-				  {text: data.idTransaction},
+				  {text: 'ID Transaksi : '+data.idTransaction},
 				  {image: jpegUrl}
 			  ]
       },
@@ -71,22 +81,46 @@ export class ExportLaporanComponent implements OnInit {
       {
         style:'detail',
         columns:[
-          {text: 'Nama Unit : '+data.unit.nama},
-          {text: ' Nama Nasabah : '+ data.client.name}
+          {
+            columns:[
+              {width:88,bold:true,text:'Nama Unit'},{width:5,bold:true,text:': '},{width:'*',text:data.unit.nama}
+            ]
+          },
+          {
+            columns:[
+              {width:88,bold:true,text:'Nama Nasabah'},{width:5,bold:true,text:': '},{width:'*',text:data.client.name}
+            ]
+          }
 			  ]
       },
       {
         style:'detail',
         columns:[
-          {text: 'Tanggal Pembelian : '+data.makerDate+', '+data.makerTime},
-          {text: 'Alamat : '+data.client.alamatSaatIni.alamat}
+          {
+            columns:[
+              {width:88,bold:true,text:'Tanggal Pembelian'},{width:5,bold:true,text:': '},{width:'*',text:hari+' '+bulanTerbilang+' '+tahun}
+            ]
+          },
+          {
+            columns:[
+              {width:88,bold:true,text:'Alamat'},{width:5,bold:true,text:': '},{width:'*',text:data.client.alamatSaatIni.alamat}
+            ]
+          }
 			  ]
       },
       {
         style:'detail',
         columns:[
-          {text: 'CIF : '+data.client.cif},
-          {text: 'No. Hp : '+data.client.noHP}
+          {
+            columns:[
+              {width:88,bold:true,text:'CIF'},{width:5,bold:true,text:': '},{width:'*',text:data.client.cif}
+            ]
+          },
+          {
+            columns:[
+              {width:88,bold:true,text:'No. Hp'},{width:5,bold:true,text:': '},{width:'*',text:data.client.noHP}
+            ]
+          }
 			  ]
       },'\n'  
     ];
@@ -95,7 +129,7 @@ export class ExportLaporanComponent implements OnInit {
     if (data.product.PERHIASAN.length != 0) {
       this.innerDoc['content'].push([
         {
-          style:'head',fontSize:8, alignment:'left',text:'Perhiasan'
+          style:'head', alignment:'left',text:'Perhiasan'
         }
       ]);
       for (let perhiasan of data.product.PERHIASAN) {
@@ -103,35 +137,53 @@ export class ExportLaporanComponent implements OnInit {
         this.innerDoc['content'].push([
           {
             style:'detail',
-            table: {
-              headerRows: 1,
-              widths: ['auto','auto','auto','auto','auto','auto','auto',80],
-              body: [
-                [
-                  {text:perhiasan.detail.code},
-                  {text:perhiasan.detail.vendor.name},
-                  {text:perhiasan.detail['product-jenis'].name},
-                  {text:perhiasan.detail['product-gold-color'].name},
-                  {text:perhiasan.kadar},
-                  {text:perhiasan.berat},
-                  {text:'Harga : Rp. '+new Intl.NumberFormat(['ban', 'id']).format(perhiasan.harga), noWrap: true}, 
-                  {fillColor: '#ede5ce',fontSize:3,alignment: 'center', text:'tanggal buyback'}
-                ],
-                [{colSpan: 6,text: ''},'','','','','',{colSpan: 2,fontSize:5,text: 'Diskon :'},''],
-                [{colSpan: 6,text: ''},'','','','','',{colSpan: 2,fontSize:5,text: 'Voucher :'},''],
-                [{colSpan: 6,text: ''},'','','','','',{colSpan: 2,fontSize:5,text: 'Harga :'},''],
-              ]
-            },
-            layout: 'noBorders'
-          }
+            columns:[
+              {
+                width:"*",
+                columns:[
+                  {width:85,text:perhiasan.detail.code},
+                  {width:42,text:perhiasan.detail.vendor.name},
+                  {width:41,text:perhiasan.detail['product-jenis'].name},
+                  {width:23,text:perhiasan.kadar},
+                  {width:30,text:perhiasan.berat}
+                ]
+              },
+              {
+                width:250,
+                columns:[
+                  {text:'Harga : Rp. '+new Intl.NumberFormat(['ban', 'id']).format(perhiasan.harga)},
+                  {
+                    table:{
+                      widths: [85],
+                      body:[
+                        [{fillColor: '#ede5ce',alignment: 'center',fontSize:1,text:"tanggal buyback"}]
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
         ]);   
       }
+      this.innerDoc['content'].push([
+        {
+          style:'detail',
+          fontSize: 5,
+          columns:[
+            {text:'Diskon :'},
+            {text:'Voucher :'},
+            {text:'Harga :'}
+          ]
+        },'\n'
+      ]);
     }
-
+    
+    // Berlian
     if (data.product.BERLIAN.length != 0) {
       this.innerDoc['content'].push([
         {
-          style:'head',fontSize:8, alignment:'left',text:'Berlian'
+          style:'head', alignment:'left',text:'Berlian'
         }
       ]);
       for (let berlian of data.product.BERLIAN) {
@@ -139,32 +191,109 @@ export class ExportLaporanComponent implements OnInit {
         this.innerDoc['content'].push([
           {
             style:'detail',
-            table: {
-              headerRows: 1,
-              widths: ['auto','auto','auto','auto','auto','auto','auto','auto','auto','auto',80],
-              body: [
-                [
-                  {text:berlian.detail.code},
-                  {text:berlian.detail.vendor.name},
-                  {text:berlian.detail['product-jenis'].name},
-                  {text:berlian.detail['product-gold-color'].name},
-                  {text:berlian.detail['product-diamond-color'].name},
-                  {text:berlian.detail['product-clarity'].name},
-                  {text:berlian.detail.carat},
-                  {text:berlian.kadar},
-                  {text:berlian.berat},
-                  {text:'Harga : Rp. '+new Intl.NumberFormat(['ban', 'id']).format(berlian.harga), noWrap: true}, 
-                  {fillColor: '#ede5ce',fontSize:3,alignment: 'center', text:'tanggal buyback'}
-                ],
-                [{colSpan: 9,text: ''},'','','','','','','','',{colSpan: 2,fontSize:5,text: 'Diskon :'},''],
-                [{colSpan: 9,text: ''},'','','','','','','','',{colSpan: 2,fontSize:5,text: 'Voucher :'},''],
-                [{colSpan: 9,text: ''},'','','','','','','','',{colSpan: 2,fontSize:5,text: 'Harga :'},''],
-              ]
-            },
-            layout: 'noBorders'
+            columns:[
+              {
+                width:"*",
+                columns:[
+                  {width:70,text:berlian.detail.code},
+                  {width:25,text:' '+berlian.detail.vendor.name},
+                  {width:35,text:' '+berlian.detail['product-diamond-color'].name},
+                  {width:25,text:' '+berlian.detail['product-cut'].name},
+                  {width:38,text:' '+berlian.detail['product-clarity'].name},
+                  // total berlian ,          
+                  {width:20,text:' '+berlian.kadar},
+                  {width:20,text:' '+berlian.berat},
+                  {width:40,text:'= '+berlian.detail.carat+' CT'},
+                ]
+              },
+              {
+                width:250,
+                columns:[
+                  {text:'Harga : Rp. '+new Intl.NumberFormat(['ban', 'id']).format(berlian.harga)},
+                  {
+                    table:{
+                      widths: [85],
+                      body:[
+                        [{fillColor: '#ede5ce',alignment: 'center',fontSize:1,text:"tanggal buyback"}]
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
           }
         ]);   
       }
+      this.innerDoc['content'].push([
+        {
+          style:'detail',
+          fontSize: 5,
+          columns:[
+            {text:'Diskon :'},
+            {text:'Voucher :'},
+            {text:'Harga :'}
+          ]
+        },'\n'
+      ]);
+    }
+
+    // Logam Mulia
+
+    if (data.product.LM.length != 0){
+      this.innerDoc['content'].push([
+        {
+          style:'head', alignment:'left',text:'Mulia'
+        }
+      ]);
+      for (let mulia of data.product.LM) {
+        //console.debug(data.product.PERHIASAN.length,product,"list product");  
+        this.innerDoc['content'].push([
+          {
+            style:'detail',
+            columns:[
+              {
+                width:"*",
+                columns:[
+                  {width:70,text:mulia.detail.code},
+                  {width:25,text:' '+mulia.detail.vendor.name},
+                  {width:35,text:' '+mulia.detail['product-diamond-color'].name},
+                  {width:25,text:' '+mulia.detail['product-cut'].name},
+                  {width:38,text:' '+mulia.detail['product-clarity'].name},
+                  // total berlian ,          
+                  {width:20,text:' '+mulia.kadar},
+                  {width:20,text:' '+mulia.berat},
+                  {width:40,text:'= '+mulia.detail.carat+' CT'},
+                ]
+              },
+              {
+                width:250,
+                columns:[
+                  {text:'Harga : Rp. '+new Intl.NumberFormat(['ban', 'id']).format(mulia.harga)},
+                  {
+                    table:{
+                      widths: [85],
+                      body:[
+                        [{fillColor: '#ede5ce',alignment: 'center',fontSize:1,text:"tanggal buyback"}]
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]);   
+      }
+      this.innerDoc['content'].push([
+        {
+          style:'detail',
+          fontSize: 5,
+          columns:[
+            {text:'Diskon :'},
+            {text:'Voucher :'},
+            {text:'Harga :'}
+          ]
+        },'\n'
+      ]);
     }
     
 
@@ -172,45 +301,61 @@ export class ExportLaporanComponent implements OnInit {
     this.innerDoc['content'].push([
       '\n',
       {
-        table: {
-          headerRows: 1,
-          widths: [180, '*'],
-          body: [
-            [{text:'* harga Termasuk pajak',style:'footer'}, 
-              {
-                fontSize: 7,
-							  rowSpan: 3,
-							  border: [true, true, true, true],
-                text:[
-                {text:'Total Harga :', bold:true},
-                ' Rp. '+hargaFormat,
-                {text:'\n Terbilang : ', bold:true},
-                this.terbilangService.terbilang(Number(data.jumlahTerima))
-                ]                
-              }
-            ],
-            [{text:'* bukti pembelian ini merupakan kuitansi pembelian emas',style:'footer'}],
-            [{text:'* harap bukti pembelian ini disimpan jangan sampai hilang/rusak',style:'footer'}],
-          ]
-        },
-        layout: 'noBorders'
+        fontSize: 7,
+        columns:[
+          {text:[
+            '* harga Termasuk pajak\n',
+            '* bukti pembelian ini merupakan kuitansi pembelian emas\n',
+            '* harap bukti pembelian ini disimpan jangan sampai hilang/rusak'],style:'footer'},
+          {
+            columns:[
+              {width:45,text:[
+                'Harga\n',
+                'Diskon\n',
+                'Voucher\n',
+                '\n',
+                'Jumlah Bayar \n',
+                'Terbilang'], bold:true},
+              {width:5,text:[
+                ':\n',
+                ':\n',
+                ':\n',
+                '\n',
+                ':\n',
+                ':'],bold:true},
+              {width:'*',text:[
+                ' Rp. '+hargaFormat+'\n',
+                ' Rp. '+hargaFormat+'\n',
+                ' Rp. '+hargaFormat+'\n',
+                '\n',
+                ' Rp. '+hargaFormat+'\n',
+                this.terbilangService.terbilang(Number(data.jumlahTerima))]}
+            ]
+            // text:[
+            // {text:'Total Harga :', bold:true},
+            // ' Rp. '+hargaFormat+'\n',
+            // {text:'Terbilang : ', bold:true},
+            // this.terbilangService.terbilang(Number(data.jumlahTerima))
+            // ]
+          }
+        ]
       }
     ]);
             
     // style
     this.innerDoc['styles']={
       detail: {
-        fontSize: 6,
+        fontSize: 10,
         bold: false,
         alignment: 'left',
       },
       head:{
-        fontSize: 12,
+        fontSize: 10,
         bold: true,
-        alignment: 'center',
+        alignment: 'left',
       },
       footer:{
-        fontSize: 6,
+        fontSize: 7,
         alignment: 'left',
       }
 
