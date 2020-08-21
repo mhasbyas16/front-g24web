@@ -47,8 +47,8 @@ export class MuliaComponent implements OnInit {
   selected: any[] = [];
 
   //category
-  vendorCategory = "product-category.code=05";
-  category = "?product-category.code=05";
+  vendorCategory = "product-category.code=c05";
+  category = "?_hash&product-category.code=c05";
 
    //params
    params = null;
@@ -223,7 +223,7 @@ export class MuliaComponent implements OnInit {
         console.debug(lm, 'akhir')
         console.debug(this.jumlahLM, 'enter')
         if ( this.jumlahLM > availableItem) {
-          this.toastrService.error("Jumlah Tidak Mencukupip", "Mulia");  
+          this.toastrService.error("Jumlah Tidak Mencukupi", "Mulia");  
           this.loadingDg = false;
         } else {
            maks = this.jumlahLM
@@ -233,7 +233,9 @@ export class MuliaComponent implements OnInit {
                 'code': lm[index].code,
                 'vendor' : lm[index].vendor.name,
                 'denom' : lm[index]['product-denom'].name,
-                'harga' : harga
+                'harga' : harga,
+               
+                'detail' : JSON.parse(atob(lm[index]._hash))
             })
             this.refresh(harga, "p")
             console.debug(this.cartList)
