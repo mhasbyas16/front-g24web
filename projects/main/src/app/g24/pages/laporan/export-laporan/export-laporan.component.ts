@@ -169,7 +169,7 @@ export class ExportLaporanComponent implements OnInit {
       this.innerDoc['content'].push([
         {
           style:'detail',
-          fontSize: 5,
+          fontSize: 7,
           columns:[
             {text:'Diskon :'},
             {text:'Voucher :'},
@@ -227,7 +227,7 @@ export class ExportLaporanComponent implements OnInit {
       this.innerDoc['content'].push([
         {
           style:'detail',
-          fontSize: 5,
+          fontSize: 7,
           columns:[
             {text:'Diskon :'},
             {text:'Voucher :'},
@@ -286,7 +286,7 @@ export class ExportLaporanComponent implements OnInit {
       this.innerDoc['content'].push([
         {
           style:'detail',
-          fontSize: 5,
+          fontSize: 7,
           columns:[
             {text:'Diskon :'},
             {text:'Voucher :'},
@@ -301,7 +301,7 @@ export class ExportLaporanComponent implements OnInit {
     this.innerDoc['content'].push([
       '\n',
       {
-        fontSize: 7,
+        fontSize: 9,
         columns:[
           {text:[
             '* harga Termasuk pajak\n',
@@ -345,12 +345,12 @@ export class ExportLaporanComponent implements OnInit {
     // style
     this.innerDoc['styles']={
       detail: {
-        fontSize: 10,
+        fontSize: 9,
         bold: false,
         alignment: 'left',
       },
       head:{
-        fontSize: 10,
+        fontSize: 9,
         bold: true,
         alignment: 'left',
       },
