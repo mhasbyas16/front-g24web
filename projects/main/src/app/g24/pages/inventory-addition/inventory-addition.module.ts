@@ -16,7 +16,18 @@ import { DetailPenerimaanPerhiasanComponent } from './penerimaan/detail-penerima
 import { DetailItemPenerimaanPerhiasanComponent } from './penerimaan/detail-penerimaan-perhiasan/detail-item-penerimaan-perhiasan/detail-item-penerimaan-perhiasan.component';
 
 @NgModule({
-  declarations: [InisiasiComponent, PemesananComponent, DetailInisiasiPerhiasanComponent, PenerimaanComponent, DetailInisiasiBerlianComponent, DetailInisiasiEmasComponent, DetailInisiasiSouvenirComponent, DetailPenerimaanPerhiasanComponent, DetailItemPenerimaanPerhiasanComponent],
+  declarations: 
+  [
+    InisiasiComponent,
+    PemesananComponent,
+    DetailInisiasiPerhiasanComponent,
+    PenerimaanComponent, 
+    DetailInisiasiBerlianComponent, 
+    DetailInisiasiEmasComponent, 
+    DetailInisiasiSouvenirComponent, 
+    DetailInisiasiPerhiasanComponent,
+    DetailPenerimaanPerhiasanComponent,
+    DetailItemPenerimaanPerhiasanComponent],
   imports: [
     CommonModule,
     InventoryAdditionRoutingModule,

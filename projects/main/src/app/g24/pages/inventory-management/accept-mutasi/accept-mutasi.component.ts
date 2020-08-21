@@ -13,7 +13,7 @@ import { ServerDateTimeService } from '../../../services/system/server-date-time
 @Component({
   selector: 'app-accept-mutasi',
   templateUrl: './accept-mutasi.component.html',
-  styleUrls: ['./accept-mutasi.component.css']
+  styleUrls: ['./accept-mutasi.component.scss']
 })
 
 @DContent(AcceptMutasiComponent.key)

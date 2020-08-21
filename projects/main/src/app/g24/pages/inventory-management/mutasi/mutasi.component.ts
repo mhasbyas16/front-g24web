@@ -30,7 +30,7 @@ import { ProductSeriesService } from '../../../services/product/product-series.s
 @Component({
   selector: 'app-mutasi',
   templateUrl: './mutasi.component.html',
-  styleUrls: ['./mutasi.component.css']
+  styleUrls: ['./mutasi.component.scss']
 })
 
 @DContent(MutasiComponent.key)
