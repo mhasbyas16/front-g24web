@@ -14,7 +14,7 @@ import { EMenuID } from '../../../../lib/enums/emenu-id.enum';
 import { VendorService } from '../../../../services/vendor.service';
 import { InisiasiService } from '../../../../services/stock/inisiasi.service';
 import { ProductCategoryService } from '../../../../services/product/product-category.service';
-import { DateService } from '../../../../services/system/date.service';
+import { ServerDateTimeService } from '../../../../services/system/server-date-time.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
 import { ProductJenisService } from '../../../../services/product/product-jenis.service';
@@ -258,7 +258,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
     private inisiasiService : InisiasiService,
     private productCatService : ProductCategoryService,
     // private logService : LogService,
-    private dateService : DateService,
+    private dateService : ServerDateTimeService,
 
     private toastr : ToastrService,
     private session : SessionService)
@@ -471,7 +471,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
       return false;
     }
 
-    if(model.init_no == "")
+    if(model.no_po == "")
     {
       return false;
     }
@@ -493,7 +493,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
     let date = sNow[0];
     let time = sNow[1].split(".")[0];
 
-    let no = this.input['init_no'];
+    let no = this.input['no_po'];
     console.log(no, "no")
 
     if(this.user.unit == null)
@@ -504,7 +504,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
 
     let def = 
     {
-      // init_no : "PO" + this.user.unit.code + "",//"IN0000512",
+      // no_po : "PO" + this.user.unit.code + "",//"IN0000512",
       create_date : date,
       create_time : time,
       create_by : this.user.username,

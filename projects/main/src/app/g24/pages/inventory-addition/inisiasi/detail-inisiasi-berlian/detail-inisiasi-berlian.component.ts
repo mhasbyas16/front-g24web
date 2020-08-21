@@ -505,7 +505,7 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
       return false;
     }
 
-    if(model.init_no == "")
+    if(model.no_po == "")
     {
       return false;
     }
@@ -528,12 +528,12 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
     let date = sNow[0];
     let time = sNow[1].split(".")[0];
 
-    let no = this.input['init_no'];
+    let no = this.input['no_po'];
     console.log(no, "no")
 
     let def = 
     {
-      init_no : this.input['init_no'],//"IN0000512",
+      no_po : this.input['no_po'],//"IN0000512",
       create_date : this.input['create_date'],
       create_time : time,
       create_by : this.user.username,

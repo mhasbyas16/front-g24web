@@ -24,7 +24,8 @@ export enum EMenuID {
     MUTASI              = '2001',
     MUTASI_TE           = '2002', // need to Confirm
     MUTASI_BAKU         = '2003', // need to Confirm
-    TERIMA              = '2004',
+    TERIMA_MUTASI       = '2004',
+    APP_MUTASI          = '2005',
     
     /**
      * PROCESSING

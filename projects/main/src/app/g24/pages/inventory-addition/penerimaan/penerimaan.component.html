@@ -1,1 +1,73 @@
-<p>penerimaan works!</p>
+
+<clr-tabs>
+    <clr-tab>
+        <button clrTabLink>Perhiasan</button>
+        <ng-template [clrIfActive]="input['product-category']?.code?.includes('00')" (clrIfActiveChange)="input['product-category']">
+            <clr-tab-content>
+                <detail-penerimaan-perhiasan>
+    
+                </detail-penerimaan-perhiasan>
+            </clr-tab-content>
+        </ng-template>
+    </clr-tab>
+    <!-- <clr-tab>
+        <button clrTabLink>Permata</button>
+        <ng-template [clrIfActive]="input['product-category']?.code?.includes('01')" (clrIfActiveChange)="input['product-category']">
+            <clr-tab-content>
+                <detail-inisiasi-berlian>
+
+                </detail-inisiasi-berlian>
+            </clr-tab-content>
+        </ng-template>
+    </clr-tab> -->
+    <clr-tab>
+        <button clrTabLink>Souvenir</button>
+        <ng-template [clrIfActive]="input['product-category']?.code?.includes('02')" (clrIfActiveChange)="input['product-category']">
+            <clr-tab-content>
+                <detail-inisiasi-souvenir>
+
+                </detail-inisiasi-souvenir>
+            </clr-tab-content>
+        </ng-template>
+    </clr-tab>
+    <!-- <clr-tab>
+        <button clrTabLink>Adiratna</button>
+        <ng-template [clrIfActive]="input['product-category']?.code?.includes('03')" (clrIfActiveChange)="input['product-category']">
+            <clr-tab-content>
+                <-- <detail-inisiasi-adiratna>
+
+                </detail-inisiasi-adiratna --!>
+            </clr-tab-content>
+        </ng-template>
+    </clr-tab> -->
+    <!-- <clr-tab>
+        <button clrTabLink>Gift</button>
+        <ng-template [clrIfActive]="input['product-category']?.code?.includes('04')" (clrIfActiveChange)="input['product-category']">
+            <clr-tab-content>
+                <-- <detail-inisiasi-gift>
+
+                </detail-inisiasi-gift> --!>
+            </clr-tab-content>
+        </ng-template>
+    </clr-tab> -->
+    <!-- <clr-tab>
+        <button clrTabLink>Emas Batangan</button>
+        <ng-template [clrIfActive]="input['product-category']?.code?.includes('05')" (clrIfActiveChange)="input['product-category']">
+            <clr-tab-content>
+                <detail-inisiasi-emas>
+
+                </detail-inisiasi-emas>
+            </clr-tab-content>
+        </ng-template>
+    </clr-tab> -->
+    <!-- <clr-tab>
+        <button clrTabLink>Dinar</button>
+        <ng-template [clrIfActive]="input['product-category']?.code?.includes('06')" (clrIfActiveChange)="input['product-category']">
+            <clr-tab-content>
+                <-- <detail-inisiasi-dinar>
+
+                </detail-inisiasi-dinar> --!>
+            </clr-tab-content>
+        </ng-template>
+    </clr-tab> -->
+</clr-tabs>

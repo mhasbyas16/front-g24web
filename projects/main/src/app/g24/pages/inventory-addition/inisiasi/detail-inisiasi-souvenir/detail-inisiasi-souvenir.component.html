@@ -11,7 +11,7 @@
                         <div class="clr-form-control">
                             <label class="clr-control-label">Nomor Inisiasi</label>
                             <div class="clr-control-container">
-                                <input readonly [(ngModel)]="input.init_no" #init_no class="clr-input" type="text" name="init_no" required placeholder="IN00005120000001" />
+                                <input readonly [(ngModel)]="input.no_po" #no_po class="clr-input" type="text" name="no_po" required placeholder="IN00005120000001" />
                                 <span class="clr-subtext">Nomor Inisiasi untuk dicari</span>
                             </div>
                         </div>
@@ -82,7 +82,7 @@
                         <div class="clr-form-control">
                             <label class="clr-control-label">Harga Baku</label>
                             <div class="clr-control-container">
-                                <input min=0 [(ngModel)]="input.harga_baku" (ngModelChange)="hitungHarga()" (change)="hitungHarga()" class="clr-input" type="number" name="harga_baku" />
+                                <input min=0 [(ngModel)]="input.harga_baku" (ngModelChange)="onHargaBakuChanged()" class="clr-input" type="number" name="harga_baku" />
                             </div>
                         </div>
                     </div>
@@ -142,7 +142,19 @@
                                 Pieces
                             </clr-dg-column>
                             <clr-dg-column>
-                                Ongkos
+                                Berat
+                            </clr-dg-column>
+                            <clr-dg-column>
+                                Ongkos per Piece
+                            </clr-dg-column>
+                            <clr-dg-column>
+                                Total Ongkos
+                            </clr-dg-column>
+                            <clr-dg-column>
+                                Harga per Piece
+                            </clr-dg-column>
+                            <clr-dg-column>
+                                Total Harga
                             </clr-dg-column>
                             <clr-dg-column>
                                 Pajak
@@ -154,7 +166,11 @@
                                 <clr-dg-cell>{{GetDisplayValue(data['product-denom'])}}</clr-dg-cell>
                                 <clr-dg-cell>{{GetDisplayValue(data['product-series'])}}</clr-dg-cell>
                                 <clr-dg-cell>{{data?.pieces}}</clr-dg-cell>
-                                <clr-dg-cell>{{data?.ongkos}}</clr-dg-cell>
+                                <clr-dg-cell>{{data?.total_berat}}</clr-dg-cell>
+                                <clr-dg-cell>{{data?.ongkos_pieces}}</clr-dg-cell>
+                                <clr-dg-cell>{{data?.total_ongkos}}</clr-dg-cell>
+                                <clr-dg-cell>{{data?.harga_piece}}</clr-dg-cell>
+                                <clr-dg-cell>{{data?.total_harga}}</clr-dg-cell>
                                 <!-- <clr-dg-cell>{{data.gram_tukar}}</clr-dg-cell><input readonly type="number" class="clr-input" [ngModel]="input.items[i]['pajak'] = 0" [ngModelOptions]="{standalone:true}"> -->
                                 <clr-dg-cell>{{data?.pajak | number : '2.'}} </clr-dg-cell>
                                 <!-- <clr-dg-cell>
@@ -238,7 +254,7 @@
             <div class="clr-col-6">
                 <clr-select-container>
                     <label class="clr-control-label" style="padding-left: 10px">Denom</label>
-                    <select [(ngModel)]="Selected['product-denom']" #denom clrSelect name="denom">
+                    <select [(ngModel)]="Selected['product-denom']" (ngModelChange)="onDenomChanged()" #denom clrSelect name="denom">
                         <ng-container *ngFor="let denom of denoms">
                             <option [ngValue]="denom">{{denom?.name}}</option>
                         </ng-container>
@@ -261,7 +277,15 @@
                 <div class="clr-form-control">
                     <label class="clr-control-label" style="padding-left: 10px">Pieces</label>
                     <div class="clr-control-container">
-                        <input [(ngModel)]="Selected['pieces']" min="0"  class="clr-input" type="number" name="pieces" placeholder="5" />
+                        <input [(ngModel)]="Selected['pieces']" (ngModelChange)="onPiecesChanged()" min="0"  class="clr-input" type="number" name="pieces" placeholder="5" />
+                    </div>
+                </div>
+            </div>
+            <div class="clr-col-6">
+                <div class="clr-form-control">
+                    <label class="clr-control-label" style="padding-left: 10px">Berat</label>
+                    <div class="clr-control-container">
+                        <input readonly [(ngModel)]="Selected['total_berat']" min="0"  class="clr-input" type="number" name="pieces" placeholder="5" />
                     </div>
                 </div>
             </div>
@@ -269,17 +293,44 @@
         <div class="clr-row">
             <div class="clr-col-6">
                 <div class="clr-form-control">
-                    <label class="clr-control-label" style="padding-left: 10px">Ongkos</label>
+                    <label class="clr-control-label" style="padding-left: 10px">Ongkos/Piece(Rp.)</label>
                     <div class="clr-control-container">
-                        <input [(ngModel)]="Selected['ongkos']" (ngModelChange)="hitungPajak(selected)" min="0" class="clr-input" type="number" name="ongkos" />
+                        <input [(ngModel)]="Selected['ongkos_pieces']" (ngModelChange)="onOngkosChanged()" min="0" class="clr-input" type="number" name="ongkos" />
                     </div>
                 </div>
             </div>
             <div class="clr-col-6">
                 <div class="clr-form-control">
+                    <label class="clr-control-label" style="padding-left: 10px">Total Ongkos(Rp.)</label>
+                    <div class="clr-control-container">
+                        <input readonly [ngModel]="Selected['total_ongkos']" min="0" class="clr-input" type="number" name="pajak" placeholder="Rp. 5000.00" />
+                    </div>
+                </div>
+            </div>
+        </div><div class="clr-row">
+            <div class="clr-col-6">
+                <div class="clr-form-control">
+                    <label class="clr-control-label" style="padding-left: 10px">Harga/Piece(Rp.)</label>
+                    <div class="clr-control-container">
+                        <input readonly [(ngModel)]="Selected['harga_piece']" (ngModelChange)="onHargaPieceChanged()" min="0" class="clr-input" type="number" name="ongkos" placeholder="Rp. 5000.00" />
+                    </div>
+                </div>
+            </div>
+            <div class="clr-col-6">
+                <div class="clr-form-control">
+                    <label class="clr-control-label" style="padding-left: 10px">Total Harga(Rp.)</label>
+                    <div class="clr-control-container">
+                        <input readonly [ngModel]="Selected['total_harga']" min="0" class="clr-input" type="number" name="pajak" placeholder="Rp. 5000.00" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clr-row">
+            <div class="clr-col-6 clr-offset-sm-6">
+                <div class="clr-form-control">
                     <label class="clr-control-label" style="padding-left: 10px">Pajak</label>
                     <div class="clr-control-container">
-                        <input readonly [ngModel]="Selected['pajak']" min="0" class="clr-input" type="number" name="pajak" placeholder="5000.00" />
+                        <input readonly [ngModel]="Selected['pajak']" min="0" class="clr-input" type="number" name="pajak" placeholder="Rp. 5000.00" />
                     </div>
                 </div>
             </div>

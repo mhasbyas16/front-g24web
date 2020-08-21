@@ -12,8 +12,8 @@ import { VendorService } from '../../../services/vendor.service';
 import { ProductDenomService } from '../../../services/product/product-denom.service';
 import { ProductClarityService } from '../../../services/product/product-clarity.service';
 import { ProductCategoryService } from '../../../services/product/product-category.service';
-import { DateService } from '../../../services/system/date.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
+import { ServerDateTimeService } from '../../../services/system/server-date-time.service';
 
 @Component({
   selector: 'app-inisiasi',
@@ -90,7 +90,7 @@ export class InisiasiComponent extends BasePersistentFields implements OnInit, A
     // private shapeService : productsha,
     private clarityService : ProductClarityService,
     private productCatService : ProductCategoryService,
-    private dateService : DateService,
+    private dateService : ServerDateTimeService,
 
     private session : SessionService)
   {

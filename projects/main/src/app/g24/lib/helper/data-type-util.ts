@@ -49,6 +49,11 @@ export class DataTypeUtil {
                 continue;
             }
 
+            if(source.hasOwnProperty("__format")) // untuk format tidak perlu di encode
+            {
+                continue;
+            }
+
             if(typeof source[key] === 'string' || typeof source[key] === 'number' ||
                 source[key] == null || source[key] == "null")
                 continue;

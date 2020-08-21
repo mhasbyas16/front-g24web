@@ -2,7 +2,6 @@ import { Component, OnInit, ComponentFactoryResolver, ViewChild, Input, ElementR
 import { NgForm, Form, FormGroup, FormBuilder } from '@angular/forms';
 
 import { isArray } from 'util';
-import { ClarityModule } from '@clr/angular';
 import { EventEmitter } from 'protractor';
 import { ToastrService } from 'ngx-toastr';
 import { InitiationType } from '../../../../lib/enums/initiation-type';
@@ -18,7 +17,7 @@ import { ProductCategoryService } from '../../../../services/product/product-cat
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
 import { BasePersistentFields } from '../../../../lib/base/base-persistent-fields';
-
+ 
 @Component({
   selector: 'detail-inisiasi-souvenir',
   templateUrl: './detail-inisiasi-souvenir.component.html',
@@ -85,7 +84,7 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
     return {
       nomor_nota : null, tgl_inisiasi : new Date().toISOString().split("T")[0],  harga_baku : 0, pajak : 0, 
       'product-category' : null, vendor : null, tipe_bayar : null,
-      total_berat : 0, total_piece : 0, total_baku_tukar : 0, total_gram_tukar : 0,
+      total_berat : 0, total_piece : 0,
       total_ongkos : 0, total_pajak : 0, total_harga : 0,
       items : []
     };
@@ -94,8 +93,11 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
   defaultItem() :any
   {
     return {
-      sku : null, 'product-purity' : null, 'product-jenis' : null, 'product-gold-color' : null, 
-      berat : 0, baku_tukar : 0, gram_tukar : 0, ongkos : 0, pajak : 0 }
+      sku : null, 'product-series' : null, 'product-denom' : null, 
+      total_berat : 0,
+      pieces : 0, ongkos_pieces : 0, total_ongkos : 0, pajak : 0,
+      harga_piece : 0, total_harga : 0
+    }
   }
 
   InitiationType = Object.values(InitiationType);
@@ -118,6 +120,22 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
 
     switch(key)
     {
+      case 'ongkos_pieces':
+        name = "Ongkos per Piece";
+        break;
+
+      case 'ongkos':
+        name = "Ongkos";
+        break;
+
+      case 'product-series':
+        name = "Series/Jenis";
+        break;
+
+      case 'harga_piece':
+        name = "Harga per Piece";
+        break;
+
       case 'total_ongkos':
         name = "Total Ongkos";
         break;
@@ -456,7 +474,7 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
       return false;
     }
 
-    if(model.init_no == "")
+    if(model.no_po == "")
     {
       return false;
     }
@@ -473,13 +491,13 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
       return;
     }
 
-
     let now : Date = new Date;
     let sNow = now.toISOString().split("T");
     let date = sNow[0];
+    let date_split = date.split("-");
     let time = sNow[1].split(".")[0];
 
-    let no = this.input['init_no'];
+    let no = this.input['no_po'];
     console.log(no, "no")
 
     if(this.user.unit == null)
@@ -488,9 +506,15 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
       return;
     }
 
+    let count = await this.inisiasiService.count("").toPromise();
+    let countString : string = count.count.toString();
+    let countPadded : string = countString.padStart(5 - countString.length, '0');
+
+    let PO = "PO" + this.user.unit.code + date_split[0].substring(1, 3) + date_split[1] + countPadded;
+
     let def = 
     {
-      // init_no : "PO" + this.user.unit.code + "",//"IN0000512",
+      no_po : PO,//"IN0000512",
       create_date : this.input['create_date'],
       create_time : time,
       create_by : this.user.username,
@@ -501,12 +525,17 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
       // vendor : null,
       // 'product-category' : null,
     };
+    Object.assign(def, this.input);
     let init = DataTypeUtil.Encode(def);
 
     this.inisiasiService.add(init).subscribe(output => {
-      if(output != false)
+      if(output == false)
       {
         this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + this.inisiasiService.message);
+        return;
+      } else {
+        this.toastr.success("Inisiasi Berhasil. Harap hubungi Kepala Departemen untuk melakukan Approval. No. PO : " + PO, "Info", {timeOut : 10000, tapToDismiss : false});
+        this.input = this.defaultInput();
       }
     });
     // console.log(output);
@@ -610,9 +639,7 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
 
   onAddItem()
   {
-    let tempItem = {
-      sku : null, 'product-purity' : null, 'product-jenis' : null, 'product-gold-color' : null, 
-      berat : 0, baku_tukar : 0, gram_tukar : 0, ongkos : 0, pajak : 0};
+    let tempItem = this.defaultItem();
 
     
     Object.assign(tempItem, this.selected);
@@ -651,11 +678,14 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
   getBeratFromItems()
   {
     let berat = 0.0;
+    let item = {};
     for(let i = 0; i < this.input.items.length; i++)
     {
-      if(this.input.items[i].berat == null || this.input.items[i].berat == "null")
+      if(this.input.items[i]['product-denom'] == null || this.input.items[i]['product-denom'] == "null")
         continue;
-      berat += parseFloat(this.input.items[i].berat);
+
+      item = this.input.items[i];
+      berat += parseFloat(item['product-denom'].value) * parseInt(item['pieces']);
     }
     this.input['total_berat'] = berat;
     return berat;
@@ -708,9 +738,9 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
-      if(this.input.items[i]?.ongkos == null || this.input.items[i]?.ongkos == "null")
+      if(this.input.items[i]?.ongkos_pieces == null || this.input.items[i]?.ongkos_pieces == "null")
         continue;
-        value += parseInt(this.input.items[i].ongkos);
+        value += parseInt(this.input.items[i].ongkos_pieces);
     }
 
     this.input['total_ongkos'] = value;
@@ -781,33 +811,43 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
     {
       let item = this.input.items[i];
 
-      this.hitungPajak(item);
+      this.countItemPajak(item);
       console.log(item)
     }
     
-    this.hitungPajak();
+    this.countItemPajak();
   }
 
-  hitungPajak(item? : any)
+  pajakCounted : boolean = false;
+  countItemPajak(item? : any)
   {
-    item = item == null ? this.selected : item;
-    let ongkos : number = item.ongkos;
+    this.pajakCounted = false;
+    if(!item)
+      item = this.Selected;
+      
     let hpajak : number= this.input?.pajak;
-    let berat : number= item.berat;
+    let ongkos : number = this.input?.ongkos_pieces;
 
-    if(ongkos == null || hpajak == null || berat == null) return 0;
+    if(hpajak == null) return 0;
     
-    let persenPajak = 2.00;
+    let persenPajak = 2.00; // harusnya dari DB
 
-    let pajakItem : number = (ongkos/1000) * berat * hpajak * persenPajak / 100; 
+    let pajakItem : number = 0;
+    
+    if(this.input.tipe_bayar == 'U')
+      pajakItem = (100 / (100+persenPajak) * item.total_harga * persenPajak/100);
+    else
+      pajakItem = ongkos * persenPajak/100;
+
+    if(this.input.tipe_bayar == 'M' && item.totalHarga != 0)
+      this.pajakCounted = true;
+    
+    if(this.input.tipe_bayar == 'M' && (ongkos != 0 || ongkos != null))
+      this.pajakCounted = true;
+    
     item.pajak = Math.trunc(pajakItem);
-    console.log(pajakItem)
+    console.log(pajakItem);
     return this.selected.pajak;
-  }
-
-  hitungHarga()
-  {
-
   }
 
   ValidateField(object : any, key : string, validationMethod?)
@@ -822,4 +862,92 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
 
     return true;
   }
+
+  onPiecesChanged()
+  {
+    this.countItemTotalOngkos();
+    this.countItemTotalBerat();
+    this.countItemHargaPiece();
+    this.countItemTotalHarga();
+  }
+
+  onDenomChanged()
+  {
+    this.countItemHargaPiece();
+    this.countItemTotalBerat();
+  }
+
+  onOngkosChanged()
+  {
+    this.countItemTotalOngkos();
+    this.countItemHargaPiece();
+    this.countItemTotalHarga();
+  }
+
+  onHargaBakuChanged()
+  {
+    for(let item in this.input['items'])
+    {
+      this.countItemTotalBerat();
+      this.countItemTotalOngkos();
+      this.countItemHargaPiece();
+      this.countItemTotalHarga();
+      this.countItemPajak();
+    }
+  }
+
+  onHargaPieceChanged()
+  {
+    this.countItemTotalHarga();
+  }
+  
+  countItemTotalOngkos(item? : any)
+  {
+    if(!item)
+      item = this.Selected;
+
+    let pieces = item['pieces'];
+    let ongkos_pieces = item['ongkos_pieces'];
+  
+    item['total_ongkos'] = parseFloat(pieces) * parseFloat(ongkos_pieces);
+  }
+
+  countItemTotalBerat(item? : any)
+  {
+    if(!item)
+      item = this.Selected;
+    let pieces = item['pieces'];
+    let denom = item['product-denom']?.value;
+
+    item['total_berat'] = parseFloat(pieces) * parseFloat(denom);
+  }
+
+  countItemHargaPiece(item? : any)
+  {
+    if(!item)
+      item = this.Selected;
+
+    let harga_baku = this.input['harga_baku'];
+    let denom = item['product-denom']?.value;
+    let ongkos_pieces = item['ongkos_pieces'];
+    let persenPajak = 2;
+
+    item['harga_piece'] = ( (parseFloat(denom) * parseFloat(harga_baku)) +  parseFloat(ongkos_pieces) ) * ( (100 + persenPajak)/100 );
+    console.log(item, 'item harga piece');
+  }
+
+  countItemTotalHarga(item? : any)
+  {
+    if(!item)
+      item = this.Selected;
+
+    let pieces = item['pieces'];
+    let harga = item['harga_piece'];
+
+    item['total_harga'] = parseInt(pieces) * parseInt(harga);
+    console.log(item, 'item harga total', pieces, harga);
+    this.countItemPajak(item);
+  }
+
+
 }

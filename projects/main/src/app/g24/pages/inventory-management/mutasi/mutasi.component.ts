@@ -4,23 +4,28 @@ import { Key } from 'protractor';
 import { environment } from 'src/environments/environment';
 import { Observable, config } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+
+
+//ALERT TOASTR
+import { ToastrService } from 'ngx-toastr';
 import { DContent } from '../../../decorators/content/pages';
 import { EMenuID } from '../../../lib/enums/emenu-id.enum';
 import { ModalErrorType } from '../../../lib/enums/modal-error-type.enum';
-import { ProductService } from '../../../services/product/product.service';
-import { MutasiService } from '../../../services/stock/mutasi.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
+import { MutasiService } from '../../../services/stock/mutasi.service';
+import { ProductService } from '../../../services/product/product.service';
+import { ProductCategoryService } from '../../../services/product/product-category.service';
+import { VendorService } from '../../../services/vendor.service';
+import { DataTypeUtil } from '../../../lib/helper/data-type-util';
+import { FlagMutasi } from '../../../lib/enum/flag-mutasi';
 import { UnitService } from '../../../services/system/unit.service';
 import { ProductGoldColorService } from '../../../services/product/product-gold-color.service';
-import { ProductCategoryService } from '../../../services/product/product-category.service';
 import { ProductPurityService } from '../../../services/product/product-purity.service';
-import { ProductJenisService } from '../../../services/product/product-jenis.service';
 import { ProductDenomService } from '../../../services/product/product-denom.service';
+import { ProductJenisService } from '../../../services/product/product-jenis.service';
 import { ProductClarityService } from '../../../services/product/product-clarity.service';
+import { ServerDateTimeService } from '../../../services/system/server-date-time.service';
 import { ProductSeriesService } from '../../../services/product/product-series.service';
-import { DataTypeUtil } from '../../../lib/helper/data-type-util';
-import { Flag } from '../../../lib/enum/flag';
-import { DateService } from '../../../services/system/date.service';
 
 @Component({
   selector: 'app-mutasi',
@@ -44,8 +49,8 @@ static key = EMenuID.MUTASI;
   @ViewChild('Dinar', {static: false}) dinarInput : TemplateRef<any>;
 
 
-  selected : any = {};
-  selected_detail : any = {};
+  selected : any[] = [];
+  selected_detail : any[] = [];
   data_view : any = {};
 
 
@@ -61,11 +66,12 @@ errorType = "";
 ErrorType = ModalErrorType;
 searchModel : any = {};       
 datas : any[] = [];
-itemsinmutasi :any[] = [];
+itemsinmutasi : any = [];
 items : any[] = [];
 details : any[] = [];
 Object = Object;
 itemsview : any[] = [];
+ItemsDataProduct : any[] = [];
 
 //ASSET
 flag : any[]= [];             
@@ -80,7 +86,7 @@ denoms : any[] = [];
 input : any = {};   
 addinput : any = {};
 edit : any = {};          
-Flag = Object.values(Flag);
+Flag = Object.values(FlagMutasi);
 username = "";                
 mongoMutasi : any[] = [];
 kadars : any[] = [];          
@@ -89,6 +95,14 @@ jeniss : any[] = [];
 error : boolean = false;   
 jml : number = 0;
 berat : number = 0;
+dorong : any[] = [];
+
+pickpush : any[] = [];
+
+itemsdata : any[] = [];
+itempick  : number = 0;
+datareduce : any[] = [];
+vendor : any[] = [];
 
 //CLARITY
 modalshow = false;            
@@ -98,30 +112,24 @@ modalview : boolean = false;
 formInput : TemplateRef<any> = null;
 params = "?";
 
-date_time : Date;
-date_now : string;
-time : string;
+date_time : String;
+timezone : String;
+date_now : String;
+time : String;
 
-constructor(
-  private UnitService : UnitService, 
-  private sessionservice : SessionService, 
-  private mutasiservice : MutasiService, 
-  private productservice : ProductService,
-  private warnaservice : ProductGoldColorService, 
+constructor(private UnitService : UnitService, private sessionservice : SessionService, 
+  private mutasiservice : MutasiService, private productservice : ProductService,
+  private warnaservice : ProductGoldColorService, private kadarservice : ProductPurityService,
+  private jenisservice : ProductJenisService, private denomservice : ProductDenomService,
   private productkategoryservice : ProductCategoryService,
-  private kadarservice : ProductPurityService,
-  private jenisservice : ProductJenisService,
-  private denomservice : ProductDenomService,
-  private klarityservice : ProductClarityService,
-  private seriesservice : ProductSeriesService,
-  private datetimeservice : DateService,
-  ) { }
+  private klarityservice : ProductClarityService, private datetimeservice : ServerDateTimeService,
+  private seriesservice : ProductSeriesService, private toastr : ToastrService,
+  private vendorservice : VendorService) { }
 
 
   ngOnInit(): void {
 //    var waktu = (new Date()).getTimezoneOffset() * 60000;
 //    //offset in milliseconds
-      let data = "";
   	   
 //      let tgl = this.date_time.split("T");
 //      this.date_now = tgl[0];
@@ -129,17 +137,19 @@ constructor(
 	  
 	  //DATE & TIME
 	
-	  this.datetimeservice.task(data).subscribe(output=>{
+    let params = "?";
+	 
+
+
+	this.datetimeservice.task(params).subscribe(output=>{
 	  	if(output!=false){
-	  		this.date_time = new Date(output);
-	  		let tgl = this.date_time.toISOString().split("T");
+	  		this.timezone = output;
+	  		let tgl = this.timezone.split("T");
       		this.date_now = tgl[0];
       		this.time = tgl[1].split("Z")[0];
 	  		console.log(this.time);
   		}
   	})
-	
-    let params = "?";
 
     for(let key in this.searchModel){
       params += key+"="+this.searchModel[key]+"&";
@@ -201,7 +211,8 @@ constructor(
       if(output==false){
         if(this.mutasiservice.message() != ""){
           console.log(output);
-          this.modal = true;
+	  this.toastr.info('Data tidak ditemukan','Informasi');
+//          this.modal = true;
           this.input = {};
           this.listdt = [];
           return
@@ -214,14 +225,26 @@ constructor(
   }
 
   onAdd(){    
+    this.itemsdata = [];
+    this.itempick = 0;
+    this.searchModel = {};
+    this.addinput['keterangan']="";
     let params ="?";
     this.onChange();
     this.modalshow=true;
+
     this.productkategoryservice.list(params).subscribe(output=>{
       if(output!=false){
         this.products2 = output;
       }
     })
+
+    this.vendorservice.list(params).subscribe(output=>{
+     if(output!=false){
+       this.vendor = output;
+     }
+   })
+
   }
 
   reset(){
@@ -232,6 +255,8 @@ constructor(
 
   onChange(){
      
+  this.itemsinmutasi = [];
+  this.products = [];
      if(this.searchModel['product-category']==null)return;
 
     switch(this.searchModel['product-category'].code)
@@ -343,24 +368,27 @@ constructor(
   Add(){
 
     let tujuan = this.addinput['unit_tujuan'];
+	  let ktr = this.addinput['keterangan'];
+    let vdr = this.addinput['vndr'];
 
-    for(let index = 0; index < this.itemsinmutasi.length; index++){
-      let value = 0;
+    let value = 0;
+    for(let index = 0; index < this.itemsdata.length; index++){
 
-      if(this.itemsinmutasi[index]['berat'] == undefined)
+      if(this.itemsdata[index]['berat'] == undefined)
       {
-        value = this.itemsinmutasi[index]['product-denom'].value;
+        value = this.itemsdata[index]['product-denom'].value;
         console.log(value);
       }else {
-        value = parseFloat(this.itemsinmutasi[index]['berat']);
+        value = parseFloat(this.itemsdata[index]['berat']);
         console.log(value, 'berat');
       }
       this.berat = this.berat + value;
     }
+      // this.berat = this.berat + value;
 
-     console.log(this.berat,"diluar for");
-    console.log(this.itemsinmutasi.length);
-    let jml = this.itemsinmutasi.length;
+     console.log(this.berat.toString(),"total berat");
+    console.log(this.itemsdata.length);
+    let jml = this.itemsdata.length;
 
 
     let data = {
@@ -371,6 +399,7 @@ constructor(
       unit_tujuan : tujuan,
       jumlah_item : jml.toString(),
       total_berat : this.berat.toString(),
+	  keterangan  : ktr,
       flag : "submit",
       approve_by : null,
       approve_date : null,
@@ -383,8 +412,8 @@ constructor(
       
     }
 
-    for(let index =0; index < this.itemsinmutasi.length; index++){
-      data.items.push(this.itemsinmutasi[index]);
+    for(let index =0; index < this.itemsdata.length; index++){
+      data.items.push(this.itemsdata[index]);
     }
 
     console.log(data);
@@ -392,14 +421,17 @@ constructor(
     let cfg = DataTypeUtil.Encode(data);
     console.log(cfg);
 
-    if(this.itemsinmutasi.length < 0 || tujuan == null || tujuan == ""){
-      alert("Field Unit Tujuan belum dipilih atau data barang yang dimutasi belum di pilih");
+    if(this.itemsdata.length < 0 || tujuan == null || tujuan == "" || ktr == "" || ktr == null){
+      this.toastr.warning("Field Unit Tujuan belum dipilih atau data barang yang dimutasi belum di tambah. Dan cek kembali field keterangan","Peringatan");
+      // this.itemsdata = [];
+      this.berat = 0;
       return;
     }
     this.mutasiservice.add(cfg).subscribe(output => {
       if(output!=false){
         this.modalshow = false;
         this.products = [];
+        this.listdt = [];
         this.addinput = {};
         this.searchModel = {};
         this.itemsinmutasi = [];
@@ -416,6 +448,10 @@ constructor(
     for (let key in this.searchModel) {
       if(this.searchModel[key] == ""||this.searchModel[key] == null||this.searchModel[key] == "null")continue;
       switch(key){
+        case "vndr":
+          params += "vendor.code="+this.searchModel[key].code+"&";
+          break;
+
         case "product-category":
           params += "product-category.code="+this.searchModel[key].code+"&";
           break;
@@ -466,45 +502,70 @@ constructor(
     this.productservice.list(params).subscribe(output => {
       if(output != false){
         this.products = output;
+        this.searchModel = {};
+        this.formInput = null;
       }else{
-        this.modal = true;
+        // this.modal = true;
+        this.toastr.info("Data Produk tidak ditemukan","Informasi");
       }
     })
   }
 
+pickitem(){
+      this.selected = [];
+      if(this.itempick > 0 && this.itempick <= this.products.length){
+      for(let y = 0; y < this.itempick; y++){
+        this.selected.push(this.products[y]);
+        }
+      }else{
+        this.toastr.info("Item yang dipilih tidak sesuai");
+        this.itempick = 0;
+      }
+  }
+
+//--------------------------------------------------------------------------------------------
 
 Addmutasi(){
-  //this.modal_pick = true;
-  this.selected_detail = {};
-  if(this.selected == "" || this.selected == null || this.selected == "null")return;
+  // this.selected_detail = [];
+  if(this.selected == [] || this.selected == null)return;
   console.log(this.selected);
-  let safe = JSON.stringify(this.selected);
+  // let safe = JSON.stringify(this.selected);
   
-  let berat = "";
-  for(let o = 0; o < this.itemsinmutasi.length; o++){
-    if(this.selected._id==this.itemsinmutasi[o]._id){
-      alert("Items sudah ada");
-      console.log(this.itemsinmutasi[o]);
-      return;
-    }
-  }
+//   for(let o = 0; o < this.itemsinmutasi.length; o++){
+//     if(this.selected[o]._id==this.itemsinmutasi._id){
+//       alert("Items sudah ada");
+// //      console.log(this.ItemsDataProduct[o]);
+//       return;
+//     }
+//   }
+
+   
   this.itemsinmutasi.push(this.selected);
-  console.log(this.itemsinmutasi.length);
-  console.log(this.itemsinmutasi);
-
-}
-
-deleteData(){
-  const array = this.itemsinmutasi;
-  const index = array.indexOf(this.selected_detail);
-  if(index > -1){
-    array.splice(index,1);
+  for(let r = 0; r < this.itemsinmutasi.length; r++){
+    this.dorong[r] = this.itemsinmutasi[r];
+    this.itemsdata = this.dorong[r];
+    // if(this.selected[r]._id  == this.itemsdata[r]._id){
+    //   alert("data sudah ada");
+    // }
   }
-  console.log(array);
+
+    // function reducer(acc,cur){
+    //   return{...acc,[cur._id]:cur};
+    // }
+    // this.datareduce = this.ayoo.reduce(reducer,{});
+    // console.log(this.datareduce);
+
 }
+
+
+
+
+//-----------------------------------------------------------------------------------------
+
 
 refresh(){
   this.itemsinmutasi = [];
+  this.itemsdata = [];
   this.products = [];
 }
 
@@ -587,6 +648,55 @@ GetDisplayName(key : string) : string
         name = "Produk Cut";
         break;
 
+
+      case 'sku':
+        name = "SKU";
+        break;
+			
+	  case 'hppberlian':
+		name = "Hpp Berlian";
+		break;
+			
+	  case 'ongkospembuatan':
+		name = "Ongkos Pembuatan";
+		break;
+			
+	  case 'marginberlian':
+		name = "Margin Berlian";
+		break;
+			
+	  case 'hppbatu':
+		name = "Hpp Batu";
+		break;
+			
+	  case 'marginbatu':
+		name = "Margin Batu";
+		break;
+
+    case 'weight':
+    name = "Weight";
+    break;
+
+    case 'unit':
+    name = "Unit";
+    break;
+
+    case 'tipestock':
+    name = "Tipe Stock";
+    break;
+
+    case 'ongkos_pieces':
+    name = "Ongkos Pieces";
+    break;
+
+    case 'count':
+    name = "Count";
+    break;
+
+    case 'marginbatu':
+    name = "Margin Batu";
+    break;
+
       default:
         name += " - " + key;
 
@@ -613,12 +723,29 @@ GetDisplayName(key : string) : string
         return false;
       break;
 
-      case "unit":
+      case "booking_id":
         return false;
+       break;
 
+      case "booking_expiry_time":
+        return false;
+       break;
+
+       case "no_kontrak":
+         return false;
+        break;
+
+      case "unit":
+          return false;
+		     break;
+			
+	    case "telolet":
+		      return false;
+	       break;
+			
       case "status":
         return false;
-      break;
+        break;
 
       default:
         return true;

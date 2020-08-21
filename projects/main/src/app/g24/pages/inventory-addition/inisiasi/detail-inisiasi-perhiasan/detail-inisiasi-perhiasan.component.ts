@@ -478,7 +478,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
       return false;
     }
 
-    if(model.init_no == "")
+    if(model.no_po == "")
     {
       return false;
     }
@@ -499,20 +499,24 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     let now : Date = new Date;
     let sNow = now.toISOString().split("T");
     let date = sNow[0];
+    let date_split = date.split("-");
     let time = sNow[1].split(".")[0];
 
-    let no = this.input['init_no'];
+    let no = this.input['no_po'];
     console.log(no, "no")
 
-    if(this.user.unit == null)
+    if(this.user?.unit == null)
     {
       this.toastr.warning("Unit dari User belum di-Assign. Harap hubungi IT Support/Helpdesk.", "Error!");
       return;
     }
 
+    let PO = "PO" + this.user.unit.code + date_split[0].substring(1, 3) + date_split[1] + "[0,5]";
+
     let def = 
     {
-      // init_no : "PO" + this.user.unit.code + "",//"IN0000512",
+      no_po : PO,
+      __format : "no_po:inc",
       create_date : this.input['create_date'],
       create_time : time,
       create_by : this.user.username,
@@ -523,12 +527,16 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
       // vendor : null,
       // 'product-category' : null,
     };
+    Object.assign(def, this.input);
     let init = DataTypeUtil.Encode(def);
-
     this.inisiasiService.add(init).subscribe(output => {
-      if(output != false)
+      if(output == false)
       {
-        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + this.inisiasiService.message);
+        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + this.inisiasiService.message());
+      } else {
+        this.toastr.success("Inisiasi Berhasil. Harap hubungi Kepala Departemen untuk melakukan Approval. No. PO : " + output.no_po, "Info", {timeOut : 10000, tapToDismiss : false});
+        console.log(output,'ts');
+        this.input = this.defaultInput();
       }
     });
     // console.log(output);
@@ -718,7 +726,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     {
       if(this.input.items[i]?.gram_tukar == null || this.input.items[i]?.gram_tukar == "null")
         continue;
-        value += parseInt(this.input.items[i].gram_tukar);
+        value += parseFloat(this.input.items[i].gram_tukar);
     }
 
     this.input['total_gram_tukar'] = value;
@@ -732,7 +740,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     {
       if(this.input.items[i]?.ongkos == null || this.input.items[i]?.ongkos == "null")
         continue;
-        value += parseInt(this.input.items[i].ongkos);
+        value += parseFloat(this.input.items[i].ongkos);
     }
 
     this.input['total_ongkos'] = value;
@@ -746,7 +754,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     {
       if(this.input.items[i]?.pajak == null || this.input.items[i]?.pajak == "null")
         continue;
-        value += parseInt(this.input.items[i].pajak);
+        value += parseFloat(this.input.items[i].pajak);
     }
 
     this.input['total_pajak'] = value;

@@ -32,19 +32,19 @@
                 </div>
 
                 <div class="clr-row">
-                    <div class="clr-col-6">
+					<div class="clr-col-6">
                         <div class="clr-form-control">
-                            <label class="clr-control-label">Tanggal Terima</label>
+                            <label class="clr-control-label">Tanggal Kirim</label>
                             <div class="clr-control-container">
-                                <input  [(ngModel)]="input.tgl_terima" class="clr-input" type="date" name="tgl_terima" required />
+                                <input  [(ngModel)]="input.created_date" class="clr-input" type="date" name="created_date" required />
                             </div>
                         </div>
                     </div>
                     <div class="clr-col-6">
                         <div class="clr-form-control">
-                            <label class="clr-control-label">Tanggal Kirim</label>
+                            <label class="clr-control-label">Tanggal Terima</label>
                             <div class="clr-control-container">
-                                <input  [(ngModel)]="input.created_date" class="clr-input" type="date" name="created_date" required />
+                                <input  [(ngModel)]="input.tgl_terima" class="clr-input" type="date" name="tgl_terima" required />
                             </div>
                         </div>
                     </div>
@@ -95,10 +95,13 @@
             Unit Tujuan
         </clr-dg-column>
         <clr-dg-column>
+            Tanggal Kirim
+        </clr-dg-column>
+        <clr-dg-column>
             Tanggal Terima
         </clr-dg-column>
         <clr-dg-column>
-            Tanggal Kirim
+            Keterangan
         </clr-dg-column>
         <clr-dg-column>
             Tipe Flag
@@ -107,8 +110,9 @@
         <clr-dg-row *clrDgItems="let data of listdt" [clrDgItem]="data">
             <clr-dg-cell>{{data.unit_asal.nama}}</clr-dg-cell>
             <clr-dg-cell>{{data.unit_tujuan.nama}}</clr-dg-cell>
-            <clr-dg-cell>{{data.tgl_terima}}</clr-dg-cell>
             <clr-dg-cell>{{data.created_date}}</clr-dg-cell>
+            <clr-dg-cell>{{data.tgl_terima}}</clr-dg-cell>
+            <clr-dg-cell>{{data.keterangan}}</clr-dg-cell>
             <clr-dg-cell>{{data.flag}}</clr-dg-cell>
         </clr-dg-row>
 
@@ -141,15 +145,50 @@
                 </div>
                 <div class="clr-col-6">
                     <div class="clr-form-control">
+                        <label>Vendor</label>
+                        <div class="clr-control-container">
+                            <select [(ngModel)]="searchModel.vndr" #vndr clrSelect name="vndr" required>
+                            <option value=""></option>
+                            <ng-container *ngFor="let vdr of vendor">
+                                <option [ngValue]="vdr">{{vdr.name}}</option>
+                            </ng-container>
+                        </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+			<div class="clr-row">
+				<div class="clr-col-6">
+				<div class="clr-form-control">
                         <label>Product Kategori</label>
                         <select [(ngModel)]="searchModel['product-category']" clrSelect name="kategori" (change)="onChange()">
+                            <option value=""></option>
                             <ng-container *ngFor="let prd of products2">
                                 <option [ngValue]="prd">{{prd.name}}</option>
                             </ng-container>
                         </select>
                     </div>
-                </div>
-            </div>
+				</div>
+			</div>
+			<div class="clr-row">
+				<div class="clr-col-6">
+					<div class="clr-form-control">
+						<clr-textarea-container>
+							<label>Keterangan</label>
+							<textarea clrTextarea [(ngModel)]="addinput.keterangan" name="keterangan" required></textarea>
+					   </clr-textarea-container>
+					</div>
+				</div>
+			</div>
+			<div class="clr-row">
+				<div class="clr-col-6">
+					<div class="clr-form-control">
+                        <label>Pilih Item Cepat</label>
+						<input type="number" [(ngModel)]="itempick" class="clr-input" name="pilih">
+						<button type="button" class="btn btn-sm btn-secondary" (click)="pickitem()">ceklis item</button>
+					</div>
+				</div>	
+			</div>
         
 
         <ng-container *ngTemplateOutlet="formInput">
@@ -661,7 +700,7 @@
             </form>
 
         <!--DATAGRID-->
-        <clr-datagrid [(clrDgSingleSelected)]="selected">
+        <clr-datagrid [(clrDgSelected)]="selected">
             <clr-dg-action-bar>
                 <div class="btn-group">
                     <button type="button" class="btn btn-sm btn-secondary" (click)="searchProduct()"><clr-icon shape="search"></clr-icon>Cari</button>
@@ -711,12 +750,12 @@
         </clr-datagrid>
 
         <!--DATAGRID DETAIL PICK-->
-        <clr-datagrid [(clrDgSingleSelected)]="selected_detail">
-            <clr-dg-action-bar>
+        <clr-datagrid>
+            <!--clr-dg-action-bar>
                 <div class="btn-group">
                     <button type="button" class="btn btn-sm btn-secondary" (click)="deleteData()"><clr-icon shape="close"></clr-icon> Hapus</button>
                 </div>
-                </clr-dg-action-bar>
+                </clr-dg-action-bar-->
 
             <clr-dg-column>
                 Kode
@@ -730,8 +769,8 @@
             <clr-dg-column>
                 Branch
             </clr-dg-column>
-            <clr-dg-row *clrDgItems="let data of itemsinmutasi" [clrDgItem]="data">
-                <clr-dg-cell>{{data.code}}</clr-dg-cell>
+            <clr-dg-row *clrDgItems="let data of itemsdata" [clrDgItem]="data">
+                <clr-dg-cell>{{data?.code}}</clr-dg-cell>
                 <clr-dg-cell>{{data.sku}}</clr-dg-cell>
                 <clr-dg-cell>{{data.vendor == undefined ? "-" : data.vendor.name}}</clr-dg-cell>
                 <clr-dg-cell>{{data.branch == undefined ? "-" : data.branch.name}}</clr-dg-cell>
@@ -747,26 +786,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Nama Produk Kategori</td>
-                            <td>{{data['product-category'].name}}</td>
+                           <ng-container *ngFor = "let oj of Object.keys(data)">
+                        <tr *ngIf="except(oj)">
+                            <td>{{GetDisplayName(oj)}}</td>
+                            <td>{{GetDisplayValue(data[oj])}}</td>
                         </tr>
-                        <tr>
-                            <td>Jenis Perhiasan</td>
-                            <td>{{data['product-jenis'] == undefined ? "-" : data['product-jenis'].name}}</td>
-                        </tr>
-                        <tr>
-                            <td>Berat</td>
-                            <td>{{data.berat}}</td>
-                        </tr>
-                        <tr>
-                            <td>Baku Tukar</td>
-                            <td>{{data['baku-tukar']}}</td>
-                        </tr>
-                        <tr>
-                            <td>Produk Gold Color</td>
-                            <td>{{data['product-gold-color'] == undefined ? "-" : data['product-gold-color'].name}}</td>
-                        </tr>
+                        </ng-container>
                     </tbody>
                 </table>
             </clr-dg-detail>
@@ -797,10 +822,13 @@
                 Unit Tujuan
             </clr-dg-column>
             <clr-dg-column>
+                Tanggal Kirim
+            </clr-dg-column>
+            <clr-dg-column>
                 Tanggal Terima
             </clr-dg-column>
             <clr-dg-column>
-                Tanggal Kirim
+                Keterangan
             </clr-dg-column>
             <clr-dg-column>
                 Flag
@@ -808,8 +836,9 @@
             <clr-dg-row *clrDgItems="let data of details" [clrDgItem]="data">
                 <clr-dg-cell>{{data.unit_asal.nama}}</clr-dg-cell>
                 <clr-dg-cell>{{data.unit_tujuan.nama}}</clr-dg-cell>
-                <clr-dg-cell>{{data.tgl_kirim}}</clr-dg-cell>
                 <clr-dg-cell>{{data.created_date}}</clr-dg-cell>
+                <clr-dg-cell>{{data.tgl_terima}}</clr-dg-cell>
+                <clr-dg-cell>{{data.keterangan}}</clr-dg-cell>
                 <clr-dg-cell>{{data.flag}}</clr-dg-cell>
             </clr-dg-row>
         
