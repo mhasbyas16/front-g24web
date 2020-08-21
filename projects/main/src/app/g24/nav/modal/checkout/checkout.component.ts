@@ -402,12 +402,7 @@ export class CheckoutComponent implements OnInit {
       console.debug(this.formData.getRawValue());
       return;
     }    
-    
-   
-
     this.validModel = true;
-   
-
   }
 
   storeTransaction(){
