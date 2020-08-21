@@ -144,7 +144,8 @@ export class CheckoutComponent implements OnInit {
     this.idTransaksi();
   }
   
-  openModal(totalHarga: any){    
+  openModal(totalHarga: any){ 
+  
     this.formData = new FormGroup({
       idTransaction: new FormControl(""),
       idTransaction_validation: new FormControl("unique:idTransaction"),
@@ -182,6 +183,16 @@ export class CheckoutComponent implements OnInit {
       idAi: new FormControl ("", Validators.required),
       namaPemasar: new FormControl (""),
     });
+    
+    for (let isi of LM) {
+      this.formData.addControl(isi.code,new FormControl(isi.Value, Validators.required))
+    }
+    
+    // if (LM.length > 0) {
+      
+    // }
+
+
     this.idTransaksi();
     this.getUnit();
     //
@@ -391,13 +402,21 @@ export class CheckoutComponent implements OnInit {
       console.debug(this.formData.getRawValue());
       return;
     }    
+    
+   
 
     this.validModel = true;
-    
+   
+
   }
 
   storeTransaction(){
     let data = this.formData.getRawValue();  
+
+    for (let index = 0; index < LM.length; index++) {
+      LM[index].noSeri = data[LM[index].code]
+      delete data[LM[index].code]
+    }
     // 
     data.product = btoa(JSON.stringify({PERHIASAN,LM,BERLIAN,GS,DINAR})) ;
     data.product_encoded = "base64";

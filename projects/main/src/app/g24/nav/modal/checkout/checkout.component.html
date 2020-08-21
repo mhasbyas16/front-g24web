@@ -14,11 +14,7 @@
                                 <div class="clr-col-5">
                                     <clr-input-container>
                                         <label>CIF</label>
-<<<<<<< HEAD
                                         <input clrInput type="text" formControlName="cif" readonly style="background-color: yellow;">
-=======
-                                        <input clrInput type="text" formControlName="cif" readonly>
->>>>>>> hasby
                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                         <clr-control-error *clrIfError="'pattern'">This is a required field 0 - 9</clr-control-error>
                                     </clr-input-container> 
@@ -114,7 +110,9 @@
                                                                     <span>{{ip.value.denom}}</span>
                                                                 </div>
                                                                 <div class="clr-col-2">
-                                                                   
+                                                                    <clr-input-container style="margin-top: 0; margin-left: 10%; margin-right: 10%;" >
+                                                                        <input clrInput type="text" style=" width: 100%;" formControlName="{{ip.value.code}}" placeholder="No Seri">
+                                                                    </clr-input-container>
                                                                 </div>
                                                                 <div class="clr-col-3">
                                                                     <span class="left"> Rp. {{ip.value.harga| number}}</span>
