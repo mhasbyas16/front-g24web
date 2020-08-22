@@ -12,22 +12,23 @@
                         <div class="card-text">
                             <div class="clr-row">
                                 <div class="clr-col-5">
-                                    <clr-input-container>
+                                    <clr-input-container class="margin-top-remove">
                                         <label>CIF</label>
                                         <input clrInput type="text" formControlName="cif" readonly style="background-color: yellow;">
                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                         <clr-control-error *clrIfError="'pattern'">This is a required field 0 - 9</clr-control-error>
                                     </clr-input-container> 
                                 </div>
-                                <div class="clr-col-3">
-                                    <button type="button" class="btn btn-primary" (click)="searchNasabah.openModal()">Cari</button>
-                                    <button type="button" class="btn btn-primary" (click)="addNasabah.openModal()">Tambah</button>
+                                <div class="clr-col-3" >
+                                    <div class="btn-group btn-outline-primary btn-sm">
+                                        <button type="button" class="btn" (click)="searchNasabah.openModal()" style="align-content: center;">Cari</button>
+                                        <button type="button" class="btn btn-outline-success" (click)="addNasabah.openModal()">Tambah</button>
+                                    </div>
                                 </div>
                             </div>
-                            <clr-input-container>
+                            <clr-input-container class="margin-top-remove">
                                 <label>Nama Nasabah</label>
-                                <input clrInput type="text" formControlName="name" readonly>
-                                <clr-control-helper>Please Input Nama Nasabah</clr-control-helper>
+                                <input clrInput type="text" formControlName="name" readonly style="background-color: yellow;">
                                 <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                             </clr-input-container> 
                         </div> 
