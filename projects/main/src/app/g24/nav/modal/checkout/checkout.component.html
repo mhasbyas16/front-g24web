@@ -249,9 +249,8 @@
 
                             <clr-radio-container clrInline>
                                 <label>Metode Bayar</label>
-                    
                                 <clr-radio-wrapper *ngFor="let i of transactionMethod" >
-                                    <input type="radio" clrRadio formControlName="metodeBayar" name="metodeBayar" [value]="i._hash" (click)="bankValid(i._hash)"/>
+                                    <input type="radio" clrRadio formControlName="metodeBayar" [attr.checked]="'01'==i.code" name="metodeBayar" [value]="i._hash" (click)="bankValid(i._hash)"/>
                                     <label>
                                         <img class="img-responsive2" [attr.src]="'assets/images/metode/'+i.icon" alt="">
                                         {{i.name}}</label>
