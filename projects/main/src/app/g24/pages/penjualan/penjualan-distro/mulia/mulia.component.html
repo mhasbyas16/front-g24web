@@ -23,6 +23,16 @@
             </clr-select-container>
         </div>
         <div class="clr-col-3">
+            <clr-select-container class="clr-form-control">
+                <label class="clr-control-label">Flag</label>
+                <select [(ngModel)]="searchModel.flags" clrSelect name="input_flag_mulia" ngModel>
+                    <option value="pilih">Pilih Denom</option>
+                    <option value="stock">Stock</option>
+                    <option value="buyback">Buyback</option>
+                </select>
+            </clr-select-container>
+        </div>
+        <div class="clr-col-3">
             <div class="clr-form-control">
                 <div class="clr-control-container" >
                     <button class="btn btn-info-outline btn-sm float-right">Cari</button>
@@ -39,15 +49,17 @@
     <clr-dg-column>Vendor</clr-dg-column>
     <clr-dg-column>Denom</clr-dg-column>
     <clr-dg-column>Quantity</clr-dg-column>
+    <clr-dg-column>Flag</clr-dg-column>
     <clr-dg-column>Harga</clr-dg-column>
-    <clr-dg-column ></clr-dg-column>
+    <clr-dg-column>Action</clr-dg-column>
 
     <clr-dg-row *clrDgItems="let d of datamulias" [clrDgItem]="d">
         <!-- <clr-dg-cell>{{d.id}}</clr-dg-cell> -->
         <clr-dg-cell>{{d.vendor}}</clr-dg-cell>
         <clr-dg-cell>{{d.denom}}</clr-dg-cell>
         <clr-dg-cell>{{d.qty}}</clr-dg-cell>
-        <clr-dg-cell >{{d.harga}}</clr-dg-cell>
+        <clr-dg-cell>{{d.flag}}</clr-dg-cell>
+        <clr-dg-cell >{{d.harga | number}} </clr-dg-cell>
         <clr-dg-cell style="width: 20%;">
             <div class="clr-row" style="text-align: center;">
                 <div class="clr-col">

@@ -153,7 +153,7 @@ export class CheckoutComponent implements OnInit {
       name: new FormControl ("",[ Validators.required]),
       client: new FormControl ("", Validators.required),
       client_encoded: new FormControl("base64"),
-      metodeBayar: new FormControl (""),
+      metodeBayar: new FormControl ("", Validators.required),
       metodeBayar_encoded: new FormControl ("base64"),
       bankTujuan: new FormControl (""),
       bankAsal: new FormControl (""),
@@ -325,7 +325,7 @@ export class CheckoutComponent implements OnInit {
     this.formData.patchValue({admBank: this.administrasi});
     let Jc = JSON.parse(atob(val));
     let Je = JSON.parse(atob(this.formData.get('edcType').value));
-    let Pem = JSON.parse(atob(this.formData.get('transaksiMetodeBank').value));
+    let Pem = JSON.parse(atob(this.formData.get('transactionMetodeBank').value));
     //debit
     if (Pem["code"] == "02") {
       if (Jc["code"] == Je["code"]) {

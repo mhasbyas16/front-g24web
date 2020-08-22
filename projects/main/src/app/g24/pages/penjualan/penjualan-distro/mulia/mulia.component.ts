@@ -6,9 +6,9 @@ import { ProductService } from '../../../../services/product/product.service';
 import { ProductDenomService } from '../../../../services/product/product-denom.service';
 import { ToastrService } from 'ngx-toastr';
 
+// prm
 import { PrmJualService } from '../../../../services/parameter/prm-jual.service';
 import { PrmMarginService } from '../../../../services/parameter/prm-margin.service';
-import { PrmPpnService } from '../../../../services/parameter/prm-ppn.service';
 
 //rumus harga 
 import { PricingService }  from '../../../../services/pricing.service';
@@ -30,12 +30,14 @@ export class MuliaComponent implements OnInit {
   vendors = null;
   jenis = null;
   denoms = null;
+  flags = null;
   loadingDg = null; 
   mulias = null;
   datamulias= null;
   tempdatamulias = null;
   vendor = null;
   denom = null;
+  flag = null;
   qty = null;
   jumlah = null;
   hargaBaku = null;
@@ -45,7 +47,7 @@ export class MuliaComponent implements OnInit {
   jumlahLM : number ;
   total = 0;
   selected: any[] = [];
-
+  
   //category
   vendorCategory = "product-category.code=c05";
   category = "?_hash&product-category.code=c05";
@@ -62,8 +64,7 @@ export class MuliaComponent implements OnInit {
   //parameter
   private prmJualService : PrmJualService,
   private prmMarginService: PrmMarginService,
-  private prmPpnService : PrmPpnService,
-
+  
   //toast
   private toastrService: ToastrService,
 
@@ -76,7 +77,7 @@ export class MuliaComponent implements OnInit {
 
 
   ) { }
-  searchModel : any = {vendors:"pilih", denoms: "pilih"};
+  searchModel : any = {vendors:"pilih", denoms: "pilih", flags: "pilih"};
   
   ngOnInit(): void {
     this.onListVendor();
@@ -114,25 +115,28 @@ export class MuliaComponent implements OnInit {
     this.loadingDg = true;
     let vendor = data.input_vendor_mulia;
     let denom = data.input_denom_mulia;
+    let flag = data.input_flag_mulia;
     // let jumlah = data.input_jumlah ;
     let cariMulia : any[] = [];
     
 
     const urlVendor = "vendor.code="+vendor;
     const urlDenom = "product-denom.code="+denom;
+    const urlFlag = "flag="+flag;
     // const urlQty = "_rows="+jumlah;
 
     this.params = this.category;
-    if (vendor == "pilih" || denom == "pilih") {
-      this.toastrService.error("Pilih Vendor dan Denom Terlebih Dahulu");
+    if (vendor == "pilih" || denom == "pilih" || flag == "pilih") {
+      this.toastrService.error("Pilih Vendor , Denom dan Flag Barang Terlebih Dahulu");
       this.loadingDg = false;
     } else {
         this.params = this.params+"&"+urlVendor;
         this.params = this.params+"&"+urlDenom;
+        // this.params = this.params+"&"+urlFlag;
 
         //cari product
-        this.productService.list(this.params).subscribe((response: any) => {
-          
+        this.productService.list(this.params+"&"+urlFlag).subscribe((response: any) => {
+          this.datamulias = null
           if (response == false) {
             this.toastrService.error("Data Not Found", "Mulia");
             this.loadingDg = false;
@@ -145,7 +149,7 @@ export class MuliaComponent implements OnInit {
           }
           this.mulias = response;
           //count product
-          this.productService.count(this.params).subscribe((response: any) => {
+          this.productService.count(this.params+"&"+urlFlag).subscribe((response: any) => {
             this.qty = response.count;
             // cari prm-jual product
             this.prmJualService.list(this.params).subscribe((Jualresponse: any) => {
@@ -162,7 +166,9 @@ export class MuliaComponent implements OnInit {
                   "vendor" : this.mulias[0].vendor.name,
                   "denom" : this.mulias[0]['product-denom'].name,
                   "qty" : this.qty,
+                  "flag" : this.mulias[0].flag,
                   "harga" : hargaLM
+                  
                 });
                   this.datamulias = cariMulia;
                   this.loadingDg = false;
@@ -214,10 +220,8 @@ export class MuliaComponent implements OnInit {
             lm.splice(cekItem, 1)
             udahDiCart++
           }
-          
         }
-        let maks : any;
-
+        let maks : any 
         let availableItem = qtyLM - udahDiCart ;
         console.debug(availableItem, 'availableItem')
         console.debug(lm, 'akhir')
@@ -227,30 +231,24 @@ export class MuliaComponent implements OnInit {
           this.loadingDg = false;
         } else {
            maks = this.jumlahLM
-           
            for (let index = 0; index < maks ; index++) {
             this.cartList.push({
                 'code': lm[index].code,
                 'vendor' : lm[index].vendor.name,
                 'denom' : lm[index]['product-denom'].name,
                 'harga' : harga,
-               
+                'flag' : lm[index].flag,
                 'detail' : JSON.parse(atob(lm[index]._hash))
             })
             this.refresh(harga, "p")
             console.debug(this.cartList)
         this.logamMulia.emit(this.cartList.length);
         this.data.emit(this.countService.countCart());
-          }
-         
+          } 
         }
-        
-        
         this.loadingDg = false;
       });
-
     }
-    
   }
   refresh(harga: any, sum: any){
 

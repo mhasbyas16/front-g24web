@@ -109,6 +109,9 @@
                                                                 <div class="clr-col-2">
                                                                     <span>{{ip.value.denom}}</span>
                                                                 </div>
+                                                                <div class="clr-col-1">
+                                                                    <span>{{ip.value.flag}}</span>
+                                                                </div>
                                                                 <div class="clr-col-2">
                                                                     <clr-input-container style="margin-top: 0; margin-left: 10%; margin-right: 10%;" >
                                                                         <input clrInput type="text" style=" width: 100%;" formControlName="{{ip.value.code}}" placeholder="No Seri">
@@ -330,7 +333,7 @@
                                         <clr-radio-container>
                                             <label>Bank Asal</label>
                                             <clr-radio-wrapper *ngFor="let bank of bank">
-                                                <input clrRadio formControlName="bankAsal" [value]="bank.name" type="radio">
+                                                <input clrRadio formControlName="bankAsal" [value]="bank.name" type="radio" >
                                                 <label><img class="img-responsive" [attr.src]="'assets/images/bank/'+bank.icon" alt=""> {{bank.name}}</label>
                                             </clr-radio-wrapper>
                                             <clr-control-helper>Please Select One</clr-control-helper>
