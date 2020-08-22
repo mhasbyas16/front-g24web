@@ -256,7 +256,7 @@ export class ExportLaporanComponent implements OnInit {
                 columns:[
                   {width:70,text:mulia.detail.code},
                   {width:25,text:' '+mulia.detail.vendor.name},
-                  {width:35,text:' '+mulia.detail['product-diamond-color'].name},
+                  {width:35,text:' '+mulia.detail['product-denom'].name},
                   {width:25,text:' '+mulia.detail['product-cut'].name},
                   {width:38,text:' '+mulia.detail['product-clarity'].name},
                   // total berlian ,          
