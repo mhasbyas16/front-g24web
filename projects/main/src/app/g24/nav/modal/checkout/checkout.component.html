@@ -11,15 +11,15 @@
                     <div class="card-block">
                         <div class="card-text">
                             <div class="clr-row">
-                                <div class="clr-col-5">
+                                <div class="clr-col-4">
                                     <clr-input-container class="margin-top-remove">
                                         <label>CIF</label>
-                                        <input clrInput type="text" formControlName="cif" readonly style="background-color: yellow;">
+                                        <input clrInput type="text" formControlName="cif" readonly style="background-color: #fbffc9;">
                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                         <clr-control-error *clrIfError="'pattern'">This is a required field 0 - 9</clr-control-error>
                                     </clr-input-container> 
                                 </div>
-                                <div class="clr-col-3" >
+                                <div class="clr-col-3" style="margin-left: 30px;" >
                                     <div class="btn-group btn-outline-primary btn-sm">
                                         <button type="button" class="btn" (click)="searchNasabah.openModal()" style="align-content: center;">Cari</button>
                                         <button type="button" class="btn btn-outline-success" (click)="addNasabah.openModal()">Tambah</button>
@@ -28,7 +28,7 @@
                             </div>
                             <clr-input-container class="margin-top-remove">
                                 <label>Nama Nasabah</label>
-                                <input clrInput type="text" formControlName="name" readonly style="background-color: yellow;">
+                                <input clrInput type="text" formControlName="name" readonly style="background-color: #fbffc9;">
                                 <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                             </clr-input-container> 
                         </div> 

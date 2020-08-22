@@ -4,6 +4,8 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { VendorService } from '../../../../services/vendor.service';
 import { ProductService } from '../../../../services/product/product.service';
 import { ProductDenomService } from '../../../../services/product/product-denom.service';
+import { ProductSeriesService } from '../../../../services/product/product-series.service';
+
 import { ToastrService } from 'ngx-toastr';
 
 import { PrmJualService } from '../../../../services/parameter/prm-jual.service';
@@ -15,6 +17,7 @@ import { PricingService }  from '../../../../services/pricing.service';
 
 import { GS } from '../../../../sample/cart';
 import { CountCartService } from '../../../../services/count-cart.service';
+
 
 
 @Component({
@@ -30,6 +33,7 @@ export class SouvenirComponent implements OnInit {
   vendors = null;
   jenis = null;
   denoms = null;
+  serieses = null;
   loadingDg = null; 
   souvenirs = null;
   datasouvenirs= null;
@@ -57,7 +61,9 @@ export class SouvenirComponent implements OnInit {
   //app
   private vendorService: VendorService,
   private denomService: ProductDenomService,
+  private seriesService: ProductSeriesService,
   private productService: ProductService,
+ 
  
   //parameter
   private prmJualService : PrmJualService,
@@ -74,11 +80,12 @@ export class SouvenirComponent implements OnInit {
 
 
   ) { }
-  searchModel : any = {vendors:"pilih", denoms: "pilih"};
+  searchModel : any = {vendors:"pilih", denoms: "pilih", serieses: "pilih"};
   
   ngOnInit(): void {
     this.onListVendor();
     this.onListDenom();
+    this.onListSeries();
     // this.checkProduct();
   }
   onListVendor(){
@@ -95,10 +102,23 @@ export class SouvenirComponent implements OnInit {
   }
 
   onListDenom(){
-    this.denomService.list("?_hash=1").subscribe((response: any) => {
+    this.denomService.list(this.category).subscribe((response: any) => {
       if (response != false) {
         this.denoms = response;
         this.denoms.sort(function (c, d) {
+          if (c.name < d.name) { return -1; }
+          if (c.name > d.name) { return 1; }
+          return 0;
+        })
+      }      
+    });
+  }
+  onListSeries(){
+    this.seriesService.list().subscribe((response: any) => {
+      console.debug(response, "series")
+      if (response != false) {
+        this.serieses = response;
+        this.serieses.sort(function (c, d) {
           if (c.name < d.name) { return -1; }
           if (c.name > d.name) { return 1; }
           return 0;
@@ -110,26 +130,28 @@ export class SouvenirComponent implements OnInit {
   
   onCariSouvenir(data){
     this.loadingDg = true;
+    this.datasouvenirs = null;
     let vendor = data.input_vendor_souvenir;
     let denom = data.input_denom_souvenir;
-    // let jumlah = data.input_jumlah ;
+    let series = data.input_series_souvenir;
     let cariSouvenir : any[] = [];
-    
 
     const urlVendor = "vendor.code="+vendor;
     const urlDenom = "product-denom.code="+denom;
-    // const urlQty = "_rows="+jumlah;
+    const urlSeries = "product-series.code="+series;
 
     this.params = this.category;
+
+    console.debug(this.params)
     if (vendor == "pilih" || denom == "pilih") {
       this.toastrService.error("Pilih Vendor dan Denom Terlebih Dahulu");
       this.loadingDg = false;
     } else {
         this.params = this.params+"&"+urlVendor;
         this.params = this.params+"&"+urlDenom;
-        // this.params = this.params+"&"+urlQty;
+        this.params = this.params+"&"+urlSeries;
         this.productService.list(this.params).subscribe((response: any) => {
-          
+          console.debug(response, "bangsat")
           if (response == false) {
             this.toastrService.error("Data Not Found", "Souvenir");
             this.loadingDg = false;

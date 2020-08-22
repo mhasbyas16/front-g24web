@@ -23,6 +23,17 @@
             </clr-select-container>
         </div>
         <div class="clr-col-3">
+            <clr-select-container class="clr-form-control">
+                <label class="clr-control-label">Series</label>
+                <select [(ngModel)]="searchModel.serieses" clrSelect name="input_series_souvenir" ngModel>
+                    <option value="pilih">Pilih Series</option>
+                    <ng-container *ngFor="let series of serieses">
+                        <option value="{{series.code}}">{{series.name}}</option>
+                    </ng-container>
+                </select>
+            </clr-select-container>
+        </div>
+        <div class="clr-col-3">
             <div class="clr-form-control">
                 <div class="clr-control-container" >
                     <button class="btn btn-info-outline btn-sm float-right">Cari</button>
