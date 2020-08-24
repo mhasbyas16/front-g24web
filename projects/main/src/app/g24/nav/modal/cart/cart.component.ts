@@ -12,19 +12,20 @@ export class CartComponent implements OnInit {
   @Output() clearBerlian:any = new EventEmitter();
   @Output() clearPerhiasan:any = new EventEmitter();
   @Output() clearMulia:any = new EventEmitter();
+  @Output() clearSouvenir:any = new EventEmitter();
   @Output() data:any = new EventEmitter();
   //
   @Input() total:any=0;
   @Input() perhiasan:any;
   @Input() logam:any;
-  @Input() gift:any;
+  @Input() souvenir:any;
   @Input() berlian:any;
   @Input() dinar:any;
   //harga perhiasan
   @Input() hargaPerhiasan:any = 0;
   @Input() hargaLogamMulia:any = 0 ;
   @Input() hargaBerlian:any = 0;
-  @Input() hargaGift:any = 0;
+  @Input() hargaSouvenir:any = 0;
   @Input() hargaDinar:any = 0;
 
   // data grid  
@@ -34,7 +35,7 @@ export class CartComponent implements OnInit {
   // isi cart cards
   cartPerhiasan = PERHIASAN;
   cartLogam = LM;
-  cartGift = GS;
+  cartSouvenir = GS;
   cartBerlian = BERLIAN;
   cartDinar = DINAR;
 
@@ -46,6 +47,7 @@ export class CartComponent implements OnInit {
 
   ngOnInit(): void {
     this.removeCart();
+   
   }
 
   removeCart(){
@@ -53,10 +55,11 @@ export class CartComponent implements OnInit {
     this.cartPerhiasan.splice(0);
     this.cartBerlian.splice(0);
     this.cartLogam.splice(0);
+    this.cartSouvenir.splice(0);
     // reset card modal
     this.perhiasan = 0;
     this.logam = 0;
-    this.gift = 0;
+    this.souvenir = 0;
     this.berlian = 0;
     this.dinar = 0;
 
@@ -64,7 +67,7 @@ export class CartComponent implements OnInit {
     this.hargaPerhiasan = 0;
     this.hargaLogamMulia = 0;
     this.hargaBerlian = 0;
-    this.hargaGift = 0;
+    this.hargaSouvenir = 0;
     this.hargaDinar = 0;
     // this.hargaPerhiasan = 0;
     // this.hargaLogam = 0;
@@ -79,6 +82,7 @@ export class CartComponent implements OnInit {
     this.clearBerlian.emit({length:0,harga:0});
     this.clearPerhiasan.emit({length:0,harga:0});
     this.clearMulia.emit({length:0,harga:0});
+    this.clearSouvenir.emit({length:0,harga:0});
   }
 
   // remove item berlian 
@@ -112,6 +116,7 @@ export class CartComponent implements OnInit {
     // kurangin parent
     this.clearPerhiasan.emit({length:this.perhiasan,harga:this.hargaPerhiasan});
     this.data.emit(this.total);
+
     if (this.total == 0) {
       console.debug("totallll 0");
       this.clearParentCart.emit(0);
@@ -127,6 +132,10 @@ export class CartComponent implements OnInit {
     //pengurangan jumlah cart
     this.total-=1;
     this.logam = this.logam-1;
+
+    this.clearMulia.emit({length:this.logam,harga:this.hargaLogamMulia});
+    this.data.emit(this.total);
+
     if (this.total == 0) {
       console.debug("totallll 0");
       this.clearParentCart.emit(0);
@@ -135,6 +144,29 @@ export class CartComponent implements OnInit {
       this.clearMulia.emit(0);
     }
   }
+
+  removeItemSouvenir(key: any, harga:any ){
+    this.cartSouvenir.splice(key,1);
+    console.debug(this.souvenir)
+    //pengrurangan harga
+    this.hargaSouvenir = this.hargaSouvenir-harga;
+
+    //pengurangan jumlah cart
+    this.total-=1;
+    this.souvenir = this.souvenir-1;
+
+    this.clearSouvenir.emit({length:this.souvenir,harga:this.hargaSouvenir});
+    this.data.emit(this.total);
+
+    if (this.total == 0) {
+      console.debug("totallll 0");
+      this.clearParentCart.emit(0);
+    }
+    if (this.souvenir == 0) {
+      this.clearSouvenir.emit(0);
+    }
+  }
+
   modalView(isi: any){
     this.cartModal = isi;
   }

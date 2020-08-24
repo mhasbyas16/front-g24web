@@ -52,7 +52,7 @@ export class SouvenirComponent implements OnInit {
 
   //category
   vendorCategory = "product-category.code=c02";
-  category = "?product-category.code=c02";
+  category = "?_hash&product-category.code=c02";
 
    //params
    params = null;
@@ -163,108 +163,108 @@ export class SouvenirComponent implements OnInit {
             return;
           }  
 
-          // this.prmJualService.list(this.params).subscribe((Jualresponse: any) => {
-          //   if (Jualresponse != false) {
-          //     this.hargaBaku = Jualresponse;
-          //   }
           this.souvenirs = response;
           this.productService.count(this.params).subscribe((response: any) => {
           this.qty = response.count;
           cariSouvenir.push({
             "vendor" : this.souvenirs[0].vendor.name,
             "denom" : this.souvenirs[0]['product-denom'].name,
+            "series" : this.souvenirs[0]['product-series'].name,
             "qty" : this.qty
 
           });
-            // this.Souvenir = response;
             this.datasouvenirs = cariSouvenir;
             this.loadingDg = false;
           // });
         });
       });
     }
-      // const filteredperhiasan = this.getPerhiasan.filter(kamu =>  kamu.jenis == jenis && kamu.vendor == vendor);
+      
   }
   
   cekItemArray(data: any){
-    // const code = this.cartList.map(el => el.code);
+    
     const code = this.cartList.map(el => el.code);
     const ARR = code.includes(data);
     return ARR;
   }
 
-  addCart(vendorLM: any, denomLM: any, qtyLM: any){
+  addCart(vendorSV: any, denomSV: any, seriesSV: any, qtySV: any){
     this.loadingDg = true;
     this.total = 0;
     
 
-    if (qtyLM < this.jumlahSouvenir) {
+    if (qtySV < this.jumlahSouvenir) {
       this.toastrService.error("Jumlah Tidak Mencukupi", "Souvenir");
+      this.loadingDg = false;
     }else{
       let params : any;
-      let urlVendor = "vendor.name="+vendorLM;
-      let urlDenom = "product-denom.name="+denomLM;
-      let lm: any;
+      let urlVendor = "vendor.name="+vendorSV;
+      let urlDenom = "product-denom.name="+denomSV;
+      let urlSeries = "product-series.name="+seriesSV;
+      let sv: any;
 
       params = this.category;
       params = params+"&"+urlVendor;
       params = params+"&"+urlDenom;
+      params = params+"&"+urlSeries;
       
-      let codeLM = this.cartList.map(el => el.code);
+      let codeSV = this.cartList.map(el => el.code);
       let cekItem : any;
 
       console.debug(this.cartList, 'cart')
-      console.debug(codeLM, 'codeLM')
+      console.debug(codeSV, 'codeLM')
+
       // lm = this.Souvenir
-      let harga = 20000000;
+      let harga = 2000000;
       this.productService.list(params).subscribe((response: any) => {
-        lm = response
-        for (let index = 0; index < codeLM.length; index++) {
-          cekItem = lm.map(e => e.code).indexOf(codeLM[index])
-          lm.splice(cekItem, 1)
+        sv = response
+        let udahDiCart = 0;
+
+        for (let index = 0; index < codeSV.length; index++) {
+          cekItem = sv.map(e => e.code).indexOf(codeSV[index])
+          if (cekItem != -1) {
+            sv.splice(cekItem, 1)
+            udahDiCart++
+          }
         }
-        let maks : any;
-        let hargaTotalLM : number;
-        if (lm.length == 0 || lm.length < this.jumlahSouvenir) {
+
+        let maks : any 
+        let availableItem = qtySV - udahDiCart ;
+        console.debug(availableItem, 'availableItem')
+        console.debug(sv, 'akhir')
+        console.debug(this.jumlahSouvenir, 'enter')
+        if ( this.jumlahSouvenir > availableItem) {
           this.toastrService.error("Jumlah Tidak Mencukupi", "Souvenir");  
+          this.loadingDg = false;
         } else {
            maks = this.jumlahSouvenir
-           
            for (let index = 0; index < maks ; index++) {
             this.cartList.push({
-                'code': lm[index].code,
-                'vendor' : lm[index].vendor.name,
-                'denom' : lm[index]['product-denom'].name,
-                'harga' : harga
+                'code': sv[index].code,
+                'vendor' : sv[index].vendor.name,
+                'denom' : sv[index]['product-denom'].name,
+                'harga' : harga,
+                'detail' : JSON.parse(atob(sv[index]._hash))
             })
-            
-          }
-         
+            this.refresh(harga, "p")
+            console.debug(this.cartList)
+            this.souvenir.emit(this.cartList.length);
+            this.data.emit(this.countService.countCart());
+          }       
         }
-        console.debug(this.cartList)
-        this.refresh(harga, "p")
-        this.souvenir.emit(this.cartList.length);
-        this.data.emit(this.countService.countCart());
         this.loadingDg = false;
       });
-
     }
-    
   }
   refresh(harga: any, sum: any){
-    
     if (sum == "p") {
-    
-     for (let i of this.cartList) {
-       this.total += Number(i.harga);
-       console.debug(this.cartList)
-       
-     }
+      this.total = 0;
+      for (let i of this.cartList) {
+        this.total += Number(i.harga);
+      }
     }
-    
     console.debug(this.total)
     this.totalHarga.emit(this.total);
-    
-   
  }
 }

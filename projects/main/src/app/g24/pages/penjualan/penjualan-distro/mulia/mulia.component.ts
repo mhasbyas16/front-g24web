@@ -242,8 +242,8 @@ export class MuliaComponent implements OnInit {
             })
             this.refresh(harga, "p")
             console.debug(this.cartList)
-        this.logamMulia.emit(this.cartList.length);
-        this.data.emit(this.countService.countCart());
+            this.logamMulia.emit(this.cartList.length);
+            this.data.emit(this.countService.countCart());
           } 
         }
         this.loadingDg = false;

@@ -3,18 +3,22 @@
         <div class="card-header">
             Penjualan
             <div class="cart-style"> <!-- total isi cart              total harga cart                           -->
-                <app-cart [total]="total"
+                <app-cart 
+                [total]="total"
                 [logam]="mulia"
                 [perhiasan]="perhiasanParent"
                 [berlian]="berlianParent" 
+                [souvenir] = "souvenirParent"
                 [hargaLogamMulia]="hargaLogamMulia"
                 [hargaPerhiasan]="hargaPerhiasan"
                 [hargaBerlian]="hargaBatuMulia"
+                [hargaSouvenir]="hargaSouvenir"
                 (data)="cartData($event)"
                 (clearParentCart)="clearTotal($event)"
                 (clearBerlian)="clearBerlian($event)"
                 (clearPerhiasan)="clearPerhiasan($event)"
                 (clearMulia)="clearMulia($event)"
+                (clearSouvenir)="clearSouvenir($event)"
                 ></app-cart>
             </div>
                
@@ -58,8 +62,8 @@
                         <clr-tab-content >
                             <app-souvenir
                             (data)="cartData($event)" 
-                            (berlian)="totalBerlian($event)" 
-                            (totalHarga)="HBatuMulia($event)"
+                            (souvenir)="totalSouvenir($event)" 
+                            (totalHarga)="HSouvenir($event)"
                             ></app-souvenir>
                         </clr-tab-content>
                     </clr-tab>
