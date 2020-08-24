@@ -1,0 +1,121 @@
+<div class="clr-row">
+    <div class="card" style="margin-top: 0em;">
+        <div class="card-header">
+           Pengaturan Promo               
+        </div>       
+        <div class="card-block">
+            <div class="card-text">
+                <!-- card -->
+                <div class="clr-row">
+                    <div class="card" style="margin-top: 0em;">
+                        <div class="card-header">
+                           Tipe Promo           
+                        </div>       
+                        <div class="card-block">
+                            <div class="card-text">
+                                <form clrForm>
+                                    <clr-select-container>
+                                        <label>Tipe Promo</label>
+                                        <select clrSelect name="tipePromo" [value]="" (click)="openWizard($event.target.value)" required>
+                                            <option selected value="">-- Select one --</option>
+                                            <option value="penjualan">Penjualan</option>
+                                            <option value="manual">Manual</option>
+                                        </select>
+                                    </clr-select-container>
+                                </form>
+
+                                <!-- wizard penjualan -->
+                                <clr-wizard #penjualan [(clrWizardOpen)]="penjualanWizard">
+                                    <clr-wizard-title>Promo Penjualan</clr-wizard-title>
+                                
+                                    <clr-wizard-button [type]="'cancel'">Cancel</clr-wizard-button>
+                                    <clr-wizard-button [type]="'previous'">Back</clr-wizard-button>
+                                    <clr-wizard-button [type]="'next'">Next</clr-wizard-button>
+                                    <clr-wizard-button [type]="'finish'">Finish</clr-wizard-button>
+                                
+                                    <clr-wizard-page [clrWizardPageNextDisabled]="!section1_penjualan.valid">
+                                        <ng-template clrPageTitle>Inisiasi</ng-template>
+
+                                        <form clrForm class="clr-form-compact" [formGroup]="section1_penjualan">
+                                            <clr-input-container>        
+                                                <label class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2">Nama Program</label>                                      
+                                                <input class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrInput required formControlName="programName" />
+                                                <clr-control-error>This field is required!</clr-control-error>
+                                            </clr-input-container>
+                                            <clr-date-container>
+                                                <label class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2">Periode</label>
+                                                <input class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" type="date" clrDate formControlName="periodeFrom">
+                                            </clr-date-container>
+                                            <clr-date-container>
+                                                <label class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2"></label>
+                                                <input class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" type="date" clrDate formControlName="periodeTo">
+                                            </clr-date-container>  
+
+                                            <clr-select-container>
+                                                <label class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2">Lokasi</label>
+                                                <select class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrSelect (click)="select2Distro($event.target.value)" >
+                                                    <option selected value="sd">Semua Distro</option>
+                                                    <option value="pd">Pilih Distro</option>
+                                                </select>
+                                            </clr-select-container><br>
+                                            <ng-container *ngIf="selectdistro">
+                                                <div class="clr-row">
+                                                    <div class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2"></div>
+                                                    <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
+                                                        <ng-select2 
+                                                        formControlName="location" [data]="data"
+                                                        [width]="300"
+                                                        [options]="options" (click)="viewSelect($event)"></ng-select2>
+                                                    </div>
+                                                </div> <br>                                               
+                                            </ng-container>
+                                            
+                                            <div class="clr-row">
+                                                <div class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2">
+                                                    <clr-input-container>
+                                                        <label>Produk</label>
+                                                    </clr-input-container>
+                                                </div>
+                                                <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
+                                                    <ng-select2 
+                                                        formControlName="location" [data]="data"
+                                                        [width]="300"
+                                                        [options]="options" (click)="viewSelect($event)"></ng-select2>
+                                                </div>
+                                            </div>
+
+                                            <clr-select-container>
+                                                <label class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2">Kuota Promo</label>
+                                                <select class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" formControlName="kuotaPromo" clrSelect (click)="selectKuota($event.target.value)" >
+                                                    <option selected value="tab">Tidak Ada Batasan</option>
+                                                    <option value="db">Dengan Batasan</option>
+                                                </select>
+                                            </clr-select-container>
+                                             
+                                        </form>
+                                    </clr-wizard-page>
+                                
+                                    <clr-wizard-page>
+                                        <ng-template clrPageTitle>Page 2</ng-template>
+                                        ...
+                                    </clr-wizard-page>
+                                
+                                    <clr-wizard-page>
+                                        <ng-template clrPageTitle>Page 3</ng-template>
+                                        ...
+                                    </clr-wizard-page>
+                                </clr-wizard>
+
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                        </div>
+                    </div>
+                </div>
+                <!-- end card  -->                
+            </div>
+        </div>
+        <div class="card-footer">
+        </div>
+    </div>
+</div>
