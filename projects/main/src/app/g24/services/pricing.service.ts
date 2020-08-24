@@ -44,4 +44,14 @@ export class PricingService {
      let hargaLM = harga_baku * (1 + (margin / 100))
      return hargaLM;
   }
+
+  priceSouvenir(harga_baku:any, margin:any, denom:any, ppn_baku:any, ongkos:any){
+    let hargaDenom = harga_baku * denom
+    let hargaOngkos = hargaDenom + ongkos
+    let hargaMargin = hargaOngkos * (1 + (margin / 100))
+    let hargaPPN = hargaMargin * (1 + (ppn_baku / 100))
+    
+    let hargaSouvenir = hargaPPN
+    return hargaSouvenir;
+ }
 }

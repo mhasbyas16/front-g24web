@@ -167,14 +167,15 @@ export class LaporanPenjualanComponent implements OnInit {
       for (let isi of this.transactions) {
         this.totalP = 0;
         this.totalBerlian=0;
+        this.totalHargaLM=0;
         for (let hp of isi.product["PERHIASAN"]) {
           this.totalP = this.totalP + hp.harga;
         }
         for (let hb of isi.product["BERLIAN"]) {
           this.totalBerlian = this.totalBerlian + hb.harga;
         }
-        for (let hb of isi.product["LM"]) {
-          this.totalHargaLM = this.totalHargaLM + hb.harga;
+        for (let hLM of isi.product["LM"]) {
+          this.totalHargaLM = this.totalHargaLM + hLM.harga;
         }
         this.listTotalHarga.push({
           "idTransaction":isi.idTransaction,
