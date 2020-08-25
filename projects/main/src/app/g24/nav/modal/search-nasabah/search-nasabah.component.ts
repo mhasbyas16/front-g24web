@@ -24,6 +24,9 @@ export class SearchNasabahComponent implements OnInit {
   // form
   formSearch: FormGroup = null;
 
+  //changeGrid
+  perorangan : boolean 
+
   constructor(
     private clientType: ClientTypeService,
     private clientService: ClientService,
@@ -72,6 +75,10 @@ export class SearchNasabahComponent implements OnInit {
     let ItipeC = this.formSearch.get("tipeClient").value;
     let params="";
 
+    if (ItipeC == 2) {
+      
+    }
+    
     params ="?tipeClient.code="+ItipeC+"&tipeClient.code_encoded=int";
 
     if (Icif != "") {
@@ -129,4 +136,13 @@ export class SearchNasabahComponent implements OnInit {
     
   }
 
+  changeGrid(val){
+    this.listClient = null
+    if (val == 1) {
+      this.perorangan = true      
+    }else{
+      this.perorangan = false
+    }
+    console.debug(this.perorangan)
+  }
 }

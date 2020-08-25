@@ -255,14 +255,15 @@ export class ExportLaporanComponent implements OnInit {
                 width:"*",
                 columns:[
                   {width:70,text:mulia.detail.code},
-                  {width:25,text:' '+mulia.detail.vendor.name},
-                  {width:35,text:' '+mulia.detail['product-denom'].name},
-                  {width:25,text:' '+mulia.detail['product-cut'].name},
-                  {width:38,text:' '+mulia.detail['product-clarity'].name},
-                  // total berlian ,          
-                  {width:20,text:' '+mulia.kadar},
-                  {width:20,text:' '+mulia.berat},
-                  {width:40,text:'= '+mulia.detail.carat+' CT'},
+                  {width:50,text:' '+mulia.detail.vendor.name},
+                  {width:50,text:' '+mulia.detail['product-denom'].name},
+                  {width:80,text:'No: '+mulia.noSeri},
+                  // {width:25,text:' '+mulia.detail['product-cut'].name},
+                  // {width:38,text:' '+mulia.detail['product-clarity'].name},
+                  // total logam mulia ,          
+                  // {width:20,text:' '+mulia.kadar},
+                  // {width:20,text:' '+mulia.berat},
+                  // {width:40,text:'= '+mulia.detail.carat+' CT'},
                 ]
               },
               {
@@ -309,7 +310,7 @@ export class ExportLaporanComponent implements OnInit {
             '* harap bukti pembelian ini disimpan jangan sampai hilang/rusak'],style:'footer'},
           {
             columns:[
-              {width:45,text:[
+              {width:80,text:[
                 'Harga\n',
                 'Diskon\n',
                 'Voucher\n',
@@ -325,8 +326,8 @@ export class ExportLaporanComponent implements OnInit {
                 ':'],bold:true},
               {width:'*',text:[
                 ' Rp. '+hargaFormat+'\n',
-                ' Rp. '+hargaFormat+'\n',
-                ' Rp. '+hargaFormat+'\n',
+                ' Rp. - \n',
+                ' Rp. - \n',
                 '\n',
                 ' Rp. '+hargaFormat+'\n',
                 this.terbilangService.terbilang(Number(data.jumlahTerima))]}

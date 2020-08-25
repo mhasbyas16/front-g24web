@@ -353,6 +353,7 @@ export class CheckoutComponent implements OnInit {
   }
 
   diterimaUang(total){
+    total = total.replace(/,/g, '')
     this.diterima = total;
     this.kembali = total-this.totalBelanja;
   }
@@ -400,6 +401,10 @@ export class CheckoutComponent implements OnInit {
     if (!this.formData.valid) {
       this.toastr.error("form Not Completed","Transaction");
       console.debug(this.formData.getRawValue());
+      return;
+    }
+    if (this.kembali < 0) {
+      this.toastr.error("Nilai Tidak Cukup","Transaction");
       return;
     }    
     this.validModel = true;
@@ -454,6 +459,7 @@ export class CheckoutComponent implements OnInit {
   getClientData(val){
     if (val != null) {
       this.isiClientData = val;
+      
       this.formData.patchValue({
       cif: val["cif"],
       client: btoa(JSON.stringify(val)),

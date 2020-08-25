@@ -271,7 +271,7 @@ export class AddNasabahComponent implements OnInit {
       tipeClient_encoded: this.badanUsaha.get("tipeClient_encoded").value,
 
       // informasi cepat data nasabah badan usaha
-      namaBadanUsaha: this.badanUsaha.get("namaBU").value,
+      name: this.badanUsaha.get("namaBU").value,
       tglBerdiri: this.badanUsaha.get("tglBerdiri").value,
       kodeUnitKerja: this.badanUsaha.get("kodeUnitKerja").value,
       namaUnitKerja: this.badanUsaha.get("namaUnitKerja").value,
