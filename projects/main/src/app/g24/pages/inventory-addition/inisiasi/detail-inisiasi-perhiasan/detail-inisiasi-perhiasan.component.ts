@@ -15,13 +15,13 @@ import { VendorService } from '../../../../services/vendor.service';
 import { InisiasiService } from '../../../../services/stock/inisiasi.service';
 import { ProductCategoryService } from '../../../../services/product/product-category.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
-import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
 import { ProductJenisService } from '../../../../services/product/product-jenis.service';
 import { ProductPurityService } from '../../../../services/product/product-purity.service';
 import { ProductGoldColorService } from '../../../../services/product/product-gold-color.service';
 import { ProductDiamondColorService } from '../../../../services/product/product-diamond-color.service';
 import { ProductDenomService } from '../../../../services/product/product-denom.service';
 import { ProductClarityService } from '../../../../services/product/product-clarity.service';
+import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
 
 @Component({
   selector: 'detail-inisiasi-perhiasan',
@@ -89,6 +89,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   {
     return {
       nomor_nota : null, tgl_inisiasi : new Date().toISOString().split("T")[0],  harga_baku : 0, pajak : 0, 
+      create_date : new Date().toISOString().split("T")[0],
       'product-category' : null, vendor : null, tipe_bayar : null,
       total_berat : 0, total_piece : 0, total_baku_tukar : 0, total_gram_tukar : 0,
       total_ongkos : 0, total_pajak : 0, total_harga : 0,
@@ -99,7 +100,8 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   defaultItem() :any
   {
     return {
-      sku : null, 'product-purity' : null, 'product-jenis' : null, 'product-gold-color' : null, 
+      sku : null, 'product-purity' : null, 'product-gold-color' : null,
+      'product-jenis' : null,
       berat : 0, baku_tukar : 0, gram_tukar : 0, ongkos : 0, pajak : 0 }
   }
 
@@ -522,21 +524,25 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
       create_by : this.user.username,
       unit : this.user.unit.code,
       flag : "submit",
+      status_bayar : '1',
       __version : new Date().getMilliseconds(),
       __version_d : "0",
+      items : this.input['items']
       // vendor : null,
       // 'product-category' : null,
     };
     Object.assign(def, this.input);
     let init = DataTypeUtil.Encode(def);
+    
     this.inisiasiService.add(init).subscribe(output => {
       if(output == false)
       {
         this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + this.inisiasiService.message());
       } else {
-        this.toastr.success("Inisiasi Berhasil. Harap hubungi Kepala Departemen untuk melakukan Approval. No. PO : " + output.no_po, "Info", {timeOut : 10000, tapToDismiss : false});
+        this.toastr.success("Inisiasi Berhasil. Harap hubungi Kepala Departemen untuk melakukan Approval. No. PO : " + output.no_po, "Info", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
         console.log(output,'ts');
         this.input = this.defaultInput();
+        this.input.create_date = new Date().toISOString().split("T")[0];
       }
     });
     // console.log(output);
@@ -641,7 +647,8 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   onAddItem()
   {
     let tempItem = {
-      sku : null, 'product-purity' : null, 'product-jenis' : null, 'product-gold-color' : null, 
+      sku : null, 'product-purity' : null, 'product-gold-color' : null,
+      'product-jenis' : null,
       berat : 0, baku_tukar : 0, gram_tukar : 0, ongkos : 0, pajak : 0};
 
     
@@ -829,7 +836,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     
     let persenPajak = 2.00;
 
-    let pajakItem : number = (ongkos/1000) * berat * hpajak * persenPajak / 100; 
+    let pajakItem : number = (ongkos/1000) * berat * hpajak * persenPajak / 100;
     item.pajak = Math.trunc(pajakItem);
     console.log(pajakItem)
     return this.selected.pajak;

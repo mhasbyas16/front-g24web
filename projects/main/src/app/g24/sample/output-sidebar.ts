@@ -1,6 +1,14 @@
 export const management = [
       {_id: "0001", type: "menu", name : "Inventory Addition", icons: "yang bagus", color : "warna-warni", componentId : "x1001", parentId: "", module: "x1"},
       {_id: "0002",type: "sub-menu", name : "Inisiasi", icons: "yang bagus", color : "warna-warni", componentId : "1001", parentId: "x1001", module: "x1", menu : {_id: "0001"}},
+      {_id: "0002",type: "sub-menu", name : "Penerimaan", icons: "yang bagus", color : "warna-warni", componentId : "1005", parentId: "x1001", module: "x1", menu : {_id: "0001"}},
+      
+      {_id: "0001", type: "menu", name : "Inventory Management", icons: "yang bagus", color : "warna-warni", componentId : "x2", parentId: "", module: "x2"},
+      {_id: "0002",type: "sub-menu", name : "Mutasi", icons: "yang bagus", color : "warna-warni", componentId : "2001", parentId: "x2", module: "x2", menu : {_id: "0001"}},
+      {_id: "0002",type: "sub-menu", name : "Approval Mutasi", icons: "yang bagus", color : "warna-warni", componentId : "2005", parentId: "x2", module: "x2", menu : {_id: "0001"}},
+      {_id: "0002",type: "sub-menu", name : "Terima Mutasi", icons: "yang bagus", color : "warna-warni", componentId : "2004", parentId: "x2", module: "x2", menu : {_id: "0001"}},
+
+
       {_id: "0003", type: "menu", name : "Penjualan", icons: "shopping-cart", color : "warna-warni", componentId : "S10001", parentId: "", module: "pj"},
       {_id: "0003", type: "sub-menu", name : "Penjualan Distro", icons: "yang bagus", color : "warna-warni", componentId : "10001", parentId: "S10001", module: "pj",menu : {_id: "0003"}},
       // LAPORAN

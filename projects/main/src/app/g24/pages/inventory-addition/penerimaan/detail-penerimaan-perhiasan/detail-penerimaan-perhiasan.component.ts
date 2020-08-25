@@ -24,6 +24,12 @@ import { ProductDenomService } from '../../../../services/product/product-denom.
 import { ProductClarityService } from '../../../../services/product/product-clarity.service';
 import { DatePipe } from '@angular/common';
 import { StringHelper } from '../../../../lib/helper/string-helper';
+import { ModalOutlet } from '../../../../lib/helper/modal-outlet';
+import { DetailItemPenerimaanPerhiasanComponent } from './detail-item-penerimaan-perhiasan/detail-item-penerimaan-perhiasan.component';
+import { EPriviledge } from '../../../../lib/enums/epriviledge.enum';
+import { OrderStatus } from '../../../../lib/enum/order-status';
+import { OrdersModule } from '../../../orders/orders.module';
+import { IDetailCallbackListener } from '../../../../lib/base/idetail-callback-listener';
 
 @Component({
   selector: 'detail-penerimaan-perhiasan',
@@ -38,13 +44,15 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
 
   // @ViewChild('inisiasi', {static: false}) inisiasi : NgForm;
   @ViewChild('product') product : ElementRef;
+  @ViewChild('item_terima') modalItemTerima : DetailItemPenerimaanPerhiasanComponent;
 
   btoa = btoa;
   parseInt = parseInt;
   console = console;
   Object = Object;
   
-  user : any = {};
+  user : any = this.session.getUser();
+  unit : any = this.session.getUnit();
 
   datas : any[] = [];
 
@@ -252,7 +260,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
       create_date_end : new FormControl(""),
       tgl_bayar_start : new FormControl(""),
       tgl_bayar_end : new FormControl(""),
-      flag : new FormControl("")
+      order_status : new FormControl("")
 
     });
     this.searchFG = fg
@@ -359,8 +367,6 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
 
   onProductChanged()
   {
-    this.input['create_date'] = new Date().toISOString().split("T")[0];
-
     for(let i = 0; i < this.products.length; i++)
     {
       let perhiasan = this.products[i];
@@ -381,7 +387,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
     window['fg'] = this.searchFG;
     window['ctrl'] = this.searchFG.controls;
     console.log(this.searchFG.controls)
-    if(!this.searchFG.get("flag").valid || !this.searchFG.get("create_date_start").valid)
+    if(!this.searchFG.get("order_status").valid || !this.searchFG.get("create_date_start").valid)
     {
       this.toastr.warning("Mohon isi semua data yang mandatory !!", "Form incomplete!");
       return;
@@ -412,11 +418,11 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
     if((create_start != "" && create_start != null) && (create_end != "" && create_end != null))
     {
       create_end = StringHelper.StandardFormatDate("/", create_end, "MM/dd/yyyy");
-      create_p += "&_between=create_date&_start="+create_start+"&_end="+create_end;
+      create_p += "&_between=tgl_inisiasi&_start="+create_start+"&_end="+create_end;
     } 
     else if((create_start != "" || bayar_start != null))
     {
-      create_p += "&create_date="+create_start;
+      create_p += "&tgl_inisiasi="+create_start;
     }
 
     let bayar_p = "";
@@ -435,29 +441,30 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
       bayar_p += "&tgl_bayar="+bayar_start;
     }
 
-    let flag = this.searchFG.get("flag").value;
-    console.log(flag);
-    let flag_p = "";
-    switch(flag)
+    let order_status = this.searchFG.get("order_status").value;
+    console.log(order_status);
+    let order_status_p = "";
+    switch(order_status)
     {
       case '0':
-        flag_p = "&flag=submit";
+        order_status_p = "&order_status="+ OrderStatus.SUBMIT.code;
         break;
 
       case '1':
-        flag_p = "&flag=terima_partial";
+        order_status_p = "&order_status=" + OrderStatus.TERIMA_PARTIAL.code;
         break;
 
       case '2':
-        flag_p = "&flag=terima_full";
+        order_status_p = "&order_status=" + OrderStatus.TERIMA_FULL.code;
         break;
 
       default:
-        this.toastr.error("Flag tidak diketahui", "Error");
+        this.toastr.error("Status Order tidak diketahui", "Error");
         return;
     }
 
-    let params = "?product-category.code=c00&status_bayar=1" + bayar_p + create_p + flag_p;
+    let params = "?product-category.code=c00&status_bayar=1" + bayar_p + create_p + order_status_p;
+    // params += "&unit="+ this.unit.code;
     
     this.loading = true;
     this.inisiasiService.list(params).subscribe(output =>
@@ -501,66 +508,6 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
     return true;
   }
 
-  async doSave()
-  {
-    if(this.validateInput()) return;
-
-    if(this.input.items?.length <= 0) {
-      this.toastr.warning("Tidak ada item pada Tabel Input Detail.", "Peringatan!");
-      return;
-    }
-
-
-    let now : Date = new Date;
-    let sNow = now.toISOString().split("T");
-    let date = sNow[0];
-    let date_split = date.split("-");
-    let time = sNow[1].split(".")[0];
-
-    let no = this.input['no_po'];
-    console.log(no, "no")
-
-    if(this.user.unit == null)
-    {
-      this.toastr.warning("Unit dari User belum di-Assign. Harap hubungi IT Support/Helpdesk.", "Error!");
-      return;
-    }
-
-    let count = await this.inisiasiService.count("").toPromise();
-    console.log(count);
-    let countString : string = count.count.toString();
-    let countPadded: string = countString.padStart(5, '0').toString();
-
-    let PO = "PO" + this.user.unit.code + date_split[0].substring(1, 3) + date_split[1] + countPadded.toString();
-
-    let def = 
-    {
-      no_po : PO,//"IN0000512",
-      create_date : this.input['create_date'],
-      create_time : time,
-      create_by : this.user.username,
-      unit : this.user.unit.code,
-      flag : "submit",
-      __version : new Date().getMilliseconds(),
-      __version_d : "0",
-      // vendor : null,
-      // 'product-category' : null,
-    };
-    Object.assign(def, this.input);
-    let init = DataTypeUtil.Encode(def);
-
-    this.inisiasiService.add(init).subscribe(output => {
-      if(output == false)
-      {
-        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + this.inisiasiService.message());
-      } else {
-        this.toastr.success("Inisiasi Berhasil. Harap hubungi Kepala Departemen untuk melakukan Approval. No. PO : " + PO, "Info", {timeOut : 10000, tapToDismiss : false});
-        this.input = this.defaultInput();
-      }
-    });
-    // console.log(output);
-  }
-
   Debug()
   {
     console.log(this.input, "model", this.selected);
@@ -580,7 +527,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
 
   onEdit()
   {
-    if(this.selected.flag == "0") return;
+    if(this.selected.order_status == "0") return;
     // if(this.selected.length != 1) return;
     // switch(this.selected.product_code)
     // {
@@ -874,15 +821,61 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
 
   onTerima()
   {
-    if(this.selected.flag == 'terima_full')
+    if(this.selected.order_status == 'terima_full')
     {
-      this.toastr.show("Item sudah di Terima Full.", "Terima");
+      this.toastr.show("PO sudah di Terima Full.", "Terima says");
       return;
     }
+
+    if(this.selected == null || Object.keys(this.selected).length === 0)
+    {
+      this.toastr.warning("Mohon pilih Item.");
+      return;
+    }
+
+    this.toastr.info("Loading...");
+
+    // harus nya cek dulu ke DB user punya Priviledge kah. TBD
+
+    this.modalItemTerima.setMode(EPriviledge.UPDATE);
+    let tis = this;
+    this.modalItemTerima.setParentListener(tis);
+    this.modalItemTerima.setId(this.selected.no_po);
   }
 
   onLihat()
   {
+    console.log(this.selected)
+    if(this.selected == null || Object.keys(this.selected).length === 0)
+    {
+      this.toastr.warning("Mohon pilih Item.");
+      return;
+    }
+
+    this.toastr.info("Loading...");
+    
+    this.modalItemTerima.setMode(EPriviledge.READ);
+    let tis = this;
+    this.modalItemTerima.setParentListener(tis);
+    this.modalItemTerima.setId(this.selected.no_po);
+  }
+
+  doReset()
+  {
+    while(this.datas.length > 0) this.datas.pop();
+  }
+
+  public onAfterAdd(any: any) {
+    this.doReset();
+  }
+  public onAfterUpdate(any: any) {
+    this.doReset();
+  }
+  public onAfterRead() {
+    
+  }
+
+  public onCancel() {
 
   }
 }

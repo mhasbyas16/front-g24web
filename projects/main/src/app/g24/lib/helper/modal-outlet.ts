@@ -46,7 +46,14 @@ export class ModalOutlet {
         this._modals_.pop().destroy();;
     }
 
-    public static LoadModel(cls : any, resolver : ComponentFactoryResolver, container : ViewContainerRef) : ComponentRef<any>
+    /**
+     * Secara otomatis tambah Modal dengan dasar2 fungsional Modal umum 
+     * 
+     * @param cls - ComponentClass yang akan di Load
+     * @param resolver - dari ComponentClass yang akan di Load
+     * @param container - dimana Modal akan ditampilkan
+     */
+    public static LoadModal(cls : any, resolver : ComponentFactoryResolver, container : ViewContainerRef) : ComponentRef<any>
     {
         // these creates a Component Instance by a supplied class2Create
         console.log(cls, 'cls');
