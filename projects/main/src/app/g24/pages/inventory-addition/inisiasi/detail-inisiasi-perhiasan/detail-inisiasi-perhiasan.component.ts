@@ -89,6 +89,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   {
     return {
       nomor_nota : null, tgl_inisiasi : new Date().toISOString().split("T")[0],  harga_baku : 0, pajak : 0, 
+      create_date : new Date().toISOString().split("T")[0],
       'product-category' : null, vendor : null, tipe_bayar : null,
       total_berat : 0, total_piece : 0, total_baku_tukar : 0, total_gram_tukar : 0,
       total_ongkos : 0, total_pajak : 0, total_harga : 0,
@@ -523,6 +524,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
       create_by : this.user.username,
       unit : this.user.unit.code,
       flag : "submit",
+      status_bayar : '1',
       __version : new Date().getMilliseconds(),
       __version_d : "0",
       items : this.input['items']
@@ -540,6 +542,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
         this.toastr.success("Inisiasi Berhasil. Harap hubungi Kepala Departemen untuk melakukan Approval. No. PO : " + output.no_po, "Info", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
         console.log(output,'ts');
         this.input = this.defaultInput();
+        this.input.create_date = new Date().toISOString().split("T")[0];
       }
     });
     // console.log(output);
@@ -833,7 +836,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     
     let persenPajak = 2.00;
 
-    let pajakItem : number = (ongkos/1000) * berat * hpajak * persenPajak / 100; 
+    let pajakItem : number = (ongkos/1000) * berat * hpajak * persenPajak / 100;
     item.pajak = Math.trunc(pajakItem);
     console.log(pajakItem)
     return this.selected.pajak;

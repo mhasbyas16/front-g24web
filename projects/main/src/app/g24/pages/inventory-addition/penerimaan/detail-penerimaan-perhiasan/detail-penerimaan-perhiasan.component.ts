@@ -27,6 +27,9 @@ import { StringHelper } from '../../../../lib/helper/string-helper';
 import { ModalOutlet } from '../../../../lib/helper/modal-outlet';
 import { DetailItemPenerimaanPerhiasanComponent } from './detail-item-penerimaan-perhiasan/detail-item-penerimaan-perhiasan.component';
 import { EPriviledge } from '../../../../lib/enums/epriviledge.enum';
+import { OrderStatus } from '../../../../lib/enum/order-status';
+import { OrdersModule } from '../../../orders/orders.module';
+import { IDetailCallbackListener } from '../../../../lib/base/idetail-callback-listener';
 
 @Component({
   selector: 'detail-penerimaan-perhiasan',
@@ -48,7 +51,8 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
   console = console;
   Object = Object;
   
-  user : any = {};
+  user : any = this.session.getUser();
+  unit : any = this.session.getUnit();
 
   datas : any[] = [];
 
@@ -363,8 +367,6 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
 
   onProductChanged()
   {
-    this.input['create_date'] = new Date().toISOString().split("T")[0];
-
     for(let i = 0; i < this.products.length; i++)
     {
       let perhiasan = this.products[i];
@@ -445,15 +447,15 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
     switch(order_status)
     {
       case '0':
-        order_status_p = "&order_status=submit";
+        order_status_p = "&order_status="+ OrderStatus.SUBMIT.code;
         break;
 
       case '1':
-        order_status_p = "&order_status=terima_partial";
+        order_status_p = "&order_status=" + OrderStatus.TERIMA_PARTIAL.code;
         break;
 
       case '2':
-        order_status_p = "&order_status=terima_full";
+        order_status_p = "&order_status=" + OrderStatus.TERIMA_FULL.code;
         break;
 
       default:
@@ -462,6 +464,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
     }
 
     let params = "?product-category.code=c00&status_bayar=1" + bayar_p + create_p + order_status_p;
+    // params += "&unit="+ this.unit.code;
     
     this.loading = true;
     this.inisiasiService.list(params).subscribe(output =>
@@ -503,66 +506,6 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
     }
 
     return true;
-  }
-
-  async doSave()
-  {
-    if(this.validateInput()) return;
-
-    if(this.input.items?.length <= 0) {
-      this.toastr.warning("Tidak ada item pada Tabel Input Detail.", "Peringatan!");
-      return;
-    }
-
-
-    let now : Date = new Date;
-    let sNow = now.toISOString().split("T");
-    let date = sNow[0];
-    let date_split = date.split("-");
-    let time = sNow[1].split(".")[0];
-
-    let no = this.input['no_po'];
-    console.log(no, "no")
-
-    if(this.user.unit == null)
-    {
-      this.toastr.warning("Unit dari User belum di-Assign. Harap hubungi IT Support/Helpdesk.", "Error!");
-      return;
-    }
-
-    let count = await this.inisiasiService.count("").toPromise();
-    console.log(count);
-    let countString : string = count.count.toString();
-    let countPadded: string = countString.padStart(5, '0').toString();
-
-    let PO = "PO" + this.user.unit.code + date_split[0].substring(1, 3) + date_split[1] + countPadded.toString();
-
-    let def = 
-    {
-      no_po : PO,//"IN0000512",
-      create_date : this.input['create_date'],
-      create_time : time,
-      create_by : this.user.username,
-      unit : this.user.unit.code,
-      order_status : "submit",
-      __version : new Date().getMilliseconds(),
-      __version_d : "0",
-      // vendor : null,
-      // 'product-category' : null,
-    };
-    Object.assign(def, this.input);
-    let init = DataTypeUtil.Encode(def);
-
-    this.inisiasiService.add(init).subscribe(output => {
-      if(output == false)
-      {
-        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + this.inisiasiService.message());
-      } else {
-        this.toastr.success("Inisiasi Berhasil. Harap hubungi Kepala Departemen untuk melakukan Approval. No. PO : " + PO, "Info", {timeOut : 10000, tapToDismiss : false});
-        this.input = this.defaultInput();
-      }
-    });
-    // console.log(output);
   }
 
   Debug()
@@ -880,7 +823,13 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
   {
     if(this.selected.order_status == 'terima_full')
     {
-      this.toastr.show("Item sudah di Terima Full.", "Terima");
+      this.toastr.show("PO sudah di Terima Full.", "Terima says");
+      return;
+    }
+
+    if(this.selected == null || Object.keys(this.selected).length === 0)
+    {
+      this.toastr.warning("Mohon pilih Item.");
       return;
     }
 
@@ -889,6 +838,8 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
     // harus nya cek dulu ke DB user punya Priviledge kah. TBD
 
     this.modalItemTerima.setMode(EPriviledge.UPDATE);
+    let tis = this;
+    this.modalItemTerima.setParentListener(tis);
     this.modalItemTerima.setId(this.selected.no_po);
   }
 
@@ -903,7 +854,28 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
 
     this.toastr.info("Loading...");
     
-    this.modalItemTerima.setId(this.selected.no_po);
     this.modalItemTerima.setMode(EPriviledge.READ);
+    let tis = this;
+    this.modalItemTerima.setParentListener(tis);
+    this.modalItemTerima.setId(this.selected.no_po);
+  }
+
+  doReset()
+  {
+    while(this.datas.length > 0) this.datas.pop();
+  }
+
+  public onAfterAdd(any: any) {
+    this.doReset();
+  }
+  public onAfterUpdate(any: any) {
+    this.doReset();
+  }
+  public onAfterRead() {
+    
+  }
+
+  public onCancel() {
+
   }
 }

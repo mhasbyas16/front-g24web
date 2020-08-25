@@ -7,7 +7,17 @@ import { ToastrService } from 'ngx-toastr';
 import { FlagProduct, TipeStock, LocationProduct } from 'projects/main/src/app/g24/lib/enum/flag-product';
 import { VendorService } from 'projects/main/src/app/g24/services/vendor.service';
 import { EPriviledge } from 'projects/main/src/app/g24/lib/enums/epriviledge.enum';
+import { OrderStatus } from 'projects/main/src/app/g24/lib/enum/order-status';
+import { ProductService } from 'projects/main/src/app/g24/services/product/product.service';
+import { DataTypeUtil } from 'projects/main/src/app/g24/lib/helper/data-type-util';
+import { SessionService } from 'projects/platform/src/app/core-services/session.service';
+import { IDetailCallbackListener } from 'projects/main/src/app/g24/lib/base/idetail-callback-listener';
+import { OrdersModule } from '../../../../orders/orders.module';
+import { DetailPenerimaanPerhiasanComponent } from '../detail-penerimaan-perhiasan.component';
 
+/**
+ * Penerimaan perhiasan baru isi ke stock/product
+ */
 @Component({
   selector: 'detail-item-penerimaan-perhiasan',
   templateUrl: './detail-item-penerimaan-perhiasan.component.html',
@@ -18,12 +28,19 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
   constructor
   (
     private toastr : ToastrService,
+    private session : SessionService,
 
     private inisiasiService : InisiasiService,
     private kadarService : ProductPurityService,
     private jenisService : ProductJenisService,
-    private goldColorService : ProductGoldColorService
+    private goldColorService : ProductGoldColorService,
+    private productService : ProductService
   ) { }
+
+  parentListener : IDetailCallbackListener;
+  
+  user : any = this.session.getUser();
+  unit : any = this.session.getUnit();
 
   EPriviledge = EPriviledge;
 
@@ -92,7 +109,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
       return;
     }
 
-    this.inisiasiService.list("?product-category.code=c00&no_po="+id).subscribe(output => 
+    this.inisiasiService.list("?_or=product-category.code=c00&no_po="+id).subscribe(output => 
     {
       if(output != false)
       {
@@ -123,6 +140,12 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     })
   }
 
+  public setParentListener(listener : IDetailCallbackListener)
+  {
+    this.parentListener = listener;
+    console.log(listener);
+  }
+
   private Open() {
     this.isOpened = true;
   }
@@ -135,6 +158,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
   doReset()
   {
     this.inisiasi = null;
+    this.parentListener = null;
   }
 
   ngOnInit(): void {
@@ -157,7 +181,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
       "product-jenis" : null, "product-category" : null, "product-purity" : null, "product-gold-color" : null,
       berat : 0.00, baku_tukar : 0.0, ongkos : 0.0,
       tipe_stock : "stock", vendor : null, flag : "stock", location : "",
-      no_po : "", no_item_po : 0,
+      no_po : "", no_item_po : 0, no_index_products : 0,
       hpp_inisiasi : 0, hpp : 0
 
     }
@@ -172,6 +196,14 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
   onContentFound(content : any)
   {
     this.inisiasi = content;
+
+    if(this.inisiasi.order_status == OrderStatus.TERIMA_FULL.code && this.mode == EPriviledge.UPDATE)
+    {
+      this.doReset();
+      this.Close();
+      this.toastr.show("PO sudah di Terima Full.", "Terima says");
+      return;
+    }
     this.LoadAllParameter();
 
     this.fillItemsWithProducts();
@@ -184,15 +216,42 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     this.ts = index
   }
 
-  onBeratChanged(productIndex, itemsOfIndex)
+  onBeratChanged(productIndex, itemIndex)
   {
-    console.log("pd", productIndex, "it", itemsOfIndex);
-    console.log("berat", this.inisiasi.items[itemsOfIndex].products[productIndex].berat)
+    this.hitungHPP(productIndex, itemIndex);
   }
 
-  onGramTukarChanged(productIndex, itemsIndex)
+  onGramTukarChanged(productIndex, itemIndex)
   {
-    console.log("gt", this.inisiasi.items[itemsIndex].products[productIndex]['gram_tukar']);
+    this.hitungHPP(productIndex, itemIndex);
+  }
+
+  hitungHPP(productIndex, itemIndex)
+  {
+    let item = this.inisiasi.items[itemIndex];
+    let product = item.products[productIndex];
+
+    let hbaku = this.inisiasi.harga_baku;
+    let berat = product.berat;
+    let kadar = product['product-purity'].name;
+    let ongkos = product.ongkos;
+    let persenPPN = 2.00;
+
+    let bahan_baku = Number(hbaku) * Number(berat) * (Number(kadar)/1000);
+    let ongkos_desain = Number(hbaku) * (Number(ongkos)/1000) * berat;
+    let ppn_desain = ongkos_desain * (persenPPN/100);
+    ppn_desain = Math.trunc(ppn_desain);
+
+    let hpp = bahan_baku + ongkos_desain + ppn_desain;
+
+    product.hpp = hpp;
+    product.hpp_inisiasi = hpp;
+
+    if(isNaN(product.hpp))
+    {
+      this.toastr.error("HPP is NaN");
+      return;
+    }
   }
 
   onAddProduct(itemsIndex)
@@ -205,6 +264,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     def['vendor'] = this.inisiasi['vendor'];
     def["product-purity"] = item['product-purity'];
     def["product-gold-color"] = item['product-gold-color'];
+    def['product-jenis'] = item['product-jenis'];
     def.baku_tukar = item['baku_tukar'] / 10.0;
     def.no_po = this.inisiasi['no_po'];
     def.ongkos = item['ongkos'];
@@ -260,13 +320,15 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
         def['vendor'] = this.inisiasi['vendor'];
         def["product-purity"] = item['product-purity'];
         def["product-gold-color"] = item['product-gold-color'];
+        def['product-jenis'] = item['product-jenis'];
         def.baku_tukar = item['baku_tukar'] / 10.0;
         def.no_po = this.inisiasi['no_po'];
         def.ongkos = item['ongkos'];
         def.flag = FlagProduct.STOCK.code;
         def.tipe_stock = TipeStock.STOCK.code;
         def.location = LocationProduct.PUSAT.code;
-        def.no_item_po = p;
+        def.no_item_po = i;
+        def.no_index_products = p;
 
         products.push(def);
       }
@@ -295,7 +357,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
       berat += pBerat;
     }
 
-    return berat;
+    return Number(berat.toFixed(2));
   }
 
   beratStyleValid(item)
@@ -328,7 +390,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
       gram_tukar += pGramTukar;
     }
 
-    return gram_tukar;
+    return Number(gram_tukar.toFixed(2));
   }
 
   gramTukarStyleValid(item)
@@ -344,7 +406,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
       value += Number(pGramTukar);
     }
     
-    if(value == item.gram_tukar) return {};
+    if(Number(value.toFixed(2)) == item.gram_tukar) return {};
 
     return {'text-decoration': 'underline','text-decoration-color': 'red', 'color' : 'red'};
   }
@@ -397,12 +459,59 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     return true;
   }
 
-  validateItems()
+  validateItems() : boolean
   {
+    let items = this.inisiasi.items;
+    for(let i = 0; i < items; i++)
+    {
+      let item = items[i];
+      if(!this.validateBeratItem(item, i))
+      {
+        return false;
+      }
 
+      if(!this.validateGramTukarItem(item, i))
+      {
+        return false;
+      }
+
+      if(item.jenis == null || item.jenis == "")
+      {
+        this.toastr.warning("'Jenis' barang pada Bulk Item nomor :" + i + " belum diisi.");
+        return false;
+      }
+    }
+
+    return true;
   }
 
-  doSave()
+  validateInisiasi() : boolean
+  {
+    let items = this.inisiasi.items;
+    for(let i = 0; i < items; i++)
+    {
+      let item = items[i];
+      if(!this.validateBeratItem(item, i))
+      {
+        return false;
+      }
+
+      if(!this.validateGramTukarItem(item, i))
+      {
+        return false;
+      }
+
+      if(item.jenis == null || item.jenis == "")
+      {
+        this.toastr.warning("'Jenis' barang pada Bulk Item nomor :" + i + " belum diisi.");
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  async doSave()
   {
     if(this.mode == EPriviledge.READ)
     {
@@ -410,16 +519,98 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
       return;
     }
 
-    if(!validateItems())
+    if(!this.validateItems())
     {
       return;
     }
 
-    if(!validateInisiasi())
+    if(!this.validateInisiasi())
     {
       return;
     }
 
-    this.inisiasi.order_status
+    this.inisiasi.order_status = OrderStatus.TERIMA_FULL.code;
+    this.inisiasi.update_date = new Date().toISOString().split("T")[0];
+    this.inisiasi.update_by = this.user.username;
+    this.inisiasi['tgl_terima'] = this.inisiasi.update_date;
+    this.inisiasi.terima_by = this.user.username;
+    let items = this.inisiasi.items;
+    let productNoId = [];
+    let ids = [];
+    console.log(items);
+    
+    for(let i = 0; i < items.length; i++)
+    {
+      let products = items[i].products;
+      productNoId.push(...products);
+    }
+
+    let itemProduct : Map<string, number> = new Map<string,number>();
+    
+    console.log(productNoId);
+
+    let failedIndex : any[] = [];
+    let someFailed : boolean = false;
+    for(let i =0; i < productNoId.length; i++)
+    {
+      let product = productNoId[i];
+      let fail = {itemIndex : product.no_item_po, productIndex: product.no_index_products}
+      delete product._id;
+      DataTypeUtil.Encode(product);
+
+      itemProduct.set(fail.itemIndex + "," + fail.productIndex, product);
+
+      let result = await this.productService.add(product).toPromise();
+      if(result == false)
+      {
+        this.toastr.error("Barang nomor: " + fail.productIndex + " dengan nomor Bulk: " + fail.itemIndex + " gagal masuk.");
+        continue;
+      } else {
+        let product = itemProduct.get(fail.itemIndex + "," + fail.productIndex);
+        Object.assign(product, result);
+        itemProduct.set(fail.itemIndex + "," + fail.productIndex, result);
+        console.log(result);
+      }
+    }
+
+    console.log(this.inisiasi);
+    let tempInisiasi = {}
+    Object.assign(tempInisiasi, this.inisiasi);
+    DataTypeUtil.Encode(tempInisiasi);
+
+    let inisiasi = await this.inisiasiService.update(tempInisiasi).toPromise();
+    if(inisiasi == false)
+    {
+      this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk.");
+      return;
+    } else {
+      Object.assign(this.inisiasi, tempInisiasi);
+      console.log(this.inisiasi);
+      this.parentListener.onAfterUpdate(this.inisiasi._id);
+      this.toastr.success("PO berhasil diterima.");
+      this.doReset();
+      this.Close();
+    }
+
+    // HERE BATCH_ADD
+    // let counter : number = this.inisiasi.total_piece;
+    // let enc = {batch_counter : counter};
+    // for(let i = 0; i < counter; i++)
+    // {
+    //   delete productNoId[i]._id;
+    //   enc[i+1] = productNoId[i];
+    // }
+
+    // DataTypeUtil.Encode(enc);
+    // console.log('enc', enc);
+
+    // let result = await this.productService.batchAdd(enc).toPromise();
+    // console.log(result);
+    
+    // for(let i = 0; i < result.length; i++)
+    // {
+    //   let product = result[i];
+      
+    // }
   }
 }

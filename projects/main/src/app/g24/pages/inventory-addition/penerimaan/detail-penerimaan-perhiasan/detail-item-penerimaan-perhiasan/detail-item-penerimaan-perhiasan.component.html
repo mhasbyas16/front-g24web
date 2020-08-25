@@ -23,9 +23,9 @@
                 <clr-dg-column>
                     Kadar
                 </clr-dg-column>
-                <!-- <clr-dg-column>
+                <clr-dg-column>
                     Jenis
-                </clr-dg-column> -->
+                </clr-dg-column>
                 <clr-dg-column>
                     Warna
                 </clr-dg-column>
@@ -51,7 +51,7 @@
                 <clr-dg-row *clrDgItems="let data of (getItemsOfInisiasi() || []); let itemsIndex = index;" [clrDgItem]="data">
                     <clr-dg-cell>{{data?.sku}} </clr-dg-cell>
                     <clr-dg-cell>{{GetDisplayValue(data['product-purity'])}}</clr-dg-cell>
-                    <!-- <clr-dg-cell>{{GetDisplayValue(data['product-jenis'])}}</clr-dg-cell> -->
+                    <clr-dg-cell>{{GetDisplayValue(data['product-jenis'])}}</clr-dg-cell>
                     <clr-dg-cell>{{GetDisplayValue(data['product-gold-color'])}}</clr-dg-cell>
                     <clr-dg-cell>{{data?.berat}} <span [ngStyle]="beratStyleValid(data)">({{getTotalBeratOfItem(data)}})</span></clr-dg-cell>
                     <clr-dg-cell>{{data?.pieces}}</clr-dg-cell>
@@ -92,14 +92,15 @@
                                         <td>{{GetDisplayValue(product.vendor)}}</td>
                                         <td>{{GetDisplayValue(product['product-purity'])}}</td>
                                         <td>{{GetDisplayValue(product['product-gold-color'])}}</td>
-                                        <td>
+                                        <td>{{GetDisplayValue(product['product-jenis'])}}</td>
+                                        <!-- <td>
                                             <select [disabled]="mode == EPriviledge.READ ? true : null" [(ngModel)]="product['product-jenis']" [ngModelOptions]="{standalone:true}" #vendor class="clr-select" name="vendor">
                                                 <option value=null></option>
                                                 <ng-container *ngFor="let jenis of jeniss">
                                                     <option [ngValue]="jenis">{{jenis.name}}</option>
                                                 </ng-container>
                                             </select>
-                                        </td>
+                                        </td> -->
                                         <td><input [disabled]="mode == EPriviledge.READ ? true : null" [(ngModel)]="product['berat']" (ngModelChange)="onBeratChanged(productIndex, itemsIndex)" type="number" min="0.00" step="0.00" required /></td>
                                         <td><input [disabled]="mode == EPriviledge.READ ? true : null" [(ngModel)]="product['gram_tukar']" (ngModelChange)="onGramTukarChanged(productIndex, itemsIndex)" type="number" min="0.00" step="0.00" required /></td>
                                         <td>{{product?.ongkos}}</td>
@@ -127,6 +128,6 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" [disabled]="mode == EPriviledge.READ">Simpan</button>
+        <button class="btn btn-primary" [disabled]="mode == EPriviledge.READ" (click)="doSave()">Simpan</button>
     </div>
 </clr-modal>
