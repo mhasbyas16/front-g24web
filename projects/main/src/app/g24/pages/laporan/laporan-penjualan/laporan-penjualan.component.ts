@@ -31,6 +31,7 @@ export class LaporanPenjualanComponent implements OnInit {
   totalP=0;
   totalBerlian=0;
   totalHargaLM=0;
+  totalHargaGS=0
   listTotalHarga=[];
 
   //
@@ -168,6 +169,7 @@ export class LaporanPenjualanComponent implements OnInit {
         this.totalP = 0;
         this.totalBerlian=0;
         this.totalHargaLM=0;
+        this.totalHargaGS=0;
         for (let hp of isi.product["PERHIASAN"]) {
           this.totalP = this.totalP + hp.harga;
         }
@@ -177,11 +179,15 @@ export class LaporanPenjualanComponent implements OnInit {
         for (let hLM of isi.product["LM"]) {
           this.totalHargaLM = this.totalHargaLM + hLM.harga;
         }
+        for (let hGS of isi.product["GS"]) {
+          this.totalHargaGS = this.totalHargaGS + hGS.harga;
+        }
         this.listTotalHarga.push({
           "idTransaction":isi.idTransaction,
           "hargaP":this.totalP,
           "hargaB":this.totalBerlian,
-          "hargaLM":this.totalHargaLM
+          "hargaLM":this.totalHargaLM,
+          "hargaGS":this.totalHargaGS
         });
       }
      // console.debug(this.listTotalHarga ,"alkjfdljajkladkljadkla")

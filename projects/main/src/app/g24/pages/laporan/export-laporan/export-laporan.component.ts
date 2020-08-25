@@ -296,7 +296,65 @@ export class ExportLaporanComponent implements OnInit {
         },'\n'
       ]);
     }
-    
+
+    //GS
+    if (data.product.GS.length != 0){
+      this.innerDoc['content'].push([
+        {
+          style:'head', alignment:'left',text:'Mulia'
+        }
+      ]);
+      for (let gs of data.product.GS) {
+        //console.debug(data.product.PERHIASAN.length,product,"list product");  
+        this.innerDoc['content'].push([
+          {
+            style:'detail',
+            columns:[
+              {
+                width:"*",
+                columns:[
+                  {width:70,text:gs.detail.code},
+                  {width:50,text:' '+gs.detail.vendor.name},
+                  {width:50,text:' '+gs.detail['product-denom'].name},
+                  {width:50,text:' '+gs.detail['product-series'].name},
+                  // {width:25,text:' '+mulia.detail['product-cut'].name},
+                  // {width:38,text:' '+mulia.detail['product-clarity'].name},
+                  // total logam mulia ,          
+                  // {width:20,text:' '+mulia.kadar},
+                  // {width:20,text:' '+mulia.berat},
+                  // {width:40,text:'= '+mulia.detail.carat+' CT'},
+                ]
+              },
+              {
+                width:250,
+                columns:[
+                  {text:'Harga : Rp. '+new Intl.NumberFormat(['ban', 'id']).format(gs.harga)},
+                  {
+                    table:{
+                      widths: [85],
+                      body:[
+                        [{fillColor: '#ede5ce',alignment: 'center',fontSize:1,text:"tanggal buyback"}]
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]);   
+      }
+      this.innerDoc['content'].push([
+        {
+          style:'detail',
+          fontSize: 7,
+          columns:[
+            {text:'Diskon :'},
+            {text:'Voucher :'},
+            {text:'Harga :'}
+          ]
+        },'\n'
+      ]);
+    }
 
     // footer content
     this.innerDoc['content'].push([

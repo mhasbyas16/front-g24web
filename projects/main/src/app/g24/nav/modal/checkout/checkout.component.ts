@@ -247,6 +247,7 @@ export class CheckoutComponent implements OnInit {
     this.gs;  
     this.berlian
     this.dinar;
+    console.debug(this.gs,"wew")
   }
 
   // pembayaran
@@ -398,6 +399,7 @@ export class CheckoutComponent implements OnInit {
 
 //
   transaction(){
+    console.debug( this.gs,"wew")    
     if (!this.formData.valid) {
       this.toastr.error("form Not Completed","Transaction");
       console.debug(this.formData.getRawValue());
@@ -406,7 +408,8 @@ export class CheckoutComponent implements OnInit {
     if (this.kembali < 0) {
       this.toastr.error("Nilai Tidak Cukup","Transaction");
       return;
-    }    
+    }
+    console.debug( this.gs,"wew")    
     this.validModel = true;
   }
 
@@ -425,6 +428,8 @@ export class CheckoutComponent implements OnInit {
       "name" : "Penjualan Tunai Cash and Carry",
       "status" : 1
     }));
+    let nomT = data["nominalTransaksi"] 
+    data["nominalTransaksi"] = nomT.replace(/,/g, '')
     data["transaction-type_encoded"]= "base64";
     delete data["cif"];
     delete data["namaPemasar"];
