@@ -34,12 +34,14 @@
                                         <clr-control-helper>*</clr-control-helper>
                                     </clr-input-container>                                     
                                 </div>
+                                <ng-container *ngIf ="perorangan" >
                                 <div class="clr-col-lg-12">
                                     <clr-date-container>
                                         <label>Tanggal Lahir</label>
                                         <input clrDate type="date" formControlName="tglLahir" readonly> 
                                     </clr-date-container>
                                 </div>
+                                </ng-container>
                                 <!-- <div class="clr-col-lg-12">
                                     <clr-input-container>
                                         <label>Nama Ibu Kandung</label>

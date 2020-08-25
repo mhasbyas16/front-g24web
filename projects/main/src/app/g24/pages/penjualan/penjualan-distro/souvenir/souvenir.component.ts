@@ -209,7 +209,7 @@ export class SouvenirComponent implements OnInit {
     return ARR;
   }
 
-  addCart(vendorSV: any, denomSV: any, seriesSV: any, qtySV: any){
+  addCart(vendorSV: any, denomSV: any, seriesSV: any, qtySV: any, harga:any){
     this.loadingDg = true;
     this.total = 0;
     
@@ -236,7 +236,7 @@ export class SouvenirComponent implements OnInit {
       console.debug(codeSV, 'codeLM')
 
       // lm = this.Souvenir
-      let harga = 2000000;
+     
       this.productService.list(params).subscribe((response: any) => {
         sv = response
         let udahDiCart = 0;
