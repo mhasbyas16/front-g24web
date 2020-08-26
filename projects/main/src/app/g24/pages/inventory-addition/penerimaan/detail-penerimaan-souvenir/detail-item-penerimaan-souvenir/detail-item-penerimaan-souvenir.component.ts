@@ -306,71 +306,6 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
     }
   }
 
-  getTotalBeratOfItem(item)
-  {
-    let berat : number = 0.0;
-    let products = item['products'];
-
-    for(let i = 0; i < products.length; i++)
-    {
-      let pBerat : number = (isNaN(Number(products[i].berat)) ? 0 : Number(products[i].berat));
-      berat += pBerat;
-    }
-
-    return Number(berat.toFixed(2));
-  }
-
-  beratStyleValid(item)
-  {
-    let products = item?.products;
-    let len = products == null ? 0 : products.length
-    let berat : number = 0.0;
-
-    for(let i = 0; i < len; i++)
-    {
-      let pBerat : number = (isNaN(Number(products[i].berat)) ? 0 : Number(products[i].berat));
-
-      berat += Number(pBerat);
-    }
-    
-    if(berat == Number(item.berat)) return {};
-
-    return {'text-decoration': 'underline','text-decoration-color': 'red', 'color' : 'red'};
-  }
-  
-  getTotalGramTukarOfItem(item)
-  {
-    let gram_tukar : number = 0.0;
-    let products = item['products'];
-
-    for(let i = 0; i < products.length; i++)
-    {
-      let pGramTukar : number = (isNaN(Number(products[i].gram_tukar)) ? 0 : Number(products[i].gram_tukar));
-
-      gram_tukar += pGramTukar;
-    }
-
-    return Number(gram_tukar.toFixed(2));
-  }
-
-  gramTukarStyleValid(item)
-  {
-    let products = item?.products;
-    let len = products == null ? 0 : products.length
-    let value : number = 0.0;
-
-    for(let i = 0; i < len; i++)
-    {
-      let pGramTukar : number = (isNaN(Number(products[i].gram_tukar)) ? 0 : Number(products[i].gram_tukar));
-
-      value += Number(pGramTukar);
-    }
-    
-    if(Number(value.toFixed(2)) == item.gram_tukar) return {};
-
-    return {'text-decoration': 'underline','text-decoration-color': 'red', 'color' : 'red'};
-  }
-
   /**
    * Validasi total berat pada `item` dengan jumlah field `berat` dari array `products` dari `item`
    * 
@@ -496,7 +431,6 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
     this.inisiasi.terima_by = this.user.username;
     let items = this.inisiasi.items;
     let productNoId = [];
-    let ids = [];
     console.log(items);
     
     for(let i = 0; i < items.length; i++)
