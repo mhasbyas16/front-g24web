@@ -98,12 +98,13 @@ export class MuliaComponent implements OnInit {
   }
 
   onListDenom(){
-    this.denomService.list("?_hash=1").subscribe((response: any) => {
+    this.denomService.list(this.category).subscribe((response: any) => {
+      console.debug(response,"tai")
       if (response != false) {
         this.denoms = response;
         this.denoms.sort(function (c, d) {
-          if (c.name < d.name) { return -1; }
-          if (c.name > d.name) { return 1; }
+          if (c.value < d.value) { return -1; }
+          if (c.value > d.value) { return 1; }
           return 0;
         })
       }      

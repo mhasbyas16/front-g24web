@@ -185,7 +185,7 @@ export class CheckoutComponent implements OnInit {
     });
     
     for (let isi of LM) {
-      this.formData.addControl(isi.code,new FormControl(isi.Value, Validators.required))
+      this.formData.addControl(isi.code,new FormControl(isi.Value,[Validators.required, Validators.minLength(9)]))
     }
     
     // if (LM.length > 0) {
@@ -399,7 +399,7 @@ export class CheckoutComponent implements OnInit {
 
 //
   transaction(){
-    console.debug( this.gs,"wew")    
+    
     if (!this.formData.valid) {
       this.toastr.error("form Not Completed","Transaction");
       console.debug(this.formData.getRawValue());

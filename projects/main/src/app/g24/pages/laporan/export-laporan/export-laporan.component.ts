@@ -68,6 +68,17 @@ export class ExportLaporanComponent implements OnInit {
     this.innerDoc ={pageSize: 'A5', pageOrientation: 'landscape',pageMargins: [ 20, 60, 20, 40 ],};
     this.innerDoc['info'] = {title: data.client.cif+" - "+data.idTransaction }; 
 
+    let printAlamat : any;
+    let printnoHp : any;
+    if (data.client.tipeClient.code == 1) {
+      printAlamat = data.client.alamatSaatIni.alamat
+      printnoHp = data.client.noHP
+    } else if(data.client.tipeClient.code == 2) {
+      printAlamat = data.client.alamatKtp.alamat
+      printnoHp = data.client.hpPJ1
+    }
+
+
     // Head Content
     this.innerDoc['content'] = [
       {
@@ -103,7 +114,7 @@ export class ExportLaporanComponent implements OnInit {
           },
           {
             columns:[
-              {width:88,bold:true,text:'Alamat'},{width:5,bold:true,text:': '},{width:'*',text:data.client.alamatSaatIni.alamat}
+              {width:88,bold:true,text:'Alamat'},{width:5,bold:true,text:': '},{width:'*',text:printAlamat}
             ]
           }
 			  ]
@@ -118,7 +129,7 @@ export class ExportLaporanComponent implements OnInit {
           },
           {
             columns:[
-              {width:88,bold:true,text:'No. Hp'},{width:5,bold:true,text:': '},{width:'*',text:data.client.noHP}
+              {width:88,bold:true,text:'No. Hp'},{width:5,bold:true,text:': '},{width:'*',text:printnoHp}
             ]
           }
 			  ]
