@@ -14,6 +14,8 @@ import { DetailInisiasiSouvenirComponent } from './inisiasi/detail-inisiasi-souv
 import { ClarityModule } from '@clr/angular';
 import { DetailPenerimaanPerhiasanComponent } from './penerimaan/detail-penerimaan-perhiasan/detail-penerimaan-perhiasan.component';
 import { DetailItemPenerimaanPerhiasanComponent } from './penerimaan/detail-penerimaan-perhiasan/detail-item-penerimaan-perhiasan/detail-item-penerimaan-perhiasan.component';
+import { DetailPenerimaanSouvenirComponent } from './penerimaan/detail-penerimaan-souvenir/detail-penerimaan-souvenir.component';
+import { DetailItemPenerimaanSouvenirComponent } from './penerimaan/detail-penerimaan-souvenir/detail-item-penerimaan-souvenir/detail-item-penerimaan-souvenir.component';
 
 @NgModule({
   declarations: 
@@ -27,7 +29,9 @@ import { DetailItemPenerimaanPerhiasanComponent } from './penerimaan/detail-pene
     DetailInisiasiSouvenirComponent, 
     DetailInisiasiPerhiasanComponent,
     DetailPenerimaanPerhiasanComponent,
-    DetailItemPenerimaanPerhiasanComponent],
+    DetailItemPenerimaanPerhiasanComponent,
+    DetailPenerimaanSouvenirComponent,
+    DetailItemPenerimaanSouvenirComponent],
   imports: [
     CommonModule,
     InventoryAdditionRoutingModule,

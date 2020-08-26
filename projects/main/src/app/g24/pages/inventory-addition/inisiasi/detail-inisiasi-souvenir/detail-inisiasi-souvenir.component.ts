@@ -81,8 +81,10 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
   input : any = {items : []};
   defaultInput() : any
   {
+    let dt = new Date().toISOString().split("T")[0];
     return {
-      nomor_nota : null, tgl_inisiasi : new Date().toISOString().split("T")[0],  harga_baku : 0, pajak : 0, 
+      nomor_nota : null, tgl_inisiasi : dt, create_date : dt,
+      harga_baku : 0, pajak : 0, 
       'product-category' : null, vendor : null, tipe_bayar : null,
       total_berat : 0, total_piece : 0,
       total_ongkos : 0, total_pajak : 0, total_harga : 0,
@@ -470,7 +472,7 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
   {
     if(model == null)
     {
-      this.openMessageBox(ModalErrorType.ERROR, "Pencarian Gagal", "Model null")
+      this.toastr.error("Pencarian Gagal", "Model null");
       return false;
     }
 
@@ -500,28 +502,27 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
     let no = this.input['no_po'];
     console.log(no, "no")
 
-    if(this.user.unit == null)
+    if(this.user?.unit == null)
     {
       this.toastr.warning("Unit dari User belum di-Assign. Harap hubungi IT Support/Helpdesk.", "Error!");
       return;
     }
 
-    let count = await this.inisiasiService.count("").toPromise();
-    let countString : string = count.count.toString();
-    let countPadded : string = countString.padStart(5 - countString.length, '0');
+    let PO = "PO" + this.user.unit.code + date_split[0].substring(1, 3) + date_split[1] + "[0,5]";
 
-    let PO = "PO" + this.user.unit.code + date_split[0].substring(1, 3) + date_split[1] + countPadded;
-
-    let def = 
+    let def =
     {
-      no_po : PO,//"IN0000512",
+      no_po : PO,
+      __format : "no_po:inc",
       create_date : this.input['create_date'],
       create_time : time,
       create_by : this.user.username,
       unit : this.user.unit.code,
-      flag : "submit",
+      order_status : "submit",
+      status_bayar : '1',
       __version : new Date().getMilliseconds(),
       __version_d : "0",
+      items : this.input['items']
       // vendor : null,
       // 'product-category' : null,
     };
@@ -534,7 +535,7 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
         this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + this.inisiasiService.message);
         return;
       } else {
-        this.toastr.success("Inisiasi Berhasil. Harap hubungi Kepala Departemen untuk melakukan Approval. No. PO : " + PO, "Info", {timeOut : 10000, tapToDismiss : false});
+        this.toastr.success("Inisiasi Berhasil. Harap hubungi Kepala Departemen untuk melakukan Approval. No. PO : " + PO, "Info", {disableTimeOut : true, closeButton : true, tapToDismiss : false});
         this.input = this.defaultInput();
       }
     });
@@ -595,26 +596,6 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
     }
 
     return false
-  }
-
-  openMessageBox(type : string, title: string, message: string)
-  {
-    this.errorType = type
-    this.errorTitle = title
-    this.errorMessage = message
-    this.modalOpen = true
-  }
-
-  ModelChange(key : string, event : any)
-  {
-    console.log("event", event);
-    // this.searchModel[key] = event.
-  }
-
-  OnSelectedChange(event : any)
-  {
-    // let target = event;
-    // console.log("tgt", target, target.value);
   }
 
   validateAdd(item : any)
