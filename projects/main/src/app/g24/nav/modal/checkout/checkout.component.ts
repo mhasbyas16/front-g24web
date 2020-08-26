@@ -435,6 +435,7 @@ export class CheckoutComponent implements OnInit {
     delete data["namaPemasar"];
     delete data["nik"];
     console.debug(data,"ISI FORMDATA");
+    
     // data.metodeBayar =
 
     
