@@ -13,7 +13,7 @@
                                 <div class="clr-col-lg-12">
                                     <clr-select-container>
                                         <label>Tipe Nasabah</label>
-                                        <select clrSelect formControlName="tipeClient">
+                                        <select clrSelect formControlName="tipeClient" (click)="changeGrid($event.target.value)">
                                             <option selected value="" disabled>-- Select One --</option>
                                             <option *ngFor="let item of listTipeClient" [value]="item.code">{{item.name}}</option>
                                         </select>
@@ -34,18 +34,20 @@
                                         <clr-control-helper>*</clr-control-helper>
                                     </clr-input-container>                                     
                                 </div>
+                                <ng-container *ngIf ="perorangan" >
                                 <div class="clr-col-lg-12">
                                     <clr-date-container>
                                         <label>Tanggal Lahir</label>
                                         <input clrDate type="date" formControlName="tglLahir" readonly> 
                                     </clr-date-container>
                                 </div>
-                                <div class="clr-col-lg-12">
+                                </ng-container>
+                                <!-- <div class="clr-col-lg-12">
                                     <clr-input-container>
                                         <label>Nama Ibu Kandung</label>
                                         <input clrInput type="text" formControlName="namaIbuKandung" readonly>
                                     </clr-input-container>
-                                </div>
+                                </div> -->
                                 <div class="clr-col-lg-12">
                                     <button type="button" class="btn btn-primary" (click)="getClient()">Cari</button>
                                     <button type="button" class="btn btn-warning-outline" (click)="clearForm()">Reset</button>
@@ -61,29 +63,56 @@
                     </div>
                     <div class="card-block">
                         <div class="card-text">
-                            <clr-datagrid [clrDgLoading]="loadDg" [clrDgSingleSelected]="selectClient" (clrDgSingleSelectedChange)="selectDg($event)">
-                                <clr-dg-column>No CIF</clr-dg-column>
-                                <clr-dg-column>NAMA NASABAH</clr-dg-column>
-                                <clr-dg-column>TGL LAHIR</clr-dg-column>
-                                <clr-dg-column>NO IDENTITAS</clr-dg-column>
-                                <clr-dg-column>NAMA IBU KANDUNG</clr-dg-column>
-                                <clr-dg-column>JENIS KELAMIN</clr-dg-column>
-                                <clr-dg-column>PEKERJAAN</clr-dg-column>
-                            
-                                <clr-dg-row *ngFor="let client of listClient" [clrDgItem]="client">
-                                    <clr-dg-cell>{{client.cif}}</clr-dg-cell>
-                                    <clr-dg-cell>{{client.name}}</clr-dg-cell>
-                                    <clr-dg-cell>{{client.tglLahir}}</clr-dg-cell>
-                                    <clr-dg-cell>{{client.tipeID.name}} - {{client.noID}}</clr-dg-cell>
-                                    <clr-dg-cell>{{client.namaIbuKandung}}</clr-dg-cell>
-                                    <clr-dg-cell>{{client.jenisKelamin}}</clr-dg-cell>
-                                    <clr-dg-cell>{{client.pekerjaan.name}}</clr-dg-cell>
-                                </clr-dg-row>
-                            
-                                <clr-dg-footer>users</clr-dg-footer>
-                            </clr-datagrid>
+                            <ng-container *ngIf ="perorangan ; else badanusaha" >
+                                <clr-datagrid [clrDgLoading]="loadDg" [clrDgSingleSelected]="selectClient" (clrDgSingleSelectedChange)="selectDg($event)">
+                                    <clr-dg-column>No CIF</clr-dg-column>
+                                    <clr-dg-column>NAMA NASABAH</clr-dg-column>
+                                    <clr-dg-column>TGL LAHIR</clr-dg-column>
+                                    <clr-dg-column>NO IDENTITAS</clr-dg-column>
+                                    <clr-dg-column>NAMA IBU KANDUNG</clr-dg-column>
+                                    <clr-dg-column>JENIS KELAMIN</clr-dg-column>
+                                    <clr-dg-column>PEKERJAAN</clr-dg-column>
+                                
+                                    <clr-dg-row *ngFor="let client of listClient" [clrDgItem]="client">
+                                        <clr-dg-cell>{{client.cif}}</clr-dg-cell>
+                                        <clr-dg-cell>{{client.name}}</clr-dg-cell>
+                                        <clr-dg-cell>{{client.tglLahir}}</clr-dg-cell>
+                                        <clr-dg-cell>{{client.tipeID.name}} - {{client.noID}}</clr-dg-cell>
+                                        <clr-dg-cell>{{client.namaIbuKandung}}</clr-dg-cell>
+                                        <clr-dg-cell>{{client.jenisKelamin}}</clr-dg-cell>
+                                        <clr-dg-cell>{{client.pekerjaan.name}}</clr-dg-cell>
+                                    </clr-dg-row>
+                                
+                                    <clr-dg-footer></clr-dg-footer>
+                                </clr-datagrid>
+                            </ng-container>
+                            <ng-template #badanusaha>
+                                <clr-datagrid [clrDgLoading]="loadDg" [clrDgSingleSelected]="selectClient" (clrDgSingleSelectedChange)="selectDg($event)">
+                                    <clr-dg-column>No CIF</clr-dg-column>
+                                    <clr-dg-column>NAMA NASABAH</clr-dg-column>
+                                    <clr-dg-column>JENIS BADAN HUKUM</clr-dg-column>
+                                    <clr-dg-column>NO SIUP</clr-dg-column>
+                                    <clr-dg-column>JENIS PERUSAHAAN </clr-dg-column>
+                                    <clr-dg-column>BIDANG USAHA</clr-dg-column>
+                                    
+                                
+                                    <clr-dg-row *ngFor="let client of listClient" [clrDgItem]="client">
+                                        <clr-dg-cell>{{client.cif}}</clr-dg-cell>
+                                        <clr-dg-cell>{{client.name}}</clr-dg-cell>
+                                        <clr-dg-cell>{{client.jenisBadanHukum.name}}</clr-dg-cell>
+                                        <clr-dg-cell>{{client.tipeID.name}} - {{client.tipeNo}}</clr-dg-cell>
+                                        <clr-dg-cell>{{client.jenisPerusahaan.name}}</clr-dg-cell>
+                                        <clr-dg-cell>{{client.bidangUsaha.name}}</clr-dg-cell>
+                                        
+                                    </clr-dg-row>
+                                
+                                    <clr-dg-footer></clr-dg-footer>
+                                </clr-datagrid>
+
+                            </ng-template>
                         </div>
                     </div>
+                    
                 </div>
 
             </form>               

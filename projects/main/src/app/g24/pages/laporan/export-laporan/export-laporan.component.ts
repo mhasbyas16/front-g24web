@@ -68,6 +68,17 @@ export class ExportLaporanComponent implements OnInit {
     this.innerDoc ={pageSize: 'A5', pageOrientation: 'landscape',pageMargins: [ 20, 60, 20, 40 ],};
     this.innerDoc['info'] = {title: data.client.cif+" - "+data.idTransaction }; 
 
+    let printAlamat : any;
+    let printnoHp : any;
+    if (data.client.tipeClient.code == 1) {
+      printAlamat = data.client.alamatSaatIni.alamat
+      printnoHp = data.client.noHP
+    } else if(data.client.tipeClient.code == 2) {
+      printAlamat = data.client.alamatKtp.alamat
+      printnoHp = data.client.hpPJ1
+    }
+
+
     // Head Content
     this.innerDoc['content'] = [
       {
@@ -103,7 +114,7 @@ export class ExportLaporanComponent implements OnInit {
           },
           {
             columns:[
-              {width:88,bold:true,text:'Alamat'},{width:5,bold:true,text:': '},{width:'*',text:data.client.alamatSaatIni.alamat}
+              {width:88,bold:true,text:'Alamat'},{width:5,bold:true,text:': '},{width:'*',text:printAlamat}
             ]
           }
 			  ]
@@ -118,7 +129,7 @@ export class ExportLaporanComponent implements OnInit {
           },
           {
             columns:[
-              {width:88,bold:true,text:'No. Hp'},{width:5,bold:true,text:': '},{width:'*',text:data.client.noHP}
+              {width:88,bold:true,text:'No. Hp'},{width:5,bold:true,text:': '},{width:'*',text:printnoHp}
             ]
           }
 			  ]
@@ -255,14 +266,15 @@ export class ExportLaporanComponent implements OnInit {
                 width:"*",
                 columns:[
                   {width:70,text:mulia.detail.code},
-                  {width:25,text:' '+mulia.detail.vendor.name},
-                  {width:35,text:' '+mulia.detail['product-diamond-color'].name},
-                  {width:25,text:' '+mulia.detail['product-cut'].name},
-                  {width:38,text:' '+mulia.detail['product-clarity'].name},
-                  // total berlian ,          
-                  {width:20,text:' '+mulia.kadar},
-                  {width:20,text:' '+mulia.berat},
-                  {width:40,text:'= '+mulia.detail.carat+' CT'},
+                  {width:50,text:' '+mulia.detail.vendor.name},
+                  {width:50,text:' '+mulia.detail['product-denom'].name},
+                  {width:80,text:'No: '+mulia.noSeri},
+                  // {width:25,text:' '+mulia.detail['product-cut'].name},
+                  // {width:38,text:' '+mulia.detail['product-clarity'].name},
+                  // total logam mulia ,          
+                  // {width:20,text:' '+mulia.kadar},
+                  // {width:20,text:' '+mulia.berat},
+                  // {width:40,text:'= '+mulia.detail.carat+' CT'},
                 ]
               },
               {
@@ -295,7 +307,65 @@ export class ExportLaporanComponent implements OnInit {
         },'\n'
       ]);
     }
-    
+
+    //GS
+    if (data.product.GS.length != 0){
+      this.innerDoc['content'].push([
+        {
+          style:'head', alignment:'left',text:'Mulia'
+        }
+      ]);
+      for (let gs of data.product.GS) {
+        //console.debug(data.product.PERHIASAN.length,product,"list product");  
+        this.innerDoc['content'].push([
+          {
+            style:'detail',
+            columns:[
+              {
+                width:"*",
+                columns:[
+                  {width:70,text:gs.detail.code},
+                  {width:50,text:' '+gs.detail.vendor.name},
+                  {width:50,text:' '+gs.detail['product-denom'].name},
+                  {width:50,text:' '+gs.detail['product-series'].name},
+                  // {width:25,text:' '+mulia.detail['product-cut'].name},
+                  // {width:38,text:' '+mulia.detail['product-clarity'].name},
+                  // total logam mulia ,          
+                  // {width:20,text:' '+mulia.kadar},
+                  // {width:20,text:' '+mulia.berat},
+                  // {width:40,text:'= '+mulia.detail.carat+' CT'},
+                ]
+              },
+              {
+                width:250,
+                columns:[
+                  {text:'Harga : Rp. '+new Intl.NumberFormat(['ban', 'id']).format(gs.harga)},
+                  {
+                    table:{
+                      widths: [85],
+                      body:[
+                        [{fillColor: '#ede5ce',alignment: 'center',fontSize:1,text:"tanggal buyback"}]
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]);   
+      }
+      this.innerDoc['content'].push([
+        {
+          style:'detail',
+          fontSize: 7,
+          columns:[
+            {text:'Diskon :'},
+            {text:'Voucher :'},
+            {text:'Harga :'}
+          ]
+        },'\n'
+      ]);
+    }
 
     // footer content
     this.innerDoc['content'].push([
@@ -309,7 +379,7 @@ export class ExportLaporanComponent implements OnInit {
             '* harap bukti pembelian ini disimpan jangan sampai hilang/rusak'],style:'footer'},
           {
             columns:[
-              {width:45,text:[
+              {width:80,text:[
                 'Harga\n',
                 'Diskon\n',
                 'Voucher\n',
@@ -325,8 +395,8 @@ export class ExportLaporanComponent implements OnInit {
                 ':'],bold:true},
               {width:'*',text:[
                 ' Rp. '+hargaFormat+'\n',
-                ' Rp. '+hargaFormat+'\n',
-                ' Rp. '+hargaFormat+'\n',
+                ' Rp. - \n',
+                ' Rp. - \n',
                 '\n',
                 ' Rp. '+hargaFormat+'\n',
                 this.terbilangService.terbilang(Number(data.jumlahTerima))]}

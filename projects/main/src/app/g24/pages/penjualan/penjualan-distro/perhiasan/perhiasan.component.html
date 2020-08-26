@@ -4,7 +4,7 @@
             <clr-select-container class="clr-form-control">
                 <label class="clr-control-label">Vendor</label>
                 <select [(ngModel)]="searchModel.vendors" clrSelect name="input_vendor_perhiasan" ngModel>
-                    <option value="all" >All</option>
+                    <option value="all" selected >All</option>
                     <ng-container *ngFor="let vendor of vendors">
                         <option value="{{vendor.code}}">{{vendor.name}}</option>
                     </ng-container>

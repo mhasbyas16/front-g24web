@@ -11,23 +11,24 @@
                     <div class="card-block">
                         <div class="card-text">
                             <div class="clr-row">
-                                <div class="clr-col-5">
-                                    <clr-input-container>
+                                <div class="clr-col-4">
+                                    <clr-input-container class="margin-top-remove">
                                         <label>CIF</label>
-                                        <input clrInput type="text" formControlName="cif" readonly>
+                                        <input clrInput type="text" formControlName="cif" readonly style="background-color: #fbffc9;">
                                         <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                         <clr-control-error *clrIfError="'pattern'">This is a required field 0 - 9</clr-control-error>
                                     </clr-input-container> 
                                 </div>
-                                <div class="clr-col-3">
-                                    <button type="button" class="btn btn-primary" (click)="searchNasabah.openModal()">Cari</button>
-                                    <button type="button" class="btn btn-primary" (click)="addNasabah.openModal()">Tambah</button>
+                                <div class="clr-col-3" style="margin-left: 30px;" >
+                                    <div class="btn-group btn-outline-primary btn-sm">
+                                        <button type="button" class="btn" (click)="searchNasabah.openModal()" style="align-content: center;">Cari</button>
+                                        <button type="button" class="btn btn-outline-success" (click)="addNasabah.openModal()">Tambah</button>
+                                    </div>
                                 </div>
                             </div>
-                            <clr-input-container>
+                            <clr-input-container class="margin-top-remove">
                                 <label>Nama Nasabah</label>
-                                <input clrInput type="text" formControlName="name" readonly>
-                                <clr-control-helper>Please Input Nama Nasabah</clr-control-helper>
+                                <input clrInput type="text" formControlName="name" readonly style="background-color: #fbffc9;">
                                 <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                             </clr-input-container> 
                         </div> 
@@ -94,19 +95,37 @@
                                             Logam Mulia
                                         </div>
                                         <div class="card-block">
-                                            <div class="card-media-block">
-                                                <img src="..." class="card-media-image">
-                                                <div class="card-media-description">
-                                                    <span class="card-media-title">
-                                                        Project A
-                                                    </span>
-                                                    <span class="card-media-text">
-                                                        Owner: John Doe
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="card-text">
-                                                ...
+                                            <div class="card-block" style="padding: 0">
+                                                <ul class="list-group">
+                                                    <ng-container *ngFor="let ip of lm | keyvalue" style="padding: 0;">
+                                                        <li class="list-group-item">
+                                                            <div class="clr-row" style="padding-top: 0;">
+                                                               
+                                                                <div class="clr-col-2">
+                                                                    <span>{{ip.value.code}}</span>
+                                                                </div>
+                                                                <div class="clr-col-2">
+                                                                    <span>{{ip.value.vendor}}</span>
+                                                                </div>
+                                                                <div class="clr-col-2">
+                                                                    <span>{{ip.value.denom}}</span>
+                                                                </div>
+                                                                <div class="clr-col-1">
+                                                                    <span>{{ip.value.flag}}</span>
+                                                                </div>
+                                                                <div class="clr-col-2">
+                                                                    <clr-input-container style="margin-top: 0; margin-left: 10%; margin-right: 10%;" >
+                                                                        <input clrInput type="text" style=" width: 100%;" formControlName="{{ip.value.code}}" placeholder="No Seri (Min 9 Char)">
+                                                                    </clr-input-container>
+                                                                </div>
+                                                                <div class="clr-col-3">
+                                                                    <span class="left"> Rp. {{ip.value.harga| number}}</span>
+                                                                </div>
+                                                                
+                                                            </div>
+                                                        </li>                                        
+                                                    </ng-container>
+                                                </ul>
                                             </div>
                                         </div>
                                     </div>
@@ -164,19 +183,35 @@
                                             Gift Dan Souvenir
                                         </div>
                                         <div class="card-block">
-                                            <div class="card-media-block">
-                                                <img src="..." class="card-media-image">
-                                                <div class="card-media-description">
-                                                    <span class="card-media-title">
-                                                        Project A
-                                                    </span>
-                                                    <span class="card-media-text">
-                                                        Owner: John Doe
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="card-text">
-                                                ...
+                                            <div class="card-block" style="padding: 0">
+                                                <ul class="list-group">
+                                                    <ng-container *ngFor="let ip of gs | keyvalue" style="padding: 0;">
+                                                        <li class="list-group-item">
+                                                            <div class="clr-row" style="padding-top: 0;">
+                                                               
+                                                                <div class="clr-col-2">
+                                                                    <span>{{ip.value.code}}</span>
+                                                                </div>
+                                                                <div class="clr-col-2">
+                                                                    <span>{{ip.value.vendor}}</span>
+                                                                </div>
+                                                                <div class="clr-col-2">
+                                                                    <span>{{ip.value.denom}}</span>
+                                                                </div>
+                                                                <div class="clr-col-1">
+                                                                    <span>{{ip.value.detail["product-series"].name}}</span>
+                                                                </div>
+                                                                <div class="clr-col-2">
+                                                                   
+                                                                </div>
+                                                                <div class="clr-col-3">
+                                                                    <span class="left"> Rp. {{ip.value.harga| number}}</span>
+                                                                </div>
+                                                                
+                                                            </div>
+                                                        </li>                                        
+                                                    </ng-container>
+                                                </ul>
                                             </div>
                                         </div>
                                     </div>
@@ -315,7 +350,7 @@
                                         <clr-radio-container>
                                             <label>Bank Asal</label>
                                             <clr-radio-wrapper *ngFor="let bank of bank">
-                                                <input clrRadio formControlName="bankAsal" [value]="bank.name" type="radio">
+                                                <input clrRadio formControlName="bankAsal" [value]="bank.name" type="radio" >
                                                 <label><img class="img-responsive" [attr.src]="'assets/images/bank/'+bank.icon" alt=""> {{bank.name}}</label>
                                             </clr-radio-wrapper>
                                             <clr-control-helper>Please Select One</clr-control-helper>

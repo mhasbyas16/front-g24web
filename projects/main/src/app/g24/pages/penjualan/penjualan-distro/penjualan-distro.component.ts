@@ -31,12 +31,16 @@ export class PenjualanDistroComponent implements OnInit {
   price:any;
 
   // jumlah isi cart
+  mulia:any;
   perhiasanParent:any;
   berlianParent:any;
+  souvenirParent:any;
 
   // total harga per kategori
+  hargaLogamMulia:any
   hargaPerhiasan:any;
   hargaBatuMulia:any;
+  hargaSouvenir:any;
 
   //remove price
   RPricePerhiasan:any;
@@ -51,6 +55,11 @@ export class PenjualanDistroComponent implements OnInit {
     this.total = data;  
   }
 
+  // total isi cart logamMulia
+  totallogamMulia(isi: any){
+    this.mulia = isi;
+  }
+
   // total isi cart perhiasan
   totalPerhiasan(length: any){
     this.perhiasanParent = length;
@@ -62,12 +71,23 @@ export class PenjualanDistroComponent implements OnInit {
     this.berlianParent = isi;
   }
 
+  totalSouvenir(isi: any){
+    this.souvenirParent = isi;
+  }
+
   //CLEAR
   // clear total cart
   clearTotal(num){
     this.total = num;
+    this.hargaPerhiasan = 0 ;
+    this.hargaBatuMulia = 0 ;
+    this.hargaLogamMulia = 0 ;
   }
-
+ 
+  clearMulia(data: any){
+    this.mulia = data.length;
+    this.hargaLogamMulia = data.harga;
+  }
   clearBerlian(data: any){
     this.berlianParent = data.length;
     this.hargaBatuMulia = data.harga;
@@ -80,6 +100,12 @@ export class PenjualanDistroComponent implements OnInit {
     
   }
 
+  clearSouvenir(data:any){
+    this.souvenirParent = data.length;
+    this.hargaSouvenir = data.harga;
+    
+  }
+
   
   //total harga cart
   HPerhiasan(harga: any){
@@ -87,6 +113,12 @@ export class PenjualanDistroComponent implements OnInit {
   }
   HBatuMulia(harga: any){
     this.hargaBatuMulia = harga;
+  }
+  HMulia(harga: any){
+    this.hargaLogamMulia = harga;
+  }
+  HSouvenir(harga: any){
+    this.hargaSouvenir = harga;
   }
   
   static key = EMenuID.DISTRO;

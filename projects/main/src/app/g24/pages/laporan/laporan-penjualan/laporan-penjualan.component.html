@@ -11,7 +11,7 @@
                             <clr-date-container>
                                 <input clrDate type="date" formControlName="from" min="{{fromPick}}">
                             </clr-date-container>
-                        </div>
+                        </div> 
                         <div class="clr-col-3">
                             <clr-date-container>
                                 <input clrDate type="date" formControlName="to">
@@ -51,13 +51,13 @@
                         </clr-dg-cell>
                     </clr-dg-row>
                     <clr-dg-detail *clrIfDetail="let detail">
-                        <clr-dg-detail-header>List Product</clr-dg-detail-header>
+                        <clr-dg-detail-header><span style="font-size: 25px;"><b>LIST PRODUCT</b></span></clr-dg-detail-header>
                         <clr-dg-detail-body>
                             <ng-container *ngIf="detail.product.PERHIASAN.length != 0">
-                                <table class="table table-compact table-noborder">
+                                <table class="table table-compact table-noborder remove-margin" >
                                     <thead>
                                         <tr>
-                                            <th class="left" colspan="8"><h3><b>Perhiasan</b></h3></th>
+                                            <th class="left" colspan="7"><h3 class="remove-margin"><b>Perhiasan</b></h3></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -68,25 +68,52 @@
                                             <td class="left">{{ip.value.warna}}</td>
                                             <td class="left">{{ip.value.kadar}}</td>
                                             <td class="left">{{ip.value.berat}}</td>
-                                            <td class="left"></td>
-                                            <td class="left">Rp. {{ip.value.harga| number}}</td>
+                                            <td class="left harga-kanan">Rp. {{ip.value.harga| number}}</td>
                                         </tr>
                                     </tbody>
                                     <tfoot>
                                         <tr *ngFor="let isi of listTotalHarga">
                                             <ng-container *ngIf="isi.idTransaction == detail.idTransaction">
-                                                <td class="left" colspan="8">TOTAL PERHIASAN Rp. {{isi.hargaP | number}}</td>
+                                                <td class="right" colspan="3" ></td>
+                                                <td class="text-kanan" colspan="3" ><b>TOTAL HARGA PERHIASAN</b></td>
+                                                <td class="left harga-kanan">Rp. {{isi.hargaP | number}}</td>
                                             </ng-container>
                                         </tr>
                                     </tfoot>                 
                                 </table>
                             </ng-container>
-
-                            <ng-container *ngIf="detail.product.BERLIAN.length != 0">
-                                <table class="table table-compact table-noborder">
+                            <ng-container *ngIf="detail.product.LM.length != 0">
+                                <table class="table table-compact table-noborder remove-margin" >
                                     <thead>
                                         <tr>
-                                            <th class="left" colspan="8"><h3><b>Berlian</b></h3></th>
+                                            <th class="left" colspan="7"><h3 class="remove-margin"><b>Logam Mulia</b></h3></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let ip of detail.product.LM | keyvalue">
+                                            <td class="left">{{ip.value.code}}</td>
+                                            <td class="left">{{ip.value.vendor}}</td>
+                                            <td class="left" colspan="2">{{ip.value.denom}}</td>
+                                            <td class="left" colspan="2">{{ip.value.flag}}</td>
+                                            <td class="left harga-kanan">Rp. {{ip.value.harga| number}}</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr *ngFor="let isi of listTotalHarga">
+                                            <ng-container *ngIf="isi.idTransaction == detail.idTransaction">
+                                                <td class="right" colspan="3" ></td>
+                                                <td class="text-kanan" colspan="3" ><b>TOTAL HARGA LOGAM MULIA</b></td>
+                                                <td class="left harga-kanan">Rp. {{isi.hargaLM | number}}</td>
+                                            </ng-container>
+                                        </tr>
+                                    </tfoot>                 
+                                </table>
+                            </ng-container>
+                            <ng-container *ngIf="detail.product.BERLIAN.length != 0">
+                                <table class="table table-compact table-noborder remove-margin" >
+                                    <thead>
+                                        <tr>
+                                            <th class="left" colspan="7"><h3 class="remove-margin"><b>Berlian</b></h3></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -97,14 +124,43 @@
                                             <td class="left">{{ip.value.warna}}</td>
                                             <td class="left">{{ip.value.kadar}}</td>
                                             <td class="left">{{ip.value.berat}}</td>
-                                            <td class="left"></td>
-                                            <td class="left">Rp. {{ip.value.harga| number}}</td>
+                                            <td class="left harga-kanan">Rp. {{ip.value.harga| number}}</td>
                                         </tr>
                                     </tbody>
                                     <tfoot>
                                         <tr *ngFor="let isi of listTotalHarga">
                                             <ng-container *ngIf="isi.idTransaction == detail.idTransaction">
-                                                <td class="left" colspan="8">TOTAL BERLIAN Rp. {{isi.hargaB | number}} </td>
+                                                <td class="right" colspan="3" ></td>
+                                                <td class="text-kanan" colspan="3" ><b>TOTAL HARGA BERLIAN</b></td>
+                                                <td class="left harga-kanan">Rp. {{isi.hargaB | number}}</td>
+                                            </ng-container>
+                                        </tr>
+                                    </tfoot>                 
+                                </table>
+                            </ng-container>
+                            <!-- souvenir -->
+                            <ng-container *ngIf="detail.product.GS.length != 0">
+                                <table class="table table-compact table-noborder remove-margin" >
+                                    <thead>
+                                        <tr>
+                                            <th class="left" colspan="7"><h3 class="remove-margin"><b>Souvenir dan Gift</b></h3></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let ip of detail.product.GS | keyvalue">
+                                            <td class="left">{{ip.value.code}}</td>
+                                            <td class="left">{{ip.value.vendor}}</td>
+                                            <td class="left" colspan="2">{{ip.value.denom}}</td>
+                                            <td class="left" colspan="2">{{ip.value.detail["product-series"].name}}</td>
+                                            <td class="left harga-kanan">Rp. {{ip.value.harga| number}}</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr *ngFor="let isi of listTotalHarga">
+                                            <ng-container *ngIf="isi.idTransaction == detail.idTransaction">
+                                                <td class="right" colspan="3" ></td>
+                                                <td class="text-kanan" colspan="3" ><b>TOTAL HARGA SOUVENIR</b></td>
+                                                <td class="left harga-kanan">Rp. {{isi.hargaGS | number}}</td>
                                             </ng-container>
                                         </tr>
                                     </tfoot>                 

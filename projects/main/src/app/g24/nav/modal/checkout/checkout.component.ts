@@ -144,7 +144,8 @@ export class CheckoutComponent implements OnInit {
     this.idTransaksi();
   }
   
-  openModal(totalHarga: any){    
+  openModal(totalHarga: any){ 
+  
     this.formData = new FormGroup({
       idTransaction: new FormControl(""),
       idTransaction_validation: new FormControl("unique:idTransaction"),
@@ -152,7 +153,7 @@ export class CheckoutComponent implements OnInit {
       name: new FormControl ("",[ Validators.required]),
       client: new FormControl ("", Validators.required),
       client_encoded: new FormControl("base64"),
-      metodeBayar: new FormControl (""),
+      metodeBayar: new FormControl ("", Validators.required),
       metodeBayar_encoded: new FormControl ("base64"),
       bankTujuan: new FormControl (""),
       bankAsal: new FormControl (""),
@@ -183,6 +184,15 @@ export class CheckoutComponent implements OnInit {
       namaPemasar: new FormControl (this.nikUser["name"]),
     });
     
+    for (let isi of LM) {
+      this.formData.addControl(isi.code,new FormControl(isi.Value,[Validators.required, Validators.minLength(9)]))
+    }
+    
+    // if (LM.length > 0) {
+      
+    // }
+
+
     this.idTransaksi();
     this.getUnit();
     //
@@ -237,6 +247,7 @@ export class CheckoutComponent implements OnInit {
     this.gs;  
     this.berlian
     this.dinar;
+    console.debug(this.gs,"wew")
   }
 
   // pembayaran
@@ -315,7 +326,7 @@ export class CheckoutComponent implements OnInit {
     this.formData.patchValue({admBank: this.administrasi});
     let Jc = JSON.parse(atob(val));
     let Je = JSON.parse(atob(this.formData.get('edcType').value));
-    let Pem = JSON.parse(atob(this.formData.get('transaksiMetodeBank').value));
+    let Pem = JSON.parse(atob(this.formData.get('transactionMetodeBank').value));
     //debit
     if (Pem["code"] == "02") {
       if (Jc["code"] == Je["code"]) {
@@ -343,6 +354,7 @@ export class CheckoutComponent implements OnInit {
   }
 
   diterimaUang(total){
+    total = total.replace(/,/g, '')
     this.diterima = total;
     this.kembali = total-this.totalBelanja;
   }
@@ -387,18 +399,27 @@ export class CheckoutComponent implements OnInit {
 
 //
   transaction(){
+    
     if (!this.formData.valid) {
       this.toastr.error("form Not Completed","Transaction");
       console.debug(this.formData.getRawValue());
       return;
-    }    
-
+    }
+    if (this.kembali < 0) {
+      this.toastr.error("Nilai Tidak Cukup","Transaction");
+      return;
+    }
+    console.debug( this.gs,"wew")    
     this.validModel = true;
-    
   }
 
   storeTransaction(){
     let data = this.formData.getRawValue();  
+
+    for (let index = 0; index < LM.length; index++) {
+      LM[index].noSeri = data[LM[index].code]
+      delete data[LM[index].code]
+    }
     // 
     data.product = btoa(JSON.stringify({PERHIASAN,LM,BERLIAN,GS,DINAR})) ;
     data.product_encoded = "base64";
@@ -407,11 +428,14 @@ export class CheckoutComponent implements OnInit {
       "name" : "Penjualan Tunai Cash and Carry",
       "status" : 1
     }));
+    let nomT = data["nominalTransaksi"] 
+    data["nominalTransaksi"] = nomT.replace(/,/g, '')
     data["transaction-type_encoded"]= "base64";
     delete data["cif"];
     delete data["namaPemasar"];
     delete data["nik"];
     console.debug(data,"ISI FORMDATA");
+    
     // data.metodeBayar =
 
     
@@ -441,6 +465,7 @@ export class CheckoutComponent implements OnInit {
   getClientData(val){
     if (val != null) {
       this.isiClientData = val;
+      
       this.formData.patchValue({
       cif: val["cif"],
       client: btoa(JSON.stringify(val)),
