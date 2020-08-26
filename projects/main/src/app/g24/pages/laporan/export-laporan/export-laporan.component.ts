@@ -74,7 +74,7 @@ export class ExportLaporanComponent implements OnInit {
       printAlamat = data.client.alamatSaatIni.alamat
       printnoHp = data.client.noHP
     } else if(data.client.tipeClient.code == 2) {
-      printAlamat = data.client.alamatKtp.alamat
+      printAlamat = data.client.alamatSaatIni.alamat
       printnoHp = data.client.hpPJ1
     }
 
@@ -214,7 +214,7 @@ export class ExportLaporanComponent implements OnInit {
                   // total berlian ,          
                   {width:20,text:' '+berlian.kadar},
                   {width:20,text:' '+berlian.berat},
-                  {width:40,text:'= '+berlian.detail.carat+' CT'},
+                  // {width:40,text:'= '+berlian.detail.carat+' CT'},
                 ]
               },
               {
@@ -265,8 +265,8 @@ export class ExportLaporanComponent implements OnInit {
               {
                 width:"*",
                 columns:[
-                  {width:70,text:mulia.detail.code},
-                  {width:50,text:' '+mulia.detail.vendor.name},
+                  {width:60,text:mulia.detail.code},
+                  {width:40,text:' '+mulia.detail.vendor.name},
                   {width:50,text:' '+mulia.detail['product-denom'].name},
                   {width:80,text:'No: '+mulia.noSeri},
                   // {width:25,text:' '+mulia.detail['product-cut'].name},
