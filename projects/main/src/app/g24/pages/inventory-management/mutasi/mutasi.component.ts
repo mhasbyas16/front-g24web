@@ -26,6 +26,7 @@ import { ProductDenomService } from '../../../services/product/product-denom.ser
 import { ProductClarityService } from '../../../services/product/product-clarity.service';
 import { ServerDateTimeService } from '../../../services/system/server-date-time.service';
 import { ProductSeriesService } from '../../../services/product/product-series.service';
+import { TipeStock } from '../../../lib/enum/flag-product';
 
 @Component({
   selector: 'app-mutasi',
@@ -55,7 +56,7 @@ static key = EMenuID.MUTASI;
 
 
 //DATA
-units : any[] = [];
+units : any[] = [];          
 unit_tj : any[] = [];
 products:  any[] = [];        
 products2 : any[] = [];
@@ -78,7 +79,7 @@ flag : any[]= [];
 listdt : any[]=[];
 message:string="";            
 code = "";
-modal = false
+modal = false;
 claritys : any[] = [];        
 colors : any[] = [];
 series : any[] = [];          
@@ -87,6 +88,7 @@ input : any = {};
 addinput : any = {};
 edit : any = {};          
 Flag = Object.values(FlagMutasi);
+Tipe = Object.values(TipeStock);
 username = "";                
 mongoMutasi : any[] = [];
 kadars : any[] = [];          
@@ -492,6 +494,10 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
           params += "product-series.code="+this.searchModel[key].code+"&";
           break;
 
+         case "tipe_stock":
+           params += "tipe_stock="+this.searchModel[key].code+"&";
+           break;
+
         default:
           params += key+="="+this.searchModel[key]+"&";
           break;
@@ -595,6 +601,10 @@ GetDisplayName(key : string) : string
       case 'vendor':
         name = "Vendor";
         break;
+
+      case 'branch':
+        name = "Branch";
+        break;
       
       case 'product-series':
         name = "Series";
@@ -656,6 +666,14 @@ GetDisplayName(key : string) : string
 	  case 'hppberlian':
 		name = "Hpp Berlian";
 		break;
+
+    case 'hpp_inisiasi':
+    name = "Hpp Inisiasi";
+    break;
+
+    case 'hpp':
+    name = "Hpp";
+    break;
 			
 	  case 'ongkospembuatan':
 		name = "Ongkos Pembuatan";
@@ -681,7 +699,7 @@ GetDisplayName(key : string) : string
     name = "Unit";
     break;
 
-    case 'tipestock':
+    case 'tipe_stock':
     name = "Tipe Stock";
     break;
 

@@ -115,10 +115,6 @@ static key = EMenuID.TERIMA_MUTASI;
           params += 'unit_asal.code='+this.input[key].code+"&";
           break;
 
-        case 'unit_tujuan':
-          params += 'unit_tujuan.code='+this.input[key].code+"&";
-          break;
-
         case 'tgl_approve':
           params += 'approve_date='+this.input[key]+"&";
           break;
@@ -137,6 +133,7 @@ static key = EMenuID.TERIMA_MUTASI;
       }
       console.log(params);
     }
+    params += "unit_tujuan.code="+this.sessionservice.getUser().unit.code+"&";
     this.mutasiservice.list(params).subscribe(output=>{
       if(output==false){
         if(this.mutasiservice.message()!=""){
