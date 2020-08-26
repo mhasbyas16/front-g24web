@@ -7,38 +7,35 @@ import { SessionService } from 'projects/platform/src/app/core-services/session.
 import { VendorService } from '../../../../services/vendor.service';
 import { ProductJenisService } from '../../../../services/product/product-jenis.service';
 
-import { EMenuID } from '../../../../lib/enums/emenu-id.enum';
-import { DContent } from '../../../../decorators/content/pages';
-
 @Component({
-  selector: 'app-parameter-berlian',
-  templateUrl: './parameter-berlian.component.html',
-  styleUrls: ['./parameter-berlian.component.scss']
+  selector: 'app-parameter-sovenir',
+  templateUrl: './parameter-sovenir.component.html',
+  styleUrls: ['./parameter-sovenir.component.scss']
 })
-export class ParameterBerlianComponent implements OnInit {
+export class ParameterSovenirComponent implements OnInit {
   //title
-breadcrumb = "Parameter"
-title = "Parameter Berlian"
-// spinner 
-spinner = false;
+  breadcrumb = "Parameter"
+  title = "Parameter Perhiasan"
+  // spinner 
+  spinner = false;
  //placeholder datagrid
-placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
- // ClrDatagrid
-loadingDg: boolean = false;
- //list
-vendors = null;
-jenis = null;
-perhiasan= null;
-//params
-params = null;
-vendorCategory= "product-category.code=c00";
-// dialog
-modalAddDialog: boolean = false;
-modalEditDialog: boolean = false;
-modalDeleteDialog: boolean = false;
-// dialog  form
-form: FormGroup = null;
+  placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
+  // ClrDatagrid
+  loadingDg: boolean = false;
+  //list
+  vendors = null;
+  jenis = null;
+  perhiasan= null;
+  //params
+  params = null;
+  vendorCategory= "product-category.code=c00";
 
+  // dialog
+  modalAddDialog: boolean = false;
+  modalEditDialog: boolean = false;
+  modalDeleteDialog: boolean = false;
+  // dialog  form
+  form: FormGroup = null;
   constructor(
     //app
     private vendorService: VendorService,
@@ -53,7 +50,7 @@ form: FormGroup = null;
     this.onListVendor();
     this.onListJenis();
   }
-  // modal add 
+// modal add 
   mainAdd() {
     this.form = new FormGroup({
       name: new FormControl('', [Validators.required, Validators.maxLength(15), Validators.pattern(/^[a-zA-Z]*$/)]),
@@ -63,6 +60,7 @@ form: FormGroup = null;
     // tslint:disable-next-line:no-console
     console.debug('mainAdd', this.modalAddDialog);
   }
+  //list jenis vendor 
   onListVendor(){
     this.vendorService.list("?_hash=1&"+this.vendorCategory).subscribe((response: any) => {
       if (response != false) {
@@ -70,6 +68,7 @@ form: FormGroup = null;
       }      
     });
   }
+  //list jenis harga 
   onListJenis(){
     this.productJenisService.list("?_hash=1").subscribe((response: any) => {
       if (response != false) {

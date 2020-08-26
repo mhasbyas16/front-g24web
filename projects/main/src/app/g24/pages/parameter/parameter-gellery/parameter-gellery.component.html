@@ -1,20 +1,15 @@
 <div class="clr-row">
     <div class="card" style="margin-top: 0em;">
         <div class="card-header">
-            Parameter Gallery
-            <div class="cart-style"> <!-- total isi cart              total harga cart                           -->
-                
-            </div>
-               
+            Parameter Harga
         </div>
-       
         <div class="card-block">
             <div class="card-text">
                 <clr-tabs>
                     <clr-tab>
                         <button clrTabLink>Logam Mulia </button>
                         <clr-tab-content >
-                            <form id="perhiasan" clrForm>
+                            <form #searchLogamMulia="ngForm" id="logam-mulia" clrForm (ngSubmit)="onCariLogamMulia(searchLogamMulia.value)">
                                 <button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus"></clr-icon></button>
                                 <div class="clr-row">
                                     <div class="clr-col-12">
@@ -33,29 +28,14 @@
                                     </div>
                                     <div class="clr-col-3">
                                         <clr-select-container class="clr-form-control">
-                                            <label class="clr-control-label">Jenis Perhiasan</label>
-                                            <select [(ngModel)]="searchModel.jenisperhiasan" #product clrSelect name="input_jenis_perhiasan" ngModel>
-                                                <option value="all" selected>All</option>
-                                                <ng-container *ngFor="let J of jenis">
-                                                    <option value="{{J.code}}">{{J.name}}</option>
+                                            <label class="clr-control-label">Jenis Harga</label>
+                                            <select [(ngModel)]="searchModel.jenisbarang" clrSelect name="input_jenis_barang" ngModel>
+                                                <option value="all">All</option>
+                                                <ng-container *ngFor="let B of barang">
+                                                    <option value="{{B.code}}">{{B.name}}</option>
                                                 </ng-container>
                                             </select>
                                         </clr-select-container>
-                                    </div>
-                                    <div class="clr-col-3">
-                                        <clr-select-container class="clr-form-control">
-                                            <label class="clr-control-label">Jenis Harga</label>
-                                            <select clrSelect name="options">
-                                                <option value="hj">Harga Jual</option>
-                                                <option value="bb">Buyback</option>
-                                            </select>
-                                        </clr-select-container>
-                                    </div>
-                                    <div class="clr-col-3">
-                                        <clr-date-container>
-                                            <label>Tanggal Berlaku</label>
-                                            <input type="date" clrDate name="demo">
-                                        </clr-date-container>
                                     </div>
                                 </div>
                                 <div class="clr-row">
@@ -70,29 +50,28 @@
                             </form>
                             <clr-datagrid>
                                 <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
-                                <clr-dg-column>Kode</clr-dg-column>
-                                <clr-dg-column>Vendor</clr-dg-column>
                                 <clr-dg-column>Jenis Harga</clr-dg-column>
-                                <clr-dg-column>Tanggal Berlaku</clr-dg-column>
-                                <clr-dg-column>Priode</clr-dg-column>
-                                <clr-dg-column>Keterangan</clr-dg-column>
+                                <clr-dg-column>Vendor</clr-dg-column>
+                                <clr-dg-column>Harga Baku</clr-dg-column>
                                 <clr-dg-column>Status</clr-dg-column>
-                                <clr-dg-column class="right"></clr-dg-column>
                             
-                                <clr-dg-row *clrDgItems="let d of perhiasan">
-                                    <clr-dg-cell>{{d.kode}}</clr-dg-cell>
-                                    <clr-dg-cell>{{d.vendor}}</clr-dg-cell>
-                                    <clr-dg-cell>{{d.jenis}}</clr-dg-cell>
-                                    <clr-dg-cell>{{d.berat}}</clr-dg-cell>
-                                    <clr-dg-cell>{{d.kadar}}</clr-dg-cell>
-                                    <clr-dg-cell>{{d.kadar}}</clr-dg-cell>
-                                    <clr-dg-cell><span style="float: right;">Rp. {{d.harga | number}}</span></clr-dg-cell>
-                                    <clr-dg-cell><span style="float: left;">
-                                        <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home">
-                                            <clr-icon shape="plus"></clr-icon>
-                                        </button>
-                                    </span>
-                                    </clr-dg-cell>
+                                <clr-dg-row *clrDgItems="let lm of logamMulia" [clrDgItem]="lm">
+                                    <clr-dg-action-overflow>
+                                        <button class="action-item">Edit</button>
+                                        <button class="action-item">Delete</button>
+                                    </clr-dg-action-overflow>
+                                    <clr-dg-cell>{{lm['jenis-barang'].name}}</clr-dg-cell>
+                                    <clr-dg-cell>{{lm.vendor.name}}</clr-dg-cell>
+                                    <clr-dg-cell><span>Rp. {{lm['harga-baku']}}</span></clr-dg-cell>
+                                        <ng-container *ngIf="lm.flag == 1">
+                                            <clr-dg-cell><span class="label label-success">Approved</span></clr-dg-cell>
+                                        </ng-container>
+                                        <ng-container *ngIf="lm.flag == 2">
+                                            <clr-dg-cell><span class="label label-warning">Waiting Approved</span></clr-dg-cell>
+                                        </ng-container>
+                                        <ng-container *ngIf="lm.flag == 0">
+                                            <clr-dg-cell><span class="label label-danger">Not Approved</span></clr-dg-cell>
+                                        </ng-container>
                                 </clr-dg-row>
                                 <clr-dg-footer>
                                     <clr-dg-pagination #pagination [clrDgPageSize]="5">
@@ -107,187 +86,25 @@
                     <clr-tab>
                         <button clrTabLink>Perhiasan</button>
                         <clr-tab-content >
-                            <form id="perhiasan" clrForm>
-                                <button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus"></clr-icon></button>
-                                <div class="clr-row">
-                                    <div class="clr-col-12">
-                                        <h6 class="bg-blue1000"> Pencarian </h6>
-                                    </div>
-                                    <div class="clr-col-3">
-                                        <clr-select-container class="clr-form-control">
-                                            <label class="clr-control-label">Vendor</label>
-                                            <select [(ngModel)]="searchModel.vendors" clrSelect name="input_vendor_perhiasan" ngModel>
-                                                <option value="all" >All</option>
-                                                <ng-container *ngFor="let vendor of vendors">
-                                                    <option value="{{vendor.code}}">{{vendor.name}}</option>
-                                                </ng-container>
-                                            </select>
-                                        </clr-select-container>
-                                    </div>
-                                    <div class="clr-col-3">
-                                        <clr-select-container class="clr-form-control">
-                                            <label class="clr-control-label">Jenis Perhiasan</label>
-                                            <select [(ngModel)]="searchModel.jenisperhiasan" #product clrSelect name="input_jenis_perhiasan" ngModel>
-                                                <option value="all" selected>All</option>
-                                                <ng-container *ngFor="let J of jenis">
-                                                    <option value="{{J.code}}">{{J.name}}</option>
-                                                </ng-container>
-                                            </select>
-                                        </clr-select-container>
-                                    </div>
-                                    <div class="clr-col-3">
-                                        <clr-select-container class="clr-form-control">
-                                            <label class="clr-control-label">Jenis Harga</label>
-                                            <select clrSelect name="options">
-                                                <option value="hj">Harga Jual</option>
-                                                <option value="bb">Buyback</option>
-                                            </select>
-                                        </clr-select-container>
-                                    </div>
-                                    <div class="clr-col-3">
-                                        <clr-date-container>
-                                            <label>Tanggal Berlaku</label>
-                                            <input type="date" clrDate name="demo">
-                                        </clr-date-container>
-                                    </div>
-                                </div>
-                                <div class="clr-row">
-                                    <div class="clr-col-1">
-                                        <div class="clr-form-control">
-                                            <div class="clr-control-container">
-                                                <button class="btn btn-info-outline btn-sm">Cari</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>   
-                            </form>
-                            <clr-datagrid>
-                                <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
-                                <clr-dg-column>Kode</clr-dg-column>
-                                <clr-dg-column>Vendor</clr-dg-column>
-                                <clr-dg-column>Jenis Harga</clr-dg-column>
-                                <clr-dg-column>Tanggal Berlaku</clr-dg-column>
-                                <clr-dg-column>Priode</clr-dg-column>
-                                <clr-dg-column>Keterangan</clr-dg-column>
-                                <clr-dg-column>Status</clr-dg-column>
-                                <clr-dg-column class="right"></clr-dg-column>
-                            
-                                <clr-dg-row *clrDgItems="let d of perhiasan">
-                                    <clr-dg-cell>{{d.kode}}</clr-dg-cell>
-                                    <clr-dg-cell>{{d.vendor}}</clr-dg-cell>
-                                    <clr-dg-cell>{{d.jenis}}</clr-dg-cell>
-                                    <clr-dg-cell>{{d.berat}}</clr-dg-cell>
-                                    <clr-dg-cell>{{d.kadar}}</clr-dg-cell>
-                                    <clr-dg-cell>{{d.status}}</clr-dg-cell>
-                                    <clr-dg-cell><span style="float: right;">Rp. {{d.harga | number}}</span></clr-dg-cell>
-                                    <clr-dg-cell><span style="float: left;">
-                                        <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home">
-                                            <clr-icon shape="plus"></clr-icon>
-                                        </button>
-                                    </span>
-                                    </clr-dg-cell>
-                                </clr-dg-row>
-                                <clr-dg-footer>
-                                    <clr-dg-pagination #pagination [clrDgPageSize]="5">
-                                      <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Users per page</clr-dg-page-size>
-                                      {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
-                                      of {{pagination.totalItems}} Produk
-                                    </clr-dg-pagination>
-                                  </clr-dg-footer>
-                            </clr-datagrid>
+                            <app-parameter-perhiasan>
+
+                            </app-parameter-perhiasan>
                         </clr-tab-content>
                     </clr-tab>
                     <clr-tab>
                         <button clrTabLink>Berlian</button>
                         <clr-tab-content >
-                            <form id="perhiasan" clrForm>
-                                <button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus"></clr-icon></button>
-                                <div class="clr-row">
-                                    <div class="clr-col-12">
-                                        <h6 class="bg-blue1000"> Pencarian </h6>
-                                    </div>
-                                    <div class="clr-col-3">
-                                        <clr-select-container class="clr-form-control">
-                                            <label class="clr-control-label">Vendor</label>
-                                            <select [(ngModel)]="searchModel.vendors" clrSelect name="input_vendor_perhiasan" ngModel>
-                                                <option value="all" >All</option>
-                                                <ng-container *ngFor="let vendor of vendors">
-                                                    <option value="{{vendor.code}}">{{vendor.name}}</option>
-                                                </ng-container>
-                                            </select>
-                                        </clr-select-container>
-                                    </div>
-                                    <div class="clr-col-3">
-                                        <clr-select-container class="clr-form-control">
-                                            <label class="clr-control-label">Jenis Perhiasan</label>
-                                            <select [(ngModel)]="searchModel.jenisperhiasan" #product clrSelect name="input_jenis_perhiasan" ngModel>
-                                                <option value="all" selected>All</option>
-                                                <ng-container *ngFor="let J of jenis">
-                                                    <option value="{{J.code}}">{{J.name}}</option>
-                                                </ng-container>
-                                            </select>
-                                        </clr-select-container>
-                                    </div>
-                                    <div class="clr-col-3">
-                                        <clr-select-container class="clr-form-control">
-                                            <label class="clr-control-label">Jenis Harga</label>
-                                            <select clrSelect name="options">
-                                                <option value="hj">Harga Jual</option>
-                                                <option value="bb">Buyback</option>
-                                            </select>
-                                        </clr-select-container>
-                                    </div>
-                                    <div class="clr-col-3">
-                                        <clr-date-container>
-                                            <label>Tanggal Berlaku</label>
-                                            <input type="date" clrDate name="demo">
-                                        </clr-date-container>
-                                    </div>
-                                </div>
-                                <div class="clr-row">
-                                    <div class="clr-col-1">
-                                        <div class="clr-form-control">
-                                            <div class="clr-control-container">
-                                                <button class="btn btn-info-outline btn-sm">Cari</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>   
-                            </form>
-                            <clr-datagrid>
-                                <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
-                                <clr-dg-column>Kode</clr-dg-column>
-                                <clr-dg-column>Vendor</clr-dg-column>
-                                <clr-dg-column>Jenis Harga</clr-dg-column>
-                                <clr-dg-column>Tanggal Berlaku</clr-dg-column>
-                                <clr-dg-column>Priode</clr-dg-column>
-                                <clr-dg-column>Keterangan</clr-dg-column>
-                                <clr-dg-column>Status</clr-dg-column>
-                                <clr-dg-column class="right"></clr-dg-column>
-                            
-                                <clr-dg-row *clrDgItems="let d of perhiasan">
-                                    <clr-dg-cell>{{d.kode}}</clr-dg-cell>
-                                    <clr-dg-cell>{{d.vendor}}</clr-dg-cell>
-                                    <clr-dg-cell>{{d.jenis}}</clr-dg-cell>
-                                    <clr-dg-cell>{{d.berat}}</clr-dg-cell>
-                                    <clr-dg-cell>{{d.kadar}}</clr-dg-cell>
-                                    <clr-dg-cell>{{d.status}}</clr-dg-cell>
-                                    <clr-dg-cell><span style="float: right;">Rp. {{d.harga | number}}</span></clr-dg-cell>
-                                    <clr-dg-cell><span style="float: left;">
-                                        <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home">
-                                            <clr-icon shape="plus"></clr-icon>
-                                        </button>
-                                    </span>
-                                    </clr-dg-cell>
-                                </clr-dg-row>
-                                <clr-dg-footer>
-                                    <clr-dg-pagination #pagination [clrDgPageSize]="5">
-                                      <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Users per page</clr-dg-page-size>
-                                      {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
-                                      of {{pagination.totalItems}} Produk
-                                    </clr-dg-pagination>
-                                  </clr-dg-footer>
-                            </clr-datagrid>
+                            <app-parameter-berlian>
+
+                            </app-parameter-berlian>
+                        </clr-tab-content>
+                    </clr-tab>
+                    <clr-tab>
+                        <button clrTabLink>Sovenir dan Gift</button>
+                        <clr-tab-content >
+                            <app-parameter-sovenir>
+                                
+                            </app-parameter-sovenir>
                         </clr-tab-content>
                     </clr-tab>
                 </clr-tabs>
@@ -302,7 +119,16 @@
 
 <!-- modalAdd -->
 <ng-container *ngIf="modalAddDialog">
-    <form>
+    <form [formGroup]="form" (ngSubmit)="mainAddSubmit();">
+        <input type="hidden" formControlName="vendor_encoded">
+        <input type="hidden" formControlName="jenis_barang_encoded">
+        <input type="hidden" formControlName="product_category">
+        <input type="hidden" formControlName="product_category_encoded">
+        <input type="hidden" formControlName="maker">
+        <input type="hidden" formControlName="makerDate">
+        <input type="hidden" formControlName="makerTime">
+        <input type="hidden" formControlName="maker_encoded">
+        <input type="hidden" formControlName="flag">
         <clr-modal [clrModalSize]="'xl'" [clrModalOpen]="modalAddDialog" [clrModalClosable]="false"
             [clrModalStaticBackdrop]="true">
             <h3 class="modal-title">Add {{title}}</h3>
@@ -313,67 +139,42 @@
                         <div class="clr-row">
                             <div class="clr-col-3">
                                 <clr-select-container class="clr-form-control">
-                                    <label class="clr-control-label">Vendor</label>
-                                    <select [(ngModel)]="searchModel.vendors" clrSelect name="input_vendor_perhiasan" ngModel>
-                                        <option value="all" >All</option>
-                                        <ng-container *ngFor="let vendor of vendors">
-                                            <option value="{{vendor.code}}">{{vendor.name}}</option>
+                                    <label class="clr-control-label">Jenis Harga</label>
+                                    <select [(ngModel)]="searchModel.jenisbarang" clrSelect formControlName="jenis_barang" ngModel>
+                                        <ng-container *ngFor="let B of barang">
+                                            <option value="{{B._hash}}">{{B.name}}</option>
                                         </ng-container>
                                     </select>
                                 </clr-select-container>
                             </div>
                             <div class="clr-col-3">
                                 <clr-select-container class="clr-form-control">
-                                    <label class="clr-control-label">Jenis Harga</label>
-                                    <select clrSelect name="options">
-                                        <option value="hj">Harga Jual</option>
-                                        <option value="bb">Buyback</option>
+                                    <label class="clr-control-label">Vendor</label>
+                                    <select [(ngModel)]="searchModel.vendors" clrSelect formControlName="vendor" ngModel>
+                                        <ng-container *ngFor="let vendor of vendors">
+                                            <option value="{{vendor._hash}}">{{vendor.name}}</option>
+                                        </ng-container>
                                     </select>
                                 </clr-select-container>
                             </div>
                             <div class="clr-col-3">
-                                <clr-select-container class="clr-form-control">
-                                    <label class="clr-control-label">Distro</label>
-                                    <select clrSelect name="options">
-                                        <option value="dt">Distro Tarandam</option>
-                                        <option value="dk">Distro Kedaton</option>
-                                        <option value="dp">Distro Pusat</option>
-                                        <option value="bj">Distro Jambi</option>
-                                    </select>
-                                </clr-select-container>
-                            </div><div class="clr-col-3">
-                                <clr-radio-container clrInline>
-                                    <label class="clr-control-label">Channel</label>
-                                    <clr-radio-wrapper>
-                                      <input type="radio" clrRadio name="options" required value="online"/>
-                                      <label>Online</label>
-                                    </clr-radio-wrapper>
-                                    <clr-radio-wrapper>
-                                      <input type="radio" clrRadio name="options" required value="offline"/>
-                                      <label>Offline</label>
-                                    </clr-radio-wrapper>
-                                  </clr-radio-container>
-                            </div>
-                            <div class="clr-col-3">
-                                <clr-date-container>
-                                    <label>Tanggal Berlaku</label>
-                                    <input type="date" clrDate name="demo">
-                                </clr-date-container>
-                            </div>
-                            <div class="clr-col-3">
-                                <clr-input-container>
-                                    <label>Margin Penjualan</label>
-                                    <input clrInput type="text"/>
-                                    <clr-control-helper>Decimal</clr-control-helper>
-                                    <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
-                                    <clr-control-error *clrIfError="'maxlength'; error as err">Must be at maximum {{ err.requiredLength }} characters</clr-control-error>
-                                    <clr-control-error *clrIfError="'pattern'; error as err">Text Required</clr-control-error>
-                                </clr-input-container>
+                                <clr-checkbox-container clrInline>
+                                    <label>Channel</label>
+                                    <clr-checkbox-wrapper>
+                                        <input type="checkbox" clrCheckbox formControlName="online" [(ngModel)]="checkboxModel.online"/>
+                                        <label>Online</label>
+                                    </clr-checkbox-wrapper>
+                                    <clr-checkbox-wrapper>
+                                        <input type="checkbox" clrCheckbox formControlName="offline" [(ngModel)]="checkboxModel.offline"/>
+                                        <label>Offline</label>
+                                    </clr-checkbox-wrapper>
+                                    <clr-control-error>Channel harus diisi</clr-control-error>
+                                </clr-checkbox-container>
                             </div>
                             <div class="clr-col-3">
                                 <clr-textarea-container>
                                     <label>Keterangan</label>
-                                    <textarea clrTextarea name="description" required></textarea>
+                                    <textarea clrTextarea formControlName="keterangan" required></textarea>
                                     <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                                     <clr-control-error *clrIfError="'maxlength'; error as err">Must be at maximum {{ err.requiredLength }} characters</clr-control-error>
                                     <clr-control-error *clrIfError="'pattern'; error as err">Text Required</clr-control-error>
@@ -383,65 +184,155 @@
                     </div>
                 </div>
                 <div class="clr-col-12"></div>
-                <h6>Detail Harga</h6>
+                <h6>Margin</h6>
+                <div class="card">
+                    <div class="card-block">
+                        <div class="clr-row">
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Mulia Pembiayaan K Pegadaian</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input type="number" formControlName="pembiayaan_pegadaian" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Mulia Pembiayaan Perusahaan</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input type="number" formControlName="pembiayaan_perusahaan" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Penjualan Koorporasi</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input type="number" formControlName="penjualan_koorporasi" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Penjualan Bundling</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input type="number" formControlName="penjualan_bundling" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Penjualan Pameran</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input type="number" formControlName="penjualan_pameran" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Penjualan Agen</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input type="number" formControlName="penjualan_agen" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Penjualan Karyawan</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input type="number" formControlName="penjualan_karyawan" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Penjualan Invoice Performa</label>
+                                    <label>7 hari</label>
+                                    <div class="clr-control-container">
+                                        <input type="number" formControlName="invoice_7hr" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                    <label>14 hari</label>
+                                    <div class="clr-control-container">
+                                        <input type="number" formControlName="invoice_14hr" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Penjualan Tunai</label>
+                                    <label>Cash and Carry</label>
+                                    <div class="clr-control-container">
+                                        <input type="number" id="penjualan-cash" formControlName="penjualan_cash" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                        <span class="clr-subtext"></span>
+                                    </div>
+                                    <label>Serah Tunda</label>
+                                    <div class="clr-control-container">
+                                        <input type="number" id="penjualan-serahtunda" formControlName="penjualan_serahtunda" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                        <span class="clr-subtext"></span>
+                                    </div>
+                                    <label>Bulk</label>
+                                    <div class="clr-control-container">
+                                        <input type="number" id="penjualan-bulk" formControlName="penjualan_bulk" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                        <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clr-col-12"></div>
+                <h6>Harga Denom</h6>
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>No</th>
                             <th>Jenis Mulia (Gram)</th>
                             <th style="text-align: left;">Harga Mulia</th>
                             <th style="text-align: left;">Harga Jual</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>0,5</td>
-                            <td><clr-input-container><input clrInput type="text"/></clr-input-container></td>
-                            <td><clr-input-container><input clrInput type="text"/></clr-input-container></td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>1</td>
-                            <td><clr-input-container><input clrInput type="text"/></clr-input-container></td>
-                            <td><clr-input-container><input clrInput type="text"/></clr-input-container></td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>1,06</td>
-                            <td><clr-input-container class="clr-justify-content-start clr-justify-content-center"><input clrInput type="text"/></clr-input-container></td>
-                            <td><clr-input-container><input clrInput type="text"/></clr-input-container></td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>2</td>
-                            <td><clr-input-container><input clrInput type="text"/></clr-input-container></td>
-                            <td><clr-input-container><input clrInput type="text"/></clr-input-container></td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>2.13</td>
-                            <td><clr-input-container><input clrInput type="text"/></clr-input-container></td>
-                            <td><clr-input-container><input clrInput type="text"/></clr-input-container></td>
-                        </tr>
-                        <tr>
-                            <td>6</td>
-                            <td>2.5</td>
-                            <td><clr-input-container><input clrInput type="text"/></clr-input-container></td>
-                            <td><clr-input-container><input clrInput type="text"/></clr-input-container></td>
-                        </tr>
-                        <tr>
-                            <td>7</td>
-                            <td>3</td>
-                            <td><clr-input-container><input clrInput type="text"/></clr-input-container></td>
-                            <td><clr-input-container><input clrInput type="text"/></clr-input-container></td>
-                        </tr>
-                        <tr>
-                            <td>8</td>
-                            <td>4</td>
-                            <td><clr-input-container><input clrInput type="text"/></clr-input-container></td>
-                            <td><clr-input-container><input clrInput type="text"/></clr-input-container></td>
-                        </tr>
+                        <ng-container *ngFor="let denom of denom">
+                            <tr>
+                                <td>{{denom.name}}</td>
+                                <td><clr-input-container><input clrInput formControlName="hrg{{denom.code}}" type="number"/></clr-input-container></td>
+                                <td><clr-input-container><input clrInput formControlName="jual{{denom.code}}" type="number"/></clr-input-container></td>
+                            </tr>
+                        </ng-container>
                     </tbody>
                 </table>
             </div>

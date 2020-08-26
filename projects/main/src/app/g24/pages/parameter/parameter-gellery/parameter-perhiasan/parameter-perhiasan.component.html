@@ -1,6 +1,6 @@
 <form id="berlian" clrForm>
     <button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus"></clr-icon></button>
-    <!-- <div class="clr-row">
+    <div class="clr-row">
         <div class="clr-col-12">
             <h6 class="bg-blue1000"> Pencarian </h6>
         </div>
@@ -35,12 +35,6 @@
                 </select>
             </clr-select-container>
         </div>
-        <div class="clr-col-3">
-            <clr-date-container>
-                <label>Tanggal Berlaku</label>
-                <input type="date" clrDate name="demo">
-            </clr-date-container>
-        </div>
     </div>
     <div class="clr-row">
         <div class="clr-col-1">
@@ -50,8 +44,8 @@
                 </div>
             </div>
         </div>
-    </div>    -->
-</form> 
+    </div>   
+</form>
 <clr-datagrid>
     <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
     <clr-dg-column>Kode</clr-dg-column>
@@ -100,7 +94,7 @@
                         <div class="clr-row">
                             <div class="clr-col-3">
                                 <div class="clr-form-control">
-                                    <label for="basic" class="clr-control-label">HPP Emas</label>
+                                    <label for="basic" class="clr-control-label">Harga Dasar</label>
                                     <div class="clr-control-container">
                                     <div class="clr-input-wrapper">
                                         <input type="number" id="basic" placeholder="" class="clr-input" />
@@ -112,7 +106,7 @@
                             </div>
                             <div class="clr-col-3">
                                 <div class="clr-form-control">
-                                    <label for="basic" class="clr-control-label">Margin Jenis Penjualan</label>
+                                    <label for="basic" class="clr-control-label">PPN</label>
                                     <div class="clr-control-container">
                                     <div class="clr-input-wrapper">
                                         <input type="number" id="basic" placeholder="" class="clr-input" />
@@ -123,52 +117,17 @@
                                 </div>
                             </div>
                             <div class="clr-col-3">
-                                <div class="clr-form-control">
-                                    <label for="basic" class="clr-control-label">Margin Batu</label>
-                                    <div class="clr-control-container">
-                                    <div class="clr-input-wrapper">
-                                        <input type="number" id="basic" placeholder="" class="clr-input" />
-                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
-                                    </div>
-                                    <span class="clr-subtext"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="clr-col-3">
-                                <div class="clr-form-control">
-                                    <label for="basic" class="clr-control-label">Margin Berlian</label>
-                                    <div class="clr-control-container">
-                                    <div class="clr-input-wrapper">
-                                        <input type="number" id="basic" placeholder="" class="clr-input" />
-                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
-                                    </div>
-                                    <span class="clr-subtext"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="clr-col-3">
-                                <div class="clr-form-control">
-                                    <label for="basic" class="clr-control-label">Harga Dasar Untuk Perhiasan Batu Permata </label>
-                                    <div class="clr-control-container">
-                                    <div class="clr-input-wrapper">
-                                        <input type="number" id="basic" placeholder="" class="clr-input" />
-                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
-                                    </div>
-                                    <span class="clr-subtext"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="clr-col-3">
-                                <div class="clr-form-control">
-                                    <label for="basic" class="clr-control-label">PPN </label>
-                                    <div class="clr-control-container">
-                                    <div class="clr-input-wrapper">
-                                        <input type="number" id="basic" placeholder="" class="clr-input" />
-                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
-                                    </div>
-                                    <span class="clr-subtext"></span>
-                                    </div>
-                                </div>
+                                <clr-radio-container clrInline>
+                                    <label class="clr-control-label">Channel</label>
+                                    <clr-radio-wrapper>
+                                      <input type="radio" clrRadio name="options" required value="online"/>
+                                      <label>Online</label>
+                                    </clr-radio-wrapper>
+                                    <clr-radio-wrapper>
+                                      <input type="radio" clrRadio name="options" required value="offline"/>
+                                      <label>Offline</label>
+                                    </clr-radio-wrapper>
+                                  </clr-radio-container>
                             </div>
                             <div class="clr-col-3">
                                 <clr-textarea-container>
@@ -178,6 +137,138 @@
                                     <clr-control-error *clrIfError="'maxlength'; error as err">Must be at maximum {{ err.requiredLength }} characters</clr-control-error>
                                     <clr-control-error *clrIfError="'pattern'; error as err">Text Required</clr-control-error>
                                 </clr-textarea-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clr-col-12"></div>
+                <h6>Margin</h6>
+                <div class="card">
+                    <div class="card-block">
+                        <div class="clr-row">
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Mulia Pembiayaan K Pegadaian</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input type="number" id="basic" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Mulia Pembiayaan Perusahaan</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input type="number" id="basic" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Penjualan Koorporasi</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input type="number" id="basic" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Penjualan Bundling</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input type="number" id="basic" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Penjualan Pameran</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input type="number" id="basic" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Penjualan Agen</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input type="number" id="basic" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Penjualan Karyawan</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input type="number" id="basic" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Penjualan Invoice Performa</label>
+                                    <label>7 hari</label>
+                                    <div class="clr-control-container">
+                                        <input type="number" id="basic" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                    <label>14 hari</label>
+                                    <div class="clr-control-container">
+                                        <input type="number" id="basic" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Penjualan Tunai</label>
+                                    <label>Cash and Carry</label>
+                                    <div class="clr-control-container">
+                                        <input type="number" id="basic" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                        <span class="clr-subtext"></span>
+                                    </div>
+                                    <label>Serah Tunda</label>
+                                    <div class="clr-control-container">
+                                        <input type="number" id="basic" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                        <span class="clr-subtext"></span>
+                                    </div>
+                                    <label>Bulk</label>
+                                    <div class="clr-control-container">
+                                        <input type="number" id="basic" placeholder="" class="clr-input" />
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                        <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
