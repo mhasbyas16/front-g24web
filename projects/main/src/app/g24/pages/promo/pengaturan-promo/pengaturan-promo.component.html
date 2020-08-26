@@ -1,0 +1,271 @@
+<div class="clr-row">
+    <div class="card" style="margin-top: 0em;">
+        <div class="card-header">
+           Pengaturan Promo               
+        </div>       
+        <div class="card-block">
+            <div class="card-text">
+                <!-- card -->
+                <div class="clr-row">
+                    <div class="card" style="margin-top: 0em;">
+                        <div class="card-header">
+                           Tipe Promo           
+                        </div>       
+                        <div class="card-block">
+                            <div class="card-text">
+                                <form clrForm>
+                                    <clr-select-container>
+                                        <label>Tipe Promo</label>
+                                        <select clrSelect name="tipePromo" [value]="" (click)="openWizard($event.target.value)" required>
+                                            <option selected value="">-- Select one --</option>
+                                            <option value="penjualan">Penjualan</option>
+                                            <option value="manual">Manual</option>
+                                        </select>
+                                    </clr-select-container>
+                                </form>
+
+                                <!-- wizard penjualan -->
+                                <clr-wizard #penjualan [(clrWizardOpen)]="penjualanWizard">
+                                    <clr-wizard-title>Promo Penjualan</clr-wizard-title>
+                                
+                                    <clr-wizard-button [type]="'cancel'">Cancel</clr-wizard-button>
+                                    <clr-wizard-button [type]="'previous'">Back</clr-wizard-button>
+                                    <clr-wizard-button [type]="'next'">Next</clr-wizard-button>
+                                    <clr-wizard-button [type]="'finish'" (click)="storePromotion()">Finish</clr-wizard-button>
+                                    <!-- section 1 -->
+                                    <clr-wizard-page [clrWizardPageNextDisabled]="!section1_penjualan.valid"> <!---->
+                                        <ng-template clrPageTitle>Inisiasi</ng-template>
+
+                                        <form clrForm class="clr-form-compact" [formGroup]="section1_penjualan">
+                                            <clr-input-container>        
+                                                <label class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2">Nama Program</label>                                      
+                                                <input class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrInput required formControlName="nama" />
+                                                <clr-control-error>This field is required!</clr-control-error>
+                                            </clr-input-container>
+                                            <div class="clr-row">
+                                                <div class="clr-col-sm-6 clr-col-md-6 clr-col-lg-6">
+                                                    <clr-date-container>
+                                                        <label class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">Periode</label>
+                                                        <input class="clr-col-sm-6 clr-col-md-6 clr-col-lg-6" type="date" clrDate formControlName="startDate">
+                                                    </clr-date-container>
+                                                </div>
+                                                <div class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">
+                                                    <clr-input-container>
+                                                        <label>s/d</label>
+                                                    </clr-input-container>
+                                                </div>
+                                                <div class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">
+                                                    <clr-date-container>
+                                                        <input type="date" clrDate formControlName="endDate">
+                                                    </clr-date-container>
+                                                </div>
+                                            </div>                                     
+                                              
+
+                                            <clr-select-container>
+                                                <label class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2">Lokasi</label>
+                                                <select formControlName="units" class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrSelect (click)="select2Distro($event.target.value)" >
+                                                    <option disabled selected [value]="">-- Select One --</option>
+                                                    <option [value]="_hashUnit">Semua Distro</option>
+                                                    <option [value]="'pd'">Pilih Distro</option>
+                                                </select>
+                                            </clr-select-container><br>
+                                            <ng-container *ngIf="selectdistro">
+                                                <div class="clr-row">
+                                                    <div class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2"></div>
+                                                    <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
+                                                        <ng-select2
+                                                        formControlName="pickUnits" 
+                                                        [data]="unit"
+                                                        [options]="options"></ng-select2>
+                                                    </div>
+                                                </div> <br>                                               
+                                            </ng-container>
+                                            
+                                            <div class="clr-row">
+                                                <div class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2">
+                                                    <clr-input-container>
+                                                        <label>Produk</label>
+                                                    </clr-input-container>
+                                                </div>
+                                                <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
+                                                    <ng-select2 
+                                                        formControlName="product-category" 
+                                                        [data]="productCategory"
+                                                        [options]="options2"></ng-select2>
+                                                </div>
+                                            </div>
+
+                                            <clr-select-container>
+                                                <label class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2">Kuota Promo</label>
+                                                <select class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" formControlName="typeQuota" [value]="" clrSelect (click)="selectKuota($event.target.value)" >
+                                                    <option disabled selected [value]="">-- Select One --</option>
+                                                    <option [value]="'0'">Tidak Ada Batasan</option>
+                                                    <option [value]="'1'">Semua Produk</option>
+                                                    <option [value]="'2'">Per Produk</option>
+                                                </select>
+                                            </clr-select-container>
+                                             
+                                            <ng-container *ngIf="inputKuota">
+                                                <clr-input-container>
+                                                    <input clrInput type="text" formControlName="quota" >
+                                                </clr-input-container>
+                                            </ng-container>
+                                        </form>
+                                    </clr-wizard-page>
+
+                                    <!-- section 2 -->
+                                    <clr-wizard-page>
+                                        <ng-template clrPageTitle>Setting Produk</ng-template>
+                                        <ng-container *ngIf="perhiasan">
+                                            <div class="card" style="margin-top: 0em;">
+                                                <div class="card-header">
+                                                   PERHIASAN              
+                                                </div>       
+                                                <div class="card-block">
+                                                    <div class="card-text">
+                                                        <form clrForm class="clr-form-compact" [formGroup]="section2_perhiasan">
+                                                            <div class="clr-row">
+                                                                <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
+                                                                    <clr-input-container>
+                                                                        <label >Vendor Perhiasan</label>
+                                                                    </clr-input-container>
+                                                                </div>
+                                                                <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
+                                                                    <ng-select2 
+                                                                        formControlName="vendor" 
+                                                                        [data]="vendorPerhiasan"
+                                                                        [options]="options2"></ng-select2>
+                                                                </div>
+                                                            </div>
+                                                            <div class="clr-row">
+                                                                <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
+                                                                    <clr-input-container>
+                                                                        <label>Kadar Perhiasan</label>
+                                                                    </clr-input-container>
+                                                                </div>
+                                                                <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
+                                                                    <ng-select2 
+                                                                        formControlName="purity" 
+                                                                        [data]="purityPerhiasan"
+                                                                        [options]="options2"></ng-select2>
+                                                                </div>
+                                                            </div>
+                                                            <div class="clr-row">
+                                                                <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
+                                                                    <clr-input-container>
+                                                                        <label>Jenis Perhiasan</label>
+                                                                    </clr-input-container>
+                                                                </div>
+                                                                <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
+                                                                    <ng-select2 
+                                                                        formControlName="typePerhiasan" 
+                                                                        [data]="jenisPerhiasan"
+                                                                        [options]="options2"></ng-select2>
+                                                                </div>
+                                                            </div>
+                                                            <ng-container *ngIf="kuotaProduk">
+                                                                <clr-input-container>
+                                                                    <label class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">Kuota</label>
+                                                                    <input class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrInput type="text" formControlName="quota" >
+                                                                </clr-input-container>
+                                                            </ng-container>
+                                                            <clr-select-container>
+                                                                <label class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">Umur Perhiasan</label>
+                                                                <select class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrSelect formControlName="age" (click)="pickUmur($event.target.value)">
+                                                                    <option disabled selected value="">-- select one --</option>
+                                                                    <option value="su">Semua Umur</option>
+                                                                    <option value="du">Dengan Umur</option>
+                                                                </select>
+                                                            </clr-select-container> 
+                                                            <ng-container *ngIf="umurPerhiasan">
+                                                                <div class="clr-row">
+                                                                    <div class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3"></div>
+                                                                    <div class="clr-col-sm-4 clr-col-md-3 clr-col-lg-4">
+                                                                        <clr-input-container>
+                                                                            <label ></label>
+                                                                            <input clrInput formControlName="minAge" type="text">
+                                                                        </clr-input-container>
+                                                                    </div>
+                                                                    <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
+                                                                        <clr-input-container>
+                                                                            <label ></label>
+                                                                            <input clrInput formControlName="maxAge" type="text">
+                                                                        </clr-input-container>
+                                                                    </div>   
+                                                                </div> 
+                                                            </ng-container>
+                                                            
+                                                            <clr-select-container>
+                                                                <label class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">Parameter Promo</label>
+                                                                <select class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrSelect formControlName="prmPromotion">
+                                                                    <option disabled selected value="">-- select one --</option>
+                                                                    <option value="rh">Range Harga</option>
+                                                                    <option value="rb">Range Berat</option>
+                                                                </select>
+                                                            </clr-select-container>
+                                                            <div class="clr-row">
+                                                                <div class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3"></div>
+                                                                <div class="clr-col-sm-4 clr-col-md-3 clr-col-lg-4">
+                                                                    <clr-input-container>
+                                                                        <label ></label>
+                                                                        <input clrInput formControlName="minPrmPromotion" type="text">
+                                                                    </clr-input-container>
+                                                                </div>
+                                                                <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
+                                                                    <clr-input-container>
+                                                                        <label ></label>
+                                                                        <input clrInput formControlName="maxPrmPromotion" type="text">
+                                                                    </clr-input-container>
+                                                                </div>   
+                                                            </div>  
+                                                            <clr-select-container>
+                                                                <label class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">Jenis Promo</label>
+                                                                <select class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrSelect formControlName="typePromotion">
+                                                                    <option disabled selected value="">-- select one --</option>
+                                                                    <option value="vp">Voucher Penjualan (rupiah)</option>SS
+                                                                </select>
+                                                            </clr-select-container> 
+                                                            <div class="clr-row">
+                                                                <div class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3"></div>
+                                                                <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
+                                                                    <clr-input-container>
+                                                                        <label ></label>
+                                                                        <input clrInput formControlName="sizeTypePromotion" type="text">
+                                                                    </clr-input-container>
+                                                                </div> 
+                                                            </div>                                                  
+                                                        </form>
+                                                    </div>
+                                                </div>  
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngIf="mulia">
+                                            <div class="card" style="margin-top: 0em;">
+                                                <div class="card-header">
+                                                   LOGAM MULIA               
+                                                </div>       
+                                                <div class="card-block">
+                                                    <div class="card-text">
+                                                    </div>
+                                                </div>  
+                                            </div>
+                                        </ng-container>
+                                    </clr-wizard-page>
+                                    
+                                    
+                                </clr-wizard>
+
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                        </div>
+                    </div>
+                </div>
+                <!-- end card  -->                
+            </div>
+        </div>
+        <div class="card-footer">
+        </div>
+    </div>
+</div>

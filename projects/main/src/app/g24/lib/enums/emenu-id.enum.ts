@@ -95,9 +95,14 @@ export enum EMenuID {
      */
     SYSTEM_PARAM        = '9900',
 
+    // penjualan
     DISTRO              = '10001',
     ROLE                = '10002',
     LAPORAN             = '10003',
+
+    // promosi
+    PENGATURAN_PROMO = '10004',
+    DAFTAR_PROMO = '10005',
 
     // LAPORAN KEUANGAN
     LAPORAN_KEUANGAN = '21000',

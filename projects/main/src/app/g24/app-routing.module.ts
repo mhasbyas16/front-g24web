@@ -64,5 +64,6 @@ export class AppRoutingModule
     ModuleLoader.register('rl', () => import('./pages/security/security.module').then(m => m.SecurityModule))
     ModuleLoader.register('pr', () => import('./pages/parameter/parameter.module').then(m => m.ParameterModule))
     ModuleLoader.register('kl', () => import('./pages/keuangan/laporan/laporan.module').then(m => m.LaporanKeuanganModule))
+    ModuleLoader.register('promo',() => import('./pages/promo/promo.module').then(m => m.PromoModule))
   }
 }
