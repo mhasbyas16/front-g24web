@@ -646,6 +646,12 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
 
   onAddItem()
   {
+    if(this.input['product-category'] == null || this.input['vendor'] == null)
+    {
+      this.toastr.warning("Kategori Produk atau Vendor belum diisi");
+      return;
+    }
+
     let tempItem = {
       sku : null, 'product-purity' : null, 'product-gold-color' : null,
       'product-jenis' : null,
@@ -767,6 +773,13 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     this.input['total_pajak'] = value;
     return value;
   }
+  
+  totalHargaStyleValid()
+  {
+    if(this.hitungTotalHarga() > 0) return {};
+
+    return {'text-decoration': 'underline','text-decoration-color': 'red', 'color' : 'red'};
+  }
 
   beratStyleValid()
   {
@@ -830,13 +843,13 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     item = item == null ? this.selected : item;
     let ongkos : number = item.ongkos;
     let hpajak : number= this.input?.pajak;
-    let berat : number= item.berat;
+    let gram_tukar : number= item.gram_tukar;
 
-    if(ongkos == null || hpajak == null || berat == null) return 0;
+    if(ongkos == null || hpajak == null || gram_tukar == null) return 0;
     
     let persenPajak = 2.00;
 
-    let pajakItem : number = (ongkos/1000) * berat * hpajak * persenPajak / 100;
+    let pajakItem : number = (ongkos/1000) * gram_tukar * hpajak * persenPajak / 100;
     item.pajak = Math.trunc(pajakItem);
     console.log(pajakItem)
     return this.selected.pajak;
@@ -858,5 +871,58 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
       return validationMethod();
 
     return true;
+  }
+
+  onKadarChanged(item)
+  {
+    item = item ? item : this.selected;
+
+    this.hitungOngkos(item);
+    this.hitungGramTukar(item);
+  }
+  
+  onGramTukarChanged(item)
+  {
+    item = item ? item : this.selected;
+
+    this.hitungPajak(item);
+    this.hitungTotalHarga();
+  }
+
+  onBakuTukarChanged(item)
+  {
+    this.hitungOngkos(item);
+    this.hitungGramTukar(item);
+    this.hitungPajak(item);
+  }
+
+  hitungOngkos(item)
+  {
+    item = item ? item : this.selected;
+
+    let kadar = Number(item['product-purity'].name);
+    let baku_tukar = Number(item['baku_tukar']);
+
+    item.ongkos = baku_tukar - kadar;
+  }
+
+  hitungGramTukar(item)
+  {
+    item = item ? item : this.selected;
+
+    let berat = Number(item.berat);
+    let baku_tukar = Number(item.baku_tukar);
+
+    item.gram_tukar = baku_tukar * berat / 1000;
+    console.log(item.gram_tukar);
+  }
+
+  hitungTotalHarga()
+  {
+    let hbaku = Number(this.input['harga_baku']);
+    let total_gram_tukar = this.getGramTukarFromItems();
+
+    this.input['total_harga'] = hbaku * total_gram_tukar;
+    return this.input['total_harga'];
   }
 }

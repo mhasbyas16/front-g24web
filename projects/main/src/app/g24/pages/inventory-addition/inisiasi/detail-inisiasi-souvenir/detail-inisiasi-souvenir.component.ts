@@ -930,5 +930,26 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
     this.countItemPajak(item);
   }
 
+  
+  totalHargaStyleValid()
+  {
+    if(this.hitungTotalHarga() > 0) return {};
+
+    return {'text-decoration': 'underline','text-decoration-color': 'red', 'color' : 'red'};
+  }
+  
+  hitungTotalHarga()
+  {
+    let items = this.input['items'];
+    let value : number = 0.0;
+
+    for(let i = 0; i < items.length; i++)
+    {
+      value += Number(items[i].total_harga);
+    }
+    this.input['total_harga'] = value;
+
+    return this.input['total_harga'];
+  }
 
 }

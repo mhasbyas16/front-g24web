@@ -190,7 +190,14 @@
                                 </div>
                                 <div class="clr-row">\
                                     <div class="clr-col-1">Total Harga : </div>
-                                    <div class="clr-col-2"><p><span>Rp.</span><span><input min=0 class="clr-input" type="number" [(ngModel)]="input.total_harga" [ngModelOptions]="{standalone : true}"></span></p></div>
+                                    <div class="clr-col-2">
+                                        <p><span>Rp.</span>
+                                            <span>
+                                                <span [ngStyle]="totalHargaStyleValid()">{{hitungTotalHarga()}}</span>
+                                                <!-- <input min=0 class="clr-input" type="number" [(ngModel)]="input.total_harga" [ngModelOptions]="{standalone : true}"> -->
+                                            </span>
+                                        </p>
+                                    </div>
                                 </div>
                                 <div>
                                     <clr-dg-pagination #pagination [clrDgPageSize]="10">
