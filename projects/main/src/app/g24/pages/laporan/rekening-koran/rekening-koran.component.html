@@ -1,0 +1,150 @@
+<!-- Detail Pencarian -->
+<div class="clr-row">
+    <div class="card" style="margin-top: 0em;">
+        <!-- <div class="clr-col-lg-6 clr-col-12"> -->
+        <div class="card-header">
+            Detail Pencarian
+        </div>
+        <div class="card-block">
+
+            <form clrForm [formGroup]="search" (ngSubmit)="filterTransaction('noRek')">
+                <div class="clr-row clr-align-items-center">
+                    <div class="clr-col-3">
+                        <clr-input-container>
+                            <input clrInput type="text" formControlName="text" placeholder="No Rekening" autofocus>
+                            <clr-control-helper>Masukkan No Rekening</clr-control-helper>
+                        </clr-input-container>
+                    </div>
+                    <div class="clr-col-3">
+                        <clr-date-container>
+                            <input clrDate type="date" formControlName="from">
+                            <clr-control-helper>Tanggal Awal</clr-control-helper>
+                        </clr-date-container>
+                    </div>
+                    <div class="clr-col-3">
+                        <clr-date-container>
+                            <input clrDate type="date" formControlName="to">
+                            <clr-control-helper>Tanggal Akhir</clr-control-helper>
+                        </clr-date-container>
+                    </div>
+
+                    <div class="clr-col-2">
+                        <button type="submit" class="btn btn-icon btn-sm btn-success">Search</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+        <!-- </div> -->
+
+    </div>
+</div>
+
+
+<!-- Detail Transaksi -->
+<div class="clr-row">
+    <div class="card" style="margin-top: 0em;">
+        <!-- <div class="card-header">
+            Detail Transaksi Rekening
+        </div> -->
+        <div class="card-block">
+
+            <form clrForm [formGroup]="header">
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                        <clr-input-container>
+                            <label>Cabang</label>
+                            <input clrInput  formControlName="unit" readonly />
+                        </clr-input-container>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                        <clr-input-container>
+                            <label>Deskripsi</label>
+                            <input clrInput formControlName="deskripsi" readonly />
+                        </clr-input-container>
+                    </div>
+
+
+                    <div class="clr-col-6">
+                        <clr-input-container>
+                            <label>Saldo Awal</label>
+                            <input clrInput formControlName="saldoAwal" readonly formControlValue = "0" />
+                        </clr-input-container>
+                    </div>
+                </div>
+            </form>
+
+
+            <clr-datagrid [clrDgLoading]="loadingDg" [(clrDgSelected)]="selected">
+                <clr-dg-placeholder>
+                    {{placeholderDatagrid}}
+                </clr-dg-placeholder>
+
+                <clr-dg-column>No</clr-dg-column>
+                <clr-dg-column>Tanggal Jurnal</clr-dg-column>
+                <clr-dg-column>Tanggal Transaksi</clr-dg-column>
+                <clr-dg-column>Keterangan</clr-dg-column>
+                <clr-dg-column>Debet</clr-dg-column>
+                <clr-dg-column>Kredit</clr-dg-column>
+                <clr-dg-column>Saldo Rekening</clr-dg-column>
+                
+
+                <clr-dg-row *clrDgItems="let isi of transactions" [clrDgItem]="isi">
+                    <clr-dg-cell>{{isi.no}}</clr-dg-cell>
+                    <clr-dg-cell>{{isi.postDate}}</clr-dg-cell>
+                    <clr-dg-cell>{{isi.trxDate}}</clr-dg-cell>
+                    <clr-dg-cell>{{isi.keterangan}}</clr-dg-cell>
+                    <clr-dg-cell>{{isi.debit | number}} </clr-dg-cell>
+                    <clr-dg-cell>{{isi.kredit | number}}</clr-dg-cell>
+                    <clr-dg-cell><span style="float: right;"></span></clr-dg-cell>                   
+                </clr-dg-row>
+                <clr-dg-detail *clrIfDetail="let content">
+                    <clr-dg-detail-header>Detail Jurnal</clr-dg-detail-header>
+                    <clr-dg-detail-body>
+                        <ng-container>
+                            <table class="table table-compact table-noborder"> 
+                                <thead>
+                                    <tr>
+                                        <th class="left"><b>No Rekening</b></th>
+                                        <th class="left"><b>Keterangan</b></th>
+                                        <th class="left"><b>Debit</b></th>
+                                        <th class="left"><b>Kredit</b></th>
+                                    </tr>
+                                </thead>                               
+                                <tbody>
+                                    <tr *ngFor="let data of content.detail">
+                                        <td class="left">{{data.noRek}}</td>
+                                        <td class="left">{{data.name}}</td>
+                                        <td class="right">{{data.amountD | number}}</td>
+                                        <td class="right">{{data.amountK | number}}</td>
+                                    </tr>
+                                </tbody>
+                                <!-- <tfoot>
+                                    <tr *ngFor="let isi of listTotalHarga">
+                                        <ng-container *ngIf="isi.idTransaction == detail.idTransaction">
+                                            <td class="left" colspan="8">TOTAL PERHIASAN Rp. {{isi.hargaP | number}}</td>
+                                        </ng-container>
+                                    </tr>
+                                </tfoot>                  -->
+                            </table>
+                        </ng-container>
+                    </clr-dg-detail-body>
+                </clr-dg-detail>
+                <clr-dg-footer>
+                    <clr-dg-pagination #pagination [clrDgPageSize]="5">
+                        <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Users per page</clr-dg-page-size>
+                        {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                        of {{pagination.totalItems}} Produk
+                    </clr-dg-pagination>
+                </clr-dg-footer>
+            </clr-datagrid>
+
+
+
+
+        </div>
+
+    </div>
+</div>

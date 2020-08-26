@@ -9,11 +9,12 @@ import { LaporanRoutingModule } from './laporan-routing.module';
 import { NavModule } from '../../nav/nav.module';
 import { DatePipe } from '@angular/common';
 import { ExportLaporanComponent } from './export-laporan/export-laporan.component';
+import { RekeningKoranComponent } from './rekening-koran/rekening-koran.component';
 
 
 
 @NgModule({
-  declarations: [LaporanPenjualanComponent, ExportLaporanComponent],
+  declarations: [LaporanPenjualanComponent, ExportLaporanComponent, RekeningKoranComponent],
   imports: [
     CommonModule,
     FormsModule,
