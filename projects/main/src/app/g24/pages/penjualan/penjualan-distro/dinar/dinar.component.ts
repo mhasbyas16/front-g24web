@@ -85,8 +85,8 @@ export class DinarComponent implements OnInit {
       if (response != false) {
         this.denoms = response;
         this.denoms.sort(function (c, d) {
-          if (c.name < d.name) { return -1; }
-          if (c.name > d.name) { return 1; }
+          if (c.value < d.value) { return -1; }
+          if (c.value > d.value) { return 1; }
           return 0;
         })
       }      
@@ -94,20 +94,60 @@ export class DinarComponent implements OnInit {
   }
   onCariDinar(data){
     this.loadingDg = true;
-    this.loadingDg = false;
+   
     let denom = data.input_denom_dinar;
+    
+    let cariDinar : any[] = [];
+
+    let harga = 2000000;
+
     console.debug(denom, "denomnya")
 
     const urlDenom = "product-denom.code="+denom;
     this.params = this.category;
+    this.params = this.params+"&"+urlDenom;
     if (denom == "pilih") {
       this.toastrService.error("Pilih Denom Terlebih Dahulu");
       this.loadingDg = false;
     }else{
-      this.productService.list(this.params+"&"+urlDenom).subscribe((response: any) => {
-      this.datadinars = null
-      this.datadinars = response
-     
+      this.productService.list(this.params).subscribe((response: any) => {
+        this.datadinars = null
+        if (response == false) {
+          this.toastrService.error("Data Not Found", "Dinar");
+          this.loadingDg = false;
+          return;
+        }
+        if (response["length"] == 0) {
+          this.toastrService.error("Data Not Found", "Dinar");
+          this.loadingDg = false;
+          return;
+        }
+        this.dinars = response
+        this.productService.count(this.params).subscribe((response: any) => {
+          this.qty = response.count;
+          this.prmJualService.list(this.params).subscribe((Jualresponse: any) => {
+            let prmJual = Jualresponse
+            this.prmMarginService.list("?"+this.vendorCategory).subscribe((Marginresponse: any) => {
+              let prmMargin = Marginresponse
+
+              console.debug(this.dinars,"din")
+              console.debug(prmJual,"jual")
+              console.debug(prmMargin,"marg")
+
+              let hargaDinar = this.pricingService.priceDinar((prmJual[0]['harga-baku']), Number(prmMargin[0].margin));
+                cariDinar.push({
+                  "vendor" : this.dinars[0].vendor.name,
+                  "denom" : this.dinars[0]['product-denom'].name,
+                  "qty" : this.qty,
+                  "flag" : this.dinars[0].flag,
+                  "harga" : hargaDinar
+                  
+                });
+                this.datadinars = cariDinar
+                this.loadingDg = false;
+            });
+          });
+        });
       });
     }
 

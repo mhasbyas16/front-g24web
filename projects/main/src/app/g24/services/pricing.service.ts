@@ -54,4 +54,8 @@ export class PricingService {
     let hargaSouvenir = hargaPPN
     return hargaSouvenir;
  }
+  priceDinar(harga_baku:any, margin:any){
+    let hargaDinar = harga_baku * (1 + (margin / 100))
+    return hargaDinar;
+  }
 }
