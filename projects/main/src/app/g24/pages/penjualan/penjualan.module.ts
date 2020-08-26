@@ -11,11 +11,12 @@ import { MuliaComponent } from './penjualan-distro/mulia/mulia.component';
 import { BerlianComponent } from './penjualan-distro/berlian/berlian.component';
 import { DatePipe } from '@angular/common';
 import { SouvenirComponent } from './penjualan-distro/souvenir/souvenir.component';
+import { DinarComponent } from './penjualan-distro/dinar/dinar.component';
 
 
 
 @NgModule({
-  declarations: [PenjualanDistroComponent, PerhiasanComponent, BerlianComponent, MuliaComponent, SouvenirComponent],
+  declarations: [PenjualanDistroComponent, PerhiasanComponent, BerlianComponent, MuliaComponent, SouvenirComponent, DinarComponent],
   imports: [
     CommonModule,
     PenjualanRoutingModule,
