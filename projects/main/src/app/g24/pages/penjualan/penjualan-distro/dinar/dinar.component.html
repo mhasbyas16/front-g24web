@@ -1,1 +1,65 @@
-<p>dinar works!</p>
+<form #searchDinar="ngForm" id="dinar" clrForm (ngSubmit)="onCariDinar(searchDinar.value)">
+    <div class="clr-row">
+        <div class="clr-col-4">
+            <clr-select-container class="clr-form-control">
+                <label class="clr-control-label">Denom</label>
+                <select [(ngModel)]="searchModel.denoms" clrSelect name="input_denom_dinar" ngModel>
+                    <option value="pilih">Pilih Denom</option>
+                    <ng-container *ngFor="let denom of denoms">
+                        <option value="{{denom.code}}">{{denom.name}}</option>
+                    </ng-container>
+                </select>
+            </clr-select-container>
+        </div>
+        <div class="clr-col-3">
+            <div class="clr-form-control">
+                <div class="clr-control-container" >
+                    <button class="btn btn-info-outline btn-sm float-right">Cari</button>
+                </div>
+            </div>
+        </div>
+    </div>    
+</form>
+
+<clr-datagrid  [clrDgLoading]="loadingDg">
+    <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
+    <!-- <clr-dg-column>Product Id</clr-dg-column> -->
+    
+    <clr-dg-column>Vendor</clr-dg-column>
+    <clr-dg-column>Denom</clr-dg-column>
+    <clr-dg-column>Jumlah Stock</clr-dg-column>
+    <clr-dg-column>Tipe Barang</clr-dg-column>
+    <clr-dg-column>Harga</clr-dg-column>
+    <clr-dg-column>Quantity Pembelian</clr-dg-column>
+
+    <clr-dg-row *clrDgItems="let d of datadinars" [clrDgItem]="d">
+        <!-- <clr-dg-cell>{{d.id}}</clr-dg-cell> -->
+        <clr-dg-cell>{{d.vendor}}</clr-dg-cell>
+        <clr-dg-cell>{{d.denom}}</clr-dg-cell>
+        <clr-dg-cell>{{d.qty}}</clr-dg-cell>
+        <clr-dg-cell>{{d.flag | titlecase }} </clr-dg-cell>
+        <clr-dg-cell >{{d.harga | number}} </clr-dg-cell>
+        <clr-dg-cell style="width: 20%;">
+            <div class="clr-row" style="text-align: center;">
+                <div class="clr-col">
+                    <clr-input-container style="margin-top: 0; margin-left: 10%; margin-right: 10%;" >
+                            <input clrInput type="text" style=" width: 50%;" name="jumlah" [(ngModel)]="jumlahLM">
+                    </clr-input-container>
+                </div>
+                <div class="clr-col">
+                    <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" >
+                        <clr-icon shape="plus"></clr-icon>
+                    </button> 
+                </div>
+            </div>
+        </clr-dg-cell>
+    </clr-dg-row>
+    
+    <clr-dg-footer>
+        <clr-dg-pagination #pagination [clrDgPageSize]="5">
+          <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Users per page</clr-dg-page-size>
+          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+          of {{pagination.totalItems}} Produk
+        </clr-dg-pagination>
+    </clr-dg-footer>
+</clr-datagrid>
