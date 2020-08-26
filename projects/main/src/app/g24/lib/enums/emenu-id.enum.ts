@@ -102,6 +102,7 @@ export enum EMenuID {
 
     // promosi
     PENGATURAN_PROMO = '10004',
+    DAFTAR_PROMO = '10005',
 
     // LAPORAN KEUANGAN
     LAPORAN_KEUANGAN = '21000',

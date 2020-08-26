@@ -6,6 +6,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Select2OptionData } from 'ng-select2';
 import { Options } from 'select2';
 import { ToastrService } from 'ngx-toastr';
+import { ContentPage } from '../../../lib/helper/content-page';
 
 // services
 import { UnitService } from '../../../services/system/unit.service';
@@ -14,6 +15,7 @@ import { VendorService } from '../../../services/vendor.service';
 import { ProductPurityService } from '../../../services/product/product-purity.service';
 import { ProductJenisService } from '../../../services/product/product-jenis.service';
 import { PromotionSettingService } from '../../../services/promotion/promotion-setting.service';
+import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 
 @Component({
   selector: 'app-pengaturan-promo',
@@ -34,12 +36,14 @@ export class PengaturanPromoComponent implements OnInit {
   perhiasan:boolean = false;
   berlian:boolean = false;
   mulia:boolean = false;
+  kuotaProduk:boolean = false;
 
   section1_penjualan: FormGroup = null;
   section2_perhiasan: FormGroup = null;
 
   public options:Options;
   public options2:Options;
+  nikUser:any;
 
   // select2
   productCategory:Array<Select2OptionData>;
@@ -61,10 +65,14 @@ export class PengaturanPromoComponent implements OnInit {
     private productPurityService : ProductPurityService,
     private productJenisService : ProductJenisService,
     private promotionSetiingService : PromotionSettingService,
+    private sessionService: SessionService,
     private toastrService: ToastrService,
   ) { }
 
   ngOnInit(): void {
+    // Maker
+    this.nikUser = this.sessionService.getUser();
+    this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser))} ;
     this.form();
     this.getUnit();
     // product category
@@ -161,10 +169,13 @@ export class PengaturanPromoComponent implements OnInit {
     }
     if (val == '0') {
       this.inputKuota = false;
+      this.kuotaProduk = false;
     }else if (val == '1') {
       this.inputKuota = true;
+      this.kuotaProduk = false;
     }else if (val == '2'){
-      this.inputKuota = true;
+      this.inputKuota = false;
+      this.kuotaProduk = true;
     }
   }
 
@@ -218,7 +229,7 @@ export class PengaturanPromoComponent implements OnInit {
       units : new FormControl ("", Validators.required),
       pickUnits : new FormControl (""),
       'product-category' : new FormControl ("", Validators.required),
-      quotaPromotion : new FormControl ("", Validators.required),  
+      typeQuota : new FormControl ("", Validators.required),  
       quota : new FormControl (""),
     });
   }
@@ -237,6 +248,7 @@ export class PengaturanPromoComponent implements OnInit {
       age : new FormControl ("", Validators.required),
       minAge : new FormControl (""),
       maxAge : new FormControl (""),
+      quota : new FormControl (""),
     })
   }
   // end form
@@ -254,12 +266,10 @@ export class PengaturanPromoComponent implements OnInit {
   viewProductcategory(){
     console.debug(this.section1_penjualan.get("product-category").value)
   }
-  storePromotion(){
-    let productCAT = [];
 
-    
+  storePromotion(){
+    let productCAT = [];    
     let PUnits = [];
-    let data = {};
     // section1
     let section1 = this.section1_penjualan.getRawValue();
     // product category
@@ -282,8 +292,46 @@ export class PengaturanPromoComponent implements OnInit {
       delete section1.pickUnits
       section1.units_encoded = "base64array";
     }
+    // end section1
 
-    data = Object.assign(section1);
+    // section 2
+    let product = {};
+
+    if (this.perhiasan == true) {
+      let section2Perhiasan = this.section2_perhiasan.getRawValue();
+      // perhiasan
+      if (Object.keys(section2Perhiasan).length != 0) {
+        let isiVendor = [];
+        let isiPurity = [];
+        let isiTypePerhiasan = [];
+        // Vendors
+        for (let vendor of section2Perhiasan.vendor) {
+          isiVendor.push(JSON.parse(atob(vendor)))
+        }
+        section2Perhiasan.vendor= isiVendor;
+
+        // purity
+        for (let purity of section2Perhiasan.purity) {
+          isiPurity.push(JSON.parse(atob(purity)))
+        }
+        section2Perhiasan.purity= isiPurity;
+
+        // typePerhiasan
+        for (let typePerhiasan of section2Perhiasan.typePerhiasan) {
+          isiTypePerhiasan.push(JSON.parse(atob(typePerhiasan)))
+        }
+        section2Perhiasan.typePerhiasan= isiTypePerhiasan;
+      }
+
+      product['perhiasan'] = section2Perhiasan;
+    }
+    
+    // end section 2   
+        
+    let data = Object.assign(section1,{
+      'product' : btoa(JSON.stringify(product)),
+      'product_encoded':'base64',
+      'flag':'0'});
     console.debug (data,"isi data");
     // return;
     
@@ -291,6 +339,7 @@ export class PengaturanPromoComponent implements OnInit {
     this.promotionSetiingService.add(data).subscribe((response:any)=>{
       if (response != false) {
         this.toastrService.success("add Succses");
+        this.ChangeContentArea('10004');
         return;
       }else{
         this.toastrService.error("add Failed");
@@ -299,6 +348,11 @@ export class PengaturanPromoComponent implements OnInit {
     })
   }
 
+  ChangeContentArea(pageId : string)
+  {
+    if(pageId.startsWith("x")) return;
+    ContentPage.ChangeContent(pageId, true)
+  }
 
   static key = EMenuID.PENGATURAN_PROMO;
 
