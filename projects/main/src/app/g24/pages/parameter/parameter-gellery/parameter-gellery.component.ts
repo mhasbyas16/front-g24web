@@ -109,6 +109,7 @@ export class ParameterGelleryComponent implements OnInit {
       maker_encoded: new FormControl("base64"),
       makerDate: new FormControl(this.datePipe.transform(Date.now(),'MM/dd/yyyy'), Validators.required),
       makerTime: new FormControl(this.datePipe.transform(Date.now(),'h:mm:ss a'), Validators.required),
+      flag: new FormControl("1"),
       online: new FormControl('', [Validators.required]),
       offline: new FormControl('', [Validators.required]),
       keterangan: new FormControl('', [Validators.required]),
@@ -124,36 +125,38 @@ export class ParameterGelleryComponent implements OnInit {
       penjualan_cash: new FormControl('', [Validators.required]),
       penjualan_serahtunda: new FormControl('', [Validators.required]),
       penjualan_bulk: new FormControl('', [Validators.required]),
-      // hrg0E: new FormControl('', [Validators.required]),
-      // jual0E: new FormControl('', [Validators.required]),
-      // hrg02: new FormControl('', [Validators.required]),
-      // jual02: new FormControl('', [Validators.required]),
-      // hrg01: new FormControl('', [Validators.required]),
-      // jual01: new FormControl('', [Validators.required]),
-      // hrg0B: new FormControl('', [Validators.required]),
-      // jual0B: new FormControl('', [Validators.required]),
-      // hrg00: new FormControl('', [Validators.required]),
-      // jual00: new FormControl('', [Validators.required]),
-      // hrg0A: new FormControl('', [Validators.required]),
-      // jual0A: new FormControl('', [Validators.required]),
-      // hrgC: new FormControl('', [Validators.required]),
-      // jualC: new FormControl('', [Validators.required]),
-      // hrg04: new FormControl('', [Validators.required]),
-      // jual04: new FormControl('', [Validators.required]),
-      // hrg05: new FormControl('', [Validators.required]),
-      // jual05: new FormControl('', [Validators.required]),
-      // hrg09: new FormControl('', [Validators.required]),
-      // jual09: new FormControl('', [Validators.required]),
-      // hrgD: new FormControl('', [Validators.required]),
-      // jualD: new FormControl('', [Validators.required]),
-      // hrg08: new FormControl('', [Validators.required]),
-      // jual08: new FormControl('', [Validators.required]),
-      // hrg06: new FormControl('', [Validators.required]),
-      // jual06: new FormControl('', [Validators.required]),
-      // hrg07: new FormControl('', [Validators.required]),
-      // jual07: new FormControl('', [Validators.required]),
-      // hrg03: new FormControl('', [Validators.required]),
-      // jual03: new FormControl('', [Validators.required]),
+      hrg0E: new FormControl('', [Validators.required]),
+      jual0E: new FormControl('', [Validators.required]),
+      hrg02: new FormControl('', [Validators.required]),
+      jual02: new FormControl('', [Validators.required]),
+      hrg01: new FormControl('', [Validators.required]),
+      jual01: new FormControl('', [Validators.required]),
+      hrg0B: new FormControl('', [Validators.required]),
+      jual0B: new FormControl('', [Validators.required]),
+      hrg00: new FormControl('', [Validators.required]),
+      jual00: new FormControl('', [Validators.required]),
+      hrg0A: new FormControl('', [Validators.required]),
+      jual0A: new FormControl('', [Validators.required]),
+      hrg0F: new FormControl('', [Validators.required]),
+      jual0F: new FormControl('', [Validators.required]),
+      hrg0C: new FormControl('', [Validators.required]),
+      jual0C: new FormControl('', [Validators.required]),
+      hrg04: new FormControl('', [Validators.required]),
+      jual04: new FormControl('', [Validators.required]),
+      hrg05: new FormControl('', [Validators.required]),
+      jual05: new FormControl('', [Validators.required]),
+      hrg09: new FormControl('', [Validators.required]),
+      jual09: new FormControl('', [Validators.required]),
+      hrg0D: new FormControl('', [Validators.required]),
+      jual0D: new FormControl('', [Validators.required]),
+      hrg08: new FormControl('', [Validators.required]),
+      jual08: new FormControl('', [Validators.required]),
+      hrg06: new FormControl('', [Validators.required]),
+      jual06: new FormControl('', [Validators.required]),
+      hrg07: new FormControl('', [Validators.required]),
+      jual07: new FormControl('', [Validators.required]),
+      hrg03: new FormControl('', [Validators.required]),
+      jual03: new FormControl('', [Validators.required]),
     });
     this.modalAddDialog = true;
   }
@@ -165,9 +168,20 @@ export class ParameterGelleryComponent implements OnInit {
     // }
     
     let data = this.form.getRawValue();
-    // let isiPrmMargin = {
-    //   "jenis-barang" : data.jenis_barang
-    // }
+
+    let prmJual = {
+      "jenis-barang" : data.jenis_barang,
+      "jenis_barang_encoded" : data.jenis_barang_encoded,
+      "product-category" : data.product_category,
+      "product-category_encoded" : data.product_category_encoded,
+      "vendor" : data.vendor,
+      "vendor_encoded" : data.vendor_encoded,
+      "maker" : data.maker,
+      "maker_encoded" : data.maker_encoded,
+      "makerDate" : data.makerDate,
+      "makerTime" : data.makerTime,
+      "flag" : data.flag,
+    }
 
     let chanel1 = data["online"];
     let chanel2 = data["offline"];
@@ -202,8 +216,8 @@ export class ParameterGelleryComponent implements OnInit {
     // let parse = JSON.stringify(data)
     let encoded = btoa(JSON.stringify(data))
     let decode = JSON.parse(atob(encoded))
-    console.debug(encoded)
-    console.debug('submitted data',  data)
+    // console.debug(encoded)
+    console.debug('submitted data',  prmJual)
     // this.spinner = true;
   }
 
