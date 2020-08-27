@@ -9,16 +9,19 @@
                 [perhiasan]="perhiasanParent"
                 [berlian]="berlianParent" 
                 [souvenir] = "souvenirParent"
+                [dinar] = "dinarParent"
                 [hargaLogamMulia]="hargaLogamMulia"
                 [hargaPerhiasan]="hargaPerhiasan"
                 [hargaBerlian]="hargaBatuMulia"
                 [hargaSouvenir]="hargaSouvenir"
+                [hargaDinar]="hargaDinar"
                 (data)="cartData($event)"
                 (clearParentCart)="clearTotal($event)"
                 (clearBerlian)="clearBerlian($event)"
                 (clearPerhiasan)="clearPerhiasan($event)"
                 (clearMulia)="clearMulia($event)"
                 (clearSouvenir)="clearSouvenir($event)"
+                (clearDinar)="clearDinar($event)"
                 ></app-cart>
             </div>
                
@@ -70,8 +73,10 @@
                     <clr-tab>
                         <button clrTabLink>Dinar</button>
                         <clr-tab-content >
-                           <app-dinar>
-
+                           <app-dinar
+                           (data)="cartData($event)" 
+                           (dinar)="totalDinar($event)" 
+                           (totalHarga)="HDinar($event)">
                            </app-dinar>
                         </clr-tab-content>
                     </clr-tab>

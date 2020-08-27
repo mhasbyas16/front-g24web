@@ -206,10 +206,6 @@ export class MuliaComponent implements OnInit {
       
       let codeLM = this.cartList.map(el => el.code);
       let cekItem : any;
-
-      console.debug(this.cartList, 'cart')
-      console.debug(codeLM, 'codeLM')
-      // lm = this.mulias
       
       this.productService.list(params).subscribe((response: any) => {
         lm = response

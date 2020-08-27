@@ -13,6 +13,7 @@ export class CartComponent implements OnInit {
   @Output() clearPerhiasan:any = new EventEmitter();
   @Output() clearMulia:any = new EventEmitter();
   @Output() clearSouvenir:any = new EventEmitter();
+  @Output() clearDinar:any = new EventEmitter();
   @Output() data:any = new EventEmitter();
   //
   @Input() total:any=0;
@@ -56,6 +57,7 @@ export class CartComponent implements OnInit {
     this.cartBerlian.splice(0);
     this.cartLogam.splice(0);
     this.cartSouvenir.splice(0);
+    this.cartDinar.splice(0);
     // reset card modal
     this.perhiasan = 0;
     this.logam = 0;
@@ -83,6 +85,7 @@ export class CartComponent implements OnInit {
     this.clearPerhiasan.emit({length:0,harga:0});
     this.clearMulia.emit({length:0,harga:0});
     this.clearSouvenir.emit({length:0,harga:0});
+    this.clearDinar.emit({length:0,harga:0});
   }
 
   // remove item berlian 
@@ -164,6 +167,28 @@ export class CartComponent implements OnInit {
     }
     if (this.souvenir == 0) {
       this.clearSouvenir.emit(0);
+    }
+  }
+
+  removeItemDinar(key: any, harga:any ){
+    this.cartDinar.splice(key,1);
+    
+    //pengrurangan harga
+    this.hargaDinar = this.hargaDinar-harga;
+
+    //pengurangan jumlah cart
+    this.total-=1;
+    this.dinar = this.dinar-1;
+
+    this.clearDinar.emit({length:this.dinar,harga:this.hargaDinar});
+    this.data.emit(this.total);
+
+    if (this.total == 0) {
+      console.debug("totallll 0");
+      this.clearParentCart.emit(0);
+    }
+    if (this.dinar == 0) {
+      this.clearDinar.emit(0);
     }
   }
 

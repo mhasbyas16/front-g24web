@@ -28,7 +28,6 @@
     <clr-dg-column>Vendor</clr-dg-column>
     <clr-dg-column>Denom</clr-dg-column>
     <clr-dg-column>Jumlah Stock</clr-dg-column>
-    <clr-dg-column>Tipe Barang</clr-dg-column>
     <clr-dg-column>Harga</clr-dg-column>
     <clr-dg-column>Quantity Pembelian</clr-dg-column>
 
@@ -37,17 +36,16 @@
         <clr-dg-cell>{{d.vendor}}</clr-dg-cell>
         <clr-dg-cell>{{d.denom}}</clr-dg-cell>
         <clr-dg-cell>{{d.qty}}</clr-dg-cell>
-        <clr-dg-cell>{{d.flag | titlecase }} </clr-dg-cell>
         <clr-dg-cell >{{d.harga | number}} </clr-dg-cell>
         <clr-dg-cell style="width: 20%;">
             <div class="clr-row" style="text-align: center;">
                 <div class="clr-col">
                     <clr-input-container style="margin-top: 0; margin-left: 10%; margin-right: 10%;" >
-                            <input clrInput type="text" style=" width: 50%;" name="jumlah" [(ngModel)]="jumlahLM">
+                            <input clrInput type="text" style=" width: 50%;" name="jumlah" [(ngModel)]="jumlahDinar">
                     </clr-input-container>
                 </div>
                 <div class="clr-col">
-                    <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" >
+                    <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.vendor, d.denom, d.qty, d.harga)">
                         <clr-icon shape="plus"></clr-icon>
                     </button> 
                 </div>

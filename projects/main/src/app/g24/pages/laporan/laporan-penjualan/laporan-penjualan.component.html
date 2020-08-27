@@ -166,6 +166,34 @@
                                     </tfoot>                 
                                 </table>
                             </ng-container>
+                            <!-- DINAR -->
+                            <ng-container *ngIf="detail.product.DINAR.length != 0">
+                                <table class="table table-compact table-noborder remove-margin" >
+                                    <thead>
+                                        <tr>
+                                            <th class="left" colspan="7"><h3 class="remove-margin"><b>DINAR</b></h3></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let ip of detail.product.DINAR | keyvalue">
+                                            <td class="left">{{ip.value.code}}</td>
+                                            <td class="left">{{ip.value.vendor}}</td>
+                                            <td class="left" colspan="2">{{ip.value.denom}}</td>
+                                            <td class="left" colspan="2"></td>
+                                            <td class="left harga-kanan">Rp. {{ip.value.harga| number}}</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr *ngFor="let isi of listTotalHarga">
+                                            <ng-container *ngIf="isi.idTransaction == detail.idTransaction">
+                                                <td class="right" colspan="3" ></td>
+                                                <td class="text-kanan" colspan="3" ><b>TOTAL HARGA DINAR</b></td>
+                                                <td class="left harga-kanan">Rp. {{isi.hargaDinar | number}}</td>
+                                            </ng-container>
+                                        </tr>
+                                    </tfoot>                 
+                                </table>
+                            </ng-container>
                         </clr-dg-detail-body>
                     </clr-dg-detail>
                 </clr-datagrid>

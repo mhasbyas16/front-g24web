@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 
 // Database
 import { VendorService } from '../../../../services/vendor.service';
@@ -23,6 +23,10 @@ import { CountCartService } from '../../../../services/count-cart.service';
 })
 export class DinarComponent implements OnInit {
 
+  @Output() data = new EventEmitter();
+  @Output() dinar = new EventEmitter();
+  @Output() totalHarga = new EventEmitter();
+
   //global declaration
   vendors = null;
   jenis = null;
@@ -31,7 +35,6 @@ export class DinarComponent implements OnInit {
   loadingDg = null; 
   dinars = null;
   datadinars= null;
-  tempdatamulias = null;
   vendor = null;
   denom = null;
   flag = null;
@@ -39,9 +42,8 @@ export class DinarComponent implements OnInit {
   jumlah = null;
   hargaBaku = null;
   placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
-  tampilMulia = [];
   cartList = DINAR;
-  jumlahLM : number ;
+  jumlahDinar : number ;
   total = 0;
   selected: any[] = [];
 
@@ -141,7 +143,6 @@ export class DinarComponent implements OnInit {
                   "qty" : this.qty,
                   "flag" : this.dinars[0].flag,
                   "harga" : hargaDinar
-                  
                 });
                 this.datadinars = cariDinar
                 this.loadingDg = false;
@@ -150,8 +151,72 @@ export class DinarComponent implements OnInit {
         });
       });
     }
-
   }
 
+  addCart(vendorDn: any, denomDn: any, qtyDinar: any, harga: any){
+    if (qtyDinar < this.jumlahDinar) {
+      this.toastrService.error("Jumlah Tidak Mencukupis", "Dinar");
+      this.loadingDg = false;
+    }else{
+      let params : any;
+      let urlVendor = "vendor.name="+vendorDn;
+      let urlDenom = "product-denom.name="+denomDn;
+      let dn: any;
+
+      params = this.category;
+      params = params+"&"+urlVendor;
+      params = params+"&"+urlDenom;
+      
+      let codeDinar = this.cartList.map(el => el.code);
+      let cekItem : any;
+      
+      this.productService.list(params).subscribe((response: any) => {
+        dn = response
+        let udahDiCart = 0;
+        console.debug(dn, 'awal')
+        for (let index = 0; index < codeDinar.length; index++) {
+          cekItem = dn.map(e => e.code).indexOf(codeDinar[index])
+          if (cekItem != -1) {
+            dn.splice(cekItem, 1)
+            udahDiCart++
+          }
+        }
+        let maks : any 
+        let availableItem = qtyDinar - udahDiCart ;
+        if ( this.jumlahDinar > availableItem) {
+          this.toastrService.error("Jumlah Tidak Mencukupi", "Dinar");  
+          this.loadingDg = false;
+        } else {
+           maks = this.jumlahDinar
+           for (let index = 0; index < maks ; index++) {
+            this.cartList.push({
+                'code': dn[index].code,
+                'vendor' : dn[index].vendor.name,
+                'denom' : dn[index]['product-denom'].name,
+                'harga' : harga,
+                'flag' : dn[index].flag,
+                'detail' : JSON.parse(atob(dn[index]._hash))
+            })
+            this.refresh(harga, "p")
+            console.debug(this.cartList)
+            this.dinar.emit(this.cartList.length);
+            this.data.emit(this.countService.countCart());
+          } 
+        }
+        this.loadingDg = false;
+      })
+    }
+  }
+  refresh(harga: any, sum: any){
+
+    if (sum == "p") {
+      this.total = 0;
+      for (let i of this.cartList) {
+        this.total += Number(i.harga);
+      }
+    }
+    console.debug(this.total)
+    this.totalHarga.emit(this.total);
+ }
 
 }
