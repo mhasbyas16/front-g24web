@@ -45,6 +45,9 @@ export class ExportLaporanComponent implements OnInit {
     })
     
   }
+  // function() { return currentPage.toString() + ' of ' + pageCount; },
+  
+  
 
   thisContent(data){
     
@@ -65,7 +68,7 @@ export class ExportLaporanComponent implements OnInit {
     // Content
     delete this.innerDoc;
     let hargaFormat = new Intl.NumberFormat(['ban', 'id']).format(data.jumlahTerima);
-    this.innerDoc ={pageSize: 'A5', pageOrientation: 'landscape',pageMargins: [ 20, 60, 20, 40 ],};
+    this.innerDoc ={pageSize: 'A5', pageOrientation: 'landscape',pageMargins: [ 20, 20, 20, 40 ],};
     this.innerDoc['info'] = {title: data.client.cif+" - "+data.idTransaction }; 
 
     let printAlamat : any;
@@ -78,10 +81,36 @@ export class ExportLaporanComponent implements OnInit {
       printnoHp = data.client.hpPJ1
     }
 
+    
+    this.innerDoc['footer'] = function(currentPage, pageCount) {
+      return {
+          margin:[0, 0, 0, 40],
+          columns: [
+          {
+              fontSize: 9,
+              text:[
+              {
+              text: '--------------------------------------------------------------------------' +
+              '\n',
+              margin: [0, 20]
+              },
+              {
+              text: 'Halaman' + currentPage.toString() + ' dari ' + pageCount,
+              }
+              ],
+              alignment: 'center'
+          }
+          ]
+      };
+
+  },
+      
+   
 
     // Head Content
     this.innerDoc['content'] = [
       {
+        
         style: 'head',
 			  columns: [
 				  {text: 'ID Transaksi : '+data.idTransaction},
@@ -90,6 +119,7 @@ export class ExportLaporanComponent implements OnInit {
       },
       '\n',
       {
+        
         style:'detail',
         columns:[
           {
@@ -312,7 +342,7 @@ export class ExportLaporanComponent implements OnInit {
     if (data.product.GS.length != 0){
       this.innerDoc['content'].push([
         {
-          style:'head', alignment:'left',text:'Mulia'
+          style:'head', alignment:'left',text:'Gift dan Souvenir'
         }
       ]);
       for (let gs of data.product.GS) {
@@ -371,7 +401,7 @@ export class ExportLaporanComponent implements OnInit {
     if (data.product.DINAR.length != 0){
       this.innerDoc['content'].push([
         {
-          style:'head', alignment:'left',text:'Mulia'
+          style:'head', alignment:'left',text:'DINAR'
         }
       ]);
       for (let dn of data.product.DINAR) {
@@ -430,6 +460,7 @@ export class ExportLaporanComponent implements OnInit {
     this.innerDoc['content'].push([
       '\n',
       {
+        unbreakable: true,
         fontSize: 9,
         columns:[
           {text:[
