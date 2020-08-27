@@ -68,7 +68,7 @@
                                             <td class="left">{{ip.value.warna}}</td>
                                             <td class="left">{{ip.value.kadar}}</td>
                                             <td class="left">{{ip.value.berat}}</td>
-                                            <td class="left harga-kanan">Rp. {{ip.value.harga| number}}</td>
+                                            <td class="left harga-kanan minColHarga">Rp. {{ip.value.harga| number}}</td>
                                         </tr>
                                     </tbody>
                                     <tfoot>
@@ -76,7 +76,7 @@
                                             <ng-container *ngIf="isi.idTransaction == detail.idTransaction">
                                                 <td class="right" colspan="3" ></td>
                                                 <td class="text-kanan" colspan="3" ><b>TOTAL HARGA PERHIASAN</b></td>
-                                                <td class="left harga-kanan">Rp. {{isi.hargaP | number}}</td>
+                                                <td class="left harga-kanan minColHarga">Rp. {{isi.hargaP | number}}</td>
                                             </ng-container>
                                         </tr>
                                     </tfoot>                 
@@ -95,7 +95,7 @@
                                             <td class="left">{{ip.value.vendor}}</td>
                                             <td class="left" colspan="2">{{ip.value.denom}}</td>
                                             <td class="left" colspan="2">{{ip.value.flag}}</td>
-                                            <td class="left harga-kanan">Rp. {{ip.value.harga| number}}</td>
+                                            <td class="left harga-kanan minColHarga">Rp. {{ip.value.harga| number}}</td>
                                         </tr>
                                     </tbody>
                                     <tfoot>
@@ -103,7 +103,7 @@
                                             <ng-container *ngIf="isi.idTransaction == detail.idTransaction">
                                                 <td class="right" colspan="3" ></td>
                                                 <td class="text-kanan" colspan="3" ><b>TOTAL HARGA LOGAM MULIA</b></td>
-                                                <td class="left harga-kanan">Rp. {{isi.hargaLM | number}}</td>
+                                                <td class="left harga-kanan minColHarga">Rp. {{isi.hargaLM | number}}</td>
                                             </ng-container>
                                         </tr>
                                     </tfoot>                 
@@ -124,7 +124,7 @@
                                             <td class="left">{{ip.value.warna}}</td>
                                             <td class="left">{{ip.value.kadar}}</td>
                                             <td class="left">{{ip.value.berat}}</td>
-                                            <td class="left harga-kanan">Rp. {{ip.value.harga| number}}</td>
+                                            <td class="left harga-kanan minColHarga">Rp. {{ip.value.harga| number}}</td>
                                         </tr>
                                     </tbody>
                                     <tfoot>
@@ -132,7 +132,7 @@
                                             <ng-container *ngIf="isi.idTransaction == detail.idTransaction">
                                                 <td class="right" colspan="3" ></td>
                                                 <td class="text-kanan" colspan="3" ><b>TOTAL HARGA BERLIAN</b></td>
-                                                <td class="left harga-kanan">Rp. {{isi.hargaB | number}}</td>
+                                                <td class="left harga-kanan minColHarga">Rp. {{isi.hargaB | number}}</td>
                                             </ng-container>
                                         </tr>
                                     </tfoot>                 
@@ -152,7 +152,7 @@
                                             <td class="left">{{ip.value.vendor}}</td>
                                             <td class="left" colspan="2">{{ip.value.denom}}</td>
                                             <td class="left" colspan="2">{{ip.value.detail["product-series"].name}}</td>
-                                            <td class="left harga-kanan">Rp. {{ip.value.harga| number}}</td>
+                                            <td class="left harga-kanan minColHarga">Rp. {{ip.value.harga| number}}</td>
                                         </tr>
                                     </tbody>
                                     <tfoot>
@@ -160,7 +160,7 @@
                                             <ng-container *ngIf="isi.idTransaction == detail.idTransaction">
                                                 <td class="right" colspan="3" ></td>
                                                 <td class="text-kanan" colspan="3" ><b>TOTAL HARGA SOUVENIR</b></td>
-                                                <td class="left harga-kanan">Rp. {{isi.hargaGS | number}}</td>
+                                                <td class="left harga-kanan minColHarga">Rp. {{isi.hargaGS | number}}</td>
                                             </ng-container>
                                         </tr>
                                     </tfoot>                 
@@ -180,7 +180,7 @@
                                             <td class="left">{{ip.value.vendor}}</td>
                                             <td class="left" colspan="2">{{ip.value.denom}}</td>
                                             <td class="left" colspan="2"></td>
-                                            <td class="left harga-kanan">Rp. {{ip.value.harga| number}}</td>
+                                            <td class="left harga-kanan minColHarga">Rp. {{ip.value.harga| number}}</td>
                                         </tr>
                                     </tbody>
                                     <tfoot>
@@ -188,7 +188,7 @@
                                             <ng-container *ngIf="isi.idTransaction == detail.idTransaction">
                                                 <td class="right" colspan="3" ></td>
                                                 <td class="text-kanan" colspan="3" ><b>TOTAL HARGA DINAR</b></td>
-                                                <td class="left harga-kanan">Rp. {{isi.hargaDinar | number}}</td>
+                                                <td class="left harga-kanan minColHarga">Rp. {{isi.hargaDinar | number}}</td>
                                             </ng-container>
                                         </tr>
                                     </tfoot>                 
