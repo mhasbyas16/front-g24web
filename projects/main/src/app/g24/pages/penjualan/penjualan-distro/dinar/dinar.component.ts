@@ -154,6 +154,7 @@ export class DinarComponent implements OnInit {
   }
 
   addCart(vendorDn: any, denomDn: any, qtyDinar: any, harga: any){
+    this.loadingDg = true;
     if (qtyDinar < this.jumlahDinar) {
       this.toastrService.error("Jumlah Tidak Mencukupis", "Dinar");
       this.loadingDg = false;
