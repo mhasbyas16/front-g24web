@@ -39,7 +39,7 @@
                                         <form clrForm class="clr-form-compact" [formGroup]="section1_penjualan">
                                             <clr-input-container>        
                                                 <label class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2">Nama Program</label>                                      
-                                                <input class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrInput required formControlName="nama" />
+                                                <input class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrInput required formControlName="name" />
                                                 <clr-control-error>This field is required!</clr-control-error>
                                             </clr-input-container>
                                             <div class="clr-row">
@@ -111,6 +111,14 @@
                                                     <input clrInput type="text" formControlName="quota" >
                                                 </clr-input-container>
                                             </ng-container>
+
+                                            <input type="hidden" formControlName="maker">
+                                            <input type="hidden" formControlName="maker_encoded">
+                                            <input type="hidden" formControlName="makerDate">
+                                            <input type="hidden" formControlName="makerTime">
+                                            <input type="hidden" formControlName="approval">
+                                            <input type="hidden" formControlName="approvalDate">
+                                            <input type="hidden" formControlName="approvalTime">
                                         </form>
                                     </clr-wizard-page>
 

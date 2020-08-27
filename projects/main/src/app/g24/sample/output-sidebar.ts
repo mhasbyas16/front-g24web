@@ -16,7 +16,7 @@ export const management = [
       // LAPORAN KEUANGAN
     //   {_id: "0004", type: "menu", name : "Laporan", icons: "list", color : "warna-warni", componentId : "S21000", parentId: "", module: "kl"},
       // PROMOSI
-      {_id: "0007", type: "menu", name : "Inisiasi Promo", icons: "dashboard", color : "warna-warni", componentId : "S10004", parentId: "", module: "promo"},
+      {_id: "0007", type: "menu", name : "Inisiasi Promo", icons: "bundle", color : "warna-warni", componentId : "S10004", parentId: "", module: "promo"},
       {_id: "0007", type: "sub-menu", name : "Pengaturan Promosi", icons: "", color : "warna-warni", componentId : "10004", parentId: "S10004", module: "promo",menu : {_id: "0007"}},
       {_id: "0007", type: "sub-menu", name : "Daftar Promosi", icons: "", color : "warna-warni", componentId : "10005", parentId: "S10004", module: "promo",menu : {_id: "0007"}},
 

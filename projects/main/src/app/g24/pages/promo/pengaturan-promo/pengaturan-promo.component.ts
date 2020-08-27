@@ -7,6 +7,7 @@ import { Select2OptionData } from 'ng-select2';
 import { Options } from 'select2';
 import { ToastrService } from 'ngx-toastr';
 import { ContentPage } from '../../../lib/helper/content-page';
+import { DatePipe } from "@angular/common";
 
 // services
 import { UnitService } from '../../../services/system/unit.service';
@@ -20,7 +21,8 @@ import { SessionService } from 'projects/platform/src/app/core-services/session.
 @Component({
   selector: 'app-pengaturan-promo',
   templateUrl: './pengaturan-promo.component.html',
-  styleUrls: ['./pengaturan-promo.component.scss']
+  styleUrls: ['./pengaturan-promo.component.scss'],
+  providers:[DatePipe],
 })
 
 @DContent(PengaturanPromoComponent.key)
@@ -67,6 +69,7 @@ export class PengaturanPromoComponent implements OnInit {
     private promotionSetiingService : PromotionSettingService,
     private sessionService: SessionService,
     private toastrService: ToastrService,
+    private datePipe: DatePipe,
   ) { }
 
   ngOnInit(): void {
@@ -145,6 +148,7 @@ export class PengaturanPromoComponent implements OnInit {
       
       switch (productCat.code) {
         case "c00":
+          this.settingPerhiasan();
           this.formPerhiasan();
           this.perhiasan = true;
           break;        
@@ -223,7 +227,7 @@ export class PengaturanPromoComponent implements OnInit {
   // form
   form(){
     this.section1_penjualan = new FormGroup({
-      nama : new FormControl ("", Validators.required),
+      name : new FormControl ("", Validators.required),
       startDate : new FormControl ("", Validators.required),
       endDate : new FormControl ("", Validators.required),
       units : new FormControl ("", Validators.required),
@@ -231,11 +235,17 @@ export class PengaturanPromoComponent implements OnInit {
       'product-category' : new FormControl ("", Validators.required),
       typeQuota : new FormControl ("", Validators.required),  
       quota : new FormControl (""),
+      maker : new FormControl (this.nikUser._hash, Validators.required),
+      maker_encoded : new FormControl ("base64"),
+      makerDate: new FormControl(this.datePipe.transform(Date.now(),'MM/dd/yyyy'), Validators.required),
+      makerTime: new FormControl(this.datePipe.transform(Date.now(),'h:mm:ss a'), Validators.required),
+      approval : new FormControl (""),
+      approvalDate: new FormControl(""),
+      approvalTime: new FormControl(""),
     });
   }
 
   formPerhiasan(){
-    this.settingPerhiasan();
     this.section2_perhiasan = new FormGroup({
       prmPromotion : new FormControl ("", Validators.required),
       minPrmPromotion : new FormControl ("", Validators.required),
@@ -339,7 +349,7 @@ export class PengaturanPromoComponent implements OnInit {
     this.promotionSetiingService.add(data).subscribe((response:any)=>{
       if (response != false) {
         this.toastrService.success("add Succses");
-        this.ChangeContentArea('10004');
+        this.ChangeContentArea('10005');
         return;
       }else{
         this.toastrService.error("add Failed");
