@@ -22,6 +22,7 @@ export class ExportLaporanComponent implements OnInit {
 
   innerDoc = {};
   transactionList = [];
+  noItem = 0;
 
   constructor(
     private transactionService: TransactionService,
@@ -45,6 +46,9 @@ export class ExportLaporanComponent implements OnInit {
     })
     
   }
+  // function() { return currentPage.toString() + ' of ' + pageCount; },
+  
+  
 
   thisContent(data){
     
@@ -65,7 +69,7 @@ export class ExportLaporanComponent implements OnInit {
     // Content
     delete this.innerDoc;
     let hargaFormat = new Intl.NumberFormat(['ban', 'id']).format(data.jumlahTerima);
-    this.innerDoc ={pageSize: 'A5', pageOrientation: 'landscape',pageMargins: [ 20, 60, 20, 40 ],};
+    this.innerDoc ={pageSize: 'A5', pageOrientation: 'landscape',pageMargins: [ 20, 20, 20, 40 ],};
     this.innerDoc['info'] = {title: data.client.cif+" - "+data.idTransaction }; 
 
     let printAlamat : any;
@@ -78,10 +82,36 @@ export class ExportLaporanComponent implements OnInit {
       printnoHp = data.client.hpPJ1
     }
 
+    // footer    
+    this.innerDoc['footer'] = function(currentPage, pageCount) {
+      return {
+          margin:[0, 0, 0, 40],
+          columns: [
+          {
+              fontSize: 9,
+              text:[
+              {
+              text: '--------------------------------------------------------------------------' +
+              '\n',
+              margin: [0, 20]
+              },
+              {
+              text: 'Halaman ' + currentPage.toString() + ' dari ' + pageCount,
+              }
+              ],
+              alignment: 'center'
+          }
+          ]
+      };
+
+  },
+      
+   
 
     // Head Content
     this.innerDoc['content'] = [
       {
+        
         style: 'head',
 			  columns: [
 				  {text: 'ID Transaksi : '+data.idTransaction},
@@ -90,6 +120,7 @@ export class ExportLaporanComponent implements OnInit {
       },
       '\n',
       {
+        
         style:'detail',
         columns:[
           {
@@ -144,6 +175,7 @@ export class ExportLaporanComponent implements OnInit {
         }
       ]);
       for (let perhiasan of data.product.PERHIASAN) {
+        this.noItem++
         //console.debug(data.product.PERHIASAN.length,product,"list product");  
         this.innerDoc['content'].push([
           {
@@ -152,11 +184,12 @@ export class ExportLaporanComponent implements OnInit {
               {
                 width:"*",
                 columns:[
+                  {width:20,text: "(" +this.noItem+ ")"},
                   {width:85,text:perhiasan.detail.code},
                   {width:42,text:perhiasan.detail.vendor.name},
                   {width:41,text:perhiasan.detail['product-jenis'].name},
                   {width:23,text:perhiasan.kadar},
-                  {width:30,text:perhiasan.berat}
+                  {width:25,text:perhiasan.berat}
                 ]
               },
               {
@@ -198,6 +231,7 @@ export class ExportLaporanComponent implements OnInit {
         }
       ]);
       for (let berlian of data.product.BERLIAN) {
+        this.noItem++
         //console.debug(data.product.PERHIASAN.length,product,"list product");  
         this.innerDoc['content'].push([
           {
@@ -206,6 +240,7 @@ export class ExportLaporanComponent implements OnInit {
               {
                 width:"*",
                 columns:[
+                  {width:20,text: "(" +this.noItem+ ")"},
                   {width:70,text:berlian.detail.code},
                   {width:25,text:' '+berlian.detail.vendor.name},
                   {width:35,text:' '+berlian.detail['product-diamond-color'].name},
@@ -257,6 +292,7 @@ export class ExportLaporanComponent implements OnInit {
         }
       ]);
       for (let mulia of data.product.LM) {
+        this.noItem++
         //console.debug(data.product.PERHIASAN.length,product,"list product");  
         this.innerDoc['content'].push([
           {
@@ -265,6 +301,7 @@ export class ExportLaporanComponent implements OnInit {
               {
                 width:"*",
                 columns:[
+                  {width:20,text: "(" +this.noItem+ ")"},
                   {width:60,text:mulia.detail.code},
                   {width:40,text:' '+mulia.detail.vendor.name},
                   {width:50,text:' '+mulia.detail['product-denom'].name},
@@ -312,10 +349,11 @@ export class ExportLaporanComponent implements OnInit {
     if (data.product.GS.length != 0){
       this.innerDoc['content'].push([
         {
-          style:'head', alignment:'left',text:'Mulia'
+          style:'head', alignment:'left',text:'Gift dan Souvenir'
         }
       ]);
       for (let gs of data.product.GS) {
+        this.noItem++
         //console.debug(data.product.PERHIASAN.length,product,"list product");  
         this.innerDoc['content'].push([
           {
@@ -324,16 +362,12 @@ export class ExportLaporanComponent implements OnInit {
               {
                 width:"*",
                 columns:[
+                  {width:20,text: "(" +this.noItem+ ")"},
                   {width:70,text:gs.detail.code},
                   {width:50,text:' '+gs.detail.vendor.name},
                   {width:50,text:' '+gs.detail['product-denom'].name},
-                  {width:50,text:' '+gs.detail['product-series'].name},
-                  // {width:25,text:' '+mulia.detail['product-cut'].name},
-                  // {width:38,text:' '+mulia.detail['product-clarity'].name},
-                  // total logam mulia ,          
-                  // {width:20,text:' '+mulia.kadar},
-                  // {width:20,text:' '+mulia.berat},
-                  // {width:40,text:'= '+mulia.detail.carat+' CT'},
+                  {width:70,text:' '+gs.detail['product-series'].name},
+                  
                 ]
               },
               {
@@ -371,10 +405,11 @@ export class ExportLaporanComponent implements OnInit {
     if (data.product.DINAR.length != 0){
       this.innerDoc['content'].push([
         {
-          style:'head', alignment:'left',text:'Mulia'
+          style:'head', alignment:'left',text:'DINAR'
         }
       ]);
       for (let dn of data.product.DINAR) {
+        this.noItem++
         //console.debug(data.product.PERHIASAN.length,product,"list product");  
         this.innerDoc['content'].push([
           {
@@ -383,6 +418,7 @@ export class ExportLaporanComponent implements OnInit {
               {
                 width:"*",
                 columns:[
+                  {width:20,text: "(" +this.noItem+ ")"},
                   {width:70,text:dn.detail.code},
                   {width:50,text:' '+dn.detail.vendor.name},
                   {width:50,text:' '+dn.detail['product-denom'].name},
@@ -430,6 +466,7 @@ export class ExportLaporanComponent implements OnInit {
     this.innerDoc['content'].push([
       '\n',
       {
+        unbreakable: true,
         fontSize: 9,
         columns:[
           {text:[
