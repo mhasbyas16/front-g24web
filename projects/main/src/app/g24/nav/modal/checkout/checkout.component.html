@@ -225,19 +225,35 @@
                                             Dinar
                                         </div>
                                         <div class="card-block">
-                                            <div class="card-media-block">
-                                                <img src="..." class="card-media-image">
-                                                <div class="card-media-description">
-                                                    <span class="card-media-title">
-                                                        Project A
-                                                    </span>
-                                                    <span class="card-media-text">
-                                                        Owner: John Doe
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="card-text">
-                                                ...
+                                            <div class="card-block" style="padding: 0">
+                                                <ul class="list-group">
+                                                    <ng-container *ngFor="let ip of dinar | keyvalue" style="padding: 0;">
+                                                        <li class="list-group-item">
+                                                            <div class="clr-row" style="padding-top: 0;">
+                                                               
+                                                                <div class="clr-col-2">
+                                                                    <span>{{ip.value.code}}</span>
+                                                                </div>
+                                                                <div class="clr-col-2">
+                                                                    <span>{{ip.value.vendor}}</span>
+                                                                </div>
+                                                                <div class="clr-col-2">
+                                                                    <span>{{ip.value.denom}}</span>
+                                                                </div>
+                                                                <div class="clr-col-1">
+                                                                    
+                                                                </div>
+                                                                <div class="clr-col-2">
+                                                                   
+                                                                </div>
+                                                                <div class="clr-col-3">
+                                                                    <span class="left"> Rp. {{ip.value.harga| number}}</span>
+                                                                </div>
+                                                                
+                                                            </div>
+                                                        </li>                                        
+                                                    </ng-container>
+                                                </ul>
                                             </div>
                                         </div>
                                     </div>

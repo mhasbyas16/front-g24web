@@ -74,7 +74,7 @@ export class ExportLaporanComponent implements OnInit {
       printAlamat = data.client.alamatSaatIni.alamat
       printnoHp = data.client.noHP
     } else if(data.client.tipeClient.code == 2) {
-      printAlamat = data.client.alamatKtp.alamat
+      printAlamat = data.client.alamatSaatIni.alamat
       printnoHp = data.client.hpPJ1
     }
 
@@ -214,7 +214,7 @@ export class ExportLaporanComponent implements OnInit {
                   // total berlian ,          
                   {width:20,text:' '+berlian.kadar},
                   {width:20,text:' '+berlian.berat},
-                  {width:40,text:'= '+berlian.detail.carat+' CT'},
+                  // {width:40,text:'= '+berlian.detail.carat+' CT'},
                 ]
               },
               {
@@ -265,8 +265,8 @@ export class ExportLaporanComponent implements OnInit {
               {
                 width:"*",
                 columns:[
-                  {width:70,text:mulia.detail.code},
-                  {width:50,text:' '+mulia.detail.vendor.name},
+                  {width:60,text:mulia.detail.code},
+                  {width:40,text:' '+mulia.detail.vendor.name},
                   {width:50,text:' '+mulia.detail['product-denom'].name},
                   {width:80,text:'No: '+mulia.noSeri},
                   // {width:25,text:' '+mulia.detail['product-cut'].name},
@@ -340,6 +340,65 @@ export class ExportLaporanComponent implements OnInit {
                 width:250,
                 columns:[
                   {text:'Harga : Rp. '+new Intl.NumberFormat(['ban', 'id']).format(gs.harga)},
+                  {
+                    table:{
+                      widths: [85],
+                      body:[
+                        [{fillColor: '#ede5ce',alignment: 'center',fontSize:1,text:"tanggal buyback"}]
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]);   
+      }
+      this.innerDoc['content'].push([
+        {
+          style:'detail',
+          fontSize: 7,
+          columns:[
+            {text:'Diskon :'},
+            {text:'Voucher :'},
+            {text:'Harga :'}
+          ]
+        },'\n'
+      ]);
+    }
+
+    //Dinar
+    if (data.product.DINAR.length != 0){
+      this.innerDoc['content'].push([
+        {
+          style:'head', alignment:'left',text:'Mulia'
+        }
+      ]);
+      for (let dn of data.product.DINAR) {
+        //console.debug(data.product.PERHIASAN.length,product,"list product");  
+        this.innerDoc['content'].push([
+          {
+            style:'detail',
+            columns:[
+              {
+                width:"*",
+                columns:[
+                  {width:70,text:dn.detail.code},
+                  {width:50,text:' '+dn.detail.vendor.name},
+                  {width:50,text:' '+dn.detail['product-denom'].name},
+                  // {width:50,text:' '+dn.detail['product-series'].name},
+                  // {width:25,text:' '+mulia.detail['product-cut'].name},
+                  // {width:38,text:' '+mulia.detail['product-clarity'].name},
+                  // total logam mulia ,          
+                  // {width:20,text:' '+mulia.kadar},
+                  // {width:20,text:' '+mulia.berat},
+                  // {width:40,text:'= '+mulia.detail.carat+' CT'},
+                ]
+              },
+              {
+                width:250,
+                columns:[
+                  {text:'Harga : Rp. '+new Intl.NumberFormat(['ban', 'id']).format(dn.harga)},
                   {
                     table:{
                       widths: [85],

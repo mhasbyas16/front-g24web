@@ -98,8 +98,8 @@ export class MuliaComponent implements OnInit {
   }
 
   onListDenom(){
-    this.denomService.list(this.category).subscribe((response: any) => {
-      console.debug(response,"tai")
+    this.denomService.list("?product-category.code=c05").subscribe((response: any) => {
+      
       if (response != false) {
         this.denoms = response;
         this.denoms.sort(function (c, d) {
@@ -206,10 +206,6 @@ export class MuliaComponent implements OnInit {
       
       let codeLM = this.cartList.map(el => el.code);
       let cekItem : any;
-
-      console.debug(this.cartList, 'cart')
-      console.debug(codeLM, 'codeLM')
-      // lm = this.mulias
       
       this.productService.list(params).subscribe((response: any) => {
         lm = response
