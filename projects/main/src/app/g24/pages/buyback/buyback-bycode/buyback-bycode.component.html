@@ -1,0 +1,25 @@
+<div class="clr-row">
+    <div class="card" style="margin-top: 0em;">
+        <div class="card-header">
+            Terima Buyback
+        </div>
+        <div class="card-block">
+            <div class="card-text">
+                <form clrForm [formGroup]="searchTrans" (ngSubmit)="searchTransaction('id')">
+                    <div class="clr-row">
+                        <div>
+                            <clr-input-container style="margin-top: 0px;">
+                                <label>Id Transaksi</label>
+                                <input clrInput type="text" formControlName="text" placeholder="search" autofocus>
+                            </clr-input-container>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-icon btn-sm btn-success">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -94,10 +94,14 @@ export enum EMenuID {
      * Starts from 9900
      */
     SYSTEM_PARAM        = '9900',
-
+    
+    // Offline Sale
     DISTRO              = '10001',
     ROLE                = '10002',
     LAPORAN             = '10003',
+
+    // offline buyback
+    BUYBACK             = '11001',
 
     // LAPORAN KEUANGAN
     LAPORAN_KEUANGAN = '21000',

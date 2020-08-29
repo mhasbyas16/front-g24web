@@ -25,7 +25,15 @@ export const management = [
     // LAPORAN
     {_id: "0004", type: "menu", name : "Laporan", icons: "list", color : "warna-warni", componentId : "S10002", parentId: "", module: "lp"},
     {_id: "0004", type: "sub-menu", name : "Laporan Penjualan", icons: "yang bagus", color : "warna-warni", componentId : "10003", parentId: "S10002", module: "lp",menu : {_id: "0004"}},
+    //buyback
+    {_id: "1001", type: "menu", name : "Buyback", icons: "coin-bag", color : "warna-warni", componentId : "S10011", parentId: "", module: "bb"},
+    {_id: "1001", type: "sub-menu", name : "Terima Buyback", icons: "yang bagus", color : "warna-warni", componentId : "11001", parentId: "S10011", module: "bb",menu : {_id: "0001 "}},
+    
+
 ];
+
+
+
 export const keuangan = [
     
 ];

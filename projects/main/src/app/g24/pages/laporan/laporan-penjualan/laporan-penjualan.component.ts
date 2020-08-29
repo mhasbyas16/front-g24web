@@ -49,14 +49,14 @@ export class LaporanPenjualanComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.from();
+    this.form();
     this.datepick();
     this.filterTransaction('id');
   }
   totalHarga(val){
     this.totalP = this.totalP+Number(val);
   }
-  from(){
+  form(){
     this.search = new FormGroup({
       from: new FormControl(this.datePipe.transform(Date.now(),'MM/dd/yyyy')),
       to: new FormControl(this.datePipe.transform(Date.now(),'MM/dd/yyyy')),
