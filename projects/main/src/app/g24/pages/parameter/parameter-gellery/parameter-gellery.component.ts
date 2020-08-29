@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from "ngx-toastr";
-import {FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 //Session
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { DatePipe } from '@angular/common';
@@ -10,11 +10,15 @@ import { ProductCategoryService } from '../../../services/product/product-catego
 import { JenisBarangService } from '../../../services/product/jenis-barang.service';
 import { ProductDenomService } from '../../../services/product/product-denom.service';
 import { PrmJualService } from '../../../services/parameter/prm-jual.service';
-import { PrmMarginService } from '../../../services/parameter/prm-margin.service';
-import { PrmPpnService } from '../../../services/parameter/prm-ppn.service';
 
 import { EMenuID } from '../../../lib/enums/emenu-id.enum';
 import { DContent } from '../../../decorators/content/pages';
+import { DataTypeUtil } from '../../../lib/helper/data-type-util';
+
+export interface channel {
+  id: number;
+  name: string;
+}
 
 @Component({
   selector: 'app-parameter-gellery',
@@ -26,11 +30,11 @@ import { DContent } from '../../../decorators/content/pages';
 @DContent(ParameterGelleryComponent.key)
 export class ParameterGelleryComponent implements OnInit {
 
-   //title
-   breadcrumb = "Parameter"
-   title = "Parameter Logam Mulia"
-   // spinner 
-   spinner = false;
+  //title
+  breadcrumb = "Parameter"
+  title = "Setup Logam Mulia"
+  // spinner 
+  spinner = false;
   //placeholder datagrid
   placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
   // ClrDatagrid
@@ -46,11 +50,9 @@ export class ParameterGelleryComponent implements OnInit {
   logamMulia = null;
   myproduct = null;
   nikUser = null;
-  //params
   params = null;
-  //parameter
-  margin = null;
-  hargaBaku = null;
+  myRole = null;
+ 
 
   vendorCategory= "product-category.code=c05";
   category = "?_hash=1&product-category.code=c05";
@@ -61,164 +63,278 @@ export class ParameterGelleryComponent implements OnInit {
   modalAddDialog: boolean = false;
   modalEditDialog: boolean = false;
   modalDeleteDialog: boolean = false;
+  modalConfirmDialog: boolean = false;
   // dialog  form
   form: FormGroup = null;
+
   constructor(
     //app
     private vendorService: VendorService,
     private JenisBarangService: JenisBarangService,
     private ProductDenom: ProductDenomService,
-    private ProductCategoryService: ProductCategoryService,
+    private productCategoryService: ProductCategoryService,
 
     private toastrService: ToastrService,
     //session
     private sessionService: SessionService,
-    private datePipe: DatePipe,
     //parameter
     private prmJualService : PrmJualService,
-    private prmMarginService: PrmMarginService,
-    private prmPpnService : PrmPpnService,
   ) { }
 
+    defaultHarga() {
+      return {
+        "product-denom" : null,
+        "harga_buyback" : 0,
+        "harga_baku" : 0
+      };
+    }
+
+    inputModel : any = {items : []};
+    defaultInput(): any {
+      return{
+        keterangan : null, 'jenis_barang': null, vendor: null
+      }
+    }
+
   searchModel : any = {vendors:"all", jenisperhiasan: "all", jenisbarang: "all"};
-  checkboxModel : any = {online:"Online", offline: "Offline"};
-  // checkboxModel = [
-  //   { id: 'online', label: 'Online', isChecked: true},
-  //   { id: 'offline', label: 'Offline', isChecked: true }
-  // ];
   
- 
   ngOnInit(): void {
+    this.inputModel = this.defaultInput();
     this.onListVendor();
     this.onListBarang();
     this.onProductDenom();
     this.nikUser = this.sessionService.getUser();
-    this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser)),"nik":this.nikUser["username"]} ;
+    this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser)),"nik":this.nikUser["username"]};
+    // this.myRole = JSON.stringify(this.sessionService.getRole());
+    // console.debug(this.myRole + "Ini Role");
   }
 
    // modal add 
    mainAdd() {
-    this.form = new FormGroup({
-      jenis_barang: new FormControl('', [Validators.required]),
-      jenis_barang_encoded: new FormControl('base64'),
-      product_category: new FormControl("ewogICAgIl9pZCIgOiBPYmplY3RJZCgiNWViYmEwOTViOTgwYmQyNGI5MjAxY2NhIiksCiAgICAibmFtZSIgOiAiTXVsaWEiLAogICAgImNvZGUiIDogImMwNSIsCiAgICAiY2F0ZWdvcnkiIDogInByb2R1Y3QtY2F0ZWdvcnkiLAogICAgImRpc3BsYXkiIDogMSwKICAgICJzdGF0dXMiIDogMQp9"),
-      product_category_encoded: new FormControl('base64'),
-      vendor: new FormControl('', [Validators.required]),
-      vendor_encoded: new FormControl('base64'),
-      maker: new FormControl (this.nikUser["_hash"], [Validators.required]),
-      maker_encoded: new FormControl("base64"),
-      makerDate: new FormControl(this.datePipe.transform(Date.now(),'MM/dd/yyyy'), Validators.required),
-      makerTime: new FormControl(this.datePipe.transform(Date.now(),'h:mm:ss a'), Validators.required),
-      flag: new FormControl("1"),
-      online: new FormControl('', [Validators.required]),
-      offline: new FormControl('', [Validators.required]),
-      keterangan: new FormControl('', [Validators.required]),
-      pembiayaan_pegadaian: new FormControl('', [Validators.required]),
-      pembiayaan_perusahaan: new FormControl('', [Validators.required]),
-      penjualan_koorporasi: new FormControl('', [Validators.required]),
-      penjualan_bundling: new FormControl('', [Validators.required]),
-      penjualan_pameran: new FormControl('', [Validators.required]),
-      penjualan_agen: new FormControl('', [Validators.required]),
-      penjualan_karyawan: new FormControl('', [Validators.required]),
-      invoice_7hr: new FormControl('', [Validators.required]),
-      invoice_14hr: new FormControl('', [Validators.required]),
-      penjualan_cash: new FormControl('', [Validators.required]),
-      penjualan_serahtunda: new FormControl('', [Validators.required]),
-      penjualan_bulk: new FormControl('', [Validators.required]),
-      hrg0E: new FormControl('', [Validators.required]),
-      jual0E: new FormControl('', [Validators.required]),
-      hrg02: new FormControl('', [Validators.required]),
-      jual02: new FormControl('', [Validators.required]),
-      hrg01: new FormControl('', [Validators.required]),
-      jual01: new FormControl('', [Validators.required]),
-      hrg0B: new FormControl('', [Validators.required]),
-      jual0B: new FormControl('', [Validators.required]),
-      hrg00: new FormControl('', [Validators.required]),
-      jual00: new FormControl('', [Validators.required]),
-      hrg0A: new FormControl('', [Validators.required]),
-      jual0A: new FormControl('', [Validators.required]),
-      hrg0F: new FormControl('', [Validators.required]),
-      jual0F: new FormControl('', [Validators.required]),
-      hrg0C: new FormControl('', [Validators.required]),
-      jual0C: new FormControl('', [Validators.required]),
-      hrg04: new FormControl('', [Validators.required]),
-      jual04: new FormControl('', [Validators.required]),
-      hrg05: new FormControl('', [Validators.required]),
-      jual05: new FormControl('', [Validators.required]),
-      hrg09: new FormControl('', [Validators.required]),
-      jual09: new FormControl('', [Validators.required]),
-      hrg0D: new FormControl('', [Validators.required]),
-      jual0D: new FormControl('', [Validators.required]),
-      hrg08: new FormControl('', [Validators.required]),
-      jual08: new FormControl('', [Validators.required]),
-      hrg06: new FormControl('', [Validators.required]),
-      jual06: new FormControl('', [Validators.required]),
-      hrg07: new FormControl('', [Validators.required]),
-      jual07: new FormControl('', [Validators.required]),
-      hrg03: new FormControl('', [Validators.required]),
-      jual03: new FormControl('', [Validators.required]),
+
+    this.productCategoryService.get("?code=c05&_hash=1").subscribe(output => {
+      if (output == false) {
+        this.toastrService.error(this.productCategoryService.message())
+        return
+      }
+      this.myproduct = output
     });
     this.modalAddDialog = true;
   }
 
+  validateInput()
+  {
+    for(let key in this.inputModel)
+    {
+      let value = this.inputModel[key];
+      console.log(value, key, 'key')
+      if(value == null || value == "null" || value == 0 || (typeof value === 'number' && value === 0))
+      {
+        this.toastrService.warning("Field belum diisi / sama dengan 0 ");
+        return true
+      }
+    }
+
+    return false
+  }
+
   mainAddSubmit(){
-    // if (!this.form.valid) {
-    //   this.toastrService.error('Form not complete yet', this.title);
-    //   return;
-    // }
-    
-    let data = this.form.getRawValue();
+    if(this.validateInput()) return;
+
+    let now : Date = new Date;
+    let sNow = now.toISOString().split("T");
+    let time = sNow[1].split(".")[0];
 
     let prmJual = {
-      "jenis-barang" : data.jenis_barang,
-      "jenis_barang_encoded" : data.jenis_barang_encoded,
-      "product-category" : data.product_category,
-      "product-category_encoded" : data.product_category_encoded,
-      "vendor" : data.vendor,
-      "vendor_encoded" : data.vendor_encoded,
-      "maker" : data.maker,
-      "maker_encoded" : data.maker_encoded,
-      "makerDate" : data.makerDate,
-      "makerTime" : data.makerTime,
-      "flag" : data.flag,
+      "jenis_barang" : this.inputModel.jenis_barang,
+      "product-category" : this.myproduct._hash,
+      "product-category_encoded" : "base64",
+      "vendor" : this.inputModel.vendor,
+      "vendor_encoded" : "base64",
+      "create_by" : this.nikUser["_hash"],
+      "create_by_encoded" : "base64",
+      "create_date" : new Date().toISOString().split("T")[0],
+      "create_time" : time,
+      "flag" : "submit",
+      "keterangan" : this.inputModel.keterangan,
+      "harga" : btoa(JSON.stringify(this.harga)),
+      "harga_encoded" : "base64array"
     }
 
-    let chanel1 = data["online"];
-    let chanel2 = data["offline"];
-
-    // validasi checkbox
-    if (chanel1 == false && chanel2 == false) {
-      this.toastrService.error('Checkbox harus diisi', this.title);
-      return;
-    }
-
-    let arraych = [];
-    delete data["online"]
-    delete data["offline"]
-
-    if (chanel1 != false && chanel2 != false) {
-      arraych = [{"code":"ch01","name" : "Online"}, {"code":"ch02","name" : "Offline"}]
-    }else if (chanel1 == false && chanel2 != false) {
-      arraych = [{"code":"ch02","name" : "Offline"}]
-    }else{
-      arraych = [{"code":"ch01","name" : "Online"}]
-    }
-    data["channel"] = arraych
+    // untuk melakukan encoded tanpa mendeklarasikan
+    // DataTypeUtil.Encode(prmJual)
     
-    // this.prmJualService.add(data).subscribe((response) => {
-    //   if (response == false) {
-    //     this.toastrService.error('Failed')
-    //     return
-    //   }
-    //   this.toastrService.success('Success')
-    // })
-
-    // let parse = JSON.stringify(data)
-    let encoded = btoa(JSON.stringify(data))
-    let decode = JSON.parse(atob(encoded))
-    // console.debug(encoded)
+    this.spinner = true;
+    this.prmJualService.add(prmJual).subscribe((response) => {
+      if (response == false) {
+        this.toastrService.error('Add Failed')
+        return
+      }
+      this.spinner = false;
+      this.modalAddDialog = false;
+      this.toastrService.success('Add Success')
+    })
     console.debug('submitted data',  prmJual)
-    // this.spinner = true;
+  }
+
+  mainEdit(data) {
+    console.debug("dataEdit", data);
+
+    this.prmJualService.get("?_id="+data._id).subscribe((response) => {
+      if (response == false) {
+        this.toastrService.error(this.prmJualService.message());
+      }
+    });
+
+    this.inputModel = data;
+    this.harga = this.inputModel.harga
+    this.modalEditDialog = true;
+  }
+
+  mainEditSubmit(){
+    if(this.validateInput()) return;
+
+    let now : Date = new Date;
+    let sNow = now.toISOString().split("T");
+    let time = sNow[1].split(".")[0];
+
+    let prmJual = {
+      "_id" : this.inputModel._id,
+      "jenis_barang" : this.inputModel.jenis_barang,
+      "vendor" : btoa(JSON.stringify(this.inputModel.vendor)),
+      "vendor_encoded" : "base64",
+      "update_by" : this.nikUser["_hash"],
+      "update_by_encoded" : "base64",
+      "update_date" : new Date().toISOString().split("T")[0],
+      "update_time" : time,
+      "flag" : "submit",
+      "keterangan" : this.inputModel.keterangan,
+      "harga" : btoa(JSON.stringify(this.harga)),
+      "harga_encoded" : "base64array"
+    }
+
+    // untuk melakukan encoded tanpa mendeklarasikan
+    // let dataEdit = DataTypeUtil.Encode(prmJual)
+    
+    this.spinner = true;
+    this.prmJualService.update(prmJual).subscribe((response) => {
+      if (response == false) {
+        this.toastrService.error('Edit Failed')
+        return
+      }
+      this.spinner = false;
+      this.modalEditDialog = false;
+      this.toastrService.success('Edit Success')
+    })
+    console.debug('submitted data',  prmJual)
+  }
+
+  mainDelete(data) {
+    console.debug("dataDelete", data);
+
+    this.prmJualService.get("?_id="+data._id).subscribe((response) => {
+      if (response == false) {
+        this.toastrService.error(this.prmJualService.message());
+      }
+    });
+
+    this.inputModel = data;
+    this.harga = this.inputModel.harga
+    this.modalDeleteDialog = true;
+  }
+
+  // Submit delete data
+  mainDeleteSubmit() {
+    if(this.validateInput()) return;
+
+    let now : Date = new Date;
+    let sNow = now.toISOString().split("T");
+    let time = sNow[1].split(".")[0];
+
+    let prmJual = {
+      "_id" : this.inputModel._id,
+    }
+
+    // untuk melakukan encoded tanpa mendeklarasikan
+    // let dataEdit = DataTypeUtil.Encode(prmJual)
+    
+    this.spinner = true;
+    this.prmJualService.delete(prmJual).subscribe((response) => {
+      if (response == false) {
+        this.toastrService.error('Delete Failed')
+        return
+      }
+      this.spinner = false;
+      this.modalDeleteDialog = false;
+      this.toastrService.success('Delete Success')
+    })
+    console.debug('submitted data',  prmJual)
+  }
+
+  mainConfirm(data) {
+    console.debug("dataConfirm", data);
+
+    this.inputModel = data;
+    this.harga = this.inputModel.harga;
+    this.modalConfirmDialog = true;
+  }
+
+  mainApproveSubmit() {
+    if(this.validateInput()) return;
+
+    let now : Date = new Date;
+    let sNow = now.toISOString().split("T");
+    let time = sNow[1].split(".")[0];
+
+    let prmJual = {
+      "_id" : this.inputModel._id,
+      "approve_by" : this.nikUser["_hash"],
+      "approve_by_encoded" : "base64",
+      "aprrove_date" : new Date().toISOString().split("T")[0],
+      "approve_time" : time,
+      "flag" : "approved",
+    }
+    
+    this.spinner = true;
+    this.prmJualService.update(prmJual).subscribe((response) => {
+      if (response == false) {
+        this.toastrService.error('Approve Failed')
+        return
+      }
+      this.spinner = false;
+      this.modalConfirmDialog = false;
+      this.toastrService.success('Approve Success')
+    })
+    console.debug('submitted data',  prmJual)
+  }
+
+  mainDeclineSubmit() {
+    if(this.validateInput()) return;
+
+    let now : Date = new Date;
+    let sNow = now.toISOString().split("T");
+    let time = sNow[1].split(".")[0];
+
+    let prmJual = {
+      "_id" : this.inputModel._id,
+      "decline_by" : this.nikUser["_hash"],
+      "decline_by_encoded" : "base64",
+      "decline_date" : new Date().toISOString().split("T")[0],
+      "decline_time" : time,
+      "flag" : "declined",
+    }
+    
+    this.spinner = true;
+    this.prmJualService.update(prmJual).subscribe((response) => {
+      if (response == false) {
+        this.toastrService.error('Decline Failed')
+        return
+      }
+      this.spinner = false;
+      this.modalConfirmDialog = false;
+      this.toastrService.success('Decline Success')
+    })
+    console.debug('submitted data',  prmJual)
   }
 
   onListVendor(){
@@ -228,6 +344,7 @@ export class ParameterGelleryComponent implements OnInit {
       }      
     });
   }
+  
   onListBarang(){
     this.JenisBarangService.list("?_hash=1").subscribe((response : any) => {
       if (response != false) {
@@ -235,10 +352,22 @@ export class ParameterGelleryComponent implements OnInit {
       }
     });
   }
+
+  harga : any[] =[];
+
   onProductDenom(){
     this.ProductDenom.list(this.produtCategory+"&_sortby=name:1").subscribe((response :any) => {
       if (response != false) {
         this.denom = response;
+
+        while(this.harga.length > 0) this.harga.pop(); // clear array
+
+        for(let i = 0; i < response.length; i++)
+        {
+          let harga = this.defaultHarga();
+          harga["product-denom"] = response[i];
+          this.harga.push(harga);
+        }
       }
     }); 
   }
