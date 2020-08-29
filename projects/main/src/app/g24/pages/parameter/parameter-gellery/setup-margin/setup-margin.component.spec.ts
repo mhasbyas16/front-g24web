@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ParameterSovenirComponent } from './parameter-sovenir.component';
+import { SetupMarginComponent } from './setup-margin.component';
 
-describe('ParameterSovenirComponent', () => {
-  let component: ParameterSovenirComponent;
-  let fixture: ComponentFixture<ParameterSovenirComponent>;
+describe('SetupMarginComponent', () => {
+  let component: SetupMarginComponent;
+  let fixture: ComponentFixture<SetupMarginComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ParameterSovenirComponent ]
+      declarations: [ SetupMarginComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ParameterSovenirComponent);
+    fixture = TestBed.createComponent(SetupMarginComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
