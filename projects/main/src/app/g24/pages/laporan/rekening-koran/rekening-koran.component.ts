@@ -55,17 +55,24 @@ export class RekeningKoranComponent implements OnInit {
     this.from();
     this.datepick();
     this.head();
+    
   }
 
-  // modal add 
-  mainDetail() {
+  // modal detail 
+  mainDetail(isi) {
     this.formDetail = new FormGroup({
-      name: new FormControl('', [Validators.required, Validators.maxLength(15), Validators.pattern(/^[a-zA-Z]*$/)]),
-      name_validation: new FormControl('unique:name')
+      trxCode: new FormControl(""),
+      keterangan: new FormControl("")
+      
     });
+    this.formDetail.patchValue({keterangan:isi.keterangan, trxCode:isi.trxCode, postDate:isi.postDate, trxDate:isi.trxDate,
+                    noRek:isi.noRek, noCoa:isi.noCoa, createBy:isi.createBy,createDate:isi.createDate, authorizedBy:isi.authorizedBy,
+                  authorizedDate:isi.authorizedDate, unit:isi.unit});
+    isi:this.transactions;
     this.modalDetailDialog = true;
+
     // tslint:disable-next-line:no-console
-    console.debug('mainDetail', this.modalDetailDialog);
+    // console.debug('mainDetail', this.modalDetailDialog);
   }
 
   from(){
@@ -175,27 +182,7 @@ export class RekeningKoranComponent implements OnInit {
       this.transactions = response; 
       let no = 1;    
 
-      // console.debug(this.getDKByFilter(response.detail.noRek), 'DK');      
-    
-
       
-      // for (let index=0; index <  wew.length; index++) {        
-        
-      //   index = wew[index].detail.findIndex(x => x.noRek === this.datatext);
-      //   // let arrs = wew[index].detail[ind];
-      //   console.debug(index, "tas");
-
-      //   // if(response[index].detail[ind].amountD != null && response[index].detail[ind].amountK != null){
-      //     this.dk.push({
-      //       debit: response[index].detail[index].amountD,
-      //       kredit: response[index].detail[index].amountK
-      //     });
-      //   // }        
-        
-      // }
-      
-
-      // console.debug(this.dk, "dk");
       
      
       this.toastrService.success("Load "+this.transactions.length+" Data", "Transaction");
@@ -207,11 +194,15 @@ export class RekeningKoranComponent implements OnInit {
         const debit = this.transactions[index].detail.find(x=>x.noRek == this.datatext).amountD;
         const kredit = this.transactions[index].detail.find(x=>x.noRek == this.datatext).amountK;
         const deskripsi = this.transactions[index].detail.find(x=>x.noRek == this.datatext).name;
+        const noRek = this.transactions[index].detail.find(x=>x.noRek == this.datatext).noRek;
+        const noCoa = this.transactions[index].detail.find(x=>x.noRek == this.datatext).noCoa;
 
         
         this.transactions[index].debit = debit
         this.transactions[index].kredit = kredit
         this.transactions[index].deskripsi = deskripsi
+        this.transactions[index].noRek = noRek
+        this.transactions[index].noCoa = noCoa
       }
 
       for(let header of this.transactions){
@@ -221,40 +212,12 @@ export class RekeningKoranComponent implements OnInit {
       console.debug(this.transactions,"transaksi")
 
       for (let isi of this.transactions) {
-        // const debit = this.dk[0].debit;
-        // const kredit = this.dk[0].kredit;
-
         
-
-        // const debit = this.transactions.find(x=>x.noRek == this.datatext).amountD;
-        // const kredit = this.transactions.find(x=>x.noRek == this.datatext).amountK;
         console.debug(isi.debit ,"debit");
-        console.debug(isi.kredit ,"kredit");
-        
+        console.debug(isi.kredit ,"kredit");      
 
         isi.no=no++;
-        // isi.debit = debit;
-        // isi.kredit = kredit;
-       
 
-        
-      //   isi.amountD = 0;
-      //   isi.amountK=0;
-
-
-
-        
-      //   // for (let hp of isi.product["PERHIASAN"]) {
-      //   //   this.totalD = this.totalD + hp.harga;
-      //   // }
-      //   // for (let hb of isi.product["BERLIAN"]) {
-      //   //   this.totalBerlian = this.totalBerlian + hb.harga;
-      //   // }
-      //   // this.listTotal.push({
-      //   //   "idJurnal":isi.idJurnal,
-      //   //   "totalD":this.totalD,
-      //   //   "totalK":this.totalK,
-      //   // });
       }
      // console.debug(this.listTotalHarga ,"alkjfdljajkladkljadkla")
     })
