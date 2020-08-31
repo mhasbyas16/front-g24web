@@ -147,9 +147,9 @@ export class BerlianComponent implements OnInit {
         }  
         this.berlians = response;
         // pricing
-        this.prmJualService.list("?"+this.vendorCategory).subscribe((Jualresponse: any) => {
+        this.prmJualService.get("?"+this.vendorCategory+"&flag=approved").subscribe((Jualresponse: any) => {
           if (Jualresponse != false) {
-            this.hargaBaku = Jualresponse;
+            this.hargaBaku = Jualresponse.harga_baku;
           }
           this.prmPpnService.list().subscribe((PPNresponse: any) => {
             if (PPNresponse != false) {
@@ -162,7 +162,7 @@ export class BerlianComponent implements OnInit {
   
               for (let index = 0, len = this.berlians.length; index < len; index++) {
                this.datalist=this.pricingService.priceBatuMulia(
-                 this.hargaBaku['0']['harga-baku'],
+                 this.hargaBaku,
                  this.berlians[index]['product-purity']['name'],
                  Number(this.berlians[index]['berat']),
                  this.margin['0']['margin'],

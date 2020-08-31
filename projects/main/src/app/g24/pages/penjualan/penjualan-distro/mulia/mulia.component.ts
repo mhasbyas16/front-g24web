@@ -52,6 +52,8 @@ export class MuliaComponent implements OnInit {
   vendorCategory = "product-category.code=c05";
   category = "?_hash&product-category.code=c05";
 
+  muliaCategory = "?product-category.code=c05";
+
    //params
    params = null;
 
@@ -119,6 +121,7 @@ export class MuliaComponent implements OnInit {
     let flag = data.input_flag_mulia;
     // let jumlah = data.input_jumlah ;
     let cariMulia : any[] = [];
+    this.hargaBaku = 0
     
 
     const urlVendor = "vendor.code="+vendor;
@@ -153,14 +156,20 @@ export class MuliaComponent implements OnInit {
           this.productService.count(this.params+"&"+urlFlag).subscribe((response: any) => {
             this.qty = response.count;
             // cari prm-jual product
-            this.prmJualService.list(this.params).subscribe((Jualresponse: any) => {
-              let prmJual = Jualresponse;
-              console.debug(prmJual[0]['harga-baku'],'hargabaku')
+            this.prmJualService.get(this.muliaCategory+"&"+urlVendor+"&flag=approved").subscribe((Jualresponse: any) => {
+              let prmJual = Jualresponse.harga;
+              for (let index = 0; index < prmJual.length; index++) {
+                  if (prmJual[index]["product-denom"].code == denom) {
+                    this.hargaBaku = prmJual[index].harga_baku
+                    
+                  }
+              }
+              console.debug(this.hargaBaku,"hargaBaku")
               //cari margin penjualan
               this.prmMarginService.list("?"+this.vendorCategory).subscribe((Marginresponse: any) => {
                 let prmMargin = Marginresponse
                 console.debug(prmMargin[0].margin,'margin')
-                let hargaLM = this.pricingService.priceLogamMulia((prmJual[0]['harga-baku']), Number(prmMargin[0].margin));
+                let hargaLM = this.pricingService.priceLogamMulia(this.hargaBaku, Number(prmMargin[0].margin));
                 hargaLM =  Math.ceil(hargaLM/1000)*1000;
                 console.debug( hargaLM,'hargaLM')
                 cariMulia.push({

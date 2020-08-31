@@ -23,69 +23,112 @@
     </div>
 </div>
 <br>
-
-    
-        <div class="clr-row">
-            <div class="card" style="margin-top: 0em;">
-                <div class="card-header">
-                    Detail Transaksi
+<div class="clr-row">
+    <div class="card" style="margin-top: 0em;">
+        <div class="card-header">
+            Detail Transaksi
+        </div>
+        <div class="card-block">
+            <div class="card-text">
+                <div class="clr-row clr-justify-content-center">
+                    <clr-spinner *ngIf="loadingDg;  " class="spinner spinner-md"></clr-spinner>
                 </div>
-                <div class="card-block">
-                    <div class="card-text">
-                        <div class="clr-row clr-justify-content-center">
-                            <clr-spinner *ngIf="loadingDg;  " class="spinner spinner-md"></clr-spinner>
+                <ng-container *ngIf="totalDetail > 0; else default">
+                    <div class="clr-row">
+                        <div class="clr-col-12 clr-col-lg-6 clr-col-xl-6" style="margin-top: 0px;">
+                            <table class="table table-vertical table-noborder table-compact" style="margin-top: 0px;">
+                                <tbody>
+                                    <tr>
+                                        <td class="left">Id Transaksi</td>
+                                        <td>: {{detailTransaction.idTransaction}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="left">Nama Unit</td>
+                                        <td>: {{detailTransaction.unit.nama}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="left">Tanggal Pembelian</td>
+                                        <td>: {{tanggalTerbilang}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="left">CIF</td>
+                                        <td>: {{detailTransaction.client.cif}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <ng-container *ngIf="totalDetail > 0; else default">
-                            <div class="clr-row">
-                                <div class="clr-col-12 clr-col-lg-6 clr-col-xl-6" style="margin-top: 0px;">
-                                    <table class="table table-vertical table-noborder table-compact" style="margin-top: 0px;">
-                                        <tbody>
-                                            <tr>
-                                                <td class="left">Id Transaksi</td>
-                                                <td>: {{detailTransaction.idTransaction}}</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="left">Nama Unit</td>
-                                                <td>: {{detailTransaction.unit.nama}}</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="left">Tanggal Pembelian</td>
-                                                <td>: {{tanggalTerbilang}}</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="left">CIF</td>
-                                                <td>: {{detailTransaction.client.cif}}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="clr-col-12 clr-col-lg-6 clr-col-xl-6" >
-                                    <table class="table table-vertical table-noborder table-compact" style="margin-top: 0px;">
-                                        <tbody>
-                                            <tr>
-                                                <td class="left">Nama Nasabah</td>
-                                                <td>: {{detailTransaction.client.name}}</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="left">Alamat</td>
-                                                <td>: {{detailTransaction.client.alamatSaatIni.alamat}}</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="left">No. Hp</td>
-                                                <td>: {{detailTransaction.client.noHP}}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </ng-container>
-                        <ng-template #default>
-                            <div class="clr-row clr-justify-content-center">
-                                Silahkan Scan Barcode atau Input Id Transaksi
-                            </div>
-                        </ng-template>
+                        <div class="clr-col-12 clr-col-lg-6 clr-col-xl-6" >
+                            <table class="table table-vertical table-noborder table-compact" style="margin-top: 0px;">
+                                <tbody>
+                                    <tr>
+                                        <td class="left">Nama Nasabah</td>
+                                        <td>: {{detailTransaction.client.name}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="left">Alamat</td>
+                                        <td>: {{detailTransaction.client.alamatSaatIni.alamat}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="left">No. Hp</td>
+                                        <td>: {{detailTransaction.client.noHP}}{{totalPerhiasan}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-template #default>
+                    <div class="clr-row clr-justify-content-center">
+                        Silahkan Scan Barcode atau Input Id Transaksi
+                    </div>
+                </ng-template>
+            </div>
+            <!-- Perhiasan -->
+           <ng-container *ngIf="totalIsiPerhiasan > 0">
+                <div class="card" style="margin-top: 0em;">
+                    <div class="card-header">
+                       Perhiasan
+                    </div>
+                    <div class="card-block">
+                        <clr-datagrid>
+                            <clr-dg-column>ID Produk</clr-dg-column>
+                            <clr-dg-column>Kode</clr-dg-column>
+                            <clr-dg-column>Vendor</clr-dg-column>
+                            <clr-dg-column>Jenis</clr-dg-column>
+                            <clr-dg-column>Berat</clr-dg-column>
+                            <clr-dg-column>Kadar</clr-dg-column>
+                            <clr-dg-column>Warna</clr-dg-column>
+                            <clr-dg-column>Harga</clr-dg-column>
+                            <clr-dg-column class="right"></clr-dg-column>
+                            <clr-dg-row *clrDgItems="let d of isiPerhiasan">
+                                <clr-dg-cell>{{d.detail.id}}</clr-dg-cell>
+                                <clr-dg-cell>{{d.detail.code}}</clr-dg-cell>
+                                <clr-dg-cell>{{d.detail.vendor.name}}</clr-dg-cell>
+                                <clr-dg-cell>{{d.detail['product-jenis'].name}}</clr-dg-cell>
+                                <clr-dg-cell>{{d.detail.berat}}</clr-dg-cell>
+                                <clr-dg-cell>{{d.detail['product-purity'].name}}</clr-dg-cell>
+                                <clr-dg-cell>{{d.detail['product-gold-color'].name}}</clr-dg-cell>
+                                <clr-dg-cell><span style="float: right;">Rp. 1000.000</span></clr-dg-cell>
+                                <clr-dg-cell><span style="float: left;">
+                                    <!-- <ng-container *ngIf="cekItemArray(d.code); else plus">
+                                        <button type="button" class="btn btn-icon btn-sm btn-danger disabled" aria-label="home" >
+                                            <clr-icon shape="minus"></clr-icon>
+                                        </button>                
+                                    </ng-container>
+                                    <ng-template #plus>
+                                        <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.code,d.vendor.name,d['product-jenis'].name,d['product-gold-color'].name, d.berat, d['product-purity'].name, d.hargaJual, d._hash)">
+                                            <clr-icon shape="plus"></clr-icon>
+                                        </button>  
+                                    </ng-template> -->
+                                    
+                                </span>
+                                </clr-dg-cell>
+                            </clr-dg-row>
+                        </clr-datagrid>
                     </div>
                 </div>
-            </div>
+            </ng-container>
         </div>
+    </div>
+</div>
    

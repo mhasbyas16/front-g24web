@@ -30,6 +30,12 @@ export class BuybackBycodeComponent implements OnInit {
   //id response
   detailTransaction : any;
   totalDetail : any;
+  totalPerhiasan : any;
+
+  //product
+  isiPerhiasan : any[];
+  totalIsiPerhiasan : any;
+
 
   //tanggal
   tanggalTerbilang : any;
@@ -56,11 +62,11 @@ export class BuybackBycodeComponent implements OnInit {
   }
 
   searchTransaction(){
-
-    
-
     this.loadingDg = true;
     this.totalDetail = 0;
+    this.totalIsiPerhiasan = 0;
+    this.isiPerhiasan = null
+
     if (!this.searchTrans.valid) {
       this.toastrService.error("Harap Input Id", "Buyback");
       this.loadingDg = false;
@@ -83,8 +89,14 @@ export class BuybackBycodeComponent implements OnInit {
       let hari = tglSplit["1"];
       let tahun = tglSplit["2"];
       let bulanTerbilang = this.tanggalService.bulanGenerate(bulan);
-
       this.tanggalTerbilang = hari+" "+bulanTerbilang+" "+tahun
+      
+      
+      //perhiasan
+      this.isiPerhiasan =this.detailTransaction.product["PERHIASAN"] 
+      this.totalIsiPerhiasan =  this.isiPerhiasan.length
+      
+     
       this.loadingDg = false;
     })
   
