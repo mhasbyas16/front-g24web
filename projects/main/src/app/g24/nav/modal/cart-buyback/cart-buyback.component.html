@@ -1,0 +1,15 @@
+<a href="javascript://" class="nav-link nav-icon-text" (click)="modalView(true)">
+    <clr-icon shape="coin-bag" class="cart-color" size="25"></clr-icon>
+    <ng-container *ngIf="total > 0">
+        <span class="badge badge-danger ">{{total}}</span>
+    </ng-container>
+</a>
+
+<ng-container *ngIf="cartModal">
+    <clr-modal [(clrModalOpen)]="cartModal" [clrModalSize]="'xl'" [clrModalStaticBackdrop]="false">
+        <h3 class="modal-title" >Buyback Cart <clr-icon shape="coin-bag" class="is-solid cart-color"></clr-icon></h3>
+        <div class="modal-body">
+            {{total}}
+        </div>
+    </clr-modal>
+</ng-container>

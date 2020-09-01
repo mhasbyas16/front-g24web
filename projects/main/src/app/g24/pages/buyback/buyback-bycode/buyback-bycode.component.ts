@@ -1,17 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { EMenuID } from '../../../lib/enums/emenu-id.enum';
 import { DContent } from '../../../decorators/content/pages';
-import { BuybackModule } from '../buyback.module';
-import { FormGroup, FormControl,ReactiveFormsModule, Validators  } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 
 // services
 import { TransactionService } from '../../../services/transaction/transaction.service';
 
-import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { TanggalService } from '../../../lib/helper/tanggal.service';
-
 
 
 @Component({
@@ -22,7 +18,6 @@ import { TanggalService } from '../../../lib/helper/tanggal.service';
 
 @DContent(BuybackBycodeComponent.key)
 export class BuybackBycodeComponent implements OnInit {
-
 
   //Form Search
   searchTrans: FormGroup = null;
@@ -35,7 +30,11 @@ export class BuybackBycodeComponent implements OnInit {
   //product
   isiPerhiasan : any[];
   totalIsiPerhiasan : any;
+  hargaBB = 0;
 
+  //global
+  total = 3
+ 
 
   //tanggal
   tanggalTerbilang : any;
@@ -90,16 +89,16 @@ export class BuybackBycodeComponent implements OnInit {
       let tahun = tglSplit["2"];
       let bulanTerbilang = this.tanggalService.bulanGenerate(bulan);
       this.tanggalTerbilang = hari+" "+bulanTerbilang+" "+tahun
-      
-      
+    
       //perhiasan
       this.isiPerhiasan =this.detailTransaction.product["PERHIASAN"] 
       this.totalIsiPerhiasan =  this.isiPerhiasan.length
-      
-     
       this.loadingDg = false;
     })
   
   }
+
+  
+
 }
 

@@ -27,6 +27,13 @@
     <div class="card" style="margin-top: 0em;">
         <div class="card-header">
             Detail Transaksi
+            <div class="cart-style">
+                <app-cart-buyback
+                    [total]="total"
+                    
+                >
+                </app-cart-buyback>
+            </div>
         </div>
         <div class="card-block">
             <div class="card-text">
@@ -84,50 +91,13 @@
                 </ng-template>
             </div>
             <!-- Perhiasan -->
-           <ng-container *ngIf="totalIsiPerhiasan > 0">
-                <div class="card" style="margin-top: 0em;">
-                    <div class="card-header">
-                       Perhiasan
-                    </div>
-                    <div class="card-block">
-                        <clr-datagrid>
-                            <clr-dg-column>ID Produk</clr-dg-column>
-                            <clr-dg-column>Kode</clr-dg-column>
-                            <clr-dg-column>Vendor</clr-dg-column>
-                            <clr-dg-column>Jenis</clr-dg-column>
-                            <clr-dg-column>Berat</clr-dg-column>
-                            <clr-dg-column>Kadar</clr-dg-column>
-                            <clr-dg-column>Warna</clr-dg-column>
-                            <clr-dg-column>Harga</clr-dg-column>
-                            <clr-dg-column class="right"></clr-dg-column>
-                            <clr-dg-row *clrDgItems="let d of isiPerhiasan">
-                                <clr-dg-cell>{{d.detail.id}}</clr-dg-cell>
-                                <clr-dg-cell>{{d.detail.code}}</clr-dg-cell>
-                                <clr-dg-cell>{{d.detail.vendor.name}}</clr-dg-cell>
-                                <clr-dg-cell>{{d.detail['product-jenis'].name}}</clr-dg-cell>
-                                <clr-dg-cell>{{d.detail.berat}}</clr-dg-cell>
-                                <clr-dg-cell>{{d.detail['product-purity'].name}}</clr-dg-cell>
-                                <clr-dg-cell>{{d.detail['product-gold-color'].name}}</clr-dg-cell>
-                                <clr-dg-cell><span style="float: right;">Rp. 1000.000</span></clr-dg-cell>
-                                <clr-dg-cell><span style="float: left;">
-                                    <!-- <ng-container *ngIf="cekItemArray(d.code); else plus">
-                                        <button type="button" class="btn btn-icon btn-sm btn-danger disabled" aria-label="home" >
-                                            <clr-icon shape="minus"></clr-icon>
-                                        </button>                
-                                    </ng-container>
-                                    <ng-template #plus>
-                                        <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.code,d.vendor.name,d['product-jenis'].name,d['product-gold-color'].name, d.berat, d['product-purity'].name, d.hargaJual, d._hash)">
-                                            <clr-icon shape="plus"></clr-icon>
-                                        </button>  
-                                    </ng-template> -->
-                                    
-                                </span>
-                                </clr-dg-cell>
-                            </clr-dg-row>
-                        </clr-datagrid>
-                    </div>
-                </div>
-            </ng-container>
+            <app-perhiasan-bycode
+                [total]="total"
+                [totalIsiPerhiasan] = "totalIsiPerhiasan"
+                [isiPerhiasan] = "isiPerhiasan"
+            >
+            </app-perhiasan-bycode>
+           
         </div>
     </div>
 </div>

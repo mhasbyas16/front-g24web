@@ -8,10 +8,12 @@ import { BuybackBycodeComponent } from './buyback-bycode/buyback-bycode.componen
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NavModule } from '../../nav/nav.module';
 
+import { PerhiasanBycodeComponent } from './buyback-bycode/perhiasan-bycode/perhiasan-bycode.component';
+
 
 
 @NgModule({
-  declarations: [BuybackBycodeComponent],
+  declarations: [BuybackBycodeComponent, PerhiasanBycodeComponent],
   imports: [
     CommonModule,
     BuybackRoutingModule,
