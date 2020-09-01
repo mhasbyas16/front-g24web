@@ -72,11 +72,38 @@
             <div class="modal-body ">
                 <div class="clr-row">
                     <div class="clr-col-12">
+                        <clr-radio-container clrInline>
+                            <label>Channel</label>
+                            <clr-radio-wrapper>
+                                <input type="radio" clrRadio name="options" required value="option2"/>
+                                <label>Online</label>
+                            </clr-radio-wrapper>
+                            <clr-radio-wrapper>
+                                <input type="radio" clrRadio name="options" required value="option1"/>
+                                <label>Offline</label>
+                            </clr-radio-wrapper>
+                            <!-- <clr-control-helper>Helper text</clr-control-helper>
+                            <clr-control-error>This field is required!</clr-control-error> -->
+                        </clr-radio-container>
+                    </div>
+                    <div class="clr-col-6">
                         <clr-select-container class="clr-form-control">
                             <label class="clr-control-label">Product Category</label>
+                            <select clrSelect name="product_category" (change)="onChangeProduct($event.target.value)">
+                                <ng-container>
+                                    <option [value]="">-- Please Select --</option>
+                                    <option *ngFor="let prod of productCat" value="{{prod._hash}}">{{prod.name}}</option>
+                                </ng-container>
+                            </select>
+                        </clr-select-container>
+                    </div>
+                    <div class="clr-col-6">
+                        <clr-select-container class="clr-form-control">
+                            <label class="clr-control-label">Vendor</label>
                             <select clrSelect name="product_category" ngModel>
-                                <ng-container *ngFor="let prod of productCat">
-                                    <option value="{{prod._hash}}">{{prod.name}}</option>
+                                <ng-container>
+                                    <option [value]="" selected>-- Please Select --</option>
+                                    <option *ngFor="let vndr of listVendor" value="{{vndr._hash}}">{{vndr.name}}</option>
                                 </ng-container>
                             </select>
                         </clr-select-container>

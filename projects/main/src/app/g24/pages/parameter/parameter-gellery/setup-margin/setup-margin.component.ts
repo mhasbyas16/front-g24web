@@ -8,7 +8,7 @@ import { DatePipe } from '@angular/common';
 import { ChannelService } from '../../../../services/channel.service';
 import { TransactionTypeService } from '../../../../services/transaction/transaction-type.service';
 import { ProductCategoryService } from '../../../../services/product/product-category.service';
-import { JenisBarangService } from '../../../../services/product/jenis-barang.service';
+import { VendorService } from '../../../../services/vendor.service';
 import { PrmMarginService } from '../../../../services/parameter/prm-margin.service';
 
 import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
@@ -41,11 +41,13 @@ export class SetupMarginComponent implements OnInit {
   datalist = null;
   nikUser = null;
   params = null;
-  myRole = null;
+  filterVendorProd = null;
+  listVendor = null;
+  getProduct= null;
 
-  vendorCategory= "product-category.code=c05";
-  category = "?_hash=1&product-category.code=c05";
-  produtCategory = "?_hash=1&product-category.code=c05";
+  // vendorCategory= "product-category.code=c05";
+  // category = "?_hash=1&product-category.code=c05";
+  // produtCategory = "?_hash=1&product-category.code=c05";
 
   // dialog
   modalAddDialog: boolean = false;
@@ -59,7 +61,7 @@ export class SetupMarginComponent implements OnInit {
     //app
     private channelService: ChannelService,
     private transactionTypeService : TransactionTypeService,
-    private JenisBarangService: JenisBarangService,
+    private vendorService: VendorService,
     private prmMarginService: PrmMarginService,
     private productCategoryService: ProductCategoryService,
 
@@ -87,6 +89,28 @@ export class SetupMarginComponent implements OnInit {
     this.productCategoryService.list("?_hash=1&_sortby=name:2").subscribe((output: any) => {
       if (output != false) {
         this.productCat = output;
+      }      
+    });
+  }
+
+  onChangeProduct(data){
+    let prod = JSON.parse(atob(data));
+    if (prod == null) {
+      this.toastrService.error(this.productCategoryService.message());
+      return;
+    } else {
+      this.getProduct = prod.code;
+      this.onListVedor();
+    }
+    console.debug(this.getProduct);
+  }
+
+  onListVedor(){
+    // this.filterVendorProd = this.getProduct;
+    this.vendorService.list("?_hash=1&product-category.code="+this.getProduct).subscribe((output: any) => {
+      if (output != false) {
+        this.listVendor = output;
+        console.debug(this.listVendor);
       }      
     });
   }

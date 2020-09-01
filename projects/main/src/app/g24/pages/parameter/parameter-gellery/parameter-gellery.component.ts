@@ -52,6 +52,7 @@ export class ParameterGelleryComponent implements OnInit {
   nikUser = null;
   params = null;
   myRole = null;
+  tempVendor = [];
  
 
   vendorCategory= "product-category.code=c05";
@@ -81,20 +82,20 @@ export class ParameterGelleryComponent implements OnInit {
     private prmJualService : PrmJualService,
   ) { }
 
-    defaultHarga() {
-      return {
-        "product-denom" : null,
-        "harga_buyback" : 0,
-        "harga_baku" : 0
-      };
-    }
+  defaultHarga() {
+    return {
+      "product-denom" : null,
+      "harga_buyback" : 0,
+      "harga_baku" : 0
+    };
+  }
 
-    inputModel : any = {items : []};
-    defaultInput(): any {
-      return{
-        keterangan : null, 'jenis_barang': null, vendor: null
-      }
+  inputModel : any = {items : []};
+  defaultInput(): any {
+    return{
+      keterangan : null, 'jenis_barang': null, selectVendor: null
     }
+  }
 
   searchModel : any = {vendors:"all", jenisperhiasan: "all", jenisbarang: "all"};
   
@@ -111,7 +112,6 @@ export class ParameterGelleryComponent implements OnInit {
 
    // modal add 
    mainAdd() {
-
     this.productCategoryService.get("?code=c05&_hash=1").subscribe(output => {
       if (output == false) {
         this.toastrService.error(this.productCategoryService.message())
@@ -119,6 +119,7 @@ export class ParameterGelleryComponent implements OnInit {
       }
       this.myproduct = output
     });
+    this.inputModel = this.defaultInput();
     this.modalAddDialog = true;
   }
 
@@ -149,7 +150,7 @@ export class ParameterGelleryComponent implements OnInit {
       "jenis_barang" : this.inputModel.jenis_barang,
       "product-category" : this.myproduct._hash,
       "product-category_encoded" : "base64",
-      "vendor" : this.inputModel.vendor,
+      "vendor" : this.inputModel.selectVendor,
       "vendor_encoded" : "base64",
       "create_by" : this.nikUser["_hash"],
       "create_by_encoded" : "base64",
@@ -186,7 +187,10 @@ export class ParameterGelleryComponent implements OnInit {
       }
     });
 
+    
     this.inputModel = data;
+    this.tempVendor = data.vendor;
+    this.inputModel.selectVendor = btoa(JSON.stringify(this.tempVendor)) ;
     this.harga = this.inputModel.harga
     this.modalEditDialog = true;
   }
@@ -201,7 +205,7 @@ export class ParameterGelleryComponent implements OnInit {
     let prmJual = {
       "_id" : this.inputModel._id,
       "jenis_barang" : this.inputModel.jenis_barang,
-      "vendor" : btoa(JSON.stringify(this.inputModel.vendor)),
+      "vendor" : this.inputModel.selectVendor,
       "vendor_encoded" : "base64",
       "update_by" : this.nikUser["_hash"],
       "update_by_encoded" : "base64",
@@ -226,6 +230,7 @@ export class ParameterGelleryComponent implements OnInit {
       this.modalEditDialog = false;
       this.toastrService.success('Edit Success')
     })
+    // console.log('vendorku',this.inputModel.selectVendor)
     console.debug('submitted data',  prmJual)
   }
 
@@ -245,11 +250,6 @@ export class ParameterGelleryComponent implements OnInit {
 
   // Submit delete data
   mainDeleteSubmit() {
-    if(this.validateInput()) return;
-
-    let now : Date = new Date;
-    let sNow = now.toISOString().split("T");
-    let time = sNow[1].split(".")[0];
 
     let prmJual = {
       "_id" : this.inputModel._id,
@@ -271,13 +271,13 @@ export class ParameterGelleryComponent implements OnInit {
     console.debug('submitted data',  prmJual)
   }
 
-  mainConfirm(data) {
-    console.debug("dataConfirm", data);
+    mainConfirm(data) {
+      console.debug("dataConfirm", data);
 
-    this.inputModel = data;
-    this.harga = this.inputModel.harga;
-    this.modalConfirmDialog = true;
-  }
+      this.inputModel = data;
+      this.harga = this.inputModel.harga;
+      this.modalConfirmDialog = true;
+    }
 
   mainApproveSubmit() {
     if(this.validateInput()) return;
@@ -356,7 +356,7 @@ export class ParameterGelleryComponent implements OnInit {
   harga : any[] =[];
 
   onProductDenom(){
-    this.ProductDenom.list(this.produtCategory+"&_sortby=name:1").subscribe((response :any) => {
+    this.ProductDenom.list(this.produtCategory+"&_sortby=value:1").subscribe((response :any) => {
       if (response != false) {
         this.denom = response;
 
@@ -380,8 +380,8 @@ export class ParameterGelleryComponent implements OnInit {
     let vendor = data.input_vendor_perhiasan;
     let barang = data.input_jenis_barang;
   
-    const urlVendor = "vendor.code="+vendor;
-    const urlBarang = "jenis-barang.code="+barang;
+    const urlVendor = "_hash=1&vendor.code="+vendor;
+    const urlBarang = "jenis_barang="+barang;
     
     this.params = this.category;
     
