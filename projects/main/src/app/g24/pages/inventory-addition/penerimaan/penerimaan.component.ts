@@ -2,10 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { DContent } from '../../../decorators/content/pages';
 import { EMenuID } from '../../../lib/enums/emenu-id.enum';
 import { ProductCategoryService } from '../../../services/product/product-category.service';
-import { VendorService } from '../../../services/vendor.service';
-import { ProductPurityService } from '../../../services/product/product-purity.service';
-import { ProductJenisService } from '../../../services/product/product-jenis.service';
-import { ProductGoldColorService } from '../../../services/product/product-gold-color.service';
 
 @Component({
   selector: 'app-penerimaan',

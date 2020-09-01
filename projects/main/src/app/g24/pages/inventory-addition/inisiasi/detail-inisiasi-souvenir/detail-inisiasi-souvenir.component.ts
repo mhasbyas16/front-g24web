@@ -535,7 +535,7 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
         this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + this.inisiasiService.message);
         return;
       } else {
-        this.toastr.success("Inisiasi Berhasil. Harap hubungi Kepala Departemen untuk melakukan Approval. No. PO : " + PO, "Info", {disableTimeOut : true, closeButton : true, tapToDismiss : false});
+        this.toastr.success("Inisiasi Berhasil. Harap hubungi Kepala Departemen untuk melakukan Approval. No. PO : " + output.no_po, "Info", {disableTimeOut : true, closeButton : true, tapToDismiss : false});
         this.input = this.defaultInput();
       }
     });
@@ -668,8 +668,8 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
       item = this.input.items[i];
       berat += parseFloat(item['product-denom'].value) * parseInt(item['pieces']);
     }
-    this.input['total_berat'] = berat;
-    return berat;
+    this.input['total_berat'] = Number(berat.toFixed(2));
+    return this.input['total_berat'];
   }
 
   getPiecesFromItems()
@@ -710,8 +710,8 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
         value += parseInt(this.input.items[i].gram_tukar);
     }
 
-    this.input['total_gram_tukar'] = value;
-    return value;
+    this.input['total_gram_tukar'] = Number(value.toFixed(2));
+    return this.input['total_gram_tukar'];
   }
   
   getOngkosFromItems()
@@ -719,7 +719,7 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
-      if(this.input.items[i]?.ongkos_pieces == null || this.input.items[i]?.ongkos_pieces == "null")
+      if(this.input.items[i]?.total_ongkos == null || this.input.items[i]?.total_ongkos == "null")
         continue;
         value += parseInt(this.input.items[i].ongkos_pieces);
     }
@@ -900,7 +900,7 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
     let pieces = item['pieces'];
     let denom = item['product-denom']?.value;
 
-    item['total_berat'] = parseFloat(pieces) * parseFloat(denom);
+    item['total_berat'] = Number((parseFloat(pieces) * parseFloat(denom)).toFixed(2));
   }
 
   countItemHargaPiece(item? : any)

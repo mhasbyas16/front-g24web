@@ -131,7 +131,7 @@
             <p>Silahkan isi data dibawah ini </p>
             <form clrform>
                 <div class="clr-row">
-                <div class="clr-col-6">
+                <!--div class="clr-col-6">
                     <div class="clr-form-control">
                         <label>Unit Tujuan</label>
                         <div class="clr-control-container">
@@ -142,18 +142,19 @@
                         </select>
                         </div>
                     </div>
+                </div-->
+                <div class="clr-col-6">
+                    <div class="clr-form-control">
+                        <label>Kode Unit Tujuan</label>
+                        <input [(ngModel)]="searchCode.code" name="code" clrInput required (keydown.enter)="oncekUnitCode()">
+                        <clr-control-helper>Harap tekan enter. Untuk cek nama unit</clr-control-helper>
+                    </div>
                 </div>
                 <div class="clr-col-6">
                     <div class="clr-form-control">
-                        <label>Vendor</label>
-                        <div class="clr-control-container">
-                            <select [(ngModel)]="searchModel.vndr" #vndr clrSelect name="vndr" required>
-                            <option value=""></option>
-                            <ng-container *ngFor="let vdr of vendor">
-                                <option [ngValue]="vdr">{{vdr.name}}</option>
-                            </ng-container>
-                        </select>
-                        </div>
+                        <label>Nama Unit</label>
+                        <label>{{addinput?.unit_tujuan?.nama}}</label>
+                        <input type="text" clrInput [(ngModel)]="addinput.unit_tujuan" #unit_tujuan name="unit_tujuan" value="{{addinput?.unit_tujuan?.nama}}" hidden>
                     </div>
                 </div>
             </div>
@@ -167,15 +168,31 @@
                                 <option [ngValue]="prd">{{prd.name}}</option>
                             </ng-container>
                         </select>
+                        <clr-control-helper>Wajib dipilih</clr-control-helper>
                     </div>
-				</div>
+                </div>
+                <div class="clr-col-6">
+                    <div class="clr-form-control">
+                        <label>Vendor</label>
+                        <div class="clr-control-container">
+                            <select [(ngModel)]="searchModel.vndr" #vndr clrSelect name="vndr" (change)="vendorReset()" required>
+                            <option value=""></option>
+                            <ng-container *ngFor="let vdr of vendor">
+                                <option [ngValue]="vdr">{{vdr.name}}</option>
+                            </ng-container>
+                        </select>
+                        <clr-control-helper>Wajib dipilih</clr-control-helper>
+                        </div>
+                    </div>
+                </div>
 			</div>
 			<div class="clr-row">
 				<div class="clr-col-6">
 					<div class="clr-form-control">
 						<clr-textarea-container>
 							<label>Keterangan</label>
-							<textarea clrTextarea [(ngModel)]="addinput.keterangan" name="keterangan" required></textarea>
+                            <textarea clrTextarea [(ngModel)]="addinput.keterangan" name="keterangan" required></textarea>
+                            <clr-control-error>Keterangan harap di isi</clr-control-error>
 					   </clr-textarea-container>
 					</div>
 				</div>
@@ -534,12 +551,12 @@
             </div>
         </ng-template>
 
-        <!--MULIA-->
-        <ng-template #Mulia>
+        <!--EMAS BATANGAN-->
+        <ng-template #Emas_Batangan>
     
             <div class="card">
                 <div class="card-header">
-                    Attribute Mulia
+                    Attribute Emas Batangan
                 </div>
                 <div class="card-body">
                     <div class="clr-row">

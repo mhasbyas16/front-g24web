@@ -177,31 +177,10 @@ time : String;
   }
 
   onProove(){
-	  
-//	this.add = {};
-//    let params ="?";
-//    this.modalshow=true;
-//    this.productjenis.list(params).subscribe(output=>{
-//      if(output!=false){
-//        this.productku = output;
-//      }
-//    })
-//
-//    this.mutasiservice.list(params).subscribe(output=>{
-//      if(output!=false){
-//        this.idmutasi = output;
-//        this.DataId = this.idmutasi.slice();
-//        console.log(this.idmutasi);
-//        for(let p = 0; p < this.DataId.length; p++){
-//          const idData = this.DataId[p];
-//          if(idData.flag !== "submit"){
-//            this.DataId.splice(p,1);
-//            console.log(this.DataId);
-//          }
-//        }
-//      }
-//    })
-	  
+	  if(Object.keys(this.data_view).length==0){
+      this.toastr.warning("Data belum dipilih","Peringatan");
+      return;
+    }	  
     this.listdt2 = [];
     this.items = [];
 	
@@ -217,6 +196,10 @@ time : String;
   }
 
   onView(){
+    if(Object.keys(this.data_view).length==0){
+      this.toastr.warning("Data belum dipilih","Peringatan");
+      return;
+    }
       this.listflag = [];
       this.listflag.push(this.data_view);
     
@@ -241,6 +224,10 @@ time : String;
 
       case 'vendor':
         name = "Vendor";
+        break;
+
+      case 'branch':
+        name = "Branch";
         break;
       
       case 'product-series':
@@ -294,10 +281,23 @@ time : String;
       case 'product-cut':
         name = "Produk Cut";
         break;
+
+
+      case 'sku':
+        name = "SKU";
+        break;
 			
 	  case 'hppberlian':
 		name = "Hpp Berlian";
 		break;
+
+    case 'hpp_inisiasi':
+    name = "Hpp Inisiasi";
+    break;
+
+    case 'hpp':
+    name = "Hpp";
+    break;
 			
 	  case 'ongkospembuatan':
 		name = "Ongkos Pembuatan";
@@ -314,6 +314,30 @@ time : String;
 	  case 'marginbatu':
 		name = "Margin Batu";
 		break;
+
+    case 'weight':
+    name = "Weight";
+    break;
+
+    case 'unit':
+    name = "Unit";
+    break;
+
+    case 'tipe_stock':
+    name = "Tipe Stock";
+    break;
+
+    case 'ongkos_pieces':
+    name = "Ongkos Pieces";
+    break;
+
+    case 'count':
+    name = "Count";
+    break;
+
+    case 'marginbatu':
+    name = "Margin Batu";
+    break;
 
       default:
         name += " - " + key;
@@ -341,17 +365,29 @@ time : String;
         return false;
       break;
 
-      case "unit":
+      case "booking_id":
         return false;
-	  break;
-			
-	 case "telolet":
-		return false;
-	  break;
+       break;
 
+      case "booking_expiry_time":
+        return false;
+       break;
+
+       case "no_kontrak":
+         return false;
+        break;
+
+      case "unit":
+          return false;
+		     break;
+			
+	    case "telolet":
+		      return false;
+	       break;
+			
       case "status":
         return false;
-      break;
+        break;
 
       default:
         return true;

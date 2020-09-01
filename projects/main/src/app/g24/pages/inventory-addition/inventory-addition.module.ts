@@ -16,6 +16,9 @@ import { DetailPenerimaanPerhiasanComponent } from './penerimaan/detail-penerima
 import { DetailItemPenerimaanPerhiasanComponent } from './penerimaan/detail-penerimaan-perhiasan/detail-item-penerimaan-perhiasan/detail-item-penerimaan-perhiasan.component';
 import { DetailPenerimaanSouvenirComponent } from './penerimaan/detail-penerimaan-souvenir/detail-penerimaan-souvenir.component';
 import { DetailItemPenerimaanSouvenirComponent } from './penerimaan/detail-penerimaan-souvenir/detail-item-penerimaan-souvenir/detail-item-penerimaan-souvenir.component';
+import { DetailInisiasiGiftComponent } from './inisiasi/detail-inisiasi-gift/detail-inisiasi-gift.component';
+import { DetailPenerimaanGiftComponent } from './penerimaan/detail-penerimaan-gift/detail-penerimaan-gift.component';
+import { DetailItemPenerimaanGiftComponent } from './penerimaan/detail-penerimaan-gift/detail-item-penerimaan-gift/detail-item-penerimaan-gift.component';
 
 @NgModule({
   declarations: 
@@ -31,7 +34,10 @@ import { DetailItemPenerimaanSouvenirComponent } from './penerimaan/detail-pener
     DetailPenerimaanPerhiasanComponent,
     DetailItemPenerimaanPerhiasanComponent,
     DetailPenerimaanSouvenirComponent,
-    DetailItemPenerimaanSouvenirComponent],
+    DetailItemPenerimaanSouvenirComponent,
+    DetailInisiasiGiftComponent,
+    DetailPenerimaanGiftComponent,
+    DetailItemPenerimaanGiftComponent],
   imports: [
     CommonModule,
     InventoryAdditionRoutingModule,

@@ -284,7 +284,7 @@
                 <div class="clr-form-control">
                     <label class="clr-control-label" style="padding-left: 10px">Berat</label>
                     <div class="clr-control-container">
-                        <input [(ngModel)]="Selected['berat']" min="0" step="0.01" (ngModelChange)="hitungPajak(selected)" class="clr-input" type="number" name="berat" placeholder="5.51" />
+                        <input [(ngModel)]="Selected['berat']" min="0" step="0.01" (ngModelChange)="onBeratChanged(selected)" class="clr-input" type="number" name="berat" placeholder="5.51" />
                         <span class="clr-subtext">Harap gunakan titik (.)</span>
                     </div>
                 </div>

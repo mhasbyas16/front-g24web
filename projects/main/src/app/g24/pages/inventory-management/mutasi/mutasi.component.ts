@@ -42,7 +42,7 @@ static key = EMenuID.MUTASI;
 @ViewChild('kategori') kategori : ElementRef;
 
 @ViewChild('Perhiasan', {static:false}) perhiasanInput : TemplateRef<any>;
-  @ViewChild('Mulia', {static:false}) muliaInput : TemplateRef<any>;
+  @ViewChild('Emas_Batangan', {static:false}) emasbatanganInput : TemplateRef<any>;
   @ViewChild('Berlian', {static: false}) berlianInput : TemplateRef<any>;
   @ViewChild('Adiratna', {static: false}) adiratnaInput : TemplateRef<any>;
   @ViewChild('Souvenir', {static: false}) souvenirInput : TemplateRef<any>;
@@ -54,7 +54,11 @@ static key = EMenuID.MUTASI;
   selected_detail : any[] = [];
   data_view : any = {};
 
+  //SEARCHCODE
+  searchCode : any = {};
 
+  unittuju : any[] = [];
+  unitnya : any = {};
 //DATA
 units : any[] = [];          
 unit_tj : any[] = [];
@@ -73,6 +77,9 @@ details : any[] = [];
 Object = Object;
 itemsview : any[] = [];
 ItemsDataProduct : any[] = [];
+
+jml_hpp : number = 0;
+ttl_hpp : number = 0;
 
 //ASSET
 flag : any[]= [];             
@@ -105,6 +112,8 @@ itemsdata : any[] = [];
 itempick  : number = 0;
 datareduce : any[] = [];
 vendor : any[] = [];
+
+isVendor : boolean = false;
 
 //CLARITY
 modalshow = false;            
@@ -241,11 +250,11 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
       }
     })
 
-    this.vendorservice.list(params).subscribe(output=>{
-     if(output!=false){
-       this.vendor = output;
-     }
-   })
+  //   this.vendorservice.list(params).subscribe(output=>{
+  //    if(output!=false){
+  //      this.vendor = output;
+  //    }
+  //  })
 
   }
 
@@ -255,10 +264,51 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     this.listdt = [];
   }
 
+  oncekUnitCode(){
+    this.unitnya = {};
+    let unit = this.searchCode["code"];
+
+    if(unit == this.sessionservice.getUser().unit.code){
+      this.toastr.info("Anda saat ini berada pada unit tsb","Informasi");
+      // this.unitnya = {};
+      return;
+    }
+
+    if(!unit){
+      this.toastr.warning("Harap masukan kode unit","Peringatan");
+      return;
+    }
+
+    let params ="?code="+unit;
+    this.UnitService.list(params).subscribe(data=>{
+      if(data==false){
+        if(this.UnitService.message()!=""){
+          // this.unitnya = {};
+          return;
+        }
+      } else if(data.length == 0)
+      {
+        this.toastr.warning("Unit tidak ditemukan","Peringatan");
+        return;
+      }
+
+      this.addinput['unit_tujuan'] = data[0];
+      // console.log(this.addinput["unit_tujuan"]);
+    })
+  }
+
+  vendorReset(){
+    this.itemsinmutasi = [];
+    this.itemsdata = [];
+    this.products = [];
+  }
+
   onChange(){
      
   this.itemsinmutasi = [];
+  this.vendor = [];
   this.products = [];
+  this.isVendor = true;
      if(this.searchModel['product-category']==null)return;
 
     switch(this.searchModel['product-category'].code)
@@ -284,7 +334,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
         break;
 
       case "c05":
-        this.formInput = this.muliaInput;
+        this.formInput = this.emasbatanganInput;
         break;
       
       case "c06":
@@ -365,6 +415,18 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
       this.series = output;
     })
 
+    //VENDOR
+     this.vendorservice.list(params+"product-category.code="+this.searchModel["product-category"].code).subscribe(data=>{
+       if(data==false){
+         if(this.vendorservice.message()!=""){
+           return;
+         }
+       }
+       this.vendor = data;
+     })
+
+
+
   }
 
   Add(){
@@ -379,7 +441,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
       if(this.itemsdata[index]['berat'] == undefined)
       {
         value = this.itemsdata[index]['product-denom'].value;
-        console.log(value);
+        console.log(value, "denom");
       }else {
         value = parseFloat(this.itemsdata[index]['berat']);
         console.log(value, 'berat');
@@ -392,6 +454,12 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     console.log(this.itemsdata.length);
     let jml = this.itemsdata.length;
 
+    //JUMLAH HPP
+    for(let p = 0; p < this.itemsdata.length; p++){
+      this.jml_hpp = this.jml_hpp + this.itemsdata[p].hpp;
+      console.log(this.jml_hpp,"Jumlah HPP");
+    }
+
 
     let data = {
       created_by : this.sessionservice.getUser().username,
@@ -400,9 +468,11 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
       unit_asal : this.sessionservice.getUser().unit,
       unit_tujuan : tujuan,
       jumlah_item : jml.toString(),
+      total_hpp : this.jml_hpp.toString(),
       total_berat : this.berat.toString(),
-	  keterangan  : ktr,
+	    keterangan  : ktr,
       flag : "submit",
+      "product-category" : this.searchModel["product-category"],
       approve_by : null,
       approve_date : null,
       update_by : null,
@@ -423,7 +493,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     let cfg = DataTypeUtil.Encode(data);
     console.log(cfg);
 
-    if(this.itemsdata.length < 0 || tujuan == null || tujuan == "" || ktr == "" || ktr == null){
+    if(this.itemsdata.length <= 0 || tujuan == null || tujuan == "" || ktr == "" || ktr == null){
       this.toastr.warning("Field Unit Tujuan belum dipilih atau data barang yang dimutasi belum di tambah. Dan cek kembali field keterangan","Peringatan");
       // this.itemsdata = [];
       this.berat = 0;
@@ -434,6 +504,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
         this.modalshow = false;
         this.products = [];
         this.listdt = [];
+        this.berat = 0;
         this.addinput = {};
         this.searchModel = {};
         this.itemsinmutasi = [];
@@ -444,11 +515,15 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
 
 
   searchProduct(){
+    if(!this.searchModel["product-category"]||!this.searchModel.vndr){
+      this.toastr.warning("Produk kategori atau vendor belum dipilih","Peringatan");
+      return;
+    }
     this.products = [];
     this.modal_pick = false;
     let params = "?";
     for (let key in this.searchModel) {
-      if(this.searchModel[key] == ""||this.searchModel[key] == null||this.searchModel[key] == "null")continue;
+      if(this.searchModel[key] == null||this.searchModel[key] == "null")continue;
       switch(key){
         case "vndr":
           params += "vendor.code="+this.searchModel[key].code+"&";
@@ -508,7 +583,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     this.productservice.list(params).subscribe(output => {
       if(output != false){
         this.products = output;
-        this.searchModel = {};
+        // this.searchModel = {};
         this.formInput = null;
       }else{
         // this.modal = true;
@@ -576,6 +651,10 @@ refresh(){
 }
 
 onView(){
+  if(Object.keys(this.data_view).length==0){
+    this.toastr.warning("Data belum dipilih","Peringatan");
+    return;
+  }
   this.details = [];
     this.details.push(this.data_view);
     for(let i = 0; i < this.details.length; i++){

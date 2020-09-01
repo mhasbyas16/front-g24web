@@ -311,7 +311,7 @@ export class DetailPenerimaanSouvenirComponent extends BasePersistentFields impl
     for(let i = 0; i < this.products.length; i++)
     {
       let perhiasan = this.products[i];
-      if(perhiasan.code == "c00")
+      if(perhiasan.code == "c02")
       {
         this.input['product-category'] = perhiasan;
         break;

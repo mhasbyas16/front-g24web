@@ -53,7 +53,7 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
   async LoadJenis()
   {
     this.jeniss = [];
-    let jeniss = await this.jenisService.list("?product-category.code=c00").toPromise();
+    let jeniss = await this.jenisService.list("?product-category.code=c02").toPromise();
     if(jeniss)
     {
       if(jeniss.length <= 0)
@@ -108,7 +108,7 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
       return;
     }
 
-    this.inisiasiService.list("?_or=product-category.code=c00&no_po="+id).subscribe(output => 
+    this.inisiasiService.list("?_or=product-category.code=c02&no_po="+id).subscribe(output => 
     {
       if(output != false)
       {

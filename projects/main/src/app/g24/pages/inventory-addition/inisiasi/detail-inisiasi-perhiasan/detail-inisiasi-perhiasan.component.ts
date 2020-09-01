@@ -22,6 +22,7 @@ import { ProductDiamondColorService } from '../../../../services/product/product
 import { ProductDenomService } from '../../../../services/product/product-denom.service';
 import { ProductClarityService } from '../../../../services/product/product-clarity.service';
 import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
+import { OrderStatus } from '../../../../lib/enum/order-status';
 
 @Component({
   selector: 'detail-inisiasi-perhiasan',
@@ -523,7 +524,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
       create_time : time,
       create_by : this.user.username,
       unit : this.user.unit.code,
-      order_status : "submit",
+      order_status : OrderStatus.SUBMIT.code,
       status_bayar : '1',
       __version : new Date().getMilliseconds(),
       __version_d : "0",
@@ -880,6 +881,14 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     this.hitungOngkos(item);
     this.hitungGramTukar(item);
   }
+
+  onBeratChanged(item)
+  {
+    item = item ? item : this.selected;
+
+    this.hitungPajak(item);
+    this.hitungGramTukar(item);
+  }
   
   onGramTukarChanged(item)
   {
@@ -914,6 +923,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     let baku_tukar = Number(item.baku_tukar);
 
     item.gram_tukar = baku_tukar * berat / 1000;
+    item.gram_tukar = Number(item.gram_tukar.toFixed(2));
     console.log(item.gram_tukar);
   }
 

@@ -168,27 +168,11 @@ static key = EMenuID.TERIMA_MUTASI;
   }
 
   onAccept(){
+  if(Object.keys(this.data_view).length==0){
+    this.toastr.warning("Data belum dipilih","Peringatan");
+    return;
+  }
 	this.add = {};
-//    this.modalaccept = true;
-//    let params = "?";
-//    this.mutasiservice.list(params).subscribe(output=>{
-//      if(output==false){
-//        if(this.mutasiservice.message()!=""){
-//          return;
-//        }
-//      }
-//      this.data = output;
-//		this.IdData = this.data.slice();
-//        console.log(this.data);
-//         for(let p = 0; p < this.data.length; p++){
-//           const idd = this.data[p];
-//           if(idd.flag!=="submit"){
-//			  this.IdData.splice(p,1);
-//             console.log(this.IdData);
-//           }
-//         }
-//    })
-	  
 	this.listflag = [];
     this.listflag.push(this.data_view);
     for(let i = 0; i < this.listflag.length; i++){
@@ -248,6 +232,10 @@ static key = EMenuID.TERIMA_MUTASI;
   }
 
   onView(){
+    if(Object.keys(this.data_view).length==0){
+      this.toastr.warning("Data belum dipilih","Peringatan");
+      return;
+    }
     this.listflag = [];
     this.listflag.push(this.data_view);
     for(let i = 0; i < this.listflag.length; i++){
@@ -270,6 +258,10 @@ static key = EMenuID.TERIMA_MUTASI;
 
       case 'vendor':
         name = "Vendor";
+        break;
+
+      case 'branch':
+        name = "Branch";
         break;
       
       case 'product-series':
@@ -323,10 +315,23 @@ static key = EMenuID.TERIMA_MUTASI;
       case 'product-cut':
         name = "Produk Cut";
         break;
+
+
+      case 'sku':
+        name = "SKU";
+        break;
 			
 	  case 'hppberlian':
 		name = "Hpp Berlian";
 		break;
+
+    case 'hpp_inisiasi':
+    name = "Hpp Inisiasi";
+    break;
+
+    case 'hpp':
+    name = "Hpp";
+    break;
 			
 	  case 'ongkospembuatan':
 		name = "Ongkos Pembuatan";
@@ -343,6 +348,30 @@ static key = EMenuID.TERIMA_MUTASI;
 	  case 'marginbatu':
 		name = "Margin Batu";
 		break;
+
+    case 'weight':
+    name = "Weight";
+    break;
+
+    case 'unit':
+    name = "Unit";
+    break;
+
+    case 'tipe_stock':
+    name = "Tipe Stock";
+    break;
+
+    case 'ongkos_pieces':
+    name = "Ongkos Pieces";
+    break;
+
+    case 'count':
+    name = "Count";
+    break;
+
+    case 'marginbatu':
+    name = "Margin Batu";
+    break;
 
       default:
         name += " - " + key;
@@ -369,17 +398,29 @@ static key = EMenuID.TERIMA_MUTASI;
         return false;
       break;
 
-      case "unit":
+      case "booking_id":
         return false;
-	  break;
-			
-	  case "telolet":
-		return false;
-	  break;
+       break;
 
+      case "booking_expiry_time":
+        return false;
+       break;
+
+       case "no_kontrak":
+         return false;
+        break;
+
+      case "unit":
+          return false;
+		     break;
+			
+	    case "telolet":
+		      return false;
+	       break;
+			
       case "status":
         return false;
-      break;
+        break;
 
       default:
         return true;
