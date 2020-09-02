@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ParameterBerlianComponent } from './parameter-berlian.component';
+import { SetupHargaComponent } from './setup-harga.component';
 
-describe('ParameterBerlianComponent', () => {
-  let component: ParameterBerlianComponent;
-  let fixture: ComponentFixture<ParameterBerlianComponent>;
+describe('SetupHargaComponent', () => {
+  let component: SetupHargaComponent;
+  let fixture: ComponentFixture<SetupHargaComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ParameterBerlianComponent ]
+      declarations: [ SetupHargaComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ParameterBerlianComponent);
+    fixture = TestBed.createComponent(SetupHargaComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
