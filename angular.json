@@ -33,12 +33,15 @@
               "src/assets/themes/supplemental-ui-raga.scss",
               "src/styles.scss",
               "src/assets/platform/base.scss",
-              "node_modules/ngx-toastr/toastr.css"
+              "node_modules/ngx-toastr/toastr.css",
+              "node_modules/select2/dist/css/select2.min.css"
             ],
             "scripts": [
               "node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js",
               "node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js",
-              "node_modules/@clr/icons/clr-icons.min.js"
+              "node_modules/@clr/icons/clr-icons.min.js",
+              "node_modules/jquery/dist/jquery.js",
+              "node_modules/select2/dist/js/select2.min.js"
             ]
           },
           "configurations": {

@@ -123,8 +123,7 @@ export class ParameterGelleryComponent implements OnInit {
     this.modalAddDialog = true;
   }
 
-  validateInput()
-  {
+  validateInput(){
     for(let key in this.inputModel)
     {
       let value = this.inputModel[key];
@@ -135,7 +134,6 @@ export class ParameterGelleryComponent implements OnInit {
         return true
       }
     }
-
     return false
   }
 
