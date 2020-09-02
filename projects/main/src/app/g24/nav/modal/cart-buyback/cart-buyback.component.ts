@@ -1,4 +1,5 @@
 import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
+import { PERHIASAN, LM, GS, BERLIAN, DINAR }  from "projects/main/src/app/g24/sample/cart-buyback"
 
 @Component({
   selector: 'app-cart-buyback',
@@ -6,9 +7,25 @@ import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
   styleUrls: ['./cart-buyback.component.scss']
 })
 export class CartBuybackComponent implements OnInit {
+
+  @Output() clearParentCart:any = new EventEmitter();
+  @Output() clearPerhiasan:any = new EventEmitter();
+  @Output() data:any = new EventEmitter();
+
+  @Input() totalCart : any;
+  @Input() hargaTotalPerhiasan : any;
+  
+
   cartModal : any
   
-  @Input() total : any;
+  cartPerhiasan = PERHIASAN;
+  cartLogam = LM;
+  cartSouvenir = GS;
+  cartBerlian = BERLIAN;
+  cartDinar = DINAR;
+
+  hargaPerhiasan: number;
+  perhiasan: number;
 
   constructor() { }
 
@@ -17,5 +34,32 @@ export class CartBuybackComponent implements OnInit {
   }
   modalView(isi: any){
     this.cartModal = isi;
+  }
+  
+  removeCart(){
+    this.cartPerhiasan.splice(0);
+    this.hargaTotalPerhiasan = 0
+
+    this.clearPerhiasan.emit({length:0,harga:0});
+
+
+  }
+
+  removeItemPerhiasan(key: any, harga:any ){
+    //pengurangan jumlah item
+    this.cartPerhiasan.splice(key,1);
+
+    //pengurangan jumlah cart
+    this.totalCart-=1;
+
+    
+    this.hargaTotalPerhiasan = this.hargaTotalPerhiasan - harga
+    this.clearPerhiasan.emit({length:this.cartPerhiasan.length, harga:this.hargaTotalPerhiasan });
+
+    if (this.totalCart == 0) {
+      console.debug("totallll 0");
+      this.clearParentCart.emit(0);
+    }
+
   }
 }

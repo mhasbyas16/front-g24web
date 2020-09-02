@@ -25,15 +25,15 @@ export class BuybackBycodeComponent implements OnInit {
   //id response
   detailTransaction : any;
   totalDetail : any;
-  totalPerhiasan : any;
+  
 
-  //product
+  //perhiasan
   isiPerhiasan : any[];
   totalIsiPerhiasan : any;
   hargaBB = 0;
 
   //global
-  total = 3
+  total : any
  
 
   //tanggal
@@ -41,6 +41,10 @@ export class BuybackBycodeComponent implements OnInit {
 
   loadingDg: boolean = false;
   placeholderDatagrid = "Silahkan Cari Transaksi Berdasarkan Parameter";
+  perhiasanParent: any;
+  hargaTotalPerhiasan: any;
+  totalIsiCartPerhiasanBBC: any ;
+  totalCart: any = 0
 
   constructor(
     private toastrService:ToastrService,
@@ -95,10 +99,28 @@ export class BuybackBycodeComponent implements OnInit {
       this.totalIsiPerhiasan =  this.isiPerhiasan.length
       this.loadingDg = false;
     })
-  
+    
+    
   }
 
-  
+  clearPerhiasan(data:any){
+    this.totalIsiCartPerhiasanBBC  = data.length;
+    this.hargaTotalPerhiasan = data.harga;
+  }
 
+  totalIsiCartPerhiasan(val){
+    this.totalIsiCartPerhiasanBBC = val
+  }
+  
+  totalJumlahCart(){
+    this.totalCart = 0
+    this.totalCart = this.totalIsiCartPerhiasanBBC
+    return this.totalCart
+  }
+
+  HTotalPerhiasan(harga: any){
+    this.hargaTotalPerhiasan = harga;
+  }
+  
 }
 

@@ -1,7 +1,7 @@
 <div class="clr-row">
     <div class="card" style="margin-top: 0em;">
         <div class="card-header">
-            Terima Buyback
+            Terima Buyback {{hargaTotalPerhiasan}}
         </div>
         <div class="card-block">
             <div class="card-text">
@@ -29,8 +29,9 @@
             Detail Transaksi
             <div class="cart-style">
                 <app-cart-buyback
-                    [total]="total"
-                    
+                    [totalCart]="totalJumlahCart()"
+                    [hargaTotalPerhiasan]="hargaTotalPerhiasan"
+                    (clearPerhiasan)="clearPerhiasan($event)"
                 >
                 </app-cart-buyback>
             </div>
@@ -77,13 +78,14 @@
                                     </tr>
                                     <tr>
                                         <td class="left">No. Hp</td>
-                                        <td>: {{detailTransaction.client.noHP}}{{totalPerhiasan}}</td>
+                                        <td>: {{detailTransaction.client.noHP}}</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </ng-container>
+
                 <ng-template #default>
                     <div class="clr-row clr-justify-content-center">
                         Silahkan Scan Barcode atau Input Id Transaksi
@@ -92,9 +94,10 @@
             </div>
             <!-- Perhiasan -->
             <app-perhiasan-bycode
-                [total]="total"
                 [totalIsiPerhiasan] = "totalIsiPerhiasan"
-                [isiPerhiasan] = "isiPerhiasan"
+                [isiPerhiasan] = "isiPerhiasan" 
+                (totalIsiCartPerhiasan) = "totalIsiCartPerhiasan($event)"
+                (totalHargaPerhiasan)="HTotalPerhiasan($event)"
             >
             </app-perhiasan-bycode>
            
