@@ -118,10 +118,10 @@ export class PengaturanPromoComponent implements OnInit {
       }
       for (let isi of response) {
         unitarry.push({id:isi._hash,text:isi.nama});
-        data.push(JSON.parse(atob(isi._hash)));
+        // data.push(JSON.parse(atob(isi._hash)));
       }
       this.unit = unitarry;
-      this._hashUnit= btoa(JSON.stringify(data));
+      // this._hashUnit= btoa(JSON.stringify(data));
     });
   }
 
@@ -300,16 +300,18 @@ export class PengaturanPromoComponent implements OnInit {
       delete section1.pickUnits;
     }else{
       delete section1.pickUnits
-      section1.units_encoded = "base64array";
+      // section1.units_encoded = "base64array";
     }
     // end section1
 
     // section 2
-    let product = {};
+    let product = [];
 
     if (this.perhiasan == true) {
       let section2Perhiasan = this.section2_perhiasan.getRawValue();
       // perhiasan
+      section2Perhiasan.name = 'Perhiasan';
+      section2Perhiasan.code = 'c00';
       if (Object.keys(section2Perhiasan).length != 0) {
         let isiVendor = [];
         let isiPurity = [];
@@ -333,14 +335,14 @@ export class PengaturanPromoComponent implements OnInit {
         section2Perhiasan.typePerhiasan= isiTypePerhiasan;
       }
 
-      product['perhiasan'] = section2Perhiasan;
+      product.push(section2Perhiasan);
     }
     
     // end section 2   
         
     let data = Object.assign(section1,{
       'product' : btoa(JSON.stringify(product)),
-      'product_encoded':'base64',
+      'product_encoded':'base64array',
       'flag':'0'});
     console.debug (data,"isi data");
     // return;

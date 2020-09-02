@@ -19,9 +19,13 @@ import { PromotionSettingService } from '../../../services/promotion/promotion-s
 export class DaftarPromoComponent implements OnInit {
   placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
   loadingDg: boolean = false;
+  actionModal: boolean = false;
+
+  isiPromosi : FormGroup = null;
   search: FormGroup = null;
 
   promotion =[];
+  data:any;
   
   constructor(
     private promotionSettingService : PromotionSettingService,
@@ -49,7 +53,7 @@ export class DaftarPromoComponent implements OnInit {
     this.loadingDg = true;
 
     let data = this.search.getRawValue(); 
-    let params = "_sortby=flag:1";
+    let params = "_hash=1&_sortby=flag:1";
 
     // Session
     // const getUnit = this.sessionService.getUnit();
@@ -134,6 +138,49 @@ export class DaftarPromoComponent implements OnInit {
       this.promotion = response;
       this.toastrService.success("Load "+this.promotion.length+" Data", "Promotion");
     })
+  }
+
+  formPromosi(){
+    this.isiPromosi = new FormGroup({
+      name : new FormControl (""),
+      maker : new FormControl (""),
+      makerDate : new FormControl (""),
+      makerTime : new FormControl (""),
+      quota : new FormControl (""),
+      startDate : new FormControl (""),
+      endDate : new FormControl (""), 
+      typeQuota : new FormControl (""),
+      product : new FormControl (""),
+      'product-category' : new FormControl (""),
+      units : new FormControl (""),
+      pickUnits : new FormControl (""),
+      approval : new FormControl (""),
+      approvalDate: new FormControl(""),
+      approvalTime: new FormControl(""),
+    });
+  }
+
+  // Modal
+  actionView(hash){
+    this.data = JSON.parse(atob(hash));
+    console.debug(this.data,"action")
+    // this.isiPromosi.patchValue({
+    //   name : this.data.name,
+    //   // maker : this.data.maker,
+    //   makerDate : this.data.makerDate,
+    //   makerTime : this.data.makerTime,
+    //   quota : this.data.quota,
+    //   startDate :this.data.startDate,
+    //   endDate : this.data.endDate, 
+    //   typeQuota : this.data.typeQuota,
+    //   // product : this.data.product,
+    //   // 'product-category' : ,
+    //   // units : ,
+    //   approval : "",
+    //   approvalDate: "",
+    //   approvalTime: ""
+    // });
+    this.actionModal = true;
   }
 
   static key = EMenuID.DAFTAR_PROMO;

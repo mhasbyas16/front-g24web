@@ -7,9 +7,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PengaturanPromoComponent } from './pengaturan-promo/pengaturan-promo.component';
 import { NgSelect2Module } from 'ng-select2';
 import { DaftarPromoComponent } from './daftar-promo/daftar-promo.component';
+import { WizardPerhiasanComponent } from './pengaturan-promo/wizard-perhiasan/wizard-perhiasan.component';
 
 @NgModule({
-  declarations: [PengaturanPromoComponent, DaftarPromoComponent],
+  declarations: [PengaturanPromoComponent, DaftarPromoComponent, WizardPerhiasanComponent],
   imports: [
     CommonModule,
     PromoRoutingModule,
