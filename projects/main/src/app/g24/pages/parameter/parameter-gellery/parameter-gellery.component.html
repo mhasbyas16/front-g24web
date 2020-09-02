@@ -35,7 +35,7 @@
                                             <select [(ngModel)]="searchModel.jenisbarang" clrSelect name="input_jenis_barang" ngModel>
                                                 <option value="all">All</option>
                                                 <ng-container *ngFor="let B of barang">
-                                                    <option value="{{B.code}}">{{B.name}}</option>
+                                                    <option value="{{B.name}}">{{B.name}}</option>
                                                 </ng-container>
                                             </select>
                                         </clr-select-container>
@@ -70,7 +70,7 @@
                                             <clr-dg-cell><span class="label label-success">Approved</span></clr-dg-cell>
                                         </ng-container>
                                         <ng-container *ngIf="data.flag == 'submit'">
-                                            <clr-dg-cell><span class="label label-warning">Waiting Approved</span></clr-dg-cell>
+                                            <clr-dg-cell><span class="label label-warning">Waiting</span></clr-dg-cell>
                                         </ng-container>
                                         <ng-container *ngIf="data.flag == 'declined'">
                                             <clr-dg-cell><span class="label label-danger">Declined</span></clr-dg-cell>
@@ -82,7 +82,7 @@
                                       {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
                                       of {{pagination.totalItems}} Produk
                                     </clr-dg-pagination>
-                                  </clr-dg-footer>
+                                </clr-dg-footer>
                             </clr-datagrid>
                         </clr-tab-content>
                     </clr-tab>
@@ -136,7 +136,7 @@
                             <div class="clr-col-3">
                                 <clr-select-container class="clr-form-control">
                                     <label class="clr-control-label">Vendor</label>
-                                    <select [(ngModel)]="inputModel.vendor" name="vendor" clrSelect ngModel required>
+                                    <select [(ngModel)]="inputModel.selectVendor" name="vendor" clrSelect ngModel required>
                                         <ng-container *ngFor="let vendor of vendors">
                                             <option value="{{vendor._hash}}">{{vendor.name}}</option>
                                         </ng-container>
@@ -160,7 +160,6 @@
                         <tr>
                             <th>Jenis Mulia (Gram)</th>
                             <th style="text-align: left;">Harga Buyback</th>
-                            <th style="text-align: left;">Harga Baku</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -168,7 +167,6 @@
                             <tr>
                                 <td>{{hargaItem['product-denom'].name}}</td>
                                 <td><clr-input-container><input clrInput name="harga_buyback" type="number" [(ngModel)]="hargaItem.harga_buyback"/></clr-input-container></td>
-                                <td><clr-input-container><input clrInput name="harga_baku" type="number" [(ngModel)]="hargaItem.harga_baku"/></clr-input-container></td>
                             </tr>
                         </ng-container>
                     </tbody>
@@ -195,7 +193,7 @@
     <form (ngSubmit)="mainEditSubmit();">
         <clr-modal [clrModalSize]="'md'" [clrModalOpen]="modalEditDialog" [clrModalClosable]="false"
             [clrModalStaticBackdrop]="true">
-            <h3 class="modal-title">Add {{title}}</h3>
+            <h3 class="modal-title">Edit {{title}}</h3>
             <div class="modal-body ">
                 <h6>Detail</h6>
                 <div class="card">
@@ -214,10 +212,8 @@
                             <div class="clr-col-3">
                                 <clr-select-container class="clr-form-control">
                                     <label class="clr-control-label">Vendor</label>
-                                    <select [(ngModel)]="inputModel.vendor" name="vendor" clrSelect>
-                                        <ng-container *ngFor="let vendor of vendors">
-                                            <option value="{{vendor}}">{{vendor.name}}</option>
-                                        </ng-container>
+                                    <select [(ngModel)]="inputModel.selectVendor" name="vendor" clrSelect>
+                                        <option selected *ngFor="let vendor of vendors" value="{{vendor._hash}}">{{vendor.name}}</option>
                                     </select>
                                 </clr-select-container>
                             </div>
@@ -238,7 +234,6 @@
                         <tr>
                             <th>Jenis Mulia (Gram)</th>
                             <th style="text-align: left;">Harga Buyback</th>
-                            <th style="text-align: left;">Harga Baku</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -246,7 +241,6 @@
                             <tr>
                                 <td>{{hargaItem['product-denom'].name}}</td>
                                 <td><clr-input-container><input clrInput name="harga_buyback" type="number" [(ngModel)]="hargaItem.harga_buyback"/></clr-input-container></td>
-                                <td><clr-input-container><input clrInput name="harga_baku" type="number" [(ngModel)]="hargaItem.harga_baku"/></clr-input-container></td>
                             </tr>
                         </ng-container>
                     </tbody>
@@ -299,7 +293,7 @@
     <form>
         <clr-modal [clrModalSize]="'md'" [clrModalOpen]="modalConfirmDialog" [clrModalClosable]="false"
             [clrModalStaticBackdrop]="true">
-            <h3 class="modal-title">Add {{title}}</h3>
+            <h3 class="modal-title">Confirm {{title}}</h3>
             <div class="modal-body ">
                 <h6>Detail</h6>
                 <div class="card">
@@ -318,9 +312,9 @@
                             <div class="clr-col-3">
                                 <clr-select-container class="clr-form-control">
                                     <label class="clr-control-label">Vendor</label>
-                                    <select [(ngModel)]="inputModel.vendor" name="vendor" clrSelect disabled>
+                                    <select [(ngModel)]="inputModel.selectVendor" name="vendor" clrSelect disabled>
                                         <ng-container *ngFor="let vendor of vendors">
-                                            <option value="{{vendor}}">{{vendor.name}}</option>
+                                            <option value="{{vendor._hash}}">{{vendor.name}}</option>
                                         </ng-container>
                                     </select>
                                 </clr-select-container>
@@ -342,7 +336,6 @@
                         <tr>
                             <th>Jenis Mulia (Gram)</th>
                             <th style="text-align: left;">Harga Buyback</th>
-                            <th style="text-align: left;">Harga Baku</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -350,7 +343,6 @@
                             <tr>
                                 <td>{{hargaItem['product-denom'].name}}</td>
                                 <td><clr-input-container><input clrInput name="harga_buyback" type="number" [(ngModel)]="hargaItem.harga_buyback" disabled/></clr-input-container></td>
-                                <td><clr-input-container><input clrInput name="harga_baku" type="number" [(ngModel)]="hargaItem.harga_baku" disabled/></clr-input-container></td>
                             </tr>
                         </ng-container>
                     </tbody>

@@ -33,5 +33,4 @@ export class TransactionTypeService {
   delete(data) {
     return this.commonService.delete(this.key, data);
   }
-
 }

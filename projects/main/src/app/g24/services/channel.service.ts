@@ -33,5 +33,4 @@ export class ChannelService {
   delete(data) {
     return this.commonService.delete(this.key, data);
   }
-
 }
