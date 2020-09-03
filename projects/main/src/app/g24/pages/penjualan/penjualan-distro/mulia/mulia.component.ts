@@ -166,10 +166,10 @@ export class MuliaComponent implements OnInit {
               }
               console.debug(this.hargaBaku,"hargaBaku")
               //cari margin penjualan
-              this.prmMarginService.list("?"+this.vendorCategory).subscribe((Marginresponse: any) => {
+              this.prmMarginService.get("?"+this.vendorCategory).subscribe((Marginresponse: any) => {
                 let prmMargin = Marginresponse
-                console.debug(prmMargin[0].margin,'margin')
-                let hargaLM = this.pricingService.priceLogamMulia(this.hargaBaku, Number(prmMargin[0].margin));
+                console.debug(prmMargin.margin,'margin')
+                let hargaLM = this.pricingService.priceLogamMulia(this.hargaBaku, Number(prmMargin.margin));
                 hargaLM =  Math.ceil(hargaLM/1000)*1000;
                 console.debug( hargaLM,'hargaLM')
                 cariMulia.push({

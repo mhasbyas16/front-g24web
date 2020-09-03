@@ -155,7 +155,7 @@ export class BerlianComponent implements OnInit {
             if (PPNresponse != false) {
               ppn = PPNresponse['0']['ppn'];
             }      
-            this.prmMarginService.list().subscribe((Marginresponse: any) => {
+            this.prmMarginService.get("?"+this.vendorCategory).subscribe((Marginresponse: any) => {
               if (Marginresponse != false) {
                 this.margin = Marginresponse;
               }      
@@ -165,11 +165,11 @@ export class BerlianComponent implements OnInit {
                  this.hargaBaku,
                  this.berlians[index]['product-purity']['name'],
                  Number(this.berlians[index]['berat']),
-                 this.margin['0']['margin'],
+                 this.margin['margin'],
                  Number(this.berlians[index]['hppBatu']),
-                 Number(this.berlians[index]['marginBatu']),
+                 Number(this.margin['marginBatu']),
                  Number(this.berlians[index]['hppBerlian']),
-                 Number(this.berlians[index]['marginBerlian']),
+                 Number(this.margin['marginBerlian']),
                  Number(this.berlians[index]['ongkosPembuatan']));
                 // harga_baku:any,kadar:any,berat:any,margin:any,hppBatu:any,marginBatu:any,hppBerlian:any,marginBerlian:any,ongkos:any
                 this.datalist = this.datalist*((100/100)+(Number(ppn)/100));

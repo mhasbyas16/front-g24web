@@ -159,14 +159,14 @@ export class PerhiasanComponent implements OnInit {
             if (PPNresponse != false) {
               ppn = PPNresponse['0']['ppn']; 
             }      
-            this.prmMarginService.list().subscribe((Marginresponse: any) => {
+            this.prmMarginService.get("?"+this.vendorCategory).subscribe((Marginresponse: any) => {
               if (Marginresponse != false) {
                 this.margin = Marginresponse;
               }      
   
               for (let index = 0, len = this.perhiasans.length; index < len; index++) {
                 
-                this.datalist=this.pricingService.pricePerhiasan(Number(this.perhiasans[index]['berat']),this.hargaBaku,this.perhiasans[index]['baku-tukar'],this.margin['0']['margin'],ppn);
+                this.datalist=this.pricingService.pricePerhiasan(Number(this.perhiasans[index]['berat']),this.hargaBaku,this.perhiasans[index]['baku-tukar'],this.margin['margin'],ppn);
                 
                 this.perhiasans[index].hargaJual =  Math.ceil(this.datalist/1000)*1000;
               }

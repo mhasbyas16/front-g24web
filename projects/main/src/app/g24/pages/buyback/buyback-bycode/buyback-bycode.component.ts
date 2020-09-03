@@ -105,7 +105,7 @@ export class BuybackBycodeComponent implements OnInit {
 
   clearPerhiasan(data:any){
     this.totalIsiCartPerhiasanBBC  = data.length;
-    this.hargaTotalPerhiasan = data.harga;
+    this.hargaTotalPerhiasan = data.harga; 
   }
 
   totalIsiCartPerhiasan(val){
