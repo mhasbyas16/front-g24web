@@ -152,15 +152,25 @@
                     </clr-input-container>
                 </ng-template>
 
-                <clr-input-container>
-                    <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Produk</label>
-                    <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
-                    <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">
-                        <ol class="list">
-                            <li *ngFor="let isi of data['product-category']">{{isi.name}}</li>
-                        </ol>
-                    </label>
-                </clr-input-container><br>
+                <ng-container *ngIf="data['product-category'] == 1; else productList">
+                    <clr-input-container>
+                        <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Produk</label>
+                        <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                        <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">Semua Produk</label>
+                    </clr-input-container>
+                </ng-container> 
+                <ng-template #productList>
+                    <clr-input-container>
+                        <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Produk</label>
+                        <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                        <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">
+                            <ol class="list">
+                                <li *ngFor="let isi of data['product-category']">{{isi.name}}</li>
+                            </ol>
+                        </label>
+                    </clr-input-container>
+                </ng-template>  <br>            
+                
                 
                 <div class="card" style="margin-top: 0em;">   
                     <div class="card-header">
@@ -177,63 +187,7 @@
                                     <div class="card-text">
                                         <ng-container *ngFor="let li of data.product">
                                             <!-- Perhiasan -->
-                                            <ng-container *ngIf="product.code == li.code">
-                                                <form clrForm class="clr-form-compact">
-                                                    <clr-input-container>
-                                                        <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">tipe Perhiasan</label>
-                                                        <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
-                                                        <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">
-                                                            <ol class="list">
-                                                                <li *ngFor="let isi of li.typePerhiasan">{{isi.name}}</li>
-                                                            </ol>
-                                                        </label>
-                                                    </clr-input-container>
-                                                    <clr-input-container>
-                                                        <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Kadar</label>
-                                                        <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
-                                                        <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">
-                                                            <ol class="list">
-                                                                <li *ngFor="let isi of li.purity">{{isi.name}}</li>
-                                                            </ol>
-                                                        </label>
-                                                    </clr-input-container>
-                                                    <clr-input-container>
-                                                        <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Vendor</label>
-                                                        <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
-                                                        <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">
-                                                            <ol class="list">
-                                                                <li *ngFor="let isi of li.vendor">{{isi.name}}</li>
-                                                            </ol>
-                                                        </label>
-                                                    </clr-input-container>
-                                                    <ng-container *ngIf="data.typeQuota == 2">
-                                                        <clr-input-container>
-                                                            <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Kuota</label>
-                                                            <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
-                                                            <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{li.quota}}</label>
-                                                        </clr-input-container>
-                                                    </ng-container> 
-                                                    <ng-container *ngIf="li.age == 'su'; else du">
-                                                        <clr-input-container>
-                                                            <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Umur</label>
-                                                            <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
-                                                            <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">Semua Umur</label>
-                                                        </clr-input-container>
-                                                    </ng-container>
-                                                    <ng-template #du>
-                                                        <clr-input-container>
-                                                            <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Umur</label>
-                                                            <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
-                                                            <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">Dengan Umur</label>
-                                                        </clr-input-container>
-                                                        <clr-input-container>
-                                                            <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Range Umur</label>
-                                                            <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
-                                                            <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{li.minAge}} - {{li.maxAge}}</label>
-                                                        </clr-input-container>
-                                                    </ng-template>
-                                                </form>
-                                            </ng-container>
+                                            <app-card-perhiasan [li]="li" [product]="product" [data]="data"></app-card-perhiasan>
                                             <!-- end Perhiasan -->
                                         </ng-container>
                                         

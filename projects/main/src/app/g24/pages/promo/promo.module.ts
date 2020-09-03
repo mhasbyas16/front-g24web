@@ -8,9 +8,10 @@ import { PengaturanPromoComponent } from './pengaturan-promo/pengaturan-promo.co
 import { NgSelect2Module } from 'ng-select2';
 import { DaftarPromoComponent } from './daftar-promo/daftar-promo.component';
 import { WizardPerhiasanComponent } from './pengaturan-promo/wizard-perhiasan/wizard-perhiasan.component';
+import { CardPerhiasanComponent } from './daftar-promo/card-perhiasan/card-perhiasan.component';
 
 @NgModule({
-  declarations: [PengaturanPromoComponent, DaftarPromoComponent, WizardPerhiasanComponent],
+  declarations: [PengaturanPromoComponent, DaftarPromoComponent, WizardPerhiasanComponent, CardPerhiasanComponent],
   imports: [
     CommonModule,
     PromoRoutingModule,

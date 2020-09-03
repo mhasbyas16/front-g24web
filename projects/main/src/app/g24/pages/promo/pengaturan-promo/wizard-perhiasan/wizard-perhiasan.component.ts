@@ -23,6 +23,10 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
   @Input() kuotaProduk:boolean = false;
   @Input() getData:boolean = false;
 
+  selectVendor:boolean = false;
+  selectPurity:boolean = false;
+  selectTypePerhiasan:boolean = false;
+
   section2_perhiasan: FormGroup = null;
 
     public options:Options;
@@ -62,6 +66,30 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
     };
   }
 
+  select2Vendor(val){
+    if (val == 'pv'){
+      this.selectVendor = true;
+    }else{
+      this.selectVendor = false;
+    }
+  }
+
+  select2Purity(val){
+    if (val == 'pk'){
+      this.selectPurity = true;
+    }else{
+      this.selectPurity = false;
+    }
+  }
+
+  select2TypePerhiasan(val){
+    if (val == 'pj'){
+      this.selectTypePerhiasan = true;
+    }else{
+      this.selectTypePerhiasan = false;
+    }
+  }
+
   formPerhiasan(){
     this.section2_perhiasan = new FormGroup({
       prmPromotion : new FormControl ("", Validators.required),
@@ -70,8 +98,11 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
       typePromotion : new FormControl ("", Validators.required),
       sizeTypePromotion : new FormControl ("", Validators.required),
       vendor: new FormControl ("", Validators.required),
+      pickVendor: new FormControl (""),
       purity: new FormControl ("", Validators.required),
+      pickPurity: new FormControl (""),
       typePerhiasan : new FormControl ("", Validators.required),
+      pickTypePerhiasan : new FormControl (""),
       age : new FormControl ("", Validators.required),
       minAge : new FormControl (""),
       maxAge : new FormControl (""),
@@ -130,7 +161,6 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
       console.debug("isi data from perhiasan")
       this.promoService.perhiasanData(this.section2_perhiasan.getRawValue());
       this.dataPerhiasan.emit(true);
-    }  
-    
+    }      
   }
 }

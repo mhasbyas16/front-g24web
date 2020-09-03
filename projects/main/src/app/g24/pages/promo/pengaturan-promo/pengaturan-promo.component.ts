@@ -40,6 +40,7 @@ export class PengaturanPromoComponent implements OnInit {
   manualWizard: boolean = false;
   penjualanWizard: boolean = false;
   selectdistro:boolean = false;
+  selectProduct:boolean = false;
   inputKuota:boolean = false;  
   kuotaProduk:boolean = false;
 
@@ -146,35 +147,16 @@ export class PengaturanPromoComponent implements OnInit {
     }
   }
 
-  selectKuota(val){
-    let productCat:any;
-    for (let section of this.section1_penjualan.get("product-category").value) {
-      productCat = "";
-      productCat = JSON.parse(atob(section));
-      
-      switch (productCat.code) {
-        case "c00":
-          this.perhiasan = true;
-          break;        
-        case "c01":
-          this.berlian = true;
-          break;
-        case "c02":
-          // this.perhiasan = true;
-          break;
-        case "c03":
-          // this.perhiasan = true;
-          break;
-        case "c04":
-          // this.perhiasan = true;
-          break;
-        case "c05":
-          this.mulia = true;
-          break;
-        default:
-          break;
-      }
+  select2Product(val){
+    if (val == 'pp'){
+      this.selectProduct = true;
+    }else{
+      this.selectProduct = false;
     }
+    this.section1_penjualan.patchValue({typeQuota:""})
+  }
+
+  selectKuota(val){
     if (val == '0') {
       this.inputKuota = false;
       this.kuotaProduk = false;
@@ -187,6 +169,61 @@ export class PengaturanPromoComponent implements OnInit {
     }
   }
 
+  productSelect(){
+    let arr = [];
+    if (this.selectProduct != true) {
+      this.perhiasan = true;
+      this.berlian = true;
+      this.mulia = true;
+    }else{
+      let productCat:any;
+    for (let section of this.section1_penjualan.get("pickProduct-category").value) {
+      productCat = "";
+      productCat = JSON.parse(atob(section));
+      arr.push(productCat)
+      console.debug(arr,"isi product arr")
+       
+    }
+    
+    if (arr.some(function(el){ return el.code === "c00"}) == true) {
+      this.perhiasan = true;
+    }else{
+      this.perhiasan = false;
+    }
+
+    if (arr.some(function(el){ return el.code === "c01"}) == true) {
+      this.berlian = true;
+    }else{
+      this.berlian = false;
+    }  
+    
+    // if (productCat.code == "c02") {
+    //   this.berlian = true;
+    // }else{
+    //   this.berlian = false;
+    // } 
+
+    // if (productCat.code == "c03") {
+    //   this.berlian = true;
+    // }else{
+    //   this.berlian = false;
+    // } 
+
+    // if (productCat.code == "c04") {
+    //   this.berlian = true;
+    // }else{
+    //   this.berlian = false;
+    // } 
+
+    if (arr.some(function(el){ return el.code === "c05"}) == true) {
+      this.mulia = true;
+    }else{
+      this.mulia = false;
+    }
+    }
+    
+  }
+
   // form
   form(){
     this.section1_penjualan = new FormGroup({
@@ -196,6 +233,7 @@ export class PengaturanPromoComponent implements OnInit {
       units : new FormControl ("", Validators.required),
       pickUnits : new FormControl (""),
       'product-category' : new FormControl ("", Validators.required),
+      'pickProduct-category' : new FormControl (""),
       typeQuota : new FormControl ("", Validators.required),  
       quota : new FormControl (""),
       maker : new FormControl (this.nikUser._hash, Validators.required),
@@ -238,13 +276,6 @@ export class PengaturanPromoComponent implements OnInit {
     let PUnits = [];
     // section1
     let section1 = this.section1_penjualan.getRawValue();
-    // product category
-    for (let data of section1['product-category']) {
-      productCAT.push(JSON.parse(atob(data)))
-    }
-    console.debug (productCAT,"product");
-    section1['product-category']= btoa(JSON.stringify(productCAT));
-    section1['product-category_encoded'] = "base64array";
     // units
     if (section1.units == "pd") {
       for (let data of section1.pickUnits) {
@@ -256,6 +287,19 @@ export class PengaturanPromoComponent implements OnInit {
       delete section1.pickUnits;
     }else{
       delete section1.pickUnits
+      // section1.units_encoded = "base64array";
+    }
+
+    // product
+    if (section1["product-category"] == "pp") {
+      for (let data of section1["pickProduct-category"]) {
+        productCAT.push(JSON.parse(atob(data)))      
+      }
+      section1["product-category"] = btoa(JSON.stringify(productCAT));
+      section1["product-category_encoded"] = "base64array";
+      delete section1["pickProduct-category"];
+    }else{
+      delete section1["pickProduct-category"];
       // section1.units_encoded = "base64array";
     }
     // end section1

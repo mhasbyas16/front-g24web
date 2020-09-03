@@ -30,7 +30,7 @@
                                 
                                     <clr-wizard-button [type]="'cancel'">Cancel</clr-wizard-button>
                                     <clr-wizard-button [type]="'previous'">Back</clr-wizard-button>
-                                    <clr-wizard-button [type]="'next'">Next</clr-wizard-button>
+                                    <clr-wizard-button [type]="'next'" (click)="productSelect()">Next</clr-wizard-button>
                                     <clr-wizard-button [type]="'finish'" (click)="childView()">Finish</clr-wizard-button>
                                     <!-- section 1 -->
                                     <clr-wizard-page [clrWizardPageNextDisabled]="!section1_penjualan.valid"> <!---->
@@ -61,7 +61,7 @@
                                                 </div>
                                             </div>                                     
                                               
-
+                                            <!-- unit -->
                                             <clr-select-container>
                                                 <label class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2">Lokasi</label>
                                                 <select formControlName="units" class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrSelect (click)="select2Distro($event.target.value)" >
@@ -79,22 +79,30 @@
                                                         [data]="unit"
                                                         [options]="options"></ng-select2>
                                                     </div>
-                                                </div> <br>                                               
+                                                </div>                                             
+                                            </ng-container>
+
+                                            <!-- product -->
+                                            <clr-select-container>
+                                                <label class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2">Produk</label>
+                                                <select formControlName="product-category" class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrSelect (click)="select2Product($event.target.value)" >
+                                                    <option disabled selected [value]="">-- Select One --</option>
+                                                    <option [value]="'1'">Semua Produk</option>
+                                                    <option [value]="'pp'">Pilih Produk</option>
+                                                </select>
+                                            </clr-select-container><br>
+                                            <ng-container *ngIf="selectProduct">
+                                                <div class="clr-row">
+                                                    <div class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2"></div>
+                                                    <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
+                                                        <ng-select2 
+                                                            formControlName="pickProduct-category" 
+                                                            [data]="productCategory"
+                                                            [options]="options2"></ng-select2>
+                                                    </div>
+                                                </div>
                                             </ng-container>
                                             
-                                            <div class="clr-row">
-                                                <div class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2">
-                                                    <clr-input-container>
-                                                        <label>Produk</label>
-                                                    </clr-input-container>
-                                                </div>
-                                                <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
-                                                    <ng-select2 
-                                                        formControlName="product-category" 
-                                                        [data]="productCategory"
-                                                        [options]="options2"></ng-select2>
-                                                </div>
-                                            </div>
 
                                             <clr-select-container>
                                                 <label class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2">Kuota Promo</label>

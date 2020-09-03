@@ -1,49 +1,75 @@
 <div class="card" style="margin-top: 0em;">
     <div class="card-header">
-       PERHIASAN              {{getData}}
+       PERHIASAN
     </div>       
     <div class="card-block">
         <div class="card-text">
             <form clrForm class="clr-form-compact" [formGroup]="section2_perhiasan">
-                <div class="clr-row">
-                    <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
-                        <clr-input-container>
-                            <label >Vendor Perhiasan</label>
-                        </clr-input-container>
-                    </div>
-                    <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
-                        <ng-select2 
-                            formControlName="vendor" 
-                            [data]="vendorPerhiasan"
-                            [options]="options2"></ng-select2>
-                    </div>
-                </div>
-                <div class="clr-row">
-                    <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
-                        <clr-input-container>
-                            <label>Kadar Perhiasan</label>
-                        </clr-input-container>
-                    </div>
-                    <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
-                        <ng-select2 
-                            formControlName="purity" 
-                            [data]="purityPerhiasan"
-                            [options]="options2"></ng-select2>
-                    </div>
-                </div>
-                <div class="clr-row">
-                    <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
-                        <clr-input-container>
-                            <label>Jenis Perhiasan</label>
-                        </clr-input-container>
-                    </div>
-                    <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
-                        <ng-select2 
-                            formControlName="typePerhiasan" 
-                            [data]="jenisPerhiasan"
-                            [options]="options2"></ng-select2>
-                    </div>
-                </div>
+                <!-- vendor -->
+                <clr-select-container>
+                    <label class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">Vendor</label>
+                    <select formControlName="vendor" class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrSelect (click)="select2Vendor($event.target.value)" >
+                        <option disabled selected [value]="">-- Select One --</option>
+                        <option [value]="'1'">Semua Vendor</option>
+                        <option [value]="'pv'">Pilih Vendor</option>
+                    </select>
+                </clr-select-container><br>
+                <ng-container *ngIf="selectVendor">
+                    <div class="clr-row">
+                        <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4"></div>
+                        <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
+                            <ng-select2 
+                                formControlName="pickVendor" 
+                                [data]="vendorPerhiasan"
+                                [options]="options2"></ng-select2>
+                        </div>
+                    </div>                                             
+                </ng-container>
+                
+                <!-- purity -->
+                <clr-select-container>
+                    <label class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">Kadar Perhiasan</label>
+                    <select formControlName="purity" class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrSelect (click)="select2Purity($event.target.value)" >
+                        <option disabled selected [value]="">-- Select One --</option>
+                        <option [value]="'1'">Semua Kadar Perhiasan</option>
+                        <option [value]="'pk'">Pilih Kadar Perhiasan</option>
+                    </select>
+                </clr-select-container><br>
+                <ng-container *ngIf="selectPurity">
+                    <div class="clr-row">
+                        <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4"></div>
+                        <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
+                            <ng-select2 
+                                formControlName="pickPurity" 
+                                [data]="purityPerhiasan"
+                                [options]="options2"></ng-select2>
+                        </div>
+                    </div>                                            
+                </ng-container>
+                
+
+                <!-- jenis Perhiasan -->
+                <clr-select-container>
+                    <label class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">Jenis Perhiasan</label>
+                    <select formControlName="typePerhiasan" class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrSelect (click)="select2TypePerhiasan($event.target.value)" >
+                        <option disabled selected [value]="">-- Select One --</option>
+                        <option [value]="'1'">Semua Jenis Perhiasan</option>
+                        <option [value]="'pj'">Pilih Jenis Perhiasan</option>
+                    </select>
+                </clr-select-container><br>
+                <ng-container *ngIf="selectTypePerhiasan">
+                    <div class="clr-row">
+                        <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4"></div>
+                        <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
+                            <ng-select2 
+                                formControlName="pickTypePerhiasan" 
+                                [data]="jenisPerhiasan"
+                                [options]="options2"></ng-select2>
+                        </div>
+                    </div>                                         
+                </ng-container>
+
+                
                 <ng-container *ngIf="kuotaProduk">
                     <clr-input-container>
                         <label class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">Kuota</label>

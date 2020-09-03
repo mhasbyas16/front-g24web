@@ -9,6 +9,7 @@ export class PromoService {
 
   perhiasanData(data){
     let section2Perhiasan = data;
+
       console.debug(data,"isi section perhiasan")
       // perhiasan
       section2Perhiasan.name = 'Perhiasan';
@@ -18,22 +19,39 @@ export class PromoService {
         let isiPurity = [];
         let isiTypePerhiasan = [];
         // Vendors
-        for (let vendor of section2Perhiasan.vendor) {
-          isiVendor.push(JSON.parse(atob(vendor)))
+      if (section2Perhiasan.vendor == "pv") {
+        for (let data of section2Perhiasan.pickVendor) {
+          isiVendor.push(JSON.parse(atob(data)))     
+          
         }
         section2Perhiasan.vendor= isiVendor;
+        delete section2Perhiasan.pickVendor;
+      }else{
+        delete section2Perhiasan.pickVendor;
+      }
+        
 
         // purity
-        for (let purity of section2Perhiasan.purity) {
-          isiPurity.push(JSON.parse(atob(purity)))
+        if (section2Perhiasan.purity == "pk") {
+          for (let data of section2Perhiasan.pickPurity) {
+            isiPurity.push(JSON.parse(atob(data)))     
+          }
+          section2Perhiasan.purity= isiPurity;
+          delete section2Perhiasan.pickPurity;
+        }else{
+          delete section2Perhiasan.pickPurity;
         }
-        section2Perhiasan.purity= isiPurity;
 
         // typePerhiasan
-        for (let typePerhiasan of section2Perhiasan.typePerhiasan) {
-          isiTypePerhiasan.push(JSON.parse(atob(typePerhiasan)))
+        if (section2Perhiasan.typePerhiasan == "pj") {
+          for (let data of section2Perhiasan.pickTypePerhiasan) {
+            isiTypePerhiasan.push(JSON.parse(atob(data)))     
+          }
+          section2Perhiasan.typePerhiasan= isiTypePerhiasan;
+          delete section2Perhiasan.pickTypePerhiasan;
+        }else{
+          delete section2Perhiasan.pickTypePerhiasan;
         }
-        section2Perhiasan.typePerhiasan= isiTypePerhiasan;
       }
 
       this.product.push(section2Perhiasan);
