@@ -10,6 +10,7 @@ import { ContentPage } from '../../../lib/helper/content-page';
 import { DatePipe } from "@angular/common";
 
 // services
+import { PromoService } from '../promo.service';
 import { UnitService } from '../../../services/system/unit.service';
 import { ProductCategoryService } from '../../../services/product/product-category.service';
 import { VendorService } from '../../../services/vendor.service';
@@ -31,17 +32,27 @@ export class PengaturanPromoComponent implements OnInit {
   @ViewChild("manual") wizardManual: ClrWizard;
   @ViewChild("penjualan") wizardPenjualan: ClrWizard;
 
-  manualWizard: boolean = false;
-  penjualanWizard: boolean = false;
-  selectdistro:boolean = false;
-  inputKuota:boolean = false;
+  // Wizard
   perhiasan:boolean = false;
   berlian:boolean = false;
   mulia:boolean = false;
+
+  manualWizard: boolean = false;
+  penjualanWizard: boolean = false;
+  selectdistro:boolean = false;
+  inputKuota:boolean = false;  
   kuotaProduk:boolean = false;
 
+  // get data ke child
+  getDataPerhiasan:boolean = false;
+
+  // passing data strore promosi
+  passingPerhiasan:boolean = false;
+
   section1_penjualan: FormGroup = null;
-  section2_perhiasan: FormGroup = null;
+  // Data 
+  dataPerhiasan:any;
+  product = [];
 
   public options:Options;
   public options2:Options;
@@ -70,6 +81,7 @@ export class PengaturanPromoComponent implements OnInit {
     private sessionService: SessionService,
     private toastrService: ToastrService,
     private datePipe: DatePipe,
+    private promoService:PromoService
   ) { }
 
   ngOnInit(): void {
@@ -133,13 +145,7 @@ export class PengaturanPromoComponent implements OnInit {
       console.debug(val,"isi select")
     }
   }
-  pickUmur(val){
-    if (val == "du") {
-      this.umurPerhiasan = true;
-    }else{
-      this.umurPerhiasan = false;
-    }
-  }
+
   selectKuota(val){
     let productCat:any;
     for (let section of this.section1_penjualan.get("product-category").value) {
@@ -148,8 +154,6 @@ export class PengaturanPromoComponent implements OnInit {
       
       switch (productCat.code) {
         case "c00":
-          this.settingPerhiasan();
-          this.formPerhiasan();
           this.perhiasan = true;
           break;        
         case "c01":
@@ -183,47 +187,6 @@ export class PengaturanPromoComponent implements OnInit {
     }
   }
 
-  // setting
-  settingPerhiasan(){
-    let data = [];
-    let data2 = [];
-    let data3 = [];
-    this.vendorService.list("?_hash=1&product-category.code=c00&_sortby=name:1").subscribe((response:any)=>{
-      if (response == false) {
-        this.toastrService.error("load vendor perhiasan failed");
-        return;
-      }
-      for (let val of response) {
-        data.push({id:val._hash,text:val.name})
-      }
-      this.vendorPerhiasan = data;
-    })
-
-    this.productPurityService.list("?_hash=1&_sortby=name:1").subscribe((response:any)=>{
-      if (response == false) {
-        this.toastrService.error("load purity perhiasan failed");
-        return;
-      }
-      for (let val of response) {
-        data2.push({id:val._hash,text:val.name})
-      }
-      this.purityPerhiasan = data2;
-    })
-
-    this.productJenisService.list("?_hash=1&product-category.code=c00&_sortby=name:1").subscribe((response:any)=>{
-      if (response == false) {
-        this.toastrService.error("load jenis perhiasan failed");
-        return;
-      }
-      for (let val of response) {
-        data3.push({id:val._hash,text:val.name})
-      }
-      this.jenisPerhiasan = data3;
-    })
-  }
-
-  // end setting
-
   // form
   form(){
     this.section1_penjualan = new FormGroup({
@@ -245,24 +208,6 @@ export class PengaturanPromoComponent implements OnInit {
     });
   }
 
-  formPerhiasan(){
-    this.section2_perhiasan = new FormGroup({
-      prmPromotion : new FormControl ("", Validators.required),
-      minPrmPromotion : new FormControl ("", Validators.required),
-      maxPrmPromotion : new FormControl ("", Validators.required),
-      typePromotion : new FormControl ("", Validators.required),
-      sizeTypePromotion : new FormControl ("", Validators.required),
-      vendor: new FormControl ("", Validators.required),
-      purity: new FormControl ("", Validators.required),
-      typePerhiasan : new FormControl ("", Validators.required),
-      age : new FormControl ("", Validators.required),
-      minAge : new FormControl (""),
-      maxAge : new FormControl (""),
-      quota : new FormControl (""),
-    })
-  }
-  // end form
-
   openWizard(val){
     console.debug(val, "selected")
     if (val=='manual') {
@@ -277,7 +222,18 @@ export class PengaturanPromoComponent implements OnInit {
     console.debug(this.section1_penjualan.get("product-category").value)
   }
 
-  storePromotion(){
+  getPerhiasan(data){
+      this.passingPerhiasan = data;
+      this.passingData();
+  }
+
+  passingData(){
+    if (this.passingPerhiasan == this.getDataPerhiasan) {
+      this.getDataPromosi();
+    }    
+  }
+
+  getDataPromosi(){
     let productCAT = [];    
     let PUnits = [];
     // section1
@@ -303,50 +259,17 @@ export class PengaturanPromoComponent implements OnInit {
       // section1.units_encoded = "base64array";
     }
     // end section1
-
-    // section 2
-    let product = [];
-
-    if (this.perhiasan == true) {
-      let section2Perhiasan = this.section2_perhiasan.getRawValue();
-      // perhiasan
-      section2Perhiasan.name = 'Perhiasan';
-      section2Perhiasan.code = 'c00';
-      if (Object.keys(section2Perhiasan).length != 0) {
-        let isiVendor = [];
-        let isiPurity = [];
-        let isiTypePerhiasan = [];
-        // Vendors
-        for (let vendor of section2Perhiasan.vendor) {
-          isiVendor.push(JSON.parse(atob(vendor)))
-        }
-        section2Perhiasan.vendor= isiVendor;
-
-        // purity
-        for (let purity of section2Perhiasan.purity) {
-          isiPurity.push(JSON.parse(atob(purity)))
-        }
-        section2Perhiasan.purity= isiPurity;
-
-        // typePerhiasan
-        for (let typePerhiasan of section2Perhiasan.typePerhiasan) {
-          isiTypePerhiasan.push(JSON.parse(atob(typePerhiasan)))
-        }
-        section2Perhiasan.typePerhiasan= isiTypePerhiasan;
-      }
-
-      product.push(section2Perhiasan);
-    }
-    
-    // end section 2   
         
     let data = Object.assign(section1,{
-      'product' : btoa(JSON.stringify(product)),
+      'product' : btoa(JSON.stringify(this.promoService.product)),
       'product_encoded':'base64array',
       'flag':'0'});
     console.debug (data,"isi data");
     // return;
-    
+    this.storePromotion(data);
+  }
+
+  storePromotion(data){   
 
     this.promotionSetiingService.add(data).subscribe((response:any)=>{
       if (response != false) {
@@ -358,6 +281,14 @@ export class PengaturanPromoComponent implements OnInit {
         return;
       }
     })
+  }
+  
+  // child get data
+  childView(){
+    if (this.perhiasan == true) {
+      this.getDataPerhiasan = true;
+    }    
+    
   }
 
   ChangeContentArea(pageId : string)

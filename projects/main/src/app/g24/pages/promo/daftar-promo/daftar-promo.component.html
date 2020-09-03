@@ -133,15 +133,25 @@
                     <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{data.startDate+' - '+data.endDate}}</label>
                 </clr-input-container>
                 
-                <clr-input-container>
-                    <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Distro</label>
-                    <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
-                    <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">
-                        <ol class="list">
-                            <li *ngFor="let isi of data.units">{{isi.nama}}</li>
-                        </ol>
-                    </label>
-                </clr-input-container>
+                <ng-container *ngIf="data.units == 1; else distroList">
+                    <clr-input-container>
+                        <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Distro</label>
+                        <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                        <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">Semua Distro</label>
+                    </clr-input-container>
+                </ng-container>
+                <ng-template #distroList>
+                    <clr-input-container>
+                        <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Distro</label>
+                        <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                        <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">
+                            <ol class="list">
+                                <li *ngFor="let isi of data.units">{{isi.nama}}</li>
+                            </ol>
+                        </label>
+                    </clr-input-container>
+                </ng-template>
+
                 <clr-input-container>
                     <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Produk</label>
                     <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>

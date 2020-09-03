@@ -1,17 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ClrWizard } from '@clr/angular';
 import { Select2OptionData } from 'ng-select2';
 import { Options } from 'select2';
 
 // services
-import { UnitService } from '../../../../services/system/unit.service';
-import { ProductCategoryService } from '../../../../services/product/product-category.service';
+import { PromoService } from '../../promo.service';
 import { VendorService } from '../../../../services/vendor.service';
 import { ProductPurityService } from '../../../../services/product/product-purity.service';
 import { ProductJenisService } from '../../../../services/product/product-jenis.service';
-import { PromotionSettingService } from '../../../../services/promotion/promotion-setting.service';
-import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -19,11 +16,12 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './wizard-perhiasan.component.html',
   styleUrls: ['./wizard-perhiasan.component.scss']
 })
-export class WizardPerhiasanComponent implements OnInit {
+export class WizardPerhiasanComponent implements OnInit, OnChanges {
   
   @Output() dataPerhiasan:any = new EventEmitter();
 
   @Input() kuotaProduk:boolean = false;
+  @Input() getData:boolean = false;
 
   section2_perhiasan: FormGroup = null;
 
@@ -39,8 +37,12 @@ export class WizardPerhiasanComponent implements OnInit {
     public productPurityService : ProductPurityService,
     public productJenisService : ProductJenisService,
     public toastrService: ToastrService,
+    private promoService:PromoService,
   ) { }
 
+  ngOnChanges(){
+    this.passingData(this.getData);
+  }
   ngOnInit(): void {
     this.formPerhiasan();
     this.settingPerhiasan();
@@ -123,8 +125,12 @@ export class WizardPerhiasanComponent implements OnInit {
     }
   }
 
-  passingData(){
-    this.dataPerhiasan.emit(this.section2_perhiasan.getRawValue());
-    console.debug("isi data from perhiasan")
+  passingData(getData){
+    if (getData != false) {
+      console.debug("isi data from perhiasan")
+      this.promoService.perhiasanData(this.section2_perhiasan.getRawValue());
+      this.dataPerhiasan.emit(true);
+    }  
+    
   }
 }
