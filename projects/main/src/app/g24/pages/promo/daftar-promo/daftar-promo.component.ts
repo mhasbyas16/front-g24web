@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { EMenuID } from '../../../lib/enums/emenu-id.enum';
 import { DContent } from '../../../decorators/content/pages';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DatePipe } from "@angular/common";
 
 // services
 import { PromotionSettingService } from '../../../services/promotion/promotion-setting.service';
+import { TanggalService } from '../../../lib/helper/tanggal.service';
 
 
 @Component({
@@ -20,17 +21,27 @@ export class DaftarPromoComponent implements OnInit {
   placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
   loadingDg: boolean = false;
   actionModal: boolean = false;
+  confirmation:boolean = false;
 
   isiPromosi : FormGroup = null;
   search: FormGroup = null;
 
   promotion =[];
   data:any;
+
+  modalTitle:any;
+  view:any;
+
+  //tanggal
+  tglMaker:any;
+  tglStart:any;
+  tglEnd:any;
   
   constructor(
     private promotionSettingService : PromotionSettingService,
     private toastrService : ToastrService,
     private datePipe: DatePipe,
+    private tanggalService:TanggalService
   ) { }
 
   ngOnInit(): void {
@@ -140,47 +151,101 @@ export class DaftarPromoComponent implements OnInit {
     })
   }
 
-  formPromosi(){
-    this.isiPromosi = new FormGroup({
-      name : new FormControl (""),
-      maker : new FormControl (""),
-      makerDate : new FormControl (""),
-      makerTime : new FormControl (""),
-      quota : new FormControl (""),
-      startDate : new FormControl (""),
-      endDate : new FormControl (""), 
-      typeQuota : new FormControl (""),
-      product : new FormControl (""),
-      'product-category' : new FormControl (""),
-      units : new FormControl (""),
-      pickUnits : new FormControl (""),
-      approval : new FormControl (""),
-      approvalDate: new FormControl(""),
-      approvalTime: new FormControl(""),
-    });
-  }
+  // formPromosi(){
+  //   this.isiPromosi = new FormGroup({
+  //     name : new FormControl (""),
+  //     maker : new FormControl (""),
+  //     makerDate : new FormControl (""),
+  //     makerTime : new FormControl (""),
+  //     quota : new FormControl (""),
+  //     startDate : new FormControl (""),
+  //     endDate : new FormControl (""), 
+  //     typeQuota : new FormControl (""),
+  //     product : new FormControl (""),
+  //     'product-category' : new FormControl (""),
+  //     units : new FormControl (""),
+  //     pickUnits : new FormControl (""),
+  //     approval : new FormControl (""),
+  //     approvalDate: new FormControl(""),
+  //     approvalTime: new FormControl(""),
+  //   });
+  // }
 
   // Modal
-  actionView(hash){
+  actionView(hash, act){
+    let tgl :any;
+    let tglSplit :any;
+    let bulan :any;
+    let hari:any;
+    let tahun:any;
+    let bulanTerbilang:any;
+
     this.data = JSON.parse(atob(hash));
+    // tanggal maker
+    tgl =this.data.makerDate;
+    tglSplit = tgl.split("/");
+    bulan = Number(tglSplit["0"]);
+    hari = tglSplit["1"];
+    tahun = tglSplit["2"];
+    bulanTerbilang = this.tanggalService.bulanGenerate(bulan);
+    this.tglMaker = hari+' '+bulanTerbilang+' '+tahun;
+
+    // tanggal start date
+    tgl =this.data.startDate;
+    tglSplit = tgl.split("/");
+    bulan = Number(tglSplit["0"]);
+    hari = tglSplit["1"];
+    tahun = tglSplit["2"];
+    bulanTerbilang = this.tanggalService.bulanGenerate(bulan);
+    this.tglStart = hari+' '+bulanTerbilang+' '+tahun;
+
+    // tanggal start date
+    tgl =this.data.endDate;
+    tglSplit = tgl.split("/");
+    bulan = Number(tglSplit["0"]);
+    hari = tglSplit["1"];
+    tahun = tglSplit["2"];
+    bulanTerbilang = this.tanggalService.bulanGenerate(bulan);
+    this.tglEnd = hari+' '+bulanTerbilang+' '+tahun;
+    
+
     console.debug(this.data,"action")
-    // this.isiPromosi.patchValue({
-    //   name : this.data.name,
-    //   // maker : this.data.maker,
-    //   makerDate : this.data.makerDate,
-    //   makerTime : this.data.makerTime,
-    //   quota : this.data.quota,
-    //   startDate :this.data.startDate,
-    //   endDate : this.data.endDate, 
-    //   typeQuota : this.data.typeQuota,
-    //   // product : this.data.product,
-    //   // 'product-category' : ,
-    //   // units : ,
-    //   approval : "",
-    //   approvalDate: "",
-    //   approvalTime: ""
-    // });
+    this.view = act;
     this.actionModal = true;
+  }
+
+  ///
+  modalConfirmation(id:any, flag:any, title:any){
+    this.modalTitle = title;
+    this.isiPromosi = new FormGroup({
+      _id: new FormControl ("", Validators.required),
+      flag: new FormControl ("", Validators.required),
+    });
+
+    this.isiPromosi.patchValue({_id:id,flag:flag});
+
+    this.confirmation = true;
+  }
+
+  confirmationPromotion(){
+
+    if (!this.isiPromosi.valid) {
+      this.toastrService.error("Gagal Mengupdate Promosi");
+      return;
+    }
+
+    let data = this.isiPromosi.getRawValue();
+
+    this.promotionSettingService.update(data).subscribe((response:any)=>{
+      if (response == false) {
+        this.toastrService.error("Gagal Mengupdate Promosi");
+        return;
+      }
+      this.actionModal = false;
+      this.confirmation = false;
+      this.filterPromotion('id');
+      this.toastrService.success("Sukses Update");
+    });
   }
 
   static key = EMenuID.DAFTAR_PROMO;

@@ -39,10 +39,10 @@
 
                     <clr-dg-row *ngFor="let data of promotion" > 
                         <clr-dg-action-overflow>
-                            <button class="action-item">Detail</button>
+                            <button class="action-item" (click)="actionView(data._hash, 'detail')">Detail</button>
                             <ng-container *ngIf="data.flag == 0" >
                                 <!-- submitted -->
-                                <button class="action-item" (click)="actionView(data._hash)">Action</button>
+                                <button class="action-item" (click)="actionView(data._hash, 'action')">Action</button>
                             </ng-container>
                         </clr-dg-action-overflow>
                         <clr-dg-cell>{{data.name}}</clr-dg-cell>
@@ -54,11 +54,11 @@
                         </ng-container>
                         <ng-container *ngIf="data.flag == 1">
                             <!-- approve -->
-                            <span class="badge badge-success">Approve</span>
+                            <clr-dg-cell><span class="badge badge-success">Approve</span></clr-dg-cell>
                         </ng-container>
                         <ng-container *ngIf="data.flag == 2">
                             <!-- rejected -->
-                            <span class="badge badge-danger">Rejected</span>
+                            <clr-dg-cell><span class="badge badge-danger">Rejected</span></clr-dg-cell>
                         </ng-container>
                         <clr-dg-cell>button</clr-dg-cell>
                         
@@ -89,7 +89,7 @@
                 <clr-input-container>
                     <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Maker Date/Time</label>
                     <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
-                    <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{data.makerDate+', '+data.makerTime}}</label>
+                    <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{tglMaker+', '+data.makerTime}}</label>
                 </clr-input-container>
 
                 <!-- Type Quota -->
@@ -130,7 +130,7 @@
                 <clr-input-container>
                     <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Start/End Date</label>
                     <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
-                    <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{data.startDate+' - '+data.endDate}}</label>
+                    <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{tglStart+' - '+tglEnd}}</label>
                 </clr-input-container>
                 
                 <ng-container *ngIf="data.units == 1; else distroList">
@@ -203,8 +203,27 @@
             
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-outline" (click)="actionModal = false">Cancel</button>
-            <button type="button" class="btn btn-primary" (click)="actionModal = false">Ok</button>
+            <ng-container *ngIf="view == 'action'">
+                <clr-button-group>
+                    <clr-button class="btn btn-primary" (click)="modalConfirmation(data._id, 1, 'Approve')">Approve</clr-button>
+                    <clr-button class="btn btn-danger" (click)="modalConfirmation(data._id, 2, 'Reject')">Reject</clr-button>
+                </clr-button-group>
+            </ng-container>
+            <button type="button" class="btn btn-outline" (click)="actionModal = false">Close</button>
+        </div>
+    </clr-modal>
+</ng-container>
+
+<ng-container *ngIf="confirmation">
+    <clr-modal [(clrModalOpen)]="actionModal" [clrModalSize]="'sm'">
+        <div class="modal-body">
+            <p class="text-center">
+                <b>Are You Sure Want To {{modalTitle}} This Promotion ?</b>
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline" (click)="confirmation = false">No</button>
+            <button type="button" class="btn btn-primary" (click)="confirmationPromotion()">Yes</button>
         </div>
     </clr-modal>
 </ng-container>
