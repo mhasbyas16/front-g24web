@@ -46,7 +46,7 @@ export class DaftarPromoComponent implements OnInit {
 
   ngOnInit(): void {
     this.fromSearch();
-    this.filterPromotion('id');
+    this.filterPromotion('name');
   }
 
   fromSearch(){
@@ -66,10 +66,6 @@ export class DaftarPromoComponent implements OnInit {
     let data = this.search.getRawValue(); 
     let params = "_hash=1&_sortby=flag:1";
 
-    // Session
-    // const getUnit = this.sessionService.getUnit();
-    // params = params+"&maker.unit.code="+getUnit["code"];
-
     if (data.from == "" && data.text == "") {
       this.toastrService.error("Please Complete Fill This From", "Transaction");
       this.loadingDg = false;
@@ -87,42 +83,31 @@ export class DaftarPromoComponent implements OnInit {
     }
 
     if (data.text != "") {
-      // if (val == 'id') {
-      //   this.transactionService.list("?"+params+"&idTransaction_regex=1&idTransaction="+data.text).subscribe((response:any)=>{
-      //     if (response["length"] != 0) {
-      //       params = params+"&idTransaction_regex=1&idTransaction="+data.text;
-      //       this.getTransaction(params);
-      //       return
-      //     }else{
-      //       this.filterTransaction('name');
-      //       return
-      //     }
-      //   })
-      // }else if (val == 'name'){
-      //   this.transactionService.list("?"+params+"&client.name_regex=1&client.name="+data.text).subscribe((response:any)=>{
-      //     if (response["length"] != 0) {
-      //       params = params+"&client.name_regex=1&client.name="+data.text;
-      //       this.getTransaction(params);
-      //       return
-      //     }else{
-      //       this.filterTransaction('cif');
-      //       return
-      //     }
-      //   })
-      // }else if (val == 'cif'){
-      //   this.transactionService.list("?"+params+"&client.cif_regex=1&client.cif="+data.text).subscribe((response:any)=>{
-      //     if (response["length"] != 0) {
-      //       params = params+"&client.cif_regex=1&client.cif="+data.text;
-      //       this.getTransaction(params);
-      //       return
-      //     }else{
-      //       this.toastrService.error("Data Not Found", "Transaction");
-      //       this.loadingDg = false;
-      //       this.transactions = [];
-      //       return
-      //     }
-      //   })
-      // }
+      if (val == 'name') {
+        this.promotionSettingService.list("?"+params+"&name_regex=1&name="+data.text).subscribe((response:any)=>{
+          if (response["length"] != 0) {
+            params = params+"&name_regex=1&name="+data.text;
+            this.getPromotion(params);
+            return
+          }else{
+            this.filterPromotion('maker');
+            return
+          }
+        })
+      }else if (val == 'maker'){
+        this.promotionSettingService.list("?"+params+"&maker.name_regex=1&maker.name="+data.text).subscribe((response:any)=>{
+          if (response["length"] != 0) {
+            params = params+"&maker.name_regex=1&maker.name="+data.text;
+            this.getPromotion(params);
+            return
+          }else{
+            this.toastrService.error("Data Not Found", "Transaction");
+            this.loadingDg = false;
+            this.promotion = [];
+            return
+          }
+        })
+      }
     }else{
       this.getPromotion(params);
       return
@@ -150,26 +135,6 @@ export class DaftarPromoComponent implements OnInit {
       this.toastrService.success("Load "+this.promotion.length+" Data", "Promotion");
     })
   }
-
-  // formPromosi(){
-  //   this.isiPromosi = new FormGroup({
-  //     name : new FormControl (""),
-  //     maker : new FormControl (""),
-  //     makerDate : new FormControl (""),
-  //     makerTime : new FormControl (""),
-  //     quota : new FormControl (""),
-  //     startDate : new FormControl (""),
-  //     endDate : new FormControl (""), 
-  //     typeQuota : new FormControl (""),
-  //     product : new FormControl (""),
-  //     'product-category' : new FormControl (""),
-  //     units : new FormControl (""),
-  //     pickUnits : new FormControl (""),
-  //     approval : new FormControl (""),
-  //     approvalDate: new FormControl(""),
-  //     approvalTime: new FormControl(""),
-  //   });
-  // }
 
   // Modal
   actionView(hash, act){
@@ -243,7 +208,7 @@ export class DaftarPromoComponent implements OnInit {
       }
       this.actionModal = false;
       this.confirmation = false;
-      this.filterPromotion('id');
+      this.filterPromotion('name');
       this.toastrService.success("Sukses Update");
     });
   }
