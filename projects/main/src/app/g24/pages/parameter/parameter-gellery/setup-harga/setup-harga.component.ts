@@ -40,7 +40,7 @@ export class SetupHargaComponent implements OnInit {
   //params
   params = null;
   vendorCategory= "product-category.code=c00";
-  productFilter= "code=c00,c01";
+  productFilter= "code=c00,c01,c02,c04";
 
   // dialog
   modalAddDialog: boolean = false;
@@ -115,7 +115,7 @@ export class SetupHargaComponent implements OnInit {
 
     this.params = null;
   
-    this.params = "?_hash=1&product-category.code=c01,c00";
+    this.params = "?_hash=1&product-category.code=c01,c00,c02,c04";
    
     // prmjual
     this.prmJualService.list(this.params).subscribe((response: any) => {

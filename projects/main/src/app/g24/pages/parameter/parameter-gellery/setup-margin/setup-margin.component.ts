@@ -142,7 +142,7 @@ export class SetupMarginComponent implements OnInit {
   loadVendors(){
     this.vendorService.list("?_hash=1&product-category.code="+this.getProduct).subscribe(output => {
       if (output == false) {
-        this.toastrService.error("Get Product Category Error")
+        this.toastrService.error("Vendor not found")
       }
 
       let vd =[]
