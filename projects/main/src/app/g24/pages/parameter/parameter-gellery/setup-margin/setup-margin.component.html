@@ -47,10 +47,10 @@
     <clr-dg-column>Status</clr-dg-column>
     
     <clr-dg-row *clrDgItems="let row of dataMargin">
-        <clr-dg-action-overflow>
-            <button class="action-item" (click)="mainEdit(row)">Edit</button>
-            <button class="action-item" (click)="mainDelete(row)">Delete</button>
-            <button class="action-item" (click)="mainConfirm(row)">Confirm</button>
+        <clr-dg-action-overflow *ngIf="row.flag == 'submit';">
+            <button *ngIf="row.flag == 'submit';" class="action-item" (click)="mainEdit(row)">Edit</button>
+            <button *ngIf="row.flag == 'submit';" class="action-item" (click)="mainDelete(row)">Delete</button>
+            <button *ngIf="row.flag == 'submit';" class="action-item" (click)="mainConfirm(row)">Confirm</button>
         </clr-dg-action-overflow>
         <clr-dg-cell hidden>{{row._id}}</clr-dg-cell>
         <clr-dg-cell>{{row['product-category'].name}}</clr-dg-cell>

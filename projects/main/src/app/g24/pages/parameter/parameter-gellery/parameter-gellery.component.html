@@ -58,10 +58,10 @@
                                 <clr-dg-column>Status</clr-dg-column>
                             
                                 <clr-dg-row *clrDgItems="let data of logamMulia" [clrDgItem]="data">
-                                    <clr-dg-action-overflow>
-                                        <button class="action-item" (click)="mainEdit(data)">Edit</button>
-                                        <button class="action-item" (click)="mainDelete(data)">Delete</button>
-                                        <button class="action-item" (click)="mainConfirm(data)">Confirm</button>
+                                    <clr-dg-action-overflow *ngIf="data.flag == 'submit';">
+                                        <button *ngIf="data.flag == 'submit';" class="action-item" (click)="mainEdit(data)">Edit</button>
+                                        <button *ngIf="data.flag == 'submit';" class="action-item" (click)="mainDelete(data)">Delete</button>
+                                        <button *ngIf="data.flag == 'submit';" class="action-item" (click)="mainConfirm(data)">Confirm</button>
                                     </clr-dg-action-overflow>
                                     <clr-dg-cell hidden>{{data._id}}</clr-dg-cell>
                                     <clr-dg-cell>{{data.jenis_barang}}</clr-dg-cell>
