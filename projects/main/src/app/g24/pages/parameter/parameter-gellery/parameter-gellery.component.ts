@@ -85,7 +85,6 @@ export class ParameterGelleryComponent implements OnInit {
   defaultHarga() {
     return {
       "product-denom" : null,
-      "harga_buyback" : 0,
       "harga_baku" : 0
     };
   }
@@ -189,7 +188,8 @@ export class ParameterGelleryComponent implements OnInit {
     this.inputModel = data;
     this.tempVendor = data.vendor;
     this.inputModel.selectVendor = btoa(JSON.stringify(this.tempVendor)) ;
-    this.harga = this.inputModel.harga
+    this.harga = this.inputModel.harga;
+    console.log('harga',this.harga);
     this.modalEditDialog = true;
   }
 
