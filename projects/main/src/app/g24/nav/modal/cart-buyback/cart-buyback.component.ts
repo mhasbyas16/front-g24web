@@ -10,10 +10,12 @@ export class CartBuybackComponent implements OnInit {
 
   @Output() clearParentCart:any = new EventEmitter();
   @Output() clearPerhiasan:any = new EventEmitter();
+  @Output() clearEmasBatangan:any = new EventEmitter();
   @Output() data:any = new EventEmitter();
 
   @Input() totalCart : any;
   @Input() hargaTotalPerhiasan : any;
+  @Input() hargaTotalEmasBatangan : any;
   
 
   cartModal : any
@@ -39,10 +41,11 @@ export class CartBuybackComponent implements OnInit {
   removeCart(){
     this.cartPerhiasan.splice(0);
     this.hargaTotalPerhiasan = 0
-
     this.clearPerhiasan.emit({length:0,harga:0});
 
-
+    this.cartLogam.splice(0);
+    this.hargaTotalEmasBatangan = 0
+    this.clearEmasBatangan.emit({length:0,harga:0});
   }
 
   removeItemPerhiasan(key: any, harga:any ){
@@ -51,7 +54,6 @@ export class CartBuybackComponent implements OnInit {
 
     //pengurangan jumlah cart
     this.totalCart-=1;
-
     
     this.hargaTotalPerhiasan = this.hargaTotalPerhiasan - harga
     this.clearPerhiasan.emit({length:this.cartPerhiasan.length, harga:this.hargaTotalPerhiasan });
@@ -60,6 +62,21 @@ export class CartBuybackComponent implements OnInit {
       console.debug("totallll 0");
       this.clearParentCart.emit(0);
     }
+  }
 
+  removeItemEmasBatangan(key: any, harga:any ){
+    //pengurangan jumlah item
+    this.cartLogam.splice(key,1);
+
+    //pengurangan jumlah cart
+    this.totalCart-=1;
+    
+    this.hargaTotalEmasBatangan = this.hargaTotalEmasBatangan - harga
+    this.clearEmasBatangan.emit({length:this.cartLogam.length, harga:this.hargaTotalEmasBatangan });
+
+    if (this.totalCart == 0) {
+      console.debug("totallll 0");
+      this.clearParentCart.emit(0);
+    }
   }
 }

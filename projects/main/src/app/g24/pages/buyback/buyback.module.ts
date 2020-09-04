@@ -9,11 +9,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NavModule } from '../../nav/nav.module';
 
 import { PerhiasanBycodeComponent } from './buyback-bycode/perhiasan-bycode/perhiasan-bycode.component';
+import { MuliaBycodeComponent } from './buyback-bycode/mulia-bycode/mulia-bycode.component';
 
 
 
 @NgModule({
-  declarations: [BuybackBycodeComponent, PerhiasanBycodeComponent],
+  declarations: [BuybackBycodeComponent, PerhiasanBycodeComponent, MuliaBycodeComponent],
   imports: [
     CommonModule,
     BuybackRoutingModule,

@@ -1,7 +1,7 @@
 <div class="clr-row">
     <div class="card" style="margin-top: 0em;">
         <div class="card-header">
-            Terima Buyback {{hargaTotalPerhiasan}}
+            Terima Buyback {{hargaTotalEmasBatangan}}
         </div>
         <div class="card-block">
             <div class="card-text">
@@ -31,7 +31,9 @@
                 <app-cart-buyback
                     [totalCart]="totalJumlahCart()"
                     [hargaTotalPerhiasan]="hargaTotalPerhiasan"
+                    [hargaTotalEmasBatangan]="hargaTotalEmasBatangan"
                     (clearPerhiasan)="clearPerhiasan($event)"
+                    (clearEmasBatangan)="clearEmasBatangan($event)"
                 >
                 </app-cart-buyback>
             </div>
@@ -100,7 +102,14 @@
                 (totalHargaPerhiasan)="HTotalPerhiasan($event)"
             >
             </app-perhiasan-bycode>
-           
+            <br>
+            <app-mulia-bycode 
+                [totalIsiEmasBatangan] = "totalIsiEmasBatangan"
+                [isiEmasBatangan] = "isiEmasBatangan" 
+                (totalIsiCartEmasBatangan) = "totalIsiCartEmasBatangan($event)"
+                (totalHargaEmasBatangan)="HTotalEmasBatangan($event)"
+            >
+            </app-mulia-bycode>
         </div>
     </div>
 </div>

@@ -32,19 +32,26 @@ export class BuybackBycodeComponent implements OnInit {
   totalIsiPerhiasan : any;
   hargaBB = 0;
 
+  //emas batangan
+  isiEmasBatangan: any;
+  totalIsiEmasBatangan: any;
+
   //global
   total : any
  
-
   //tanggal
   tanggalTerbilang : any;
 
   loadingDg: boolean = false;
   placeholderDatagrid = "Silahkan Cari Transaksi Berdasarkan Parameter";
   perhiasanParent: any;
-  hargaTotalPerhiasan: any;
-  totalIsiCartPerhiasanBBC: any ;
+  hargaTotalPerhiasan: any = 0
+  hargaTotalEmasBatangan : any = 0
+  totalIsiCartPerhiasanBBC: any = 0
   totalCart: any = 0
+  totalIsiCartEmasBatanganBBC: any = 0
+  
+  
 
   constructor(
     private toastrService:ToastrService,
@@ -69,6 +76,7 @@ export class BuybackBycodeComponent implements OnInit {
     this.totalDetail = 0;
     this.totalIsiPerhiasan = 0;
     this.isiPerhiasan = null
+    this.isiEmasBatangan = null
 
     if (!this.searchTrans.valid) {
       this.toastrService.error("Harap Input Id", "Buyback");
@@ -97,7 +105,14 @@ export class BuybackBycodeComponent implements OnInit {
       //perhiasan
       this.isiPerhiasan =this.detailTransaction.product["PERHIASAN"] 
       this.totalIsiPerhiasan =  this.isiPerhiasan.length
+      
+      //mulia
+      this.isiEmasBatangan =this.detailTransaction.product["LM"] 
+      this.totalIsiEmasBatangan=  this.isiEmasBatangan.length
+
+      //loadingDG
       this.loadingDg = false;
+
     })
     
     
@@ -108,19 +123,31 @@ export class BuybackBycodeComponent implements OnInit {
     this.hargaTotalPerhiasan = data.harga; 
   }
 
+  clearEmasBatangan(data:any){
+    this.totalIsiCartEmasBatanganBBC  = data.length;
+    this.hargaTotalEmasBatangan = data.harga; 
+  }
+
   totalIsiCartPerhiasan(val){
     this.totalIsiCartPerhiasanBBC = val
   }
   
+  totalIsiCartEmasBatangan(val){
+    this.totalIsiCartEmasBatanganBBC = val
+  }
+
   totalJumlahCart(){
     this.totalCart = 0
-    this.totalCart = this.totalIsiCartPerhiasanBBC
+    this.totalCart = this.totalIsiCartPerhiasanBBC + this.totalIsiCartEmasBatanganBBC
     return this.totalCart
   }
 
   HTotalPerhiasan(harga: any){
     this.hargaTotalPerhiasan = harga;
   }
-  
+
+  HTotalEmasBatangan(harga: any){
+    this.hargaTotalEmasBatangan = harga;
+  }
 }
 

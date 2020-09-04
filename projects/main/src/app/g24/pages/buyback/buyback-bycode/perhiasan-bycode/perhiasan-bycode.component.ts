@@ -9,9 +9,11 @@ import { PERHIASAN } from "projects/main/src/app/g24/sample/cart-buyback";
 export class PerhiasanBycodeComponent implements OnInit {
   
   @Output() perhiasan = new EventEmitter();
+  //ouput Perhiasan
   @Output() totalIsiCartPerhiasan = new EventEmitter();
   @Output() totalHargaPerhiasan = new EventEmitter();
 
+  
   @Input() totalIsiPerhiasan: any;
   @Input() isiPerhiasan: any;
 
