@@ -7,13 +7,12 @@ import { DatePipe } from '@angular/common';
 //Database
 import { VendorService } from '../../../services/vendor.service';
 import { ProductCategoryService } from '../../../services/product/product-category.service';
-import { JenisBarangService } from '../../../services/product/jenis-barang.service';
 import { ProductDenomService } from '../../../services/product/product-denom.service';
 import { PrmJualService } from '../../../services/parameter/prm-jual.service';
 
 import { EMenuID } from '../../../lib/enums/emenu-id.enum';
 import { DContent } from '../../../decorators/content/pages';
-import { DataTypeUtil } from '../../../lib/helper/data-type-util';
+import { JenisBarangService } from '../../../services/product/jenis-barang.service';
 
 export interface channel {
   id: number;

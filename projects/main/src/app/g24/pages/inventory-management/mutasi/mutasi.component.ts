@@ -1,9 +1,4 @@
 import { Component, OnInit, Output, TemplateRef, ViewChild, ElementRef } from '@angular/core';
-import { NgForm, Form, FormGroup } from '@angular/forms';
-import { Key } from 'protractor';
-import { environment } from 'src/environments/environment';
-import { Observable, config } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
 
 
 //ALERT TOASTR
