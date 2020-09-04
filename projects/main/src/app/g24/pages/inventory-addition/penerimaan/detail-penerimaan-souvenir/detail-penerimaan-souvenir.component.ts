@@ -3,7 +3,6 @@ import { NgForm, Form, FormGroup, FormBuilder, FormControl, Validators } from '@
 
 import { isArray } from 'util';
 import { ClarityModule } from '@clr/angular';
-import { EventEmitter } from 'protractor';
 import { ToastrService } from 'ngx-toastr';
 import { BasePersistentFields } from '../../../../lib/base/base-persistent-fields';
 import { InitiationType } from '../../../../lib/enums/initiation-type';

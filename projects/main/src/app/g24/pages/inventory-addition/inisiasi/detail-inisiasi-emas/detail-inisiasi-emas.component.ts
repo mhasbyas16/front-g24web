@@ -2,7 +2,6 @@ import { Component, OnInit, ComponentFactoryResolver, ViewChild, Input, ElementR
 import { NgForm, Form, FormGroup, FormBuilder } from '@angular/forms';
 
 import { isArray } from 'util';
-import { EventEmitter } from 'protractor';
 import { ToastrService } from 'ngx-toastr';
 import { InitiationType } from '../../../../lib/enums/initiation-type';
 import { PaymentType } from '../../../../lib/enums/payment-type';
