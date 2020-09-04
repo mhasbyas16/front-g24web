@@ -40,9 +40,13 @@
                     <clr-dg-row *ngFor="let data of promotion" > 
                         <clr-dg-action-overflow>
                             <button class="action-item" (click)="actionView(data._hash, 'detail')">Detail</button>
-                            <ng-container *ngIf="data.flag == 0" >
+                            <ng-container *ngIf="data.flag == 0 && nikUser.role == 'kadetRetail'" >
                                 <!-- submitted -->
                                 <button class="action-item" (click)="actionView(data._hash, 'action')">Action</button>
+                            </ng-container>
+                            <ng-container *ngIf="data.flag == 0 && nikUser.role == 'staffRetail'">
+                                <button class="action-item" (click)="editPromo.openEdit(data._hash)">Edit</button>
+                                <button class="action-item">Delete</button>
                             </ng-container>
                         </clr-dg-action-overflow>
                         <clr-dg-cell>{{data.name}}</clr-dg-cell>
@@ -227,3 +231,5 @@
         </div>
     </clr-modal>
 </ng-container>
+
+<app-edit-promo #editPromo></app-edit-promo>

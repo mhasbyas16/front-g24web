@@ -8,6 +8,8 @@ import { DatePipe } from "@angular/common";
 // services
 import { PromotionSettingService } from '../../../services/promotion/promotion-setting.service';
 import { TanggalService } from '../../../lib/helper/tanggal.service';
+import { SessionService } from 'projects/platform/src/app/core-services/session.service';
+
 
 
 @Component({
@@ -31,6 +33,7 @@ export class DaftarPromoComponent implements OnInit {
 
   modalTitle:any;
   view:any;
+  nikUser:any;
 
   //tanggal
   tglMaker:any;
@@ -41,12 +44,17 @@ export class DaftarPromoComponent implements OnInit {
     private promotionSettingService : PromotionSettingService,
     private toastrService : ToastrService,
     private datePipe: DatePipe,
-    private tanggalService:TanggalService
+    private tanggalService:TanggalService,
+    private sessionService: SessionService,
   ) { }
 
   ngOnInit(): void {
     this.fromSearch();
     this.filterPromotion('name');
+
+    this.nikUser = this.sessionService.getUser();
+    this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser)),"role":this.nikUser.role.name} ;
+    console.debug(this.nikUser.role)
   }
 
   fromSearch(){
@@ -185,6 +193,10 @@ export class DaftarPromoComponent implements OnInit {
     this.isiPromosi = new FormGroup({
       _id: new FormControl ("", Validators.required),
       flag: new FormControl ("", Validators.required),
+      approval: new FormControl (this.nikUser._hash, Validators.required),
+      approval_encoded: new FormControl ("base64"),
+      approvalDate: new FormControl (this.datePipe.transform(Date.now(),'MM/dd/yyyy')),
+      approvalTime: new FormControl(this.datePipe.transform(Date.now(),'h:mm:ss a')),
     });
 
     this.isiPromosi.patchValue({_id:id,flag:flag});
