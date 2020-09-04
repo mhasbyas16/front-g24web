@@ -33,12 +33,8 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
   // @ViewChild('inisiasi', {static: false}) inisiasi : NgForm;
   @ViewChild('product') product : ElementRef;
 
-  @ViewChild('Mulia', {static:false}) muliaInput : TemplateRef<any>;
   @ViewChild('Berlian', {static: false}) berlianInput : TemplateRef<any>;
   @ViewChild('Adiratna', {static: false}) adiratnaInput : TemplateRef<any>;
-  @ViewChild('Souvenir', {static: false}) souvenirInput : TemplateRef<any>;
-  @ViewChild('Gift', {static: false}) giftInput : TemplateRef<any>;
-  @ViewChild('Dinar', {static: false}) dinarInput : TemplateRef<any>;
 
   btoa = btoa;
   parseInt = parseInt;
@@ -682,7 +678,7 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
   {
     let i = this.input['items'].indexOf(this.selected);
     console.log(i)
-    this.input['items']?.splice(this.selectedId, 1);
+    this.input['items']?.splice(i, 1);
     this.onResetItem();
   }
 

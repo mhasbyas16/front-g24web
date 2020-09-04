@@ -13,17 +13,17 @@ import { DataTypeUtil } from 'projects/main/src/app/g24/lib/helper/data-type-uti
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { IDetailCallbackListener } from 'projects/main/src/app/g24/lib/base/idetail-callback-listener';
 import { OrdersModule } from '../../../../orders/orders.module';
-import { DetailPenerimaanPerhiasanComponent } from '../detail-penerimaan-perhiasan.component';
+import { ProductSeriesService } from 'projects/main/src/app/g24/services/product/product-series.service';
 
 /**
- * Penerimaan perhiasan baru isi ke stock/product
+ * Penerimaan gift baru isi ke stock/product
  */
 @Component({
-  selector: 'detail-item-penerimaan-perhiasan',
-  templateUrl: './detail-item-penerimaan-perhiasan.component.html',
-  styleUrls: ['./detail-item-penerimaan-perhiasan.component.scss']
+  selector: 'detail-item-penerimaan-emas',
+  templateUrl: './detail-item-penerimaan-emas.component.html',
+  styleUrls: ['./detail-item-penerimaan-emas.component.scss']
 })
-export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
+export class DetailItemPenerimaanEmasComponent implements OnInit {
 
   constructor
   (
@@ -32,7 +32,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
 
     private inisiasiService : InisiasiService,
     private kadarService : ProductPurityService,
-    private jenisService : ProductJenisService,
+    private seriesService : ProductSeriesService,
     private goldColorService : ProductGoldColorService,
     private productService : ProductService
   ) { }
@@ -44,36 +44,11 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
 
   EPriviledge = EPriviledge;
 
-  jeniss : any[] = [];
+  series : any[] = [];
 
   LoadAllParameter()
   {
-    this.LoadJenis();
-  }
 
-  async LoadJenis()
-  {
-    this.jeniss = [];
-    let jeniss = await this.jenisService.list("?product-category.code=c00").toPromise();
-    if(jeniss)
-    {
-      if(jeniss.length <= 0)
-      {
-        this.toastr.error("Gagal loading Parameter Jenis. Harap coba proses lagi. Apabila kegagalan terjadi lagi, harap hubungi IT Support/Helpdesk", "Load Jenis Failed");
-        this.doReset();
-        this.Close();
-        return;
-      }
-
-      this.toastr.success("Parameter 'Jenis Perhiasan' loaded...");
-      this.jeniss.push(...jeniss);
-      this.jeniss.sort((a, b) => ('' + a.name).localeCompare(b.name));
-    } else {
-      this.toastr.error("Gagal loading Parameter Jenis. Harap coba proses lagi. Apabila kegagalan terjadi lagi, harap hubungi IT Support/Helpdesk", "Load Jenis Failed")
-      this.doReset();
-      this.Close();
-      return;
-    }
   }
 
   isOpened : boolean = false;
@@ -86,7 +61,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     this.isOpened = open
   }
 
-  private title : string = "Detail Penerimaan Perhiasan";
+  private title : string = "Detail Penerimaan Gift";
   public get Title()
   {
     return this.title;
@@ -109,7 +84,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
       return;
     }
 
-    this.inisiasiService.list("?_or=product-category.code=c00&no_po="+id).subscribe(output => 
+    this.inisiasiService.list("?_or=product-category.code=c04&no_po="+id).subscribe(output => 
     {
       if(output != false)
       {
@@ -177,12 +152,12 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
   defaultProduct()
   {
     return {
-      _id : "", code : "", sku : "", 
-      "product-jenis" : null, "product-category" : null, "product-purity" : null, "product-gold-color" : null,
-      berat : 0.00, baku_tukar : 0.0, ongkos : 0.0, unit : null,
+      _id : "", code : "", sku : "",
+      "product-category" : null, "product-denom" : null, "product-series" : null,
+      berat : 0.00, ongkos_pieces : 0.0, unit : null,
       tipe_stock : "stock", vendor : null, flag : "stock", location : "",
       no_po : "", no_item_po : 0, no_index_products : 0,
-      hpp_inisiasi : 0, hpp : 0
+      hpp_inisiasi : 0, hpp : 0, isTerima : false
 
     }
   }
@@ -207,6 +182,25 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     this.LoadAllParameter();
 
     this.fillItemsWithProducts();
+    this.fillItemTerima();
+  }
+
+  fillItemTerima()
+  {
+    let items = this.inisiasi.items;
+    for(let i = 0; i < items.length; i++)
+    {
+      let item = items[i];
+      let products = item.products;
+      for(let x = 0; x < products.length; x++)
+      {
+        let product = products[x];
+        if(product.isTerima)
+        {
+          this.idTerima.set(product.no_item_po +"-"+ product.no_index_products, product);
+        }
+      }
+    }
   }
 
   ts;
@@ -254,45 +248,6 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     }
   }
 
-  onAddProduct(itemsIndex)
-  {
-    let item = this.inisiasi.items[itemsIndex];
-
-    let def = this.defaultProduct();
-    def.sku = item['sku'];
-    def['product-category'] = this.inisiasi['product-category'];
-    def['vendor'] = this.inisiasi['vendor'];
-    def["product-purity"] = item['product-purity'];
-    def["product-gold-color"] = item['product-gold-color'];
-    def['product-jenis'] = item['product-jenis'];
-    def.baku_tukar = item['baku_tukar'] / 10.0;
-    def.no_po = this.inisiasi['no_po'];
-    def.ongkos = item['ongkos'];
-    def.flag = FlagProduct.STOCK.code;
-    def.tipe_stock = TipeStock.STOCK.code;
-    def.location = LocationProduct.PUSAT.code;
-    def.no_item_po = item.products.length;
-
-    if(!item['products'])
-    {
-      let array = [];
-
-      array.push(def);
-      item['products'] = array;
-    }
-    else
-    {
-      let products : any[] = item['products'];
-      if(products.length >= item.pieces)
-      {
-        this.toastr.warning("Jumlah barang pada bulk tersebut sudah sesuai pesanan");
-        return;
-      }
-
-      products.push(def);
-    }
-  }
-
   fillItemsWithProducts()
   {
     let items = this.inisiasi.items;
@@ -318,17 +273,17 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
         def.sku = item['sku'];
         def['product-category'] = this.inisiasi['product-category'];
         def['vendor'] = this.inisiasi['vendor'];
-        def["product-purity"] = item['product-purity'];
-        def["product-gold-color"] = item['product-gold-color'];
-        def['product-jenis'] = item['product-jenis'];
-        def.baku_tukar = item['baku_tukar'] / 10.0;
+        def["product-denom"] = item['product-denom'];
+        def["product-series"] = item['product-series'];
         def.no_po = this.inisiasi['no_po'];
-        def.ongkos = item['ongkos'];
+        def.ongkos_pieces = item['ongkos_pieces'];
         def.flag = FlagProduct.STOCK.code;
         def.tipe_stock = TipeStock.STOCK.code;
         def.location = LocationProduct.PUSAT.code;
         def.no_item_po = i;
         def.no_index_products = p;
+        def.hpp_inisiasi = Number(item.total_harga) / item.pieces;
+        def.hpp = def.hpp_inisiasi;
         def.unit = this.unit;
 
         products.push(def);
@@ -345,71 +300,6 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
       this.toastr.warning("Barang sudah masuk ke Stock", "Tidak dapat menghapus data.");
       return;
     }
-  }
-
-  getTotalBeratOfItem(item)
-  {
-    let berat : number = 0.0;
-    let products = item['products'];
-
-    for(let i = 0; i < products.length; i++)
-    {
-      let pBerat : number = (isNaN(Number(products[i].berat)) ? 0 : Number(products[i].berat));
-      berat += pBerat;
-    }
-
-    return Number(berat.toFixed(2));
-  }
-
-  beratStyleValid(item)
-  {
-    let products = item?.products;
-    let len = products == null ? 0 : products.length
-    let berat : number = 0.0;
-
-    for(let i = 0; i < len; i++)
-    {
-      let pBerat : number = (isNaN(Number(products[i].berat)) ? 0 : Number(products[i].berat));
-
-      berat += Number(pBerat);
-    }
-    
-    if(berat == Number(item.berat)) return {};
-
-    return {'text-decoration': 'underline','text-decoration-color': 'red', 'color' : 'red'};
-  }
-  
-  getTotalGramTukarOfItem(item)
-  {
-    let gram_tukar : number = 0.0;
-    let products = item['products'];
-
-    for(let i = 0; i < products.length; i++)
-    {
-      let pGramTukar : number = (isNaN(Number(products[i].gram_tukar)) ? 0 : Number(products[i].gram_tukar));
-
-      gram_tukar += pGramTukar;
-    }
-
-    return Number(gram_tukar.toFixed(2));
-  }
-
-  gramTukarStyleValid(item)
-  {
-    let products = item?.products;
-    let len = products == null ? 0 : products.length
-    let value : number = 0.0;
-
-    for(let i = 0; i < len; i++)
-    {
-      let pGramTukar : number = (isNaN(Number(products[i].gram_tukar)) ? 0 : Number(products[i].gram_tukar));
-
-      value += Number(pGramTukar);
-    }
-    
-    if(Number(value.toFixed(2)) == item.gram_tukar) return {};
-
-    return {'text-decoration': 'underline','text-decoration-color': 'red', 'color' : 'red'};
   }
 
   /**
@@ -530,14 +420,12 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
       return;
     }
 
-    this.inisiasi.order_status = OrderStatus.TERIMA_FULL.code;
     this.inisiasi.update_date = new Date().toISOString().split("T")[0];
     this.inisiasi.update_by = this.user.username;
     this.inisiasi['tgl_terima'] = this.inisiasi.update_date;
     this.inisiasi.terima_by = this.user.username;
     let items = this.inisiasi.items;
     let productNoId = [];
-    let ids = [];
     console.log(items);
     
     for(let i = 0; i < items.length; i++)
@@ -550,8 +438,6 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     
     console.log(productNoId);
 
-    let failedIndex : any[] = [];
-    let someFailed : boolean = false;
     for(let i =0; i < productNoId.length; i++)
     {
       let product = productNoId[i];
@@ -573,6 +459,8 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
         console.log(result);
       }
     }
+
+    this.inisiasi.order_status = OrderStatus.TERIMA_FULL.code;
 
     console.log(this.inisiasi);
     let tempInisiasi = {}
@@ -613,5 +501,48 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     //   let product = result[i];
       
     // }
+  }
+
+  checkNumber : number = 0;
+  idTerima : Map<String,any>  = new Map<String,boolean>();
+  onCheckAll(data)
+  {
+    console.log(data)
+    console.log(this.idTerima)
+    let products = data.products;
+    let cekNum = this.checkNumber;
+    let checked = 0;
+    for(let i = 0; i < products.length; i++)
+    {
+      let product = products[i];
+      let key = product.no_item_po + "-" + product.no_index_products;
+
+      if(checked == cekNum && cekNum > 0 && data.checked) break;
+
+      if(!this.idTerima.has(key))
+      {
+        if(!data.checked)
+        {
+          product.isTerima = data.checked;
+          checked++;
+          continue;
+        }
+
+        checked++;
+        product.isTerima = data.checked;
+      }
+    }
+  }
+
+  isAlreadyTerima(product)
+  {
+    let key = product.no_item_po + "-" + product.no_index_products;
+    if(this.idTerima.has(key))
+    {
+      console.log(key, "key");
+      return true;
+    }
+
+    return false;
   }
 }

@@ -683,7 +683,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   {
     let i = this.input['items'].indexOf(this.selected);
     console.log(i)
-    this.input['items']?.splice(this.selectedId, 1);
+    this.input['items']?.splice(i, 1);
     this.onResetItem();
   }
 

@@ -647,7 +647,7 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
   {
     let i = this.input['items'].indexOf(this.selected);
     console.log(i)
-    this.input['items']?.splice(this.selectedId, 1);
+    this.input['items']?.splice(i, 1);
     this.onResetItem();
   }
 

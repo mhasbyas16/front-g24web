@@ -16,22 +16,22 @@ import { StringHelper } from '../../../../lib/helper/string-helper';
 import { EPriviledge } from '../../../../lib/enums/epriviledge.enum';
 import { OrderStatus } from '../../../../lib/enum/order-status';
 import { IDetailCallbackListener } from '../../../../lib/base/idetail-callback-listener';
-import { DetailItemPenerimaanGiftComponent } from './detail-item-penerimaan-gift/detail-item-penerimaan-gift.component';
+import { DetailItemPenerimaanEmasComponent } from './detail-item-penerimaan-emas/detail-item-penerimaan-emas.component';
 
 @Component({
-  selector: 'detail-penerimaan-gift',
-  templateUrl: './detail-penerimaan-gift.component.html',
-  styleUrls: ['./detail-penerimaan-gift.component.scss'],
+  selector: 'detail-penerimaan-emas',
+  templateUrl: './detail-penerimaan-emas.component.html',
+  styleUrls: ['./detail-penerimaan-emas.component.scss'],
   providers : [DatePipe]
   // changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DetailPenerimaanGiftComponent extends BasePersistentFields implements OnInit, AfterViewInit, IDetailCallbackListener
+export class DetailPenerimaanEmasComponent extends BasePersistentFields implements OnInit, AfterViewInit, IDetailCallbackListener
 {
   @ViewChild('container', { read: ViewContainerRef}) container : ViewContainerRef;
 
   // @ViewChild('inisiasi', {static: false}) inisiasi : NgForm;
   @ViewChild('product') product : ElementRef;
-  @ViewChild('item_terima') modalItemTerima : DetailItemPenerimaanGiftComponent;
+  @ViewChild('item_terima') modalItemTerima : DetailItemPenerimaanEmasComponent;
 
   btoa = btoa;
   parseInt = parseInt;
@@ -261,7 +261,7 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
     {
       this.products.pop();
     }
-    let products = await this.productCatService.list("?code=c04").toPromise();
+    let products = await this.productCatService.list("?code=c05").toPromise();
 
     console.log(products);
 
@@ -293,7 +293,7 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
     for(let i = 0; i < this.products.length; i++)
     {
       let kategori = this.products[i];
-      if(kategori.code == "c04")
+      if(kategori.code == "c05")
       {
         this.input['product-category'] = kategori;
         break;
@@ -392,9 +392,9 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
       return;
     }
 
-    let unit_p = this.unit['code'];
+    let unit_p = "&unit=" + this.unit['code'];
 
-    let params = "?product-category.code=c04&status_bayar=1" + bayar_p + create_p + order_status_p + unit_p;
+    let params = "?product-category.code=c05&status_bayar=1" + bayar_p + create_p + order_status_p + unit_p;
     // params += "&unit="+ this.unit.code;
     
     this.loading = true;

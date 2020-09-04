@@ -124,11 +124,11 @@ export class InisiasiComponent extends BasePersistentFields implements OnInit, A
     for(let i = 0; i < products.length; i++)
     {
       this.products.push(products[i]);
-      if(this.products[i].code.includes('00'))
-      {
-        this.input['product-category'] = this.products[i];
-        console.log(this.input);
-      }
+      // if(this.products[i].code.includes('00'))
+      // {
+      //   this.input['product-category'] = this.products[i];
+      //   console.log(this.input);
+      // }
     }
     this.products.sort((a, b) => ('' + a.name).localeCompare(b.name));
   }

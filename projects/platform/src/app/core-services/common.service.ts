@@ -420,7 +420,7 @@ export class CommonService {
     });
   }
 
-  public getDate() {
+  public getDate(): Observable<any>  {
     return Observable.create(observer => {
 
       const url = `${this.sessionService.server}/date`;

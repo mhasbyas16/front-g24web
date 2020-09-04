@@ -95,6 +95,15 @@ export enum EMenuID {
      * Starts from 9900
      */
     SYSTEM_PARAM        = '9900',
+    
+    PARAM_KATEGORI      = '9901',
+    PARAM_CLARITY       = '9902',
+    PARAM_DENOM         = '9903',
+    PARAM_DIAMOND_COLOR  = '9904',
+    PARAM_GOLD_COLOR    = '9905',
+    PARAM_JENIS         = '9906',
+    PARAM_PURITY        = '9907',
+    PARAM_SERIES        = '9908',
 
     DISTRO              = '10001',
     ROLE                = '10002',

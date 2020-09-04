@@ -404,7 +404,15 @@ export class DetailPenerimaanSouvenirComponent extends BasePersistentFields impl
         return;
     }
 
-    let params = "?product-category.code=c02" + bayar_p + create_p + order_status_p;
+    if(this.unit == null)
+    {
+      this.toastr.error("Unit Kerja kosong Harap refresh screen, jika error masih terjadi mohon hubungi IT Helpdesk/Support.");
+      return;
+    }
+
+    let unit_p = this.unit['code'];
+
+    let params = "?product-category.code=c02&status_bayar" + bayar_p + create_p + order_status_p + unit_p;
     // params += "&unit="+ this.unit.code;
     
     this.loading = true;
