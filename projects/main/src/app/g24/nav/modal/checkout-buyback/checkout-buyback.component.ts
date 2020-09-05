@@ -6,6 +6,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { TransactionService } from '../../../services/transaction/transaction.service';
 import { TransactionMethodService } from '../../../services/transaction/transaction-method.service';
+import { ToastrService } from 'ngx-toastr';
 
 import { DatePipe } from '@angular/common';
 
@@ -38,19 +39,22 @@ export class CheckoutBuybackComponent implements OnInit {
  
   totalBelanja: number;
   checkoutModal: boolean;
-
+  validModel:boolean= false;
   transactionMethod:any;
 
 
   //session
   nikUser: any;
   idtransaksiBB: string;
+  diterima: any;
+  kembali: number;
 
   constructor(
     private sessionService: SessionService,
     private transactionService: TransactionService,
     private datePipe: DatePipe,
     private transactionMethodService : TransactionMethodService,
+    private toastr: ToastrService,
   ) { }
 
   ngOnInit(): void {
@@ -68,6 +72,8 @@ export class CheckoutBuybackComponent implements OnInit {
       name: new FormControl ("",[ Validators.required]),
       idTransactionBB: new FormControl ("",[ Validators.required]),
       metodeBayar: new FormControl ("", Validators.required),
+      nominalTransaksi: new FormControl (""),
+      kembali: new FormControl (""),
     })
 
     console.debug(PERHIASAN, "sadsda")
@@ -102,7 +108,7 @@ export class CheckoutBuybackComponent implements OnInit {
   }
 
   getTransactionMethod(){
-    this.transactionMethodService.list("?_hash=1").subscribe((response:any)=>{
+    this.transactionMethodService.list("?_hash=1&transaction-type.code=b01").subscribe((response:any)=>{
       if (response != false) {
         this.transactionMethod = response;
       }
@@ -150,10 +156,35 @@ export class CheckoutBuybackComponent implements OnInit {
       this.idtransaksiBB = unit.code+"06"+d3+inc;
       this.formData.patchValue({idTransactionBB:this.idtransaksiBB,idAi:Number(response["0"]["idAi"])+1});
     });
+
+    this.getTransactionMethod();
   }
 
   bankValid(val){}
+  diterimaUang(total){
+    total = total.replace(/,/g, '')
+    this.diterima = total;
+    this.kembali = total-this.totalBelanja;
+  }
+  transaction(){
+    
+    if (!this.formData.valid) {
+      this.toastr.error("form Not Completed","Transaction");
+      console.debug(this.formData.getRawValue());
+      return;
+    }
+    if (this.kembali < 0) {
+      this.toastr.error("Nilai Tidak Cukup","Transaction");
+      return;
+    }
+     
+    this.validModel = true;
+  }
+
   refreshId(){
     this.idTransaksi();
+  }
+  storeTransaction(){
+    
   }
 }

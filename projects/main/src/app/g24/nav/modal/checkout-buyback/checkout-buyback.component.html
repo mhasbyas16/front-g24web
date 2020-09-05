@@ -160,12 +160,35 @@
                                         {{i.name}}</label>
                                 </clr-radio-wrapper>
                             </clr-radio-container>
+                            <clr-input-container>
+                                <label>Nominal Transaksi</label>
+                                <input clrInput type="text" formControlName="nominalTransaksi" (keyup)="diterimaUang($event.target.value)">
+                            </clr-input-container>
+                            <clr-input-container>
+                                <label>Kembali</label>
+                                <input clrInput type="text" formControlName="kembali" [value]="kembali | number" readonly>
+                            </clr-input-container>
                         </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="button" class="btn btn-block btn-primary" (click)="transaction()">Submit</button>
                     </div>
                 </div>
             </form>
         </div>
-</clr-modal>
+    </clr-modal>
+</ng-container>
+<ng-container *ngIf="validModel">
+    <clr-modal [(clrModalOpen)]="validModel" [clrModalSize]="'sm'">
+        <h3 class="modal-title">Confirmation</h3>
+        <div class="modal-body">
+            <p>Do You Want Process This Transaction ?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger-outline" (click)="validModel = false" >Cancel</button>
+            <button type="button" class="btn btn-primary" (click)="storeTransaction()">Process</button>
+        </div>
+    </clr-modal>
 </ng-container>
 
 <app-add-nasabah #addNasabah (clientData)="getClientData($event)"></app-add-nasabah>
