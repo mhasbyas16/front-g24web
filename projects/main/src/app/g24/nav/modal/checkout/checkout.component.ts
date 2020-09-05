@@ -247,7 +247,7 @@ export class CheckoutComponent implements OnInit {
     this.gs;  
     this.berlian
     this.dinar;
-    console.debug(this.gs,"wew")
+    console.debug(this.gs,"wew data")
   }
 
   // pembayaran

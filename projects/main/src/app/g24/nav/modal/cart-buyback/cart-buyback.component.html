@@ -95,8 +95,9 @@
             <ng-container *ngIf="totalCart > 0">
                 <span>Total : Rp. {{hargaTotalPerhiasan + hargaTotalEmasBatangan | number}} </span>
             <button type="button" class="btn btn-warning" (click)="removeCart()">Clear</button>
-            
+            <button type="button" class="btn btn-primary" (click)="CO.openModal(hargaTotalPerhiasan+hargaTotalEmasBatangan)">Check Out</button>
             </ng-container>            
         </div>
     </clr-modal>
 </ng-container>
+<app-checkout-buyback #CO (cartModal)="modalView($event)" ></app-checkout-buyback>

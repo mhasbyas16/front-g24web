@@ -14,8 +14,8 @@ export class CartBuybackComponent implements OnInit {
   @Output() data:any = new EventEmitter();
 
   @Input() totalCart : any;
-  @Input() hargaTotalPerhiasan : any;
-  @Input() hargaTotalEmasBatangan : any;
+  @Input() hargaTotalPerhiasan : any = 0
+  @Input() hargaTotalEmasBatangan : any = 0
   
 
   cartModal : any
@@ -79,4 +79,6 @@ export class CartBuybackComponent implements OnInit {
       this.clearParentCart.emit(0);
     }
   }
+
+ 
 }

@@ -127,8 +127,15 @@ export class DinarComponent implements OnInit {
         this.dinars = response
         this.productService.count(this.params).subscribe((response: any) => {
           this.qty = response.count;
-          this.prmJualService.list(this.params).subscribe((Jualresponse: any) => {
-            let prmJual = Jualresponse
+          this.prmJualService.get("?"+this.vendorCategory).subscribe((Jualresponse: any) => {
+            let prmJual = Jualresponse.harga
+            for (let index = 0; index < prmJual.length; index++) {
+              if (prmJual[index]["product-denom"].code == denom) {
+                this.hargaBaku = prmJual[index].harga_baku
+              }
+            }
+            console.debug(this.hargaBaku,"hargaBaku")
+            console.debug(prmJual, "wewe")
             this.prmMarginService.list("?"+this.vendorCategory).subscribe((Marginresponse: any) => {
               let prmMargin = Marginresponse
 
@@ -136,7 +143,8 @@ export class DinarComponent implements OnInit {
               console.debug(prmJual,"jual")
               console.debug(prmMargin,"marg")
 
-              let hargaDinar = this.pricingService.priceDinar((prmJual[0]['harga-baku']), Number(prmMargin[0].margin));
+              let hargaDinar = this.pricingService.priceDinar(this.hargaBaku, Number(prmMargin[0].margin));
+              hargaDinar = Math.ceil(hargaDinar/1000)*1000;
                 cariDinar.push({
                   "vendor" : this.dinars[0].vendor.name,
                   "denom" : this.dinars[0]['product-denom'].name,

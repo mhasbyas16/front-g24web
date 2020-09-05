@@ -13,10 +13,11 @@ import { AddNasabahComponent } from './modal/add-nasabah/add-nasabah.component';
 import { SearchNasabahComponent } from './modal/search-nasabah/search-nasabah.component';
 import { ModalOutletComponent } from './modal-outlet/modal-outlet.component';
 import { CartBuybackComponent } from './modal/cart-buyback/cart-buyback.component';
+import { CheckoutBuybackComponent } from './modal/checkout-buyback/checkout-buyback.component';
 
 
 @NgModule({
-  declarations: [HeaderComponent, SidebarComponent, ContentComponent, FooterComponent, CartComponent, CheckoutComponent, AddNasabahComponent, SearchNasabahComponent, ModalOutletComponent, CartBuybackComponent],
+  declarations: [HeaderComponent, SidebarComponent, ContentComponent, FooterComponent, CartComponent, CheckoutComponent, AddNasabahComponent, SearchNasabahComponent, ModalOutletComponent, CartBuybackComponent, CheckoutBuybackComponent],
   imports: [
     CommonModule,
     RouterModule,
