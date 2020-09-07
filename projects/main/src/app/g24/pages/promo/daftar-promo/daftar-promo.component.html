@@ -5,11 +5,11 @@
         </div>
         <div class="card-block">
             <div class="card-text">
-                <!-- <form clrForm [formGroup]="search" (ngSubmit)="filterTransaction('id')">
+                <form clrForm [formGroup]="search" (ngSubmit)="filterPromotion('name')">
                     <div class="clr-row clr-align-items-center">
                         <div class="clr-col-3">
                             <clr-date-container>
-                                <input clrDate type="date" formControlName="from" min="{{fromPick}}">
+                                <input clrDate type="date" formControlName="from">
                             </clr-date-container>
                         </div>
                         <div class="clr-col-3">
@@ -26,95 +26,210 @@
                             <button type="submit" class="btn btn-icon btn-sm btn-success">Search</button>
                         </div>
                     </div>                   
-                </form> -->
+                </form>
                 <!-- Data Grid -->
-                <!-- <clr-datagrid [clrDgLoading]="loadingDg" [(clrDgSelected)]="selected">
+                <clr-datagrid [clrDgLoading]="loadingDg">
                     <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
 
-                    <clr-dg-column>Tanggal</clr-dg-column>
-                    <clr-dg-column>ID</clr-dg-column>
-                    <clr-dg-column>Nama Customer</clr-dg-column>
-                    <clr-dg-column>CIF Customer</clr-dg-column>
-                    <clr-dg-column>Total Penjualan</clr-dg-column>
+                    <clr-dg-column>Nama Program</clr-dg-column>
+                    <clr-dg-column>Pembuat Program</clr-dg-column>
+                    <clr-dg-column>Tanggal Pembuatan</clr-dg-column>
+                    <clr-dg-column>Status</clr-dg-column>
                     <clr-dg-column class="right"></clr-dg-column>
 
-                    <clr-dg-row *clrDgItems="let isi of transactions" [clrDgItem]="isi"> 
-                        <clr-dg-cell>{{isi.makerDate}}, {{isi.makerTime}}</clr-dg-cell>
-                        <clr-dg-cell>{{isi.idTransaction}}</clr-dg-cell>
-                        <clr-dg-cell>{{isi.client.name}}</clr-dg-cell>
-                        <clr-dg-cell>{{isi.client.cif}}</clr-dg-cell>
-                        <clr-dg-cell>Rp. {{isi.jumlahTerima | number}}</clr-dg-cell>
-                        <clr-dg-cell>
-                                <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home"  (click)="exportPDF.PDFData(isi.idTransaction)">
-                                    PDF
-                                </button>
-                        </clr-dg-cell>
+                    <clr-dg-row *ngFor="let data of promotion" > 
+                        <clr-dg-action-overflow>
+                            <button class="action-item" (click)="actionView(data._hash, 'detail')">Detail</button>
+                            <ng-container *ngIf="data.flag == 0 && nikUser.role == 'kadetRetail'" >
+                                <!-- submitted -->
+                                <button class="action-item" (click)="actionView(data._hash, 'action')">Action</button>
+                            </ng-container>
+                            <ng-container *ngIf="data.flag == 0 && nikUser.role == 'staffRetail'">
+                                <button class="action-item" (click)="editPromo.openEdit(data._hash)">Edit</button>
+                                <button class="action-item">Delete</button>
+                            </ng-container>
+                        </clr-dg-action-overflow>
+                        <clr-dg-cell>{{data.name}}</clr-dg-cell>
+                        <clr-dg-cell>{{data.maker.name}} - {{data.maker.unit.nama}}</clr-dg-cell>
+                        <clr-dg-cell>{{data.makerDate}}, {{data.makerTime}}</clr-dg-cell>
+                        <ng-container *ngIf="data.flag == 0" >
+                            <!-- submitted -->
+                            <clr-dg-cell><span class="badge badge-info">Submitted</span></clr-dg-cell>
+                        </ng-container>
+                        <ng-container *ngIf="data.flag == 1">
+                            <!-- approve -->
+                            <clr-dg-cell><span class="badge badge-success">Approve</span></clr-dg-cell>
+                        </ng-container>
+                        <ng-container *ngIf="data.flag == 2">
+                            <!-- rejected -->
+                            <clr-dg-cell><span class="badge badge-danger">Rejected</span></clr-dg-cell>
+                        </ng-container>
+                        <clr-dg-cell>button</clr-dg-cell>
+                        
                     </clr-dg-row>
-                    <clr-dg-detail *clrIfDetail="let detail">
-                        <clr-dg-detail-header>List Product</clr-dg-detail-header>
-                        <clr-dg-detail-body>
-                            <ng-container *ngIf="detail.product.PERHIASAN.length != 0">
-                                <table class="table table-compact table-noborder">
-                                    <thead>
-                                        <tr>
-                                            <th class="left" colspan="8"><h3><b>Perhiasan</b></h3></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr *ngFor="let ip of detail.product.PERHIASAN | keyvalue">
-                                            <td class="left">{{ip.value.code}}</td>
-                                            <td class="left">{{ip.value.vendor}}</td>
-                                            <td class="left">{{ip.value.jenis}}</td>
-                                            <td class="left">{{ip.value.warna}}</td>
-                                            <td class="left">{{ip.value.kadar}}</td>
-                                            <td class="left">{{ip.value.berat}}</td>
-                                            <td class="left"></td>
-                                            <td class="left">Rp. {{ip.value.harga| number}}</td>
-                                        </tr>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr *ngFor="let isi of listTotalHarga">
-                                            <ng-container *ngIf="isi.idTransaction == detail.idTransaction">
-                                                <td class="left" colspan="8">TOTAL PERHIASAN Rp. {{isi.hargaP | number}}</td>
-                                            </ng-container>
-                                        </tr>
-                                    </tfoot>                 
-                                </table>
-                            </ng-container>
-
-                            <ng-container *ngIf="detail.product.BERLIAN.length != 0">
-                                <table class="table table-compact table-noborder">
-                                    <thead>
-                                        <tr>
-                                            <th class="left" colspan="8"><h3><b>Berlian</b></h3></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr *ngFor="let ip of detail.product.BERLIAN | keyvalue">
-                                            <td class="left">{{ip.value.code}}</td>
-                                            <td class="left">{{ip.value.vendor}}</td>
-                                            <td class="left">{{ip.value.jenis}}</td>
-                                            <td class="left">{{ip.value.warna}}</td>
-                                            <td class="left">{{ip.value.kadar}}</td>
-                                            <td class="left">{{ip.value.berat}}</td>
-                                            <td class="left"></td>
-                                            <td class="left">Rp. {{ip.value.harga| number}}</td>
-                                        </tr>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr *ngFor="let isi of listTotalHarga">
-                                            <ng-container *ngIf="isi.idTransaction == detail.idTransaction">
-                                                <td class="left" colspan="8">TOTAL BERLIAN Rp. {{isi.hargaB | number}} </td>
-                                            </ng-container>
-                                        </tr>
-                                    </tfoot>                 
-                                </table>
-                            </ng-container>
-                        </clr-dg-detail-body>
-                    </clr-dg-detail>
-                </clr-datagrid> -->
+                </clr-datagrid>
             </div>
         </div>
     </div>
 
 </div>
+
+<!-- Modals -->
+<ng-container *ngIf="actionModal">
+    <clr-modal [(clrModalOpen)]="actionModal" [clrModalSize]="'lg'">
+        <h3 class="modal-title">Promosi {{data.name}}</h3>
+        <div class="modal-body">
+            <form clrForm class="clr-form-compact" >
+                <clr-input-container>
+                    <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Nama Program</label>
+                    <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                    <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{data.name}}</label>
+                </clr-input-container>
+                <clr-input-container>
+                    <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Maker</label>
+                    <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                    <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{data.maker.name}}</label>
+                </clr-input-container>
+                <clr-input-container>
+                    <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Maker Date/Time</label>
+                    <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                    <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{tglMaker+', '+data.makerTime}}</label>
+                </clr-input-container>
+
+                <!-- Type Quota -->
+                <ng-container *ngIf="data.typeQuota == 0">
+                    <!-- tidak ada batasan -->
+                    <clr-input-container>
+                        <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Tipe Kuota</label>
+                        <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                        <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">Tidak Ada Batasan</label>
+                    </clr-input-container>                    
+                </ng-container>
+                <ng-container *ngIf="data.typeQuota == 1">
+                    <!-- Semua Produk -->
+                    <clr-input-container>
+                        <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Tipe Kuota</label>
+                        <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                        <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">Semua Product</label>
+                    </clr-input-container>
+                </ng-container>
+                <ng-container *ngIf="data.typeQuota == 2">
+                    <!-- per product -->
+                    <clr-input-container>
+                        <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Tipe Kuota</label>
+                        <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                        <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">Per Product</label>
+                    </clr-input-container>
+                </ng-container>
+                <!-- end type quota -->
+                
+                <ng-container *ngIf="data.typeQuota == 1">
+                    <clr-input-container>
+                        <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Kuota</label>
+                        <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                        <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{data.quota}}</label>
+                    </clr-input-container>
+                </ng-container>   
+                
+                <clr-input-container>
+                    <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Start/End Date</label>
+                    <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                    <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{tglStart+' - '+tglEnd}}</label>
+                </clr-input-container>
+                
+                <ng-container *ngIf="data.units == 1; else distroList">
+                    <clr-input-container>
+                        <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Distro</label>
+                        <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                        <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">Semua Distro</label>
+                    </clr-input-container>
+                </ng-container>
+                <ng-template #distroList>
+                    <clr-input-container>
+                        <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Distro</label>
+                        <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                        <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">
+                            <ol class="list">
+                                <li *ngFor="let isi of data.units">{{isi.nama}}</li>
+                            </ol>
+                        </label>
+                    </clr-input-container>
+                </ng-template>
+
+                <ng-container *ngIf="data['product-category'] == 1; else productList">
+                    <clr-input-container>
+                        <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Produk</label>
+                        <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                        <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">Semua Produk</label>
+                    </clr-input-container>
+                </ng-container> 
+                <ng-template #productList>
+                    <clr-input-container>
+                        <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Produk</label>
+                        <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                        <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">
+                            <ol class="list">
+                                <li *ngFor="let isi of data['product-category']">{{isi.name}}</li>
+                            </ol>
+                        </label>
+                    </clr-input-container>
+                </ng-template>  <br>            
+                
+                
+                <div class="card" style="margin-top: 0em;">   
+                    <div class="card-header">
+                        Pengaturan Promo Produk
+                    </div>   
+                    <div class="card-block">
+                        <div class="card-text">
+
+                            <div class="card" style="margin-top: 0em;" *ngFor="let product of data['product-category']">   
+                                <div class="card-header">
+                                    {{product.name}}
+                                </div>   
+                                <div class="card-block">
+                                    <div class="card-text">
+                                        <ng-container *ngFor="let li of data.product">
+                                            <!-- Perhiasan -->
+                                            <app-card-perhiasan [li]="li" [product]="product" [data]="data"></app-card-perhiasan>
+                                            <!-- end Perhiasan -->
+                                        </ng-container>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </form>           
+
+            
+        </div>
+        <div class="modal-footer">
+            <ng-container *ngIf="view == 'action'">
+                <clr-button-group>
+                    <clr-button class="btn btn-primary" (click)="modalConfirmation(data._id, 1, 'Approve')">Approve</clr-button>
+                    <clr-button class="btn btn-danger" (click)="modalConfirmation(data._id, 2, 'Reject')">Reject</clr-button>
+                </clr-button-group>
+            </ng-container>
+            <button type="button" class="btn btn-outline" (click)="actionModal = false">Close</button>
+        </div>
+    </clr-modal>
+</ng-container>
+
+<ng-container *ngIf="confirmation">
+    <clr-modal [(clrModalOpen)]="actionModal" [clrModalSize]="'sm'">
+        <div class="modal-body">
+            <p class="text-center">
+                <b>Are You Sure Want To {{modalTitle}} This Promotion ?</b>
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline" (click)="confirmation = false">No</button>
+            <button type="button" class="btn btn-primary" (click)="confirmationPromotion()">Yes</button>
+        </div>
+    </clr-modal>
+</ng-container>
+
+<app-edit-promo #editPromo></app-edit-promo>
