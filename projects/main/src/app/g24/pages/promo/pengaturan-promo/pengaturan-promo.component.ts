@@ -7,8 +7,10 @@ import { Select2OptionData } from 'ng-select2';
 import { Options } from 'select2';
 import { ToastrService } from 'ngx-toastr';
 import { ContentPage } from '../../../lib/helper/content-page';
+import { DatePipe } from "@angular/common";
 
 // services
+import { PromoService } from '../promo.service';
 import { UnitService } from '../../../services/system/unit.service';
 import { ProductCategoryService } from '../../../services/product/product-category.service';
 import { VendorService } from '../../../services/vendor.service';
@@ -20,7 +22,8 @@ import { SessionService } from 'projects/platform/src/app/core-services/session.
 @Component({
   selector: 'app-pengaturan-promo',
   templateUrl: './pengaturan-promo.component.html',
-  styleUrls: ['./pengaturan-promo.component.scss']
+  styleUrls: ['./pengaturan-promo.component.scss'],
+  providers:[DatePipe],
 })
 
 @DContent(PengaturanPromoComponent.key)
@@ -29,17 +32,28 @@ export class PengaturanPromoComponent implements OnInit {
   @ViewChild("manual") wizardManual: ClrWizard;
   @ViewChild("penjualan") wizardPenjualan: ClrWizard;
 
-  manualWizard: boolean = false;
-  penjualanWizard: boolean = false;
-  selectdistro:boolean = false;
-  inputKuota:boolean = false;
+  // Wizard
   perhiasan:boolean = false;
   berlian:boolean = false;
   mulia:boolean = false;
+
+  manualWizard: boolean = false;
+  penjualanWizard: boolean = false;
+  selectdistro:boolean = false;
+  selectProduct:boolean = false;
+  inputKuota:boolean = false;  
   kuotaProduk:boolean = false;
 
+  // get data ke child
+  getDataPerhiasan:boolean = false;
+
+  // passing data strore promosi
+  passingPerhiasan:boolean = false;
+
   section1_penjualan: FormGroup = null;
-  section2_perhiasan: FormGroup = null;
+  // Data 
+  dataPerhiasan:any;
+  product = [];
 
   public options:Options;
   public options2:Options;
@@ -67,6 +81,8 @@ export class PengaturanPromoComponent implements OnInit {
     private promotionSetiingService : PromotionSettingService,
     private sessionService: SessionService,
     private toastrService: ToastrService,
+    private datePipe: DatePipe,
+    private promoService:PromoService
   ) { }
 
   ngOnInit(): void {
@@ -115,10 +131,10 @@ export class PengaturanPromoComponent implements OnInit {
       }
       for (let isi of response) {
         unitarry.push({id:isi._hash,text:isi.nama});
-        data.push(JSON.parse(atob(isi._hash)));
+        // data.push(JSON.parse(atob(isi._hash)));
       }
       this.unit = unitarry;
-      this._hashUnit= btoa(JSON.stringify(data));
+      // this._hashUnit= btoa(JSON.stringify(data));
     });
   }
 
@@ -130,43 +146,17 @@ export class PengaturanPromoComponent implements OnInit {
       console.debug(val,"isi select")
     }
   }
-  pickUmur(val){
-    if (val == "du") {
-      this.umurPerhiasan = true;
+
+  select2Product(val){
+    if (val == 'pp'){
+      this.selectProduct = true;
     }else{
-      this.umurPerhiasan = false;
+      this.selectProduct = false;
     }
+    this.section1_penjualan.patchValue({typeQuota:""})
   }
+
   selectKuota(val){
-    let productCat:any;
-    for (let section of this.section1_penjualan.get("product-category").value) {
-      productCat = "";
-      productCat = JSON.parse(atob(section));
-      
-      switch (productCat.code) {
-        case "c00":
-          this.formPerhiasan();
-          this.perhiasan = true;
-          break;        
-        case "c01":
-          this.berlian = true;
-          break;
-        case "c02":
-          // this.perhiasan = true;
-          break;
-        case "c03":
-          // this.perhiasan = true;
-          break;
-        case "c04":
-          // this.perhiasan = true;
-          break;
-        case "c05":
-          this.mulia = true;
-          break;
-        default:
-          break;
-      }
-    }
     if (val == '0') {
       this.inputKuota = false;
       this.kuotaProduk = false;
@@ -179,79 +169,82 @@ export class PengaturanPromoComponent implements OnInit {
     }
   }
 
-  // setting
-  settingPerhiasan(){
-    let data = [];
-    let data2 = [];
-    let data3 = [];
-    this.vendorService.list("?_hash=1&product-category.code=c00&_sortby=name:1").subscribe((response:any)=>{
-      if (response == false) {
-        this.toastrService.error("load vendor perhiasan failed");
-        return;
-      }
-      for (let val of response) {
-        data.push({id:val._hash,text:val.name})
-      }
-      this.vendorPerhiasan = data;
-    })
+  productSelect(){
+    let arr = [];
+    if (this.selectProduct != true) {
+      this.perhiasan = true;
+      this.berlian = true;
+      this.mulia = true;
+    }else{
+      let productCat:any;
+    for (let section of this.section1_penjualan.get("pickProduct-category").value) {
+      productCat = "";
+      productCat = JSON.parse(atob(section));
+      arr.push(productCat)
+      console.debug(arr,"isi product arr")
+       
+    }
+    
+    if (arr.some(function(el){ return el.code === "c00"}) == true) {
+      this.perhiasan = true;
+    }else{
+      this.perhiasan = false;
+    }
 
-    this.productPurityService.list("?_hash=1&_sortby=name:1").subscribe((response:any)=>{
-      if (response == false) {
-        this.toastrService.error("load purity perhiasan failed");
-        return;
-      }
-      for (let val of response) {
-        data2.push({id:val._hash,text:val.name})
-      }
-      this.purityPerhiasan = data2;
-    })
+    if (arr.some(function(el){ return el.code === "c01"}) == true) {
+      this.berlian = true;
+    }else{
+      this.berlian = false;
+    }  
+    
+    // if (productCat.code == "c02") {
+    //   this.berlian = true;
+    // }else{
+    //   this.berlian = false;
+    // } 
 
-    this.productJenisService.list("?_hash=1&product-category.code=c00&_sortby=name:1").subscribe((response:any)=>{
-      if (response == false) {
-        this.toastrService.error("load jenis perhiasan failed");
-        return;
-      }
-      for (let val of response) {
-        data3.push({id:val._hash,text:val.name})
-      }
-      this.jenisPerhiasan = data3;
-    })
+    // if (productCat.code == "c03") {
+    //   this.berlian = true;
+    // }else{
+    //   this.berlian = false;
+    // } 
+
+    // if (productCat.code == "c04") {
+    //   this.berlian = true;
+    // }else{
+    //   this.berlian = false;
+    // } 
+
+    if (arr.some(function(el){ return el.code === "c05"}) == true) {
+      this.mulia = true;
+    }else{
+      this.mulia = false;
+    }
+    }
+    
   }
-
-  // end setting
 
   // form
   form(){
     this.section1_penjualan = new FormGroup({
-      nama : new FormControl ("", Validators.required),
+      name : new FormControl ("", Validators.required),
       startDate : new FormControl ("", Validators.required),
       endDate : new FormControl ("", Validators.required),
       units : new FormControl ("", Validators.required),
       pickUnits : new FormControl (""),
       'product-category' : new FormControl ("", Validators.required),
+      'pickProduct-category' : new FormControl (""),
       typeQuota : new FormControl ("", Validators.required),  
       quota : new FormControl (""),
+      maker : new FormControl (this.nikUser._hash, Validators.required),
+      maker_encoded : new FormControl ("base64"),
+      makerDate: new FormControl(this.datePipe.transform(Date.now(),'MM/dd/yyyy'), Validators.required),
+      makerTime: new FormControl(this.datePipe.transform(Date.now(),'h:mm:ss a'), Validators.required),
+      approval : new FormControl (""),
+      approvalDate: new FormControl(""),
+      approvalTime: new FormControl(""),
     });
   }
-
-  formPerhiasan(){
-    this.settingPerhiasan();
-    this.section2_perhiasan = new FormGroup({
-      prmPromotion : new FormControl ("", Validators.required),
-      minPrmPromotion : new FormControl ("", Validators.required),
-      maxPrmPromotion : new FormControl ("", Validators.required),
-      typePromotion : new FormControl ("", Validators.required),
-      sizeTypePromotion : new FormControl ("", Validators.required),
-      vendor: new FormControl ("", Validators.required),
-      purity: new FormControl ("", Validators.required),
-      typePerhiasan : new FormControl ("", Validators.required),
-      age : new FormControl ("", Validators.required),
-      minAge : new FormControl (""),
-      maxAge : new FormControl (""),
-      quota : new FormControl (""),
-    })
-  }
-  // end form
 
   openWizard(val){
     console.debug(val, "selected")
@@ -267,18 +260,22 @@ export class PengaturanPromoComponent implements OnInit {
     console.debug(this.section1_penjualan.get("product-category").value)
   }
 
-  storePromotion(){
+  getPerhiasan(data){
+      this.passingPerhiasan = data;
+      this.passingData();
+  }
+
+  passingData(){
+    if (this.passingPerhiasan == this.getDataPerhiasan) {
+      this.getDataPromosi();
+    }    
+  }
+
+  getDataPromosi(){
     let productCAT = [];    
     let PUnits = [];
     // section1
     let section1 = this.section1_penjualan.getRawValue();
-    // product category
-    for (let data of section1['product-category']) {
-      productCAT.push(JSON.parse(atob(data)))
-    }
-    console.debug (productCAT,"product");
-    section1['product-category']= btoa(JSON.stringify(productCAT));
-    section1['product-category_encoded'] = "base64array";
     // units
     if (section1.units == "pd") {
       for (let data of section1.pickUnits) {
@@ -290,62 +287,52 @@ export class PengaturanPromoComponent implements OnInit {
       delete section1.pickUnits;
     }else{
       delete section1.pickUnits
-      section1.units_encoded = "base64array";
+      // section1.units_encoded = "base64array";
+    }
+
+    // product
+    if (section1["product-category"] == "pp") {
+      for (let data of section1["pickProduct-category"]) {
+        productCAT.push(JSON.parse(atob(data)))      
+      }
+      section1["product-category"] = btoa(JSON.stringify(productCAT));
+      section1["product-category_encoded"] = "base64array";
+      delete section1["pickProduct-category"];
+    }else{
+      delete section1["pickProduct-category"];
+      // section1.units_encoded = "base64array";
     }
     // end section1
-
-    // section 2
-    let product = {};
-
-    if (this.perhiasan == true) {
-      let section2Perhiasan = this.section2_perhiasan.getRawValue();
-      // perhiasan
-      if (Object.keys(section2Perhiasan).length != 0) {
-        let isiVendor = [];
-        let isiPurity = [];
-        let isiTypePerhiasan = [];
-        // Vendors
-        for (let vendor of section2Perhiasan.vendor) {
-          isiVendor.push(JSON.parse(atob(vendor)))
-        }
-        section2Perhiasan.vendor= isiVendor;
-
-        // purity
-        for (let purity of section2Perhiasan.purity) {
-          isiPurity.push(JSON.parse(atob(purity)))
-        }
-        section2Perhiasan.purity= isiPurity;
-
-        // typePerhiasan
-        for (let typePerhiasan of section2Perhiasan.typePerhiasan) {
-          isiTypePerhiasan.push(JSON.parse(atob(typePerhiasan)))
-        }
-        section2Perhiasan.typePerhiasan= isiTypePerhiasan;
-      }
-
-      product['perhiasan'] = section2Perhiasan;
-    }
-    
-    // end section 2   
         
     let data = Object.assign(section1,{
-      'product' : btoa(JSON.stringify(product)),
-      'product_encoded':'base64',
+      'product' : btoa(JSON.stringify(this.promoService.product)),
+      'product_encoded':'base64array',
       'flag':'0'});
     console.debug (data,"isi data");
     // return;
-    
+    this.storePromotion(data);
+  }
+
+  storePromotion(data){   
 
     this.promotionSetiingService.add(data).subscribe((response:any)=>{
       if (response != false) {
         this.toastrService.success("add Succses");
-        this.ChangeContentArea('10004');
+        this.ChangeContentArea('10005');
         return;
       }else{
         this.toastrService.error("add Failed");
         return;
       }
     })
+  }
+  
+  // child get data
+  childView(){
+    if (this.perhiasan == true) {
+      this.getDataPerhiasan = true;
+    }    
+    
   }
 
   ChangeContentArea(pageId : string)
