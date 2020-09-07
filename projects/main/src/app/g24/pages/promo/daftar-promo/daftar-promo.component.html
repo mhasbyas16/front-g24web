@@ -46,7 +46,7 @@
                             </ng-container>
                             <ng-container *ngIf="data.flag == 0 && nikUser.role == 'staffRetail'">
                                 <button class="action-item" (click)="editPromo.openEdit(data._hash)">Edit</button>
-                                <button class="action-item">Delete</button>
+                                <button class="action-item" (click)="deletePromo(data._id)">Delete</button>
                             </ng-container>
                         </clr-dg-action-overflow>
                         <clr-dg-cell>{{data.name}}</clr-dg-cell>
@@ -94,6 +94,16 @@
                     <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Maker Date/Time</label>
                     <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
                     <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{tglMaker+', '+data.makerTime}}</label>
+                </clr-input-container>
+                <clr-input-container>
+                    <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Approval</label>
+                    <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                    <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{data.approval.name}}</label>
+                </clr-input-container>
+                <clr-input-container>
+                    <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Approval Date/Time</label>
+                    <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                    <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{tglApproval+', '+data.approvalTime}}</label>
                 </clr-input-container>
 
                 <!-- Type Quota -->
@@ -219,7 +229,7 @@
 </ng-container>
 
 <ng-container *ngIf="confirmation">
-    <clr-modal [(clrModalOpen)]="actionModal" [clrModalSize]="'sm'">
+    <clr-modal [(clrModalOpen)]="confirmModal" [clrModalSize]="'sm'">
         <div class="modal-body">
             <p class="text-center">
                 <b>Are You Sure Want To {{modalTitle}} This Promotion ?</b>
@@ -227,7 +237,7 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-outline" (click)="confirmation = false">No</button>
-            <button type="button" class="btn btn-primary" (click)="confirmationPromotion()">Yes</button>
+            <button type="button" class="btn btn-primary" (click)="confirmationPromotion(confirm)">Yes</button>
         </div>
     </clr-modal>
 </ng-container>
