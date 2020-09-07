@@ -124,7 +124,7 @@ export class EditPromoComponent implements OnInit {
   }
 
   editPromotion(data){   
-
+    console.debug (data,"isi data1211212");
     this.promotionSetiingService.update(data).subscribe((response:any)=>{
       if (response != false) {
         this.toastrService.success("Update Succses");

@@ -22,7 +22,7 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
 
   @Input() kuotaProduk:boolean = false;
   @Input() getData:boolean = false;
-  @Input() getEditData:any;
+  
   // @Input() editData:boolean = false;
 
   selectVendor:boolean = false;
@@ -54,10 +54,10 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnChanges(){
-    
     this.passingData(this.getData);
-    this.editData(this.getEditData);
+    // this.editData(this.getEditData);
   }
+
   ngOnInit(): void {
     this.formPerhiasan();
     this.settingPerhiasan();
@@ -75,6 +75,10 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
       closeOnSelect: false,
       width: '300'
     };
+  }
+
+  @Input() public set getEditData(val: any) {
+    this.editData(val);
   }
 
   editData(data:any){
@@ -117,22 +121,25 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
       })      
 
       // vendor
-      if (get.vendor == '1') {
-        this.section2_perhiasan.patchValue({vendor:'1'})
-        this.select2Vendor('1');
-      }else{
-        let ven=[];
-        let vendorVal = [];
-        let hash:any;
+      let ven=[];
+      let vendorVal = [];
   
-        this.vendorService.list('?_hash=1').subscribe((response:any)=>{
-          if (response == false) {
-            this.toastrService.error("Get Vendor Error");
-            return;
+      this.vendorService.list('?_hash=1').subscribe((response:any)=>{
+        if (response == false) {
+          this.toastrService.error("Get Vendor Error");
+          return;
+        }
+
+        if (get.vendor == '1') {
+          for (let res of response) {
+            ven.push({id:res._hash,text:res.name});       
           }
+          this.section2_perhiasan.patchValue({vendor:'1'})
+          this.select2Vendor('1');
+        }else{
           for (let res of response) {
             ven.push({id:res._hash,text:res.name});
-  
+    
             for (let isi of get.vendor) {
               if (res.code == isi.code) {
                 vendorVal.push(res._hash);
@@ -140,29 +147,35 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
             }          
           }
           this.valueVendor = vendorVal;
-          this.vendorPerhiasan = ven ;
-        })
-  
-        this.section2_perhiasan.patchValue({vendor:'pv'})
-        this.select2Vendor('pv');
-      }
+    
+          this.section2_perhiasan.patchValue({vendor:'pv'})
+          this.select2Vendor('pv');
+        }
+        this.vendorPerhiasan = ven ;
+      })
+
+      
 
       // purity
-      if (get.purity == '1') {
-        this.section2_perhiasan.patchValue({purity:'1'})
-        this.select2Purity('1');
-      }else{
-        let pur=[];
-        let purityVal = [];
+      let pur=[];
+      let purityVal = [];
   
-        this.productPurityService.list('?_hash=1').subscribe((response:any)=>{
-          if (response == false) {
-            this.toastrService.error("Get Purity Error");
-            return;
+      this.productPurityService.list('?_hash=1').subscribe((response:any)=>{
+        if (response == false) {
+          this.toastrService.error("Get Purity Error");
+          return;
+        }
+
+        if (get.purity == '1') {
+          for (let res of response) {
+            pur.push({id:res._hash,text:res.name});         
           }
+          this.section2_perhiasan.patchValue({purity:'1'})
+          this.select2Purity('1');
+        }else{
           for (let res of response) {
             pur.push({id:res._hash,text:res.name});
-  
+    
             for (let isi of get.purity) {
               if (res.code == isi.code) {
                 purityVal.push(res._hash);
@@ -170,29 +183,34 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
             }          
           }
           this.valuePurity = purityVal;
-          this.purityPerhiasan = pur ;
-        })
-  
-        this.section2_perhiasan.patchValue({purity:'pk'})
-        this.select2Purity('pk');
-      }
+          
+          this.section2_perhiasan.patchValue({purity:'pk'})
+          this.select2Purity('pk');
+        }
+        this.purityPerhiasan = pur ;
+        console.debug(this.purityPerhiasan,"pur")
+      })
 
       // jenis Perhiasan
-      if (get.typePerhiasan == '1') {
-        this.section2_perhiasan.patchValue({typePerhiasan:'1'})
-        this.select2TypePerhiasan('1');
-      }else{
-        let per=[];
-        let typeVal = [];
+      let per=[];
+      let typeVal = [];
   
-        this.productJenisService.list('?_hash=1').subscribe((response:any)=>{
-          if (response == false) {
-            this.toastrService.error("Get Type Perhiasan Error");
-            return;
+      this.productJenisService.list('?_hash=1').subscribe((response:any)=>{
+        if (response == false) {
+          this.toastrService.error("Get Type Perhiasan Error");
+          return;
+        }
+
+        if (get.typePerhiasan == '1') {
+          for (let res of response) {
+            per.push({id:res._hash,text:res.name});          
           }
+          this.section2_perhiasan.patchValue({typePerhiasan:'1'})
+          this.select2TypePerhiasan('1');
+        }else{
           for (let res of response) {
             per.push({id:res._hash,text:res.name});
-  
+    
             for (let isi of get.typePerhiasan) {
               if (res.code == isi.code) {
                 typeVal.push(res._hash);
@@ -200,17 +218,14 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
             }          
           }
           this.valueJenisPerhiasan = typeVal;
-          this.jenisPerhiasan = per ;
-        })
-  
-        this.section2_perhiasan.patchValue({typePerhiasan:'pj'})
-        this.select2TypePerhiasan('pj');
-      }
-
+    
+          this.section2_perhiasan.patchValue({typePerhiasan:'pj'})
+          this.select2TypePerhiasan('pj');
+        }
+        this.jenisPerhiasan = per ;
+        console.debug(this.jenisPerhiasan,"per")
+      })
     }
-
-    
-    
   }
 
   select2Vendor(val){
