@@ -52,4 +52,20 @@ export class PricingService {
     let hargaDinar = harga_baku * (1 + (margin / 100))
     return hargaDinar;
   }
+
+  buybackPricePerhiasan(cekKondisi: any, kadar: any, berat: any, hargaDasarBuyback : any){
+    let hargaBBPerhiasan = 0
+    if (cekKondisi == 1) {
+      if (kadar >= 750 ) {
+        hargaBBPerhiasan = Math.floor(hargaDasarBuyback * ((kadar+90)/1000) * berat / 1000)* 1000
+      } else {
+        hargaBBPerhiasan = Math.floor(hargaDasarBuyback * ((kadar+50)/1000) * berat / 1000)* 1000
+      }
+    }else if(cekKondisi == 2){
+        hargaBBPerhiasan = Math.floor(hargaDasarBuyback * ((kadar-20)/1000) * berat / 1000)* 1000
+    }else{
+        hargaBBPerhiasan = 0
+    }
+    return hargaBBPerhiasan
+  }
 }

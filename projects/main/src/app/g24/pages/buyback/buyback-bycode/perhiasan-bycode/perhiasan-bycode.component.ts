@@ -1,5 +1,8 @@
 import { Component, OnInit, Input, Output,  EventEmitter } from '@angular/core';
 import { PERHIASAN } from "projects/main/src/app/g24/sample/cart-buyback";
+import { PricingService } from '../../../../services/pricing.service';
+import { PrmJualService } from '../../../../services/parameter/prm-jual.service';
+
 
 @Component({
   selector: 'app-perhiasan-bycode',
@@ -22,32 +25,48 @@ export class PerhiasanBycodeComponent implements OnInit {
   cartList = PERHIASAN
   tampilKondisi: string;
   sumHarga : any ;
+  hargaDasarBuyback : any ;
 
-  constructor() { }
+  productCategory= "product-category.code=c00";
+  loadingDg: boolean;
+
+  constructor(
+    //pricing
+    private pricingService: PricingService,
+    private prmJualService: PrmJualService
+
+  ) { }
 
   ngOnInit(): void {
     
   }
   
-  hitungHargaBB(kondisi , code){
+  hitungHargaBB(kondisi: any , code : any, kadar : any, berat: any){
+    this.loadingDg = true
     this.hargaBB = 0
-    let cekKondisi = 0;
-    cekKondisi = kondisi;
-    
-    if (cekKondisi == 1) {
-      this.hargaBB = 2500000
+    this.prmJualService.get("?"+this.productCategory+"&flag=approved").subscribe((BBresponse: any) => {
+     
+        this.hargaDasarBuyback = BBresponse.harga_buyback
+        this.loadingDg = false
+      
+     
+    })
+
+    if (kondisi == 1) {
       this.tampilKondisi = "Baik"
-    }else if(cekKondisi == 2){
-      this.hargaBB = 2300000
+    }else if(kondisi == 2){
       this.tampilKondisi = "Rusak"
     }else{
       this.hargaBB = 0
     }
+    this.hargaBB = this.pricingService.buybackPricePerhiasan(kondisi, kadar, berat,this.hargaDasarBuyback )
+    
    for (let index = 0; index < this.isiPerhiasan.length; index++) {
     if (this.isiPerhiasan[index]["code"] == code) {
       this.isiPerhiasan[index]['hargaBB'] =  this.hargaBB
     }
    }
+  
   }
 
   addToCart(code, jenis, berat, kadar, hargaTbb ){
