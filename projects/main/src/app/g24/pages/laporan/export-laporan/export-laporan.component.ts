@@ -72,6 +72,9 @@ export class ExportLaporanComponent implements OnInit {
     this.innerDoc ={pageSize: 'A5', pageOrientation: 'landscape',pageMargins: [ 20, 20, 20, 40 ],};
     this.innerDoc['info'] = {title: data.client.cif+" - "+data.idTransaction }; 
 
+    let namaKasir = data.maker.name
+    let namaDistro = data.maker.unit.nama
+
     let printAlamat : any;
     let printnoHp : any;
     if (data.client.tipeClient.code == 1) {
@@ -458,7 +461,7 @@ export class ExportLaporanComponent implements OnInit {
             {text:'Voucher :'},
             {text:'Harga :'}
           ]
-        },'\n'
+        },  
       ]);
     }
 
@@ -469,10 +472,26 @@ export class ExportLaporanComponent implements OnInit {
         unbreakable: true,
         fontSize: 9,
         columns:[
-          {text:[
-            '* harga Termasuk pajak\n',
-            '* bukti pembelian ini merupakan kuitansi pembelian emas\n',
-            '* harap bukti pembelian ini disimpan jangan sampai hilang/rusak'],style:'footer'},
+          
+          [
+            { 
+              text: [
+                namaKasir+'\n\n\n\n',
+                namaDistro+'\n'
+                ], 
+              style: 'kek' 
+            },
+            { 
+              text:
+              [
+              '\n* harga Termasuk pajak\n',
+              '* bukti pembelian ini merupakan kuitansi pembelian emas\n',
+              '* harap bukti pembelian ini disimpan jangan sampai hilang/rusak'
+              ],
+              style:'footer'
+            },
+          ],
+
           {
             columns:[
               {width:80,text:[
@@ -521,8 +540,14 @@ export class ExportLaporanComponent implements OnInit {
         alignment: 'left',
       },
       footer:{
-        fontSize: 7,
+        fontSize: 6,
         alignment: 'left',
+        italics: true,
+      },
+      kek:{
+        fontSize: 9,
+        alignment: 'center',
+       
       }
 
     };

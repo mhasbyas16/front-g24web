@@ -94,8 +94,8 @@ export enum EMenuID {
      * Starts from 9900
      */
     SYSTEM_PARAM        = '9900',
-
-    // penjualan
+    
+    // Offline Sale
     DISTRO              = '10001',
     ROLE                = '10002',
     LAPORAN             = '10003',
@@ -103,6 +103,8 @@ export enum EMenuID {
     // promosi
     PENGATURAN_PROMO = '10004',
     DAFTAR_PROMO = '10005',
+    // offline buyback
+    BUYBACK             = '11001',
 
     // LAPORAN KEUANGAN
     LAPORAN_KEUANGAN = '21000',

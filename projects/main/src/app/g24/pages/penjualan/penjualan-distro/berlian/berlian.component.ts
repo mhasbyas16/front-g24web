@@ -147,29 +147,29 @@ export class BerlianComponent implements OnInit {
         }  
         this.berlians = response;
         // pricing
-        this.prmJualService.list("?"+this.vendorCategory).subscribe((Jualresponse: any) => {
+        this.prmJualService.get("?"+this.vendorCategory+"&flag=approved").subscribe((Jualresponse: any) => {
           if (Jualresponse != false) {
-            this.hargaBaku = Jualresponse;
+            this.hargaBaku = Jualresponse.harga_baku;
           }
           this.prmPpnService.list().subscribe((PPNresponse: any) => {
             if (PPNresponse != false) {
               ppn = PPNresponse['0']['ppn'];
             }      
-            this.prmMarginService.list().subscribe((Marginresponse: any) => {
+            this.prmMarginService.get("?"+this.vendorCategory).subscribe((Marginresponse: any) => {
               if (Marginresponse != false) {
                 this.margin = Marginresponse;
               }      
   
               for (let index = 0, len = this.berlians.length; index < len; index++) {
                this.datalist=this.pricingService.priceBatuMulia(
-                 this.hargaBaku['0']['harga-baku'],
+                 this.hargaBaku,
                  this.berlians[index]['product-purity']['name'],
                  Number(this.berlians[index]['berat']),
-                 this.margin['0']['margin'],
+                 this.margin['margin'],
                  Number(this.berlians[index]['hppBatu']),
-                 Number(this.berlians[index]['marginBatu']),
+                 Number(this.margin['marginBatu']),
                  Number(this.berlians[index]['hppBerlian']),
-                 Number(this.berlians[index]['marginBerlian']),
+                 Number(this.margin['marginBerlian']),
                  Number(this.berlians[index]['ongkosPembuatan']));
                 // harga_baku:any,kadar:any,berat:any,margin:any,hppBatu:any,marginBatu:any,hppBerlian:any,marginBerlian:any,ongkos:any
                 this.datalist = this.datalist*((100/100)+(Number(ppn)/100));
