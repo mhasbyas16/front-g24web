@@ -6,7 +6,14 @@ import { Select2OptionData } from 'ng-select2';
 import { ToastrService } from 'ngx-toastr';
 import { Options } from 'select2';
 
+// import { EMenuID } from '../../../../lib/enums/emenu-id.enum';
+// import { DContent } from '../../../../decorators/content/pages';
+import { ContentPage } from '../../../../lib/helper/content-page';
+
 // Services
+import { PromoService } from '../../promo.service';
+import { PromotionSettingService } from '../../../../services/promotion/promotion-setting.service';
+
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { UnitService } from '../../../../services/system/unit.service';
 import { ProductCategoryService } from '../../../../services/product/product-category.service';
@@ -21,6 +28,10 @@ import { ProductCategoryService } from '../../../../services/product/product-cat
 export class EditPromoComponent implements OnInit {
   section1_edit:FormGroup = null;
 
+  // Wizard
+  perhiasan:boolean = true;
+  berlian:boolean = true;
+  mulia:boolean = true;
 
   selectdistro:boolean = false;
   selectProduct:boolean = false;
@@ -30,13 +41,19 @@ export class EditPromoComponent implements OnInit {
 
   nikUser:any;
   dataEdit:any;
+  dataToChild:any;
   valuePC:string[]=[];
-  valueUnit:string[]=[];
+  valueUnit:string[];
   public options:Options;
   public options2:Options;
 
+  // get data ke child
+  getDataPerhiasan:boolean = false;
+  // passing data strore promosi
+  passingPerhiasan:boolean = false;
+
   // select2
-  unit:Array<Select2OptionData>;
+  unit:Array<Select2OptionData>=[];
   productCategory:Array<Select2OptionData>=[];
   constructor(
     private datePipe: DatePipe,
@@ -44,10 +61,136 @@ export class EditPromoComponent implements OnInit {
     private unitService:UnitService,
     private productCategoryService:ProductCategoryService,
     private toastrService: ToastrService,
+    private promoService:PromoService,
+    private promotionSetiingService : PromotionSettingService,
   ) { }
 
   ngOnInit(): void {
     this.form();
+    
+  }
+
+  getPerhiasan(data){
+    this.passingPerhiasan = data;
+    this.passingData();
+  }
+
+  passingData(){
+    if (this.passingPerhiasan == this.getDataPerhiasan) {
+      this.getDataPromosi();
+      console.debug("done")
+    }    
+  }
+
+  getDataPromosi(){
+    let productCAT = [];    
+    let PUnits = [];
+    // section1
+    let section1 = this.section1_edit.getRawValue();
+    // units
+    if (section1.units == "pd") {
+      for (let data of section1.pickUnits) {
+        PUnits.push(JSON.parse(atob(data)))      
+      }
+      console.debug (PUnits,"units");
+      section1.units = btoa(JSON.stringify(PUnits));
+      section1.units_encoded = "base64array";
+      delete section1.pickUnits;
+    }else{
+      delete section1.pickUnits
+      // section1.units_encoded = "base64array";
+    }
+
+    // product
+    if (section1["product-category"] == "pp") {
+      for (let data of section1["pickProduct-category"]) {
+        productCAT.push(JSON.parse(atob(data)))      
+      }
+      section1["product-category"] = btoa(JSON.stringify(productCAT));
+      section1["product-category_encoded"] = "base64array";
+      delete section1["pickProduct-category"];
+    }else{
+      delete section1["pickProduct-category"];
+      // section1.units_encoded = "base64array";
+    }
+    // end section1
+    let data = Object.assign(section1,{
+      'product' : btoa(JSON.stringify(this.promoService.product)),
+      'product_encoded':'base64array',
+      'flag':'0'});
+    console.debug (data,"isi data");
+    // return;
+    this.editPromotion(data);
+  }
+
+  editPromotion(data){   
+
+    this.promotionSetiingService.update(data).subscribe((response:any)=>{
+      if (response != false) {
+        this.toastrService.success("Update Succses");
+        this.ChangeContentArea('10005');
+        return;
+      }else{
+        this.toastrService.error("Update Failed");
+        return;
+      }
+    })
+  }
+
+  productSelect(data:any){
+    this.promoService.product.splice(0);
+    let arr = [];
+    if (this.selectProduct != true) {
+      this.perhiasan = true;
+      this.berlian = true;
+      this.mulia = true;
+    }else{
+      let productCat:any;
+    for (let section of this.section1_edit.get("pickProduct-category").value) {
+      productCat = "";
+      productCat = JSON.parse(atob(section));
+      arr.push(productCat)
+      console.debug(arr,"isi product arr")
+       
+    }
+    
+    if (arr.some(function(el){ return el.code === "c00"}) == true) {   
+      this.perhiasan = true;
+      this.dataToChild = data;
+    }else{
+      this.perhiasan = false;
+    }
+
+    if (arr.some(function(el){ return el.code === "c01"}) == true) {
+      this.berlian = true;
+    }else{
+      this.berlian = false;
+    }  
+    
+    // if (productCat.code == "c02") {
+    //   this.berlian = true;
+    // }else{
+    //   this.berlian = false;
+    // } 
+
+    // if (productCat.code == "c03") {
+    //   this.berlian = true;
+    // }else{
+    //   this.berlian = false;
+    // } 
+
+    // if (productCat.code == "c04") {
+    //   this.berlian = true;
+    // }else{
+    //   this.berlian = false;
+    // } 
+
+    if (arr.some(function(el){ return el.code === "c05"}) == true) {
+      this.mulia = true;
+    }else{
+      this.mulia = false;
+    }
+    }
     
   }
 
@@ -76,10 +219,13 @@ export class EditPromoComponent implements OnInit {
   }
 
   addToForm(data:any){
-    this.valueUnit.splice(0);
-    this.valuePC.splice(0);
-    this.productCategory.splice(0);
+    this.valueUnit=[];
+    this.valuePC=[];
+    this.productCategory=[];
+    this.unit=[];
+
     this.section1_edit.patchValue({
+      _id: data._id,
       name: data.name,
       startDate : data.startDate,
       endDate : data.endDate,
@@ -88,51 +234,77 @@ export class EditPromoComponent implements OnInit {
     });
     this.selectKuota(data.typeQuota);
 
-    if (data.units == '1') {
-      this.section1_edit.patchValue({units:'1'})
-      this.select2Distro('1');
-    }else{
-      let Unit=[];
-      let hash:any;
-      for (let isi of data.units) {
-        hash = btoa(JSON.stringify(isi));
-        Unit.push({id:hash,text:isi.nama});
-        this.valueUnit.push(hash);
-      }
-      this.unit = Unit;
-      this.section1_edit.patchValue({units:'pd'})
-      this.select2Distro('pd');
-    }
+    // units
+    let Unit=[];
+    let UnitVal = [];
 
-    if (data['product-category'] == '1') {
-      this.section1_edit.patchValue({'product-category':'1'})
-      this.select2Product('1');
-    }else{
-      let PC=[];
+    this.unitService.list('?_hash=1').subscribe((response:any)=>{
+      if (response == false) {
+        this.toastrService.error("Get Units Error");
+        return;
+      }
+
+      if (data.units == '1') {
+        for (let res of response) {
+          Unit.push({id:res._hash,text:res.nama});          
+        }
+        this.section1_edit.patchValue({units:'1'})
+        this.select2Distro('1');
+      }else{
+        for (let res of response) {
+          Unit.push({id:res._hash,text:res.nama});
+  
+          for (let isi of data.units) {
+            if (res.code == isi.code) {
+              UnitVal.push(res._hash);
+            }
+          }          
+        }
+        
+        this.valueUnit = UnitVal;
+        this.section1_edit.patchValue({units:'pd'})
+        this.select2Distro('pd');
+      }
+        this.unit = Unit ;
+    })
+
+    
+
+    // product category
+    let PC=[];
       let hash:any ;
       this.productCategoryService.list('?_hash=1').subscribe((response:any)=>{
         if (response == false) {
           this.toastrService.error("Get Product Category Error");
           return;
         }
-        for (let res of response) {
-          PC.push({id:res._hash,text:res.name});
 
-          for (let isi of data['product-category']) {
-            if (res.code == isi.code) {
-              this.valuePC.push(res._hash);
-            }
-          }          
-        }
+        if (data['product-category'] == '1') {
+          for (let res of response) {
+            PC.push({id:res._hash,text:res.name});       
+          }
+          this.section1_edit.patchValue({'product-category':'1'})
+          this.select2Product('1');
+        }else{
+          
+          for (let res of response) {
+            PC.push({id:res._hash,text:res.name});
+  
+            for (let isi of data['product-category']) {
+              if (res.code == isi.code) {
+                this.valuePC.push(res._hash);
+              }
+            }          
+          }
+          this.section1_edit.patchValue({'product-category':'pp'});
+          this.select2Product('pp');
+          // looping ke select2
+          //   'pickProduct-category' : new FormControl (""),
+        }       
+        
         this.productCategory = PC ;
       })
-      
-      this.section1_edit.patchValue({'product-category':'pp'});
-      this.select2Product('pp');
-      // looping ke select2
-      //   'pickProduct-category' : new FormControl (""),
-    }
-    console.debug(this.valuePC,"value PC")
+    
   }
 
   select2Distro(val){
@@ -168,6 +340,7 @@ export class EditPromoComponent implements OnInit {
   // form
   form(){
     this.section1_edit = new FormGroup({
+      _id: new FormControl ("", Validators.required),
       name : new FormControl ("", Validators.required),
       startDate : new FormControl ("", Validators.required),
       endDate : new FormControl ("", Validators.required),
@@ -185,5 +358,23 @@ export class EditPromoComponent implements OnInit {
       // approvalDate: new FormControl(""),
       // approvalTime: new FormControl(""),
     });
+  }
+
+  cancelWizard(){
+    this.form();
+    this.dataToChild = "";
+  }
+
+  // child get data
+  childView(){
+    if (this.perhiasan == true) {
+      this.getDataPerhiasan = true;
+    }    
+    
+  }
+  ChangeContentArea(pageId : string)
+  {
+    if(pageId.startsWith("x")) return;
+    ContentPage.ChangeContent(pageId, true)
   }
 }

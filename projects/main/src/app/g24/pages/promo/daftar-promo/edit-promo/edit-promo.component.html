@@ -1,11 +1,11 @@
 <!-- wizard penjualan -->
 <clr-wizard #penjualan [(clrWizardOpen)]="editPromosi">
-    <clr-wizard-title>Promo Penjualan</clr-wizard-title>
+    <clr-wizard-title>Edit Promo Penjualan</clr-wizard-title>
 
-    <clr-wizard-button [type]="'cancel'">Cancel</clr-wizard-button>
+    <clr-wizard-button [type]="'cancel'" (click)="cancelWizard()">Cancel</clr-wizard-button>
     <clr-wizard-button [type]="'previous'">Back</clr-wizard-button>
-    <clr-wizard-button [type]="'next'" >Next</clr-wizard-button>
-    <clr-wizard-button [type]="'finish'">Finish</clr-wizard-button>
+    <clr-wizard-button [type]="'next'" (click)="productSelect(dataEdit)">Next</clr-wizard-button>
+    <clr-wizard-button [type]="'finish'" (click)="childView()">Finish</clr-wizard-button>
     <!-- section 1 -->
     <clr-wizard-page > <!--[clrWizardPageNextDisabled]="!section1_edit.valid"-->
         <ng-template clrPageTitle>Inisiasi</ng-template>
@@ -76,7 +76,6 @@
                             [data]="productCategory"
                             [(ngModel)]="valuePC"
                             [options]="options2"></ng-select2>
-                            
                     </div>
                 </div>
             </ng-container>
@@ -111,7 +110,14 @@
     <!-- section 2 -->
     <clr-wizard-page>
         <ng-template clrPageTitle>Setting Produk</ng-template>
-
+        <ng-container *ngIf="perhiasan">
+            <app-wizard-perhiasan
+            [kuotaProduk]="kuotaProduk"
+            [getData]="getDataPerhiasan"
+            [getEditData]="dataToChild"
+            (dataPerhiasan)="getPerhiasan($event)"></app-wizard-perhiasan>
+        </ng-container>
+        <ng-container *ngIf="mulia">
             <div class="card" style="margin-top: 0em;">
                 <div class="card-header">
                    LOGAM MULIA               
@@ -121,6 +127,8 @@
                     </div>
                 </div>  
             </div>
+        </ng-container>
+            
     </clr-wizard-page>
     
     

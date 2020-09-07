@@ -170,6 +170,7 @@ export class PengaturanPromoComponent implements OnInit {
   }
 
   productSelect(){
+    this.promoService.product.splice(0);
     let arr = [];
     if (this.selectProduct != true) {
       this.perhiasan = true;

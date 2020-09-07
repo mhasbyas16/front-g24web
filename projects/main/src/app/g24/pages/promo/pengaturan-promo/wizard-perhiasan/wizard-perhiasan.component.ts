@@ -22,12 +22,21 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
 
   @Input() kuotaProduk:boolean = false;
   @Input() getData:boolean = false;
+  @Input() getEditData:any;
+  // @Input() editData:boolean = false;
 
   selectVendor:boolean = false;
   selectPurity:boolean = false;
   selectTypePerhiasan:boolean = false;
 
   section2_perhiasan: FormGroup = null;
+
+  perhiasanDataEdit=[];
+  perhiasanDataEdit2:any;
+
+  valueVendor:string[];
+  valuePurity:string[];
+  valueJenisPerhiasan:string[];
 
     public options:Options;
     public options2:Options;
@@ -45,7 +54,9 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnChanges(){
+    
     this.passingData(this.getData);
+    this.editData(this.getEditData);
   }
   ngOnInit(): void {
     this.formPerhiasan();
@@ -64,6 +75,142 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
       closeOnSelect: false,
       width: '300'
     };
+  }
+
+  editData(data:any){
+    // this.formPerhiasan();
+
+    this.valueVendor = [];
+    this.vendorPerhiasan = [];
+    this.valuePurity = [];
+    this.purityPerhiasan = [];
+    this.valueJenisPerhiasan=[];
+    this.jenisPerhiasan = [];
+    let arr = [];
+    console.debug(data,"data edit hash", this.section2_perhiasan.getRawValue());
+    for (let perhiasan of data.product) {
+      if (perhiasan.code == "c00") {
+        arr.push(perhiasan);
+      }       
+    }
+    console.debug(arr,"isi perhiasan arr");
+    this.perhiasanDataEdit = arr;
+    
+    for (let get of this.perhiasanDataEdit) {
+      this.perhiasanDataEdit2 =get;
+      this.section2_perhiasan.patchValue({
+        prmPromotion : get.prmPromotion,
+        minPrmPromotion : get.minPrmPromotion,
+        maxPrmPromotion : get.maxPrmPromotion,
+        typePromotion : get.typePromotion,
+        sizeTypePromotion : get.sizeTypePromotion,
+        // vendor: get.vendor,
+        pickVendor: get.pickVendor,
+        // purity: get.purity,
+        pickPurity: get.pickPurity,
+        // typePerhiasan : get.typePerhiasan,
+        pickTypePerhiasan : get.pickTypePerhiasan,
+        age : get.age,
+        minAge : get.minAge,
+        maxAge : get.maxAge,
+        quota : get.quota,
+      })      
+
+      // vendor
+      if (get.vendor == '1') {
+        this.section2_perhiasan.patchValue({vendor:'1'})
+        this.select2Vendor('1');
+      }else{
+        let ven=[];
+        let vendorVal = [];
+        let hash:any;
+  
+        this.vendorService.list('?_hash=1').subscribe((response:any)=>{
+          if (response == false) {
+            this.toastrService.error("Get Vendor Error");
+            return;
+          }
+          for (let res of response) {
+            ven.push({id:res._hash,text:res.name});
+  
+            for (let isi of get.vendor) {
+              if (res.code == isi.code) {
+                vendorVal.push(res._hash);
+              }
+            }          
+          }
+          this.valueVendor = vendorVal;
+          this.vendorPerhiasan = ven ;
+        })
+  
+        this.section2_perhiasan.patchValue({vendor:'pv'})
+        this.select2Vendor('pv');
+      }
+
+      // purity
+      if (get.purity == '1') {
+        this.section2_perhiasan.patchValue({purity:'1'})
+        this.select2Purity('1');
+      }else{
+        let pur=[];
+        let purityVal = [];
+  
+        this.productPurityService.list('?_hash=1').subscribe((response:any)=>{
+          if (response == false) {
+            this.toastrService.error("Get Purity Error");
+            return;
+          }
+          for (let res of response) {
+            pur.push({id:res._hash,text:res.name});
+  
+            for (let isi of get.purity) {
+              if (res.code == isi.code) {
+                purityVal.push(res._hash);
+              }
+            }          
+          }
+          this.valuePurity = purityVal;
+          this.purityPerhiasan = pur ;
+        })
+  
+        this.section2_perhiasan.patchValue({purity:'pk'})
+        this.select2Purity('pk');
+      }
+
+      // jenis Perhiasan
+      if (get.typePerhiasan == '1') {
+        this.section2_perhiasan.patchValue({typePerhiasan:'1'})
+        this.select2TypePerhiasan('1');
+      }else{
+        let per=[];
+        let typeVal = [];
+  
+        this.productJenisService.list('?_hash=1').subscribe((response:any)=>{
+          if (response == false) {
+            this.toastrService.error("Get Type Perhiasan Error");
+            return;
+          }
+          for (let res of response) {
+            per.push({id:res._hash,text:res.name});
+  
+            for (let isi of get.typePerhiasan) {
+              if (res.code == isi.code) {
+                typeVal.push(res._hash);
+              }
+            }          
+          }
+          this.valueJenisPerhiasan = typeVal;
+          this.jenisPerhiasan = per ;
+        })
+  
+        this.section2_perhiasan.patchValue({typePerhiasan:'pj'})
+        this.select2TypePerhiasan('pj');
+      }
+
+    }
+
+    
+    
   }
 
   select2Vendor(val){

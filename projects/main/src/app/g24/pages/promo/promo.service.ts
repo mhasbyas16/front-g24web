@@ -5,7 +5,9 @@ import { Injectable } from '@angular/core';
 })
 export class PromoService {
   product = [];
-  constructor() { }
+  constructor() {
+    this.product.splice(0);
+   }
 
   perhiasanData(data){
     let section2Perhiasan = data;
