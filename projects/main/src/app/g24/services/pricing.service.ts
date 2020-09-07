@@ -66,6 +66,7 @@ export class PricingService {
     }else{
         hargaBBPerhiasan = 0
     }
+    console.debug(hargaBBPerhiasan, "wew")
     return hargaBBPerhiasan
   }
 }

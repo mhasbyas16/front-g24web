@@ -45,11 +45,8 @@ export class PerhiasanBycodeComponent implements OnInit {
     this.loadingDg = true
     this.hargaBB = 0
     this.prmJualService.get("?"+this.productCategory+"&flag=approved").subscribe((BBresponse: any) => {
-     
         this.hargaDasarBuyback = BBresponse.harga_buyback
-        this.loadingDg = false
-      
-     
+        
     })
 
     if (kondisi == 1) {
@@ -66,7 +63,7 @@ export class PerhiasanBycodeComponent implements OnInit {
       this.isiPerhiasan[index]['hargaBB'] =  this.hargaBB
     }
    }
-  
+   this.loadingDg = false
   }
 
   addToCart(code, jenis, berat, kadar, hargaTbb ){
@@ -86,7 +83,7 @@ export class PerhiasanBycodeComponent implements OnInit {
 
 
   cekHitungHarga(cekHargaBB: any){
-    if (cekHargaBB == 0 || cekHargaBB == null) {
+    if (cekHargaBB == 0 || cekHargaBB == null || isNaN(cekHargaBB) ) {
       this.cekHarga = 0
       return this.cekHarga
     }else{

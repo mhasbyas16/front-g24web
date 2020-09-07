@@ -10,11 +10,12 @@ import { NavModule } from '../../nav/nav.module';
 
 import { PerhiasanBycodeComponent } from './buyback-bycode/perhiasan-bycode/perhiasan-bycode.component';
 import { MuliaBycodeComponent } from './buyback-bycode/mulia-bycode/mulia-bycode.component';
+import { BerlianBycodeComponent } from './buyback-bycode/berlian-bycode/berlian-bycode.component';
 
 
 
 @NgModule({
-  declarations: [BuybackBycodeComponent, PerhiasanBycodeComponent, MuliaBycodeComponent],
+  declarations: [BuybackBycodeComponent, PerhiasanBycodeComponent, MuliaBycodeComponent, BerlianBycodeComponent],
   imports: [
     CommonModule,
     BuybackRoutingModule,
