@@ -397,6 +397,9 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
+  getCurrency(){
+    
+  }
 //
   transaction(){
     
@@ -421,6 +424,7 @@ export class CheckoutComponent implements OnInit {
       delete data[LM[index].code]
     }
     // 
+
     data.product = btoa(JSON.stringify({PERHIASAN,LM,BERLIAN,GS,DINAR})) ;
     data.product_encoded = "base64";
     data["transaction-type"] = btoa(JSON.stringify({
@@ -431,6 +435,7 @@ export class CheckoutComponent implements OnInit {
     let nomT = data["nominalTransaksi"] 
     data["nominalTransaksi"] = nomT.replace(/,/g, '')
     data["transaction-type_encoded"]= "base64";
+    data["currency"] = "rupiah"
     delete data["cif"];
     delete data["namaPemasar"];
     delete data["nik"];
