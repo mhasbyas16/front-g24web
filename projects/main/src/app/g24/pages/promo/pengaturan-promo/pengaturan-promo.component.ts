@@ -56,6 +56,8 @@ export class PengaturanPromoComponent implements OnInit {
   // passing data strore promosi
   passingPerhiasan:boolean = false;
   passingMulia:boolean = false;
+  passingDinar:boolean = false;
+  passingGiftSouvenir:boolean = false;
 
   section1_penjualan: FormGroup = null;
   // Data 
@@ -65,6 +67,7 @@ export class PengaturanPromoComponent implements OnInit {
   public options:Options;
   public options2:Options;
   nikUser:any;
+  tipeGS:any;
 
   // select2
   productCategory:Array<Select2OptionData>;
@@ -204,6 +207,27 @@ export class PengaturanPromoComponent implements OnInit {
     }else{
       this.berlian = false;
     }  
+
+    if (arr.some(function(el){ return el.code === "c06"}) == true) {
+      this.dinar = true;
+    }else{
+      this.dinar = false;
+    }  
+
+    if (arr.some(function(el){ return el.code === "c02"}) == true || arr.some(function(el){ return el.code === "c04"}) == true) {
+      this.giftSouvenir = true;
+      this.tipeGS ='s';
+    }else{
+      this.giftSouvenir = false;
+      this.tipeGS ='';
+    }  
+    // if (arr.some(function(el){ return el.code === "c04"}) == true) {
+    //   this.giftSouvenir = true;
+    //   this.tipeGS ='g';
+    // }else{
+    //   this.giftSouvenir = false;
+    //   this.tipeGS ='';
+    // } 
     
     // if (productCat.code == "c02") {
     //   this.berlian = true;
@@ -277,9 +301,21 @@ export class PengaturanPromoComponent implements OnInit {
     this.passingMulia = data;
     this.passingData();
   }
+  getDinar(data){
+    this.passingDinar = data;
+    this.passingData();
+  }
+  getGiftSouvenir(data){
+    this.passingGiftSouvenir = data;
+    this.passingData();
+  }
 
   passingData(){
-    if (this.passingPerhiasan == this.getDataPerhiasan && this.passingMulia == this.getDataMulia) {
+    if (this.passingPerhiasan == this.getDataPerhiasan && 
+      this.passingMulia == this.getDataMulia &&
+      this.passingDinar == this.getDataDinar &&
+      this.passingGiftSouvenir == this.getDataGiftSouvenir) {
+
       this.getDataPromosi();
     }    
   }
@@ -348,6 +384,14 @@ export class PengaturanPromoComponent implements OnInit {
 
     if(this.mulia == true){
       this.getDataMulia = true;
+    }
+    
+    if (this.dinar == true) {
+      this.getDataDinar = true;
+    }
+
+    if(this.giftSouvenir == true){
+      this.getDataGiftSouvenir = true;
     }
     
   }

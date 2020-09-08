@@ -149,10 +149,17 @@
 
                                         </ng-container>
                                         <ng-container *ngIf="giftSouvenir">
-
+                                            <app-wizard-gift-souvenir
+                                            [kuotaProduk]="kuotaProduk"
+                                            [getData]="getDataGiftSouvenir"
+                                            [tipe]="tipeGS"
+                                            (dataGiftSouvenir)="getGiftSouvenir($event)">></app-wizard-gift-souvenir>
                                         </ng-container>
                                         <ng-container *ngIf="dinar">
-                                            
+                                            <app-wizard-dinar
+                                            [kuotaProduk]="kuotaProduk"
+                                            [getData]="getDataDinar"
+                                            (dataDinar)="getDinar($event)"></app-wizard-dinar>
                                         </ng-container>
                                     </clr-wizard-page>
                                     

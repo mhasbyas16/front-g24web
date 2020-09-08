@@ -68,7 +68,7 @@ export class WizardMuliaComponent implements OnInit, OnChanges {
       this.vendorMulia = data;
     })
 
-    this.productDenomService.list("?_hash=1&_sortby=name:1").subscribe((response:any)=>{
+    this.productDenomService.list("?_hash=1&product-category.code=c05&_sortby=name:1").subscribe((response:any)=>{
       if (response == false) {
         this.toastrService.error("load denom mulia failed");
         return;
