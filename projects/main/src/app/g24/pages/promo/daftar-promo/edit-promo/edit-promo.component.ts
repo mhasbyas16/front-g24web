@@ -238,7 +238,7 @@ export class EditPromoComponent implements OnInit {
     let Unit=[];
     let UnitVal = [];
 
-    this.unitService.list('?_hash=1').subscribe((response:any)=>{
+    this.unitService.list('?_hash=1&_sortby=nama:1').subscribe((response:any)=>{
       if (response == false) {
         this.toastrService.error("Get Units Error");
         return;
@@ -273,7 +273,7 @@ export class EditPromoComponent implements OnInit {
     // product category
     let PC=[];
       let hash:any ;
-      this.productCategoryService.list('?_hash=1').subscribe((response:any)=>{
+      this.productCategoryService.list('?_hash=1&_sortby=name:1').subscribe((response:any)=>{
         if (response == false) {
           this.toastrService.error("Get Product Category Error");
           return;

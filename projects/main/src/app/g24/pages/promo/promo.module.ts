@@ -10,9 +10,13 @@ import { DaftarPromoComponent } from './daftar-promo/daftar-promo.component';
 import { WizardPerhiasanComponent } from './pengaturan-promo/wizard-perhiasan/wizard-perhiasan.component';
 import { CardPerhiasanComponent } from './daftar-promo/card-perhiasan/card-perhiasan.component';
 import { EditPromoComponent } from './daftar-promo/edit-promo/edit-promo.component';
+import { WizardBerlianComponent } from './pengaturan-promo/wizard-berlian/wizard-berlian.component';
+import { WizardMuliaComponent } from './pengaturan-promo/wizard-mulia/wizard-mulia.component';
+import { WizardGiftSouvenirComponent } from './pengaturan-promo/wizard-gift-souvenir/wizard-gift-souvenir.component';
+import { WizardDinarComponent } from './pengaturan-promo/wizard-dinar/wizard-dinar.component';
 
 @NgModule({
-  declarations: [PengaturanPromoComponent, DaftarPromoComponent, WizardPerhiasanComponent, CardPerhiasanComponent, EditPromoComponent],
+  declarations: [PengaturanPromoComponent, DaftarPromoComponent, WizardPerhiasanComponent, CardPerhiasanComponent, EditPromoComponent, WizardBerlianComponent, WizardMuliaComponent, WizardGiftSouvenirComponent, WizardDinarComponent],
   imports: [
     CommonModule,
     PromoRoutingModule,

@@ -140,15 +140,19 @@
                                             (dataPerhiasan)="getPerhiasan($event)"></app-wizard-perhiasan>
                                         </ng-container>
                                         <ng-container *ngIf="mulia">
-                                            <div class="card" style="margin-top: 0em;">
-                                                <div class="card-header">
-                                                   LOGAM MULIA               
-                                                </div>       
-                                                <div class="card-block">
-                                                    <div class="card-text">
-                                                    </div>
-                                                </div>  
-                                            </div>
+                                            <app-wizard-mulia
+                                            [kuotaProduk]="kuotaProduk"
+                                            [getData]="getDataMulia"
+                                            (dataMulia)="getMulia($event)"></app-wizard-mulia>
+                                        </ng-container>
+                                        <ng-container *ngIf="berlian">
+
+                                        </ng-container>
+                                        <ng-container *ngIf="giftSouvenir">
+
+                                        </ng-container>
+                                        <ng-container *ngIf="dinar">
+                                            
                                         </ng-container>
                                     </clr-wizard-page>
                                     

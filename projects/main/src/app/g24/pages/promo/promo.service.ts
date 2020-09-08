@@ -14,9 +14,10 @@ export class PromoService {
 
       console.debug(data,"isi section perhiasan")
       // perhiasan
-      section2Perhiasan.name = 'Perhiasan';
-      section2Perhiasan.code = 'c00';
+      
       if (Object.keys(section2Perhiasan).length != 0) {
+        section2Perhiasan.name = 'Perhiasan';
+        section2Perhiasan.code = 'c00';
         let isiVendor = [];
         let isiPurity = [];
         let isiTypePerhiasan = [];
@@ -57,5 +58,49 @@ export class PromoService {
       }
 
       this.product.push(section2Perhiasan);
+  }
+
+  muliaData(data){
+    let section2Mulia = data;
+    // return;
+      console.debug(data,"isi section Mulia")
+      // mulia
+      
+
+      if (Object.keys(section2Mulia).length != 0) {
+        section2Mulia.name = 'Mulia';
+        section2Mulia.code = 'c05';
+        let isiVendor = [];
+        let isiDenom = [];
+        // Vendors
+      if (section2Mulia.vendor == "pv") {
+        for (let data of section2Mulia.pickVendor) {
+          isiVendor.push(JSON.parse(atob(data)))     
+          
+        }
+        console.debug(isiVendor,"isi vendir")
+        section2Mulia.vendor= isiVendor;
+        delete section2Mulia.pickVendor;
+      }else{
+        delete section2Mulia.pickVendor;
+      }
+        
+
+        // purity
+        if (section2Mulia.denom == "pd") {
+          for (let data of section2Mulia.pickDenom) {
+            isiDenom.push(JSON.parse(atob(data)))     
+          }
+          console.debug(isiDenom,"isi denom")
+          section2Mulia.denom= isiDenom;
+          delete section2Mulia.pickDenom;
+        }else{
+          delete section2Mulia.pickDenom;
+        }
+
+      }
+
+      this.product.push(section2Mulia);
+
   }
 }

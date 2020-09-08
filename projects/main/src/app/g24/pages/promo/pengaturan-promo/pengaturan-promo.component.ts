@@ -36,6 +36,8 @@ export class PengaturanPromoComponent implements OnInit {
   perhiasan:boolean = false;
   berlian:boolean = false;
   mulia:boolean = false;
+  giftSouvenir:boolean = false;
+  dinar:boolean = false;
 
   manualWizard: boolean = false;
   penjualanWizard: boolean = false;
@@ -46,9 +48,14 @@ export class PengaturanPromoComponent implements OnInit {
 
   // get data ke child
   getDataPerhiasan:boolean = false;
+  getDataMulia:boolean = false;
+  getDataGiftSouvenir:boolean = false;
+  getDataBerlian:boolean = false;
+  getDataDinar:boolean = false;
 
   // passing data strore promosi
   passingPerhiasan:boolean = false;
+  passingMulia:boolean = false;
 
   section1_penjualan: FormGroup = null;
   // Data 
@@ -261,13 +268,18 @@ export class PengaturanPromoComponent implements OnInit {
     console.debug(this.section1_penjualan.get("product-category").value)
   }
 
+  // get data
   getPerhiasan(data){
       this.passingPerhiasan = data;
       this.passingData();
   }
+  getMulia(data){
+    this.passingMulia = data;
+    this.passingData();
+  }
 
   passingData(){
-    if (this.passingPerhiasan == this.getDataPerhiasan) {
+    if (this.passingPerhiasan == this.getDataPerhiasan && this.passingMulia == this.getDataMulia) {
       this.getDataPromosi();
     }    
   }
@@ -333,6 +345,10 @@ export class PengaturanPromoComponent implements OnInit {
     if (this.perhiasan == true) {
       this.getDataPerhiasan = true;
     }    
+
+    if(this.mulia == true){
+      this.getDataMulia = true;
+    }
     
   }
 
