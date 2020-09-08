@@ -36,10 +36,6 @@ export class BuybackBycodeComponent implements OnInit {
   isiEmasBatangan: any;
   totalIsiEmasBatangan: any;
 
-  //berlian
-  isiBerlian: any;
-  totalIsiBerlian: any;
-
   //global
   total : any
  
@@ -51,12 +47,9 @@ export class BuybackBycodeComponent implements OnInit {
   perhiasanParent: any;
   hargaTotalPerhiasan: any = 0
   hargaTotalEmasBatangan : any = 0
-  hargaTotalBerlian : any = 0
-  
-  totalCart: any = 0
   totalIsiCartPerhiasanBBC: any = 0
+  totalCart: any = 0
   totalIsiCartEmasBatanganBBC: any = 0
-  totalIsiCartBerlianBBC: any = 0
   
   
 
@@ -117,11 +110,6 @@ export class BuybackBycodeComponent implements OnInit {
       this.isiEmasBatangan =this.detailTransaction.product["LM"] 
       this.totalIsiEmasBatangan=  this.isiEmasBatangan.length
 
-      //berlian
-      this.isiBerlian = this.detailTransaction.product["BERLIAN"]
-      this.totalIsiBerlian = this.isiBerlian.length
-
-
       //loadingDG
       this.loadingDg = false;
 
@@ -140,11 +128,6 @@ export class BuybackBycodeComponent implements OnInit {
     this.hargaTotalEmasBatangan = data.harga; 
   }
 
-  clearBerlian(data:any){
-    this.totalIsiCartBerlianBBC  = data.length;
-    this.hargaTotalBerlian = data.harga; 
-  }
-
   totalIsiCartPerhiasan(val){
     this.totalIsiCartPerhiasanBBC = val
   }
@@ -153,13 +136,9 @@ export class BuybackBycodeComponent implements OnInit {
     this.totalIsiCartEmasBatanganBBC = val
   }
 
-  totalIsiCartBerlian(val){
-    this.totalIsiCartBerlianBBC = val
-  }
-
   totalJumlahCart(){
     this.totalCart = 0
-    this.totalCart = this.totalIsiCartPerhiasanBBC + this.totalIsiCartEmasBatanganBBC + this.totalIsiCartBerlianBBC
+    this.totalCart = this.totalIsiCartPerhiasanBBC + this.totalIsiCartEmasBatanganBBC
     return this.totalCart
   }
 
@@ -169,10 +148,6 @@ export class BuybackBycodeComponent implements OnInit {
 
   HTotalEmasBatangan(harga: any){
     this.hargaTotalEmasBatangan = harga;
-  }
-
-  HTotalBerlian(harga: any){
-    this.hargaTotalBerlian = harga;
   }
 }
 

@@ -11,13 +11,11 @@ export class CartBuybackComponent implements OnInit {
   @Output() clearParentCart:any = new EventEmitter();
   @Output() clearPerhiasan:any = new EventEmitter();
   @Output() clearEmasBatangan:any = new EventEmitter();
-  @Output() clearBerlian:any = new EventEmitter();
   @Output() data:any = new EventEmitter();
 
   @Input() totalCart : any;
   @Input() hargaTotalPerhiasan : any = 0
   @Input() hargaTotalEmasBatangan : any = 0
-  @Input() hargaTotalBerlian : any = 0
   
 
   cartModal : any
@@ -48,10 +46,6 @@ export class CartBuybackComponent implements OnInit {
     this.cartLogam.splice(0);
     this.hargaTotalEmasBatangan = 0
     this.clearEmasBatangan.emit({length:0,harga:0});
-
-    this.cartBerlian.splice(0);
-    this.hargaTotalBerlian = 0
-    this.clearBerlian.emit({length:0,harga:0});
   }
 
   removeItemPerhiasan(key: any, harga:any ){
@@ -86,20 +80,5 @@ export class CartBuybackComponent implements OnInit {
     }
   }
 
-  removeItemBerlian(key: any, harga:any ){
-    //pengurangan jumlah item
-    this.cartBerlian.splice(key,1);
-
-    //pengurangan jumlah cart
-    this.totalCart-=1;
-    
-    this.hargaTotalBerlian = this.hargaTotalBerlian - harga
-    this.clearBerlian.emit({length:this.cartBerlian.length, harga:this.hargaTotalBerlian });
-
-    if (this.totalCart == 0) {
-      console.debug("totallll 0");
-      this.clearParentCart.emit(0);
-    }
-  }
  
 }
