@@ -9,6 +9,57 @@ export class PromoService {
     this.product.splice(0);
    }
 
+   berlianData(data){
+    let section2Berlian = data;
+
+      console.debug(data,"isi section perhiasan")
+      // perhiasan
+      
+      if (Object.keys(section2Berlian).length != 0) {
+        section2Berlian.name = 'Berlian';
+        section2Berlian.code = 'c01';
+        let isiVendor = [];
+        let isiPurity = [];
+        let isiTypePerhiasan = [];
+        // Vendors
+      if (section2Berlian.vendor == "pv") {
+        for (let data of section2Berlian.pickVendor) {
+          isiVendor.push(JSON.parse(atob(data)))     
+          
+        }
+        section2Berlian.vendor= isiVendor;
+        delete section2Berlian.pickVendor;
+      }else{
+        delete section2Berlian.pickVendor;
+      }
+        
+
+        // purity
+        if (section2Berlian.purity == "pk") {
+          for (let data of section2Berlian.pickPurity) {
+            isiPurity.push(JSON.parse(atob(data)))     
+          }
+          section2Berlian.purity= isiPurity;
+          delete section2Berlian.pickPurity;
+        }else{
+          delete section2Berlian.pickPurity;
+        }
+
+        // typePerhiasan
+        if (section2Berlian.typePerhiasan == "pj") {
+          for (let data of section2Berlian.pickTypePerhiasan) {
+            isiTypePerhiasan.push(JSON.parse(atob(data)))     
+          }
+          section2Berlian.typePerhiasan= isiTypePerhiasan;
+          delete section2Berlian.pickTypePerhiasan;
+        }else{
+          delete section2Berlian.pickTypePerhiasan;
+        }
+      }
+
+      this.product.push(section2Berlian);
+  }
+
   perhiasanData(data){
     let section2Perhiasan = data;
 

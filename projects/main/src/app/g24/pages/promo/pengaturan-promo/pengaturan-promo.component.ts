@@ -58,6 +58,7 @@ export class PengaturanPromoComponent implements OnInit {
   passingMulia:boolean = false;
   passingDinar:boolean = false;
   passingGiftSouvenir:boolean = false;
+  passingBerlian:boolean = false;
 
   section1_penjualan: FormGroup = null;
   // Data 
@@ -220,32 +221,7 @@ export class PengaturanPromoComponent implements OnInit {
     }else{
       this.giftSouvenir = false;
       this.tipeGS ='';
-    }  
-    // if (arr.some(function(el){ return el.code === "c04"}) == true) {
-    //   this.giftSouvenir = true;
-    //   this.tipeGS ='g';
-    // }else{
-    //   this.giftSouvenir = false;
-    //   this.tipeGS ='';
-    // } 
-    
-    // if (productCat.code == "c02") {
-    //   this.berlian = true;
-    // }else{
-    //   this.berlian = false;
-    // } 
-
-    // if (productCat.code == "c03") {
-    //   this.berlian = true;
-    // }else{
-    //   this.berlian = false;
-    // } 
-
-    // if (productCat.code == "c04") {
-    //   this.berlian = true;
-    // }else{
-    //   this.berlian = false;
-    // } 
+    } 
 
     if (arr.some(function(el){ return el.code === "c05"}) == true) {
       this.mulia = true;
@@ -310,11 +286,17 @@ export class PengaturanPromoComponent implements OnInit {
     this.passingData();
   }
 
+  getBerlian(data){
+    this.passingBerlian = data;
+    this.passingData();
+  }
+
   passingData(){
     if (this.passingPerhiasan == this.getDataPerhiasan && 
       this.passingMulia == this.getDataMulia &&
       this.passingDinar == this.getDataDinar &&
-      this.passingGiftSouvenir == this.getDataGiftSouvenir) {
+      this.passingGiftSouvenir == this.getDataGiftSouvenir &&
+      this.passingBerlian == this.getDataBerlian) {
 
       this.getDataPromosi();
     }    
@@ -392,6 +374,10 @@ export class PengaturanPromoComponent implements OnInit {
 
     if(this.giftSouvenir == true){
       this.getDataGiftSouvenir = true;
+    }
+
+    if(this.berlian == true){
+      this.getDataBerlian = true;
     }
     
   }
