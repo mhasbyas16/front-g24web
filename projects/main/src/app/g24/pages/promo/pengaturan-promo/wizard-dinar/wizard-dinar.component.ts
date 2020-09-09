@@ -9,6 +9,8 @@ import { ToastrService } from 'ngx-toastr';
 import { PromoService } from '../../promo.service';
 import { VendorService } from '../../../../services/vendor.service';
 import { ProductDenomService } from '../../../../services/product/product-denom.service';
+import { PromotionTypeService } from '../../../../services/promotion/promotion-type.service';
+
 @Component({
   selector: 'app-wizard-dinar',
   templateUrl: './wizard-dinar.component.html',
@@ -19,6 +21,8 @@ export class WizardDinarComponent implements OnInit, OnChanges {
 
   @Input() kuotaProduk:boolean = false;
   @Input() getData:boolean = false;
+
+  jenisPromosi:any;
 
   selectVendor:boolean = false;
   selectDenom:boolean = false;
@@ -34,6 +38,8 @@ export class WizardDinarComponent implements OnInit, OnChanges {
     public toastrService: ToastrService,
     private productDenomService:ProductDenomService,
     private promoService:PromoService,
+    private promotionTypeService:PromotionTypeService,
+
   ) { }
 
   ngOnChanges(){
@@ -103,6 +109,14 @@ export class WizardDinarComponent implements OnInit, OnChanges {
         data2.push({id:val._hash,text:val.name})
       }
       this.denomDinar = data2;
+    })
+    this.promotionTypeService.list("?_hash=1").subscribe((response:any)=>{
+      if (response == false) {
+        this.toastrService.error("load jenis perhiasan failed");
+        return;
+      }
+
+      this.jenisPromosi = response;
     })
   }
 

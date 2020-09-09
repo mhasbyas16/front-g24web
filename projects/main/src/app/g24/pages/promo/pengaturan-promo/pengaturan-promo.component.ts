@@ -187,6 +187,8 @@ export class PengaturanPromoComponent implements OnInit {
       this.perhiasan = true;
       this.berlian = true;
       this.mulia = true;
+      this.giftSouvenir = true;
+      this.dinar= true;
     }else{
       let productCat:any;
     for (let section of this.section1_penjualan.get("pickProduct-category").value) {

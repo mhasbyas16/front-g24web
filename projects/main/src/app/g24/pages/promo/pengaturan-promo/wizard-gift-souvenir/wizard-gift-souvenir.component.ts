@@ -9,6 +9,8 @@ import { PromoService } from '../../promo.service';
 import { VendorService } from '../../../../services/vendor.service';
 import { ProductDenomService } from '../../../../services/product/product-denom.service';
 import { ProductSeriesService } from '../../../../services/product/product-series.service';
+import { PromotionTypeService } from '../../../../services/promotion/promotion-type.service';
+
 
 @Component({
   selector: 'app-wizard-gift-souvenir',
@@ -22,6 +24,8 @@ export class WizardGiftSouvenirComponent implements OnInit, OnChanges {
   @Input() kuotaProduk:boolean = false;
   @Input() getData:boolean = false;
   @Input() tipe:any;
+
+  jenisPromosi:any;
 
   selectVendor:boolean = false;
   selectDenom:boolean = false;
@@ -41,6 +45,8 @@ export class WizardGiftSouvenirComponent implements OnInit, OnChanges {
     private productDenomService:ProductDenomService,
     private promoService:PromoService,
     private productSeriesService:ProductSeriesService,
+    private promotionTypeService:PromotionTypeService,
+
   ) { }
 
   ngOnChanges(){
@@ -130,6 +136,14 @@ export class WizardGiftSouvenirComponent implements OnInit, OnChanges {
         data3.push({id:val._hash,text:val.name})
       }
       this.series = data3;
+    })
+    this.promotionTypeService.list("?_hash=1").subscribe((response:any)=>{
+      if (response == false) {
+        this.toastrService.error("load jenis perhiasan failed");
+        return;
+      }
+
+      this.jenisPromosi = response;
     })
   }
 

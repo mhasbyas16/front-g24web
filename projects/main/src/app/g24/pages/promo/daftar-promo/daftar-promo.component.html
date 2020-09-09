@@ -39,10 +39,10 @@
 
                     <clr-dg-row *ngFor="let data of promotion" > 
                         <clr-dg-action-overflow>
-                            <button class="action-item" (click)="actionView(data._hash, 'detail')">Detail</button>
+                            <button class="action-item" (click)="actionView(data._hash, 1)">Detail</button>
                             <ng-container *ngIf="data.flag == 0 && nikUser.role == 'kadetRetail'" >
                                 <!-- submitted -->
-                                <button class="action-item" (click)="actionView(data._hash, 'action')">Action</button>
+                                <button class="action-item" (click)="actionView(data._hash, 2)">Action</button>
                             </ng-container>
                             <ng-container *ngIf="data.flag == 0 && nikUser.role == 'staffRetail'">
                                 <button class="action-item" (click)="editPromo.openEdit(data._hash)">Edit</button>
@@ -115,7 +115,7 @@
                         <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">Tidak Ada Batasan</label>
                     </clr-input-container>                    
                 </ng-container>
-                <ng-container *ngIf="data.typeQuota == 1">
+                <ng-container *ngIf="data.typeQuota == '1'">
                     <!-- Semua Produk -->
                     <clr-input-container>
                         <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Tipe Kuota</label>
@@ -133,7 +133,7 @@
                 </ng-container>
                 <!-- end type quota -->
                 
-                <ng-container *ngIf="data.typeQuota == 1">
+                <ng-container *ngIf="data.typeQuota == '1'">
                     <clr-input-container>
                         <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Kuota</label>
                         <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
@@ -147,7 +147,7 @@
                     <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{tglStart+' - '+tglEnd}}</label>
                 </clr-input-container>
                 
-                <ng-container *ngIf="data.units == 1; else distroList">
+                <ng-container *ngIf="data.units == '1'; else distroList">
                     <clr-input-container>
                         <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Distro</label>
                         <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
@@ -166,7 +166,7 @@
                     </clr-input-container>
                 </ng-template>
 
-                <ng-container *ngIf="data['product-category'] == 1; else productList">
+                <ng-container *ngIf="data['product-category'] == '1'; else productList">
                     <clr-input-container>
                         <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Produk</label>
                         <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
@@ -193,18 +193,17 @@
                     <div class="card-block">
                         <div class="card-text">
 
-                            <div class="card" style="margin-top: 0em;" *ngFor="let product of data['product-category']">   
+                            <div class="card" style="margin-top: 0em;" *ngFor="let li of data.product">   
                                 <div class="card-header">
-                                    {{product.name}}
+                                    {{li.name}}
                                 </div>   
                                 <div class="card-block">
                                     <div class="card-text">
-                                        <ng-container *ngFor="let li of data.product">
+                                        <ng-container *ngIf="li.code == 'c00'">
                                             <!-- Perhiasan -->
-                                            <app-card-perhiasan [li]="li" [product]="product" [data]="data"></app-card-perhiasan>
+                                            <app-card-perhiasan [li]="li" [data]="data"></app-card-perhiasan>
                                             <!-- end Perhiasan -->
                                         </ng-container>
-                                        
                                     </div>
                                 </div>
                             </div>
@@ -217,7 +216,7 @@
             
         </div>
         <div class="modal-footer">
-            <ng-container *ngIf="view == 'action'">
+            <ng-container *ngIf="view == 2">
                 <clr-button-group>
                     <clr-button class="btn btn-primary" (click)="modalConfirmation(data._id, 1, 'Approve')">Approve</clr-button>
                     <clr-button class="btn btn-danger" (click)="modalConfirmation(data._id, 2, 'Reject')">Reject</clr-button>

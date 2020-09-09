@@ -57,6 +57,10 @@ export class PromoService {
         }
       }
 
+      // tipe promosi
+      let tipe = JSON.parse(atob(section2Berlian.typePromotion)) 
+      section2Berlian.typePromotion = tipe;
+
       this.product.push(section2Berlian);
   }
 
@@ -107,6 +111,10 @@ export class PromoService {
           delete section2Perhiasan.pickTypePerhiasan;
         }
       }
+
+      // tipe promosi
+      let tipe = JSON.parse(atob(section2Perhiasan.typePromotion)) 
+      section2Perhiasan.typePromotion = tipe;
 
       this.product.push(section2Perhiasan);
   }
@@ -167,6 +175,10 @@ export class PromoService {
         }
       }
 
+      // tipe promosi
+      let tipes = JSON.parse(atob(section2GiftSouvenir.typePromotion)) 
+      section2GiftSouvenir.typePromotion = tipes;
+
       this.product.push(section2GiftSouvenir);
   }
 
@@ -209,6 +221,9 @@ export class PromoService {
         }
 
       }
+      // tipe promosi
+      let tipes = JSON.parse(atob(section2Mulia.typePromotion)) 
+      section2Mulia.typePromotion = tipes;
 
       this.product.push(section2Mulia);
 
@@ -251,6 +266,10 @@ export class PromoService {
         }
 
       }
+
+      // tipe promosi
+      let tipe = JSON.parse(atob(section2Dinar.typePromotion)) 
+      section2Dinar.typePromotion = tipe;
 
       this.product.push(section2Dinar);
 

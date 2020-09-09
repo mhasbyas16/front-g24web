@@ -10,6 +10,7 @@ import { VendorService } from '../../../../services/vendor.service';
 import { ProductPurityService } from '../../../../services/product/product-purity.service';
 import { ProductJenisService } from '../../../../services/product/product-jenis.service';
 import { ToastrService } from 'ngx-toastr';
+import { PromotionTypeService } from '../../../../services/promotion/promotion-type.service';
 
 @Component({
   selector: 'app-wizard-perhiasan',
@@ -32,6 +33,7 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
   section2_perhiasan: FormGroup = null;
 
   perhiasanDataEdit=[];
+  jenisPromosi:any;
   perhiasanDataEdit2:any;
 
   valueVendor:string[];
@@ -51,6 +53,7 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
     public productJenisService : ProductJenisService,
     public toastrService: ToastrService,
     private promoService:PromoService,
+    private promotionTypeService:PromotionTypeService,
   ) { }
 
   ngOnChanges(){
@@ -307,6 +310,15 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
         data3.push({id:val._hash,text:val.name})
       }
       this.jenisPerhiasan = data3;
+    })
+
+    this.promotionTypeService.list("?_hash=1").subscribe((response:any)=>{
+      if (response == false) {
+        this.toastrService.error("load jenis perhiasan failed");
+        return;
+      }
+
+      this.jenisPromosi = response;
     })
   }
 

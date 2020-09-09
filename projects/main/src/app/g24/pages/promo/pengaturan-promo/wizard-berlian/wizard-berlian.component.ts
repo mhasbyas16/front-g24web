@@ -10,6 +10,8 @@ import { VendorService } from '../../../../services/vendor.service';
 import { ProductPurityService } from '../../../../services/product/product-purity.service';
 import { ProductJenisService } from '../../../../services/product/product-jenis.service';
 import { ToastrService } from 'ngx-toastr';
+import { PromotionTypeService } from '../../../../services/promotion/promotion-type.service';
+
 
 @Component({
   selector: 'app-wizard-berlian',
@@ -24,6 +26,7 @@ export class WizardBerlianComponent implements OnInit, OnChanges {
   @Input() getData:boolean = false;
 
   section2_berlian:FormGroup=null;
+  jenisPromosi:any;
 
   selectVendor:boolean = false;
   selectPurity:boolean = false;
@@ -35,6 +38,7 @@ export class WizardBerlianComponent implements OnInit, OnChanges {
     public productJenisService : ProductJenisService,
     public toastrService: ToastrService,
     private promoService:PromoService,
+    private promotionTypeService:PromotionTypeService,
   ) { }
 
   valueVendor:string[];
@@ -135,6 +139,15 @@ export class WizardBerlianComponent implements OnInit, OnChanges {
         data3.push({id:val._hash,text:val.name})
       }
       this.jenisPerhiasan = data3;
+    })
+    
+    this.promotionTypeService.list("?_hash=1").subscribe((response:any)=>{
+      if (response == false) {
+        this.toastrService.error("load jenis perhiasan failed");
+        return;
+      }
+
+      this.jenisPromosi = response;
     })
   }
 
