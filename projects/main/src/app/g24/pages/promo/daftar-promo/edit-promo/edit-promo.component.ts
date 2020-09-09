@@ -106,8 +106,11 @@ export class EditPromoComponent implements OnInit {
     this.passingData();
   }
   passingData(){
-    if (
-      this.passingGiftSouvenir == this.getDataGiftSouvenir) {
+    if (this.passingPerhiasan == this.getDataPerhiasan && 
+      this.passingMulia == this.getDataMulia &&
+      this.passingDinar == this.getDataDinar &&
+      this.passingGiftSouvenir == this.getDataGiftSouvenir &&
+      this.passingBerlian == this.getDataBerlian) {
 
       this.getDataPromosi();
     }     
