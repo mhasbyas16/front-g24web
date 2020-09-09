@@ -29,15 +29,19 @@ export class EditPromoComponent implements OnInit {
   section1_edit:FormGroup = null;
 
   // Wizard
-  perhiasan:boolean = true;
-  berlian:boolean = true;
-  mulia:boolean = true;
+  perhiasan:boolean = false;
+  berlian:boolean = false;
+  mulia:boolean = false;
+  giftSouvenir:boolean = false;
+  dinar:boolean = false;
 
   selectdistro:boolean = false;
   selectProduct:boolean = false;
   editPromosi:boolean = false;
   inputKuota:boolean = false;
   kuotaProduk:boolean = false;
+
+  tipeGS:any;
 
   nikUser:any;
   dataEdit:any;
@@ -49,8 +53,17 @@ export class EditPromoComponent implements OnInit {
 
   // get data ke child
   getDataPerhiasan:boolean = false;
+  getDataMulia:boolean = false;
+  getDataGiftSouvenir:boolean = false;
+  getDataBerlian:boolean = false;
+  getDataDinar:boolean = false;
+
   // passing data strore promosi
   passingPerhiasan:boolean = false;
+  passingMulia:boolean = false;
+  passingDinar:boolean = false;
+  passingGiftSouvenir:boolean = false;
+  passingBerlian:boolean = false;
 
   // select2
   unit:Array<Select2OptionData>=[];
@@ -70,16 +83,34 @@ export class EditPromoComponent implements OnInit {
     
   }
 
+  // get data
   getPerhiasan(data){
-    this.passingPerhiasan = data;
+      this.passingPerhiasan = data;
+      this.passingData();
+  }
+  getMulia(data){
+    this.passingMulia = data;
+    this.passingData();
+  }
+  getDinar(data){
+    this.passingDinar = data;
+    this.passingData();
+  }
+  getGiftSouvenir(data){
+    this.passingGiftSouvenir = data;
     this.passingData();
   }
 
+  getBerlian(data){
+    this.passingBerlian = data;
+    this.passingData();
+  }
   passingData(){
-    if (this.passingPerhiasan == this.getDataPerhiasan) {
+    if (
+      this.passingDinar == this.getDataDinar ) {
+
       this.getDataPromosi();
-      console.debug("done")
-    }    
+    }     
   }
 
   getDataPromosi(){
@@ -138,12 +169,18 @@ export class EditPromoComponent implements OnInit {
   }
 
   productSelect(data:any){
+    console.debug (data,"datasatsatat575756")
     this.promoService.product.splice(0);
+    
     let arr = [];
     if (this.selectProduct != true) {
+      // perhiasan
       this.perhiasan = true;
+
       this.berlian = true;
       this.mulia = true;
+
+      this.dataToChild = data;
     }else{
       let productCat:any;
     for (let section of this.section1_edit.get("pickProduct-category").value) {
@@ -163,30 +200,31 @@ export class EditPromoComponent implements OnInit {
 
     if (arr.some(function(el){ return el.code === "c01"}) == true) {
       this.berlian = true;
+      this.dataToChild = data;
+      console.debug('treu')
     }else{
       this.berlian = false;
     }  
     
-    // if (productCat.code == "c02") {
-    //   this.berlian = true;
-    // }else{
-    //   this.berlian = false;
-    // } 
+    if (arr.some(function(el){ return el.code === "c06"}) == true) {
+      this.dinar = true;
+      this.dataToChild = data;
+    }else{
+      this.dinar = false;
+    }  
 
-    // if (productCat.code == "c03") {
-    //   this.berlian = true;
-    // }else{
-    //   this.berlian = false;
-    // } 
-
-    // if (productCat.code == "c04") {
-    //   this.berlian = true;
-    // }else{
-    //   this.berlian = false;
-    // } 
+    if (arr.some(function(el){ return el.code === "c02"}) == true || arr.some(function(el){ return el.code === "c04"}) == true) {
+      this.giftSouvenir = true;
+      this.dataToChild = data;
+      this.tipeGS ='s';
+    }else{
+      this.giftSouvenir = false;
+      this.tipeGS ='';
+    } 
 
     if (arr.some(function(el){ return el.code === "c05"}) == true) {
       this.mulia = true;
+      this.dataToChild = data;
     }else{
       this.mulia = false;
     }
@@ -370,6 +408,22 @@ export class EditPromoComponent implements OnInit {
     if (this.perhiasan == true) {
       this.getDataPerhiasan = true;
     }    
+
+    if(this.mulia == true){
+      this.getDataMulia = true;
+    }
+    
+    if (this.dinar == true) {
+      this.getDataDinar = true;
+    }
+
+    if(this.giftSouvenir == true){
+      this.getDataGiftSouvenir = true;
+    }
+
+    if(this.berlian == true){
+      this.getDataBerlian = true;
+    }  
     
   }
   ChangeContentArea(pageId : string)

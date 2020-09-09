@@ -21,9 +21,12 @@ export class WizardDinarComponent implements OnInit, OnChanges {
 
   @Input() kuotaProduk:boolean = false;
   @Input() getData:boolean = false;
+  @Input() getEditData:any;
 
   jenisPromosi:any;
 
+  dinarDataEdit =[];
+  dinarDataEdit2:any;
   selectVendor:boolean = false;
   selectDenom:boolean = false;
   section2_dinar: FormGroup = null;
@@ -33,6 +36,7 @@ export class WizardDinarComponent implements OnInit, OnChanges {
   vendorDinar:Array<Select2OptionData>;
   denomDinar:Array<Select2OptionData>;
   public options:Options;
+
   constructor(
     public vendorService : VendorService,
     public toastrService: ToastrService,
@@ -48,6 +52,7 @@ export class WizardDinarComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.formDinar();
     this.settingDinar();
+    this.editData(this.getEditData);
 
     this.options = {
       multiple: true,
@@ -55,6 +60,125 @@ export class WizardDinarComponent implements OnInit, OnChanges {
       closeOnSelect: false,
       width: '300'
     };
+  }
+
+  editData(data:any){
+    if (data == null) {
+      return;
+    }
+   
+    // this.formPerhiasan();
+
+    this.valueVendorDinar = [];
+    this.vendorDinar = [];
+    this.valueDenom = [];
+    let arr = [];
+    
+    for (let dinar of data.product) {
+      if (dinar.code == "c06") {
+        arr.push(dinar);
+      }       
+    }
+    console.debug(arr,"isi dinar arr");
+    this.dinarDataEdit = arr;
+   
+    for (let get of this.dinarDataEdit) {
+      this.dinarDataEdit2 =get;
+      this.section2_dinar.patchValue({pickVendor: get.pickVendor}) 
+      this.section2_dinar.patchValue({pickDenom: get.pickDenom}) 
+      this.section2_dinar.patchValue({quota : get.quota})
+      this.section2_dinar.patchValue({sizeTypePromotion : get.sizeTypePromotion})      
+
+      // typePromotion
+      let tp=[];
+      let tpVal = [];
+  
+      this.promotionTypeService.list('?_hash=1').subscribe((response:any)=>{
+        if (response == false) {
+          this.toastrService.error("Get type promotion Error");
+          return;
+        }
+          for (let res of response) {
+            tp.push(res);
+
+            if (res.code == get.typePromotion.code) {
+              this.section2_dinar.patchValue({typePromotion:res._hash})
+            }
+         
+          }
+          this.jenisPromosi=tp;
+      })
+
+      // vendor
+      let ven=[];
+      let vendorVal = [];
+  
+      this.vendorService.list('?_hash=1').subscribe((response:any)=>{
+        if (response == false) {
+          this.toastrService.error("Get Vendor Error");
+          return;
+        }
+
+        if (get.vendor == '1') {
+          for (let res of response) {
+            ven.push({id:res._hash,text:res.name});       
+          }
+          this.section2_dinar.patchValue({vendor:'1'})
+          this.select2Vendor('1');
+        }else{
+          for (let res of response) {
+            ven.push({id:res._hash,text:res.name});
+    
+            for (let isi of get.vendor) {
+              if (res.code == isi.code) {
+                vendorVal.push(res._hash);
+              }
+            }          
+          }
+          this.valueVendorDinar = vendorVal;
+    
+          this.section2_dinar.patchValue({vendor:'pv'})
+          this.select2Vendor('pv');
+        }
+        this.vendorDinar = ven ;
+      })
+
+      
+
+      // purity
+      let denom=[];
+      let denomVal = [];
+  
+      this.productDenomService.list('?_hash=1').subscribe((response:any)=>{
+        if (response == false) {
+          this.toastrService.error("Get Denom Error");
+          return;
+        }
+
+        if (get.denom == '1') {
+          for (let res of response) {
+            denom.push({id:res._hash,text:res.name});         
+          }
+          this.section2_dinar.patchValue({denom:'1'})
+          this.select2Denom('1');
+        }else{
+          for (let res of response) {
+            denom.push({id:res._hash,text:res.name});
+    
+            for (let isi of get.denom) {
+              if (res.code == isi.code) {
+                denomVal.push(res._hash);
+              }
+            }          
+          }
+          this.valueDenom = denomVal;
+          
+          this.section2_dinar.patchValue({denom:'pd'})
+          this.select2Denom('pd');
+        }
+        this.denomDinar = denom ;
+      })
+    }
   }
 
   formDinar(){

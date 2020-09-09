@@ -20,7 +20,7 @@ export class PromoService {
         section2Berlian.code = 'c01';
         let isiVendor = [];
         let isiPurity = [];
-        let isiTypePerhiasan = [];
+        let isiTypeBerlian = [];
         // Vendors
       if (section2Berlian.vendor == "pv") {
         for (let data of section2Berlian.pickVendor) {
@@ -46,14 +46,14 @@ export class PromoService {
         }
 
         // typePerhiasan
-        if (section2Berlian.typePerhiasan == "pj") {
-          for (let data of section2Berlian.pickTypePerhiasan) {
-            isiTypePerhiasan.push(JSON.parse(atob(data)))     
+        if (section2Berlian.typeBerlian == "pj") {
+          for (let data of section2Berlian.pickTypeBerlian) {
+            isiTypeBerlian.push(JSON.parse(atob(data)))     
           }
-          section2Berlian.typePerhiasan= isiTypePerhiasan;
-          delete section2Berlian.pickTypePerhiasan;
+          section2Berlian.typeBerlian= isiTypeBerlian;
+          delete section2Berlian.pickTypeBerlian;
         }else{
-          delete section2Berlian.pickTypePerhiasan;
+          delete section2Berlian.pickTypeBerlian;
         }
       }
 

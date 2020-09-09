@@ -20,7 +20,7 @@
                         <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
                             <ng-select2 
                                 formControlName="pickVendor" 
-                                [data]="vendorPerhiasan"
+                                [data]="vendorBerlian"
                                 [(ngModel)]="valueVendor"
                                 [options]="options2"></ng-select2>
                         </div>
@@ -42,7 +42,7 @@
                         <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
                             <ng-select2 
                                 formControlName="pickPurity" 
-                                [data]="purityPerhiasan"
+                                [data]="purityBerlian"
                                 [(ngModel)]="valuePurity"
                                 [options]="options2"></ng-select2>
                         </div>
@@ -52,21 +52,21 @@
 
                 <!-- jenis Perhiasan -->
                 <clr-select-container>
-                    <label class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">Jenis Perhiasan</label>
-                    <select formControlName="typePerhiasan" class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrSelect (click)="select2TypePerhiasan($event.target.value)" >
+                    <label class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">Jenis Berlian</label>
+                    <select formControlName="typeBerlian" class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrSelect (click)="select2typeBerlian($event.target.value)" >
                         <option disabled selected [value]="">-- Select One --</option>
                         <option [value]="'1'">Semua Jenis Perhiasan</option>
                         <option [value]="'pj'">Pilih Jenis Perhiasan</option>
                     </select>
                 </clr-select-container><br>
-                <ng-container *ngIf="selectTypePerhiasan">
+                <ng-container *ngIf="selectTypeBerlian">
                     <div class="clr-row">
                         <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4"></div>
                         <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
                             <ng-select2 
-                                formControlName="pickTypePerhiasan" 
-                                [data]="jenisPerhiasan"
-                                [(ngModel)]="valueJenisPerhiasan"
+                                formControlName="pickTypeBerlian" 
+                                [data]="jenisBerlian"
+                                [(ngModel)]="valuejenisBerlian"
                                 [options]="options2"></ng-select2>
                         </div>
                     </div>                                         
@@ -87,7 +87,7 @@
                         <option value="du">Dengan Umur</option>
                     </select>
                 </clr-select-container> 
-                <ng-container *ngIf="umurPerhiasan">
+                <ng-container *ngIf="umurBerlian">
                     <div class="clr-row">
                         <div class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3"></div>
                         <div class="clr-col-sm-4 clr-col-md-3 clr-col-lg-4">

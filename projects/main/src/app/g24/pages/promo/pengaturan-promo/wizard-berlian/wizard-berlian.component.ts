@@ -24,13 +24,30 @@ export class WizardBerlianComponent implements OnInit, OnChanges {
 
   @Input() kuotaProduk:boolean = false;
   @Input() getData:boolean = false;
+  @Input() getEditData:any;
 
   section2_berlian:FormGroup=null;
   jenisPromosi:any;
 
+  berlianDataEdit=[];
+  berlianDataEdit2:any;
   selectVendor:boolean = false;
   selectPurity:boolean = false;
-  selectTypePerhiasan:boolean = false;
+  selectTypeBerlian:boolean = false;
+
+  valueVendor:string[];
+  valuePurity:string[];
+  valueJenisBerlian:string[];
+
+
+  public options:Options;
+  public options2:Options;
+
+  // select2 perhiasan 
+  vendorBerlian:Array<Select2OptionData>;
+  purityBerlian:Array<Select2OptionData>;
+  jenisBerlian:Array<Select2OptionData>;
+  umurBerlian:boolean = false;
 
   constructor(
     public vendorService : VendorService,
@@ -41,24 +58,13 @@ export class WizardBerlianComponent implements OnInit, OnChanges {
     private promotionTypeService:PromotionTypeService,
   ) { }
 
-  valueVendor:string[];
-  valuePurity:string[];
-  valueJenisPerhiasan:string[];
-
-  public options:Options;
-  public options2:Options;
-
-  // select2 perhiasan 
-  vendorPerhiasan:Array<Select2OptionData>;
-  purityPerhiasan:Array<Select2OptionData>;
-  jenisPerhiasan:Array<Select2OptionData>;
-  umurPerhiasan:boolean = false;
   ngOnChanges(){
     this.passingData(this.getData);
   }
   ngOnInit(): void {
     this.formBerlian();
     this.settingBerlian();
+    this.editData(this.getEditData);
     this.options2 ={
       multiple: true,
       theme: 'classic',
@@ -72,6 +78,175 @@ export class WizardBerlianComponent implements OnInit, OnChanges {
       width: '300'
     };
   }
+
+  editData(data:any){
+    if (data == null) {
+      return;
+    }
+   
+    // this.formPerhiasan();
+
+    this.valueVendor = [];
+    this.vendorBerlian = [];
+    this.valuePurity = [];
+    this.purityBerlian = [];
+    this.valueJenisBerlian=[];
+    this.jenisBerlian = [];
+    let arr = [];
+    
+    for (let berlian of data.product) {
+      if (berlian.code == "c01") {
+        arr.push(berlian);
+      }       
+    }
+    console.debug(arr,"isi perhiasan arr");
+    this.berlianDataEdit = arr;
+   
+    for (let get of this.berlianDataEdit) {
+      this.berlianDataEdit2 =get;
+      this.section2_berlian.patchValue({prmPromotion : get.prmPromotion})   
+      this.section2_berlian.patchValue({minPrmPromotion : get.minPrmPromotion})
+      this.section2_berlian.patchValue({maxPrmPromotion : get.maxPrmPromotion})
+      this.section2_berlian.patchValue({sizeTypePromotion : get.sizeTypePromotion})
+      this.section2_berlian.patchValue({pickVendor: get.pickVendor})    
+      this.section2_berlian.patchValue({pickPurity: get.pickPurity})
+      this.section2_berlian.patchValue({pickTypeBerlian : get.pickTypeBerlian})
+      this.section2_berlian.patchValue({age : get.age})
+      this.section2_berlian.patchValue({minAge : get.minAge})
+      this.section2_berlian.patchValue({maxAge : get.maxAge})
+      this.section2_berlian.patchValue({quota : get.quota})
+
+      // age
+      this.pickUmur(get.age);
+
+      // typePromotion
+      let tp=[];
+      let tpVal = [];
+  
+      this.promotionTypeService.list('?_hash=1').subscribe((response:any)=>{
+        if (response == false) {
+          this.toastrService.error("Get type promotion Error");
+          return;
+        }
+          for (let res of response) {
+            tp.push(res);
+
+            if (res.code == get.typePromotion.code) {
+              this.section2_berlian.patchValue({typePromotion:res._hash})
+            }
+         
+          }
+          this.jenisPromosi=tp;
+      })
+
+      // vendor
+      let ven=[];
+      let vendorVal = [];
+  
+      this.vendorService.list('?_hash=1').subscribe((response:any)=>{
+        if (response == false) {
+          this.toastrService.error("Get Vendor Error");
+          return;
+        }
+
+        if (get.vendor == '1') {
+          for (let res of response) {
+            ven.push({id:res._hash,text:res.name});       
+          }
+          this.section2_berlian.patchValue({vendor:'1'})
+          this.select2Vendor('1');
+        }else{
+          for (let res of response) {
+            ven.push({id:res._hash,text:res.name});
+    
+            for (let isi of get.vendor) {
+              if (res.code == isi.code) {
+                vendorVal.push(res._hash);
+              }
+            }          
+          }
+          this.valueVendor = vendorVal;
+    
+          this.section2_berlian.patchValue({vendor:'pv'})
+          this.select2Vendor('pv');
+        }
+        this.vendorBerlian = ven ;
+      })
+
+      
+
+      // purity
+      let pur=[];
+      let purityVal = [];
+  
+      this.productPurityService.list('?_hash=1').subscribe((response:any)=>{
+        if (response == false) {
+          this.toastrService.error("Get Purity Error");
+          return;
+        }
+
+        if (get.purity == '1') {
+          for (let res of response) {
+            pur.push({id:res._hash,text:res.name});         
+          }
+          this.section2_berlian.patchValue({purity:'1'})
+          this.select2Purity('1');
+        }else{
+          for (let res of response) {
+            pur.push({id:res._hash,text:res.name});
+    
+            for (let isi of get.purity) {
+              if (res.code == isi.code) {
+                purityVal.push(res._hash);
+              }
+            }          
+          }
+          this.valuePurity = purityVal;
+          
+          this.section2_berlian.patchValue({purity:'pk'})
+          this.select2Purity('pk');
+        }
+        this.purityBerlian = pur ;
+        console.debug(this.purityBerlian,"pur")
+      })
+
+      // jenis Perhiasan
+      let per=[];
+      let typeVal = [];
+  
+      this.productJenisService.list('?_hash=1').subscribe((response:any)=>{
+        if (response == false) {
+          this.toastrService.error("Get Type Perhiasan Error");
+          return;
+        }
+
+        if (get.typeBerlian == '1') {
+          for (let res of response) {
+            per.push({id:res._hash,text:res.name});          
+          }
+          this.section2_berlian.patchValue({typeBerlian:'1'})
+          this.select2typeBerlian('1');
+        }else{
+          for (let res of response) {
+            per.push({id:res._hash,text:res.name});
+    
+            for (let isi of get.typeBerlian) {
+              if (res.code == isi.code) {
+                typeVal.push(res._hash);
+              }
+            }          
+          }
+          this.valueJenisBerlian = typeVal;
+    
+          this.section2_berlian.patchValue({typeBerlian:'pj'})
+          this.select2typeBerlian('pj');
+        }
+        this.jenisBerlian = per ;
+        console.debug(this.jenisBerlian,"per")
+      })
+    }
+  }
+
   select2Vendor(val){
     if (val == 'pv'){
       this.selectVendor = true;
@@ -88,19 +263,19 @@ export class WizardBerlianComponent implements OnInit, OnChanges {
     }
   }
 
-  select2TypePerhiasan(val){
+  select2typeBerlian(val){
     if (val == 'pj'){
-      this.selectTypePerhiasan = true;
+      this.selectTypeBerlian = true;
     }else{
-      this.selectTypePerhiasan = false;
+      this.selectTypeBerlian = false;
     }
   }
 
   pickUmur(val){
     if (val == "du") {
-      this.umurPerhiasan = true;
+      this.umurBerlian = true;
     }else{
-      this.umurPerhiasan = false;
+      this.umurBerlian = false;
     }
   }
 
@@ -116,7 +291,7 @@ export class WizardBerlianComponent implements OnInit, OnChanges {
       for (let val of response) {
         data.push({id:val._hash,text:val.name})
       }
-      this.vendorPerhiasan = data;
+      this.vendorBerlian = data;
     })
 
     this.productPurityService.list("?_hash=1&_sortby=name:1").subscribe((response:any)=>{
@@ -127,7 +302,7 @@ export class WizardBerlianComponent implements OnInit, OnChanges {
       for (let val of response) {
         data2.push({id:val._hash,text:val.name})
       }
-      this.purityPerhiasan = data2;
+      this.purityBerlian = data2;
     })
 
     this.productJenisService.list("?_hash=1&product-category.code=c01&_sortby=name:1").subscribe((response:any)=>{
@@ -138,7 +313,7 @@ export class WizardBerlianComponent implements OnInit, OnChanges {
       for (let val of response) {
         data3.push({id:val._hash,text:val.name})
       }
-      this.jenisPerhiasan = data3;
+      this.jenisBerlian = data3;
     })
     
     this.promotionTypeService.list("?_hash=1").subscribe((response:any)=>{
@@ -162,8 +337,8 @@ export class WizardBerlianComponent implements OnInit, OnChanges {
       pickVendor: new FormControl (""),
       purity: new FormControl ("", Validators.required),
       pickPurity: new FormControl (""),
-      typePerhiasan : new FormControl ("", Validators.required),
-      pickTypePerhiasan : new FormControl (""),
+      typeBerlian : new FormControl ("", Validators.required),
+      pickTypeBerlian : new FormControl (""),
       age : new FormControl ("", Validators.required),
       minAge : new FormControl (""),
       maxAge : new FormControl (""),

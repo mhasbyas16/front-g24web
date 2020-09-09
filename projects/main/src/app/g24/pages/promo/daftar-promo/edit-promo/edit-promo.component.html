@@ -117,17 +117,35 @@
             [getEditData]="dataToChild"
             (dataPerhiasan)="getPerhiasan($event)"></app-wizard-perhiasan>
         </ng-container>
-        <ng-container *ngIf="mulia">
-            <div class="card" style="margin-top: 0em;">
-                <div class="card-header">
-                   LOGAM MULIA               
-                </div>       
-                <div class="card-block">
-                    <div class="card-text">
-                    </div>
-                </div>  
-            </div>
+        <ng-container *ngIf="berlian">
+            <app-wizard-berlian
+            [kuotaProduk]="kuotaProduk"
+            [getData]="getDataBerlian"
+            [getEditData]="dataToChild"
+            (dataBerlian)="getBerlian($event)"></app-wizard-berlian>
         </ng-container>
+        <ng-container *ngIf="dinar">
+            <app-wizard-dinar
+            [kuotaProduk]="kuotaProduk"
+            [getData]="getDataDinar"
+            [getEditData]="dataToChild"
+            (dataDinar)="getDinar($event)"></app-wizard-dinar>
+        </ng-container>
+        <!-- <ng-container *ngIf="mulia">
+            <app-wizard-mulia
+            [kuotaProduk]="kuotaProduk"
+            [getData]="getDataMulia"
+            (dataMulia)="getMulia($event)"></app-wizard-mulia>
+        </ng-container> -->
+        <!-- 
+        <ng-container *ngIf="giftSouvenir">
+            <app-wizard-gift-souvenir
+            [kuotaProduk]="kuotaProduk"
+            [getData]="getDataGiftSouvenir"
+            [tipe]="tipeGS"
+            (dataGiftSouvenir)="getGiftSouvenir($event)">></app-wizard-gift-souvenir>
+        </ng-container>
+         -->
             
     </clr-wizard-page>
     

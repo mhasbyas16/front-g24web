@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges,SimpleChanges } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ClrWizard } from '@clr/angular';
 import { Select2OptionData } from 'ng-select2';
@@ -23,6 +23,7 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
 
   @Input() kuotaProduk:boolean = false;
   @Input() getData:boolean = false;
+  @Input() getEditData:any;
   
   // @Input() editData:boolean = false;
 
@@ -56,15 +57,23 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
     private promotionTypeService:PromotionTypeService,
   ) { }
 
-  ngOnChanges(){
-    this.passingData(this.getData);
+  ngOnChanges(change: SimpleChanges){
+    for (let propName in change) {
+      if (propName === 'getData') {
+        this.passingData(this.getData);
+     } else if (propName === 'getEditData') {
+        // this.editData(this.getEditData);
+     }
+      
+    }
+    
     // this.editData(this.getEditData);
   }
 
   ngOnInit(): void {
     this.formPerhiasan();
     this.settingPerhiasan();
-
+    this.editData(this.getEditData);
 
     this.options2 ={
       multiple: true,
@@ -80,11 +89,12 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
     };
   }
 
-  @Input() public set getEditData(val: any) {
-    this.editData(val);
-  }
-
   editData(data:any){
+    console.debug(data,"data edit hash");
+    if (data == null) {
+      return;
+    }
+   
     // this.formPerhiasan();
 
     this.valueVendor = [];
@@ -94,7 +104,7 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
     this.valueJenisPerhiasan=[];
     this.jenisPerhiasan = [];
     let arr = [];
-    console.debug(data,"data edit hash", this.section2_perhiasan.getRawValue());
+    
     for (let perhiasan of data.product) {
       if (perhiasan.code == "c00") {
         arr.push(perhiasan);
@@ -102,26 +112,43 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
     }
     console.debug(arr,"isi perhiasan arr");
     this.perhiasanDataEdit = arr;
-    
+   
     for (let get of this.perhiasanDataEdit) {
       this.perhiasanDataEdit2 =get;
-      this.section2_perhiasan.patchValue({
-        prmPromotion : get.prmPromotion,
-        minPrmPromotion : get.minPrmPromotion,
-        maxPrmPromotion : get.maxPrmPromotion,
-        typePromotion : get.typePromotion,
-        sizeTypePromotion : get.sizeTypePromotion,
-        // vendor: get.vendor,
-        pickVendor: get.pickVendor,
-        // purity: get.purity,
-        pickPurity: get.pickPurity,
-        // typePerhiasan : get.typePerhiasan,
-        pickTypePerhiasan : get.pickTypePerhiasan,
-        age : get.age,
-        minAge : get.minAge,
-        maxAge : get.maxAge,
-        quota : get.quota,
-      })      
+      this.section2_perhiasan.patchValue({prmPromotion : get.prmPromotion})   
+      this.section2_perhiasan.patchValue({minPrmPromotion : get.minPrmPromotion})
+      this.section2_perhiasan.patchValue({maxPrmPromotion : get.maxPrmPromotion})
+      this.section2_perhiasan.patchValue({sizeTypePromotion : get.sizeTypePromotion})
+      this.section2_perhiasan.patchValue({pickVendor: get.pickVendor})    
+      this.section2_perhiasan.patchValue({pickPurity: get.pickPurity})
+      this.section2_perhiasan.patchValue({pickTypePerhiasan : get.pickTypePerhiasan})
+      this.section2_perhiasan.patchValue({age : get.age})
+      this.section2_perhiasan.patchValue({minAge : get.minAge})
+      this.section2_perhiasan.patchValue({maxAge : get.maxAge})
+      this.section2_perhiasan.patchValue({quota : get.quota})
+
+      // age
+      this.pickUmur(get.age);
+      
+      // typePromotion
+      let tp=[];
+      let tpVal = [];
+  
+      this.promotionTypeService.list('?_hash=1').subscribe((response:any)=>{
+        if (response == false) {
+          this.toastrService.error("Get type promotion Error");
+          return;
+        }
+          for (let res of response) {
+            tp.push(res);
+
+            if (res.code == get.typePromotion.code) {
+              this.section2_perhiasan.patchValue({typePromotion:res._hash})
+            }
+         
+          }
+          this.jenisPromosi=tp;
+      })
 
       // vendor
       let ven=[];
