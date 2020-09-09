@@ -107,7 +107,7 @@ export class EditPromoComponent implements OnInit {
   }
   passingData(){
     if (
-      this.passingMulia == this.getDataMulia ) {
+      this.passingGiftSouvenir == this.getDataGiftSouvenir) {
 
       this.getDataPromosi();
     }     
@@ -176,9 +176,10 @@ export class EditPromoComponent implements OnInit {
     if (this.selectProduct != true) {
       // perhiasan
       this.perhiasan = true;
-
+      this.dinar = true;
       this.berlian = true;
       this.mulia = true;
+      this.giftSouvenir = true;
 
       this.dataToChild = data;
     }else{
