@@ -13,6 +13,7 @@ export class CartBuybackComponent implements OnInit {
   @Output() clearEmasBatangan:any = new EventEmitter();
   @Output() clearBerlian:any = new EventEmitter();
   @Output() clearSouvenir:any = new EventEmitter();
+  @Output() clearDinar:any = new EventEmitter();
 
   @Output() data:any = new EventEmitter();
 
@@ -21,6 +22,7 @@ export class CartBuybackComponent implements OnInit {
   @Input() hargaTotalEmasBatangan : any = 0
   @Input() hargaTotalBerlian : any = 0
   @Input() hargaTotalSouvenir : any = 0
+  @Input() hargaTotalDinar : any = 0
 
   cartModal : any
   
@@ -58,6 +60,10 @@ export class CartBuybackComponent implements OnInit {
     this.cartSouvenir.splice(0);
     this.hargaTotalSouvenir = 0
     this.clearSouvenir.emit({length:0,harga:0});
+
+    this.cartDinar.splice(0);
+    this.hargaTotalDinar = 0
+    this.clearDinar.emit({length:0,harga:0});
   }
 
   removeItemPerhiasan(key: any, harga:any ){
@@ -117,6 +123,22 @@ export class CartBuybackComponent implements OnInit {
     
     this.hargaTotalSouvenir = this.hargaTotalPerhiasan - harga
     this.clearSouvenir.emit({length:this.cartSouvenir.length, harga:this.hargaTotalSouvenir });
+
+    if (this.totalCart == 0) {
+      console.debug("totallll 0");
+      this.clearParentCart.emit(0);
+    }
+  }
+
+  removeItemDinar(key: any, harga:any ){
+    //pengurangan jumlah item
+    this.cartDinar.splice(key,1);
+
+    //pengurangan jumlah cart
+    this.totalCart-=1;
+    
+    this.hargaTotalDinar = this.hargaTotalDinar - harga
+    this.clearDinar.emit({length:this.cartDinar.length, harga:this.hargaTotalDinar });
 
     if (this.totalCart == 0) {
       console.debug("totallll 0");

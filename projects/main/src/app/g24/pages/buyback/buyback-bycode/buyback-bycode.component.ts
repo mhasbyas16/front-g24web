@@ -44,6 +44,10 @@ export class BuybackBycodeComponent implements OnInit {
   isiSouvenir : any[];
   totalIsiSouvenir : any;
 
+  //dinar
+  isiDinar : any[];
+  totalIsiDinar : any;
+
   //global
   total : any
   hargaBB = 0;
@@ -58,6 +62,7 @@ export class BuybackBycodeComponent implements OnInit {
   hargaTotalEmasBatangan : any = 0
   hargaTotalBerlian : any = 0
   hargaTotalSouvenir : any = 0
+  hargaTotalDinar : any = 0
 
 
   totalCart: any = 0
@@ -65,6 +70,7 @@ export class BuybackBycodeComponent implements OnInit {
   totalIsiCartEmasBatanganBBC: any = 0
   totalIsiCartBerlianBBC: any = 0
   totalIsiCartSouvenirBBC: any = 0
+  totalIsiCartDinarBBC: any = 0
 
   constructor(
     private toastrService:ToastrService,
@@ -90,6 +96,9 @@ export class BuybackBycodeComponent implements OnInit {
     this.totalIsiPerhiasan = 0;
     this.isiPerhiasan = null
     this.isiEmasBatangan = null
+    this.isiBerlian = null
+    this.isiSouvenir = null
+    this.isiDinar = null
 
     if (!this.searchTrans.valid) {
       this.toastrService.error("Harap Input Id", "Buyback");
@@ -131,6 +140,10 @@ export class BuybackBycodeComponent implements OnInit {
       this.isiSouvenir =this.detailTransaction.product["GS"] 
       this.totalIsiSouvenir=  this.isiSouvenir.length
 
+       //souvenir
+       this.isiDinar =this.detailTransaction.product["DINAR"] 
+       this.totalIsiDinar=  this.isiSouvenir.length
+
       //loadingDG
       this.loadingDg = false;
 
@@ -159,6 +172,11 @@ export class BuybackBycodeComponent implements OnInit {
     this.hargaTotalSouvenir = data.harga; 
   }
 
+  clearDinar(data:any){
+    this.totalIsiCartDinarBBC  = data.length;
+    this.hargaTotalDinar = data.harga; 
+  }
+
 
   totalIsiCartPerhiasan(val){
     this.totalIsiCartPerhiasanBBC = val
@@ -176,9 +194,13 @@ export class BuybackBycodeComponent implements OnInit {
     this.totalIsiCartSouvenirBBC = val
   }
 
+  totalIsiCartDinar(val){
+    this.totalIsiCartDinarBBC = val
+  }
+
   totalJumlahCart(){
     this.totalCart = 0
-    this.totalCart = this.totalIsiCartPerhiasanBBC + this.totalIsiCartEmasBatanganBBC + this.totalIsiCartBerlianBBC + this.totalIsiCartSouvenirBBC
+    this.totalCart = this.totalIsiCartPerhiasanBBC + this.totalIsiCartEmasBatanganBBC + this.totalIsiCartBerlianBBC + this.totalIsiCartSouvenirBBC + this.totalIsiCartDinarBBC
     return this.totalCart
   }
 
@@ -196,6 +218,10 @@ export class BuybackBycodeComponent implements OnInit {
 
   HTotalSouvenir(harga: any){
     this.hargaTotalSouvenir = harga;
+  }
+
+  HTotalDinar(harga: any){
+    this.hargaTotalDinar = harga;
   }
 }
 
