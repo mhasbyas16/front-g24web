@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { LM } from "projects/main/src/app/g24/sample/cart-buyback";
+import { PrmJualService } from '../../../../services/parameter/prm-jual.service';
+import { PricingService } from '../../../../services/pricing.service';
 
 @Component({
   selector: 'app-mulia-bycode',
@@ -17,10 +19,20 @@ export class MuliaBycodeComponent implements OnInit {
 
   cartList =  LM;
   sumHarga: number;
+  hargaBB : any;
 
-  constructor() { }
+  productCategory= "product-category.code=c05";
+
+  constructor(
+
+    private pricingService: PricingService,
+    private prmJualService: PrmJualService
+
+  ) { }
 
   ngOnInit(): void {
+    
+    console.debug(this.totalIsiEmasBatangan, "sada")
   }
   
   addToCart(code, vendor, denom, noSeri ){
@@ -34,6 +46,18 @@ export class MuliaBycodeComponent implements OnInit {
     })
     this.totalIsiCartEmasBatangan.emit(this.cartList.length)
     this.refresh("p")
+   
+  }
+  
+  hitungHargaBB(){
+      
+        console.debug(this.totalIsiEmasBatangan, "sada")
+      
+    //   this.prmJualService.get("?"+this.productCategory+"&flag=approved"+"&vendor="+codeVendor).subscribe((BBresponse: any) => {
+    //   this.hargaBB = BBresponse
+    //   console.debug(this.hargaBB, "wewe")
+      
+    // })
   }
 
   cekItemArray(data: any){

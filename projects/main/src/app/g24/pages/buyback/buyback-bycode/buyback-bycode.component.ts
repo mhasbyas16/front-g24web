@@ -4,10 +4,12 @@ import { DContent } from '../../../decorators/content/pages';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 
+
 // services
 import { TransactionService } from '../../../services/transaction/transaction.service';
 
 import { TanggalService } from '../../../lib/helper/tanggal.service';
+import { PrmJualService } from '../../../services/parameter/prm-jual.service';
 
 
 @Component({
@@ -72,11 +74,14 @@ export class BuybackBycodeComponent implements OnInit {
   totalIsiCartSouvenirBBC: any = 0
   totalIsiCartDinarBBC: any = 0
 
+  productCategoryMulia= "product-category.code=c05";
+
   constructor(
     private toastrService:ToastrService,
     private transactionService: TransactionService,
     // private sessionService: SessionService,
     private tanggalService:TanggalService,
+    private prmJualService: PrmJualService
   ) { }
 
   ngOnInit(): void {
@@ -129,7 +134,17 @@ export class BuybackBycodeComponent implements OnInit {
       this.totalIsiPerhiasan =  this.isiPerhiasan.length
       
       //mulia
-      this.isiEmasBatangan =this.detailTransaction.product["LM"] 
+      this.isiEmasBatangan =this.detailTransaction.product["LM"]
+      for (let isi of this.isiEmasBatangan) {
+        console.debug(isi.detail['product-denom'].name)
+        
+        // console.debug(this.isiEmasBatangan.detail['product-denom'].name , "denom")
+        // console.debug(this.isiEmasBatangan.detail['vendor'].name , "vendor")
+        // this.prmJualService.get("?"+this.productCategoryMulia+"&flag=approved"+"&vendor=").subscribe((BBresponse: any) => {
+          
+        // })
+        
+      } 
       this.totalIsiEmasBatangan=  this.isiEmasBatangan.length
 
       //berlian
