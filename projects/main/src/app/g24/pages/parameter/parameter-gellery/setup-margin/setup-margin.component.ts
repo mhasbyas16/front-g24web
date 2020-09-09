@@ -193,12 +193,12 @@ export class SetupMarginComponent implements OnInit {
     // CLR Datagrid loading
     this.loadingDg = true;
 
-    this.params = "?&_sortby=_id:2&";
+    this.params = "?&_sortby=_id:2&_ne=flag:expired&";
     let transaction = data.input_transaction;
     let product = data.input_product;
   
-    const urlTransaction = "transaction-type.code="+transaction+"&_sortby=_id:2";
-    const urlProduct = "product-category.code="+product+"&_sortby=_id:2";
+    const urlTransaction = "transaction-type.code="+transaction;
+    const urlProduct = "product-category.code="+product;
     
     // Session
     // const getUnit = this.sessionService.getUnit();

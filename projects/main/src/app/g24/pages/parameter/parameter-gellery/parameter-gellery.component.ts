@@ -59,10 +59,11 @@ export class ParameterGelleryComponent implements OnInit {
   myRole = null;
   product = null;
   list_vendors = null;
+  getDataold = null;
   tempVendor = [];
  
   vendorCategory= "product-category.code=c05,c06";
-  category = "?_hash=1&product-category.code=c05,c06&_sortby=_id:2";
+  category = "?_ne=flag:expired&_hash=1&product-category.code=c05,c06&_sortby=_id:2";
   produtCategory = null;
   filterProduct = "?code=c05,c06";
   
@@ -154,17 +155,21 @@ export class ParameterGelleryComponent implements OnInit {
 
     //get data productCategory
     let prod = null;
+    let codeProd = null;
     for(let i of this.product){
       if (this.inputModel.selectProduct == i._id) {
         prod = btoa(JSON.stringify(i));
+        codeProd = i.code;
       }
     }
 
     //get data vendor
     let vnd = null;
+    let codeVnd = null;
     for(let i of this.list_vendors){
       if (this.inputModel.selectVendor == i._id) {
         vnd = btoa(JSON.stringify(i));
+        codeVnd = i.code;
       }
     }
 
@@ -184,9 +189,6 @@ export class ParameterGelleryComponent implements OnInit {
       "harga_encoded" : "base64array"
     }
 
-    // untuk melakukan encoded tanpa mendeklarasikan
-    // DataTypeUtil.Encode(prmJual)
-    
     this.spinner = true;
     this.prmJualService.add(prmJual).subscribe((response) => {
       if (response == false) {
@@ -299,9 +301,11 @@ export class ParameterGelleryComponent implements OnInit {
 
       this.inputModel = data;
       this.harga = this.inputModel.harga;
-      console.log('rego',this.harga);
+      // console.log('rego',this.harga);
       this.inputModel.selectProduct = data['product-category'].name;
       this.inputModel.selectVendor = data['vendor'].name;
+      this.inputModel.selectP = data['product-category'].code;
+      this.inputModel.selectV = data['vendor'].code;
       this.inputModel.jenis_barang = data.jenis_barang;
       this.inputModel.keterangan = data.keterangan;
       // this.onChange(this.inputModel.selectProduct);
@@ -314,24 +318,58 @@ export class ParameterGelleryComponent implements OnInit {
 
     let prmJual = {
       "_id" : this.inputModel._id,
+      "keterangan" : this.inputModel.keterangan,
       "approve_by" : this.nikUser["_hash"],
       "approve_by_encoded" : "base64",
       "approve_date" : this.date_now,
       "approve_time" : this.time,
       "flag" : "approved",
     }
-    
+
+    //get data approve lama
     this.spinner = true;
-    this.prmJualService.update(prmJual).subscribe((response) => {
-      if (response == false) {
-        this.toastrService.error('Approve Failed')
-        return
+    this.prmJualService.get("?flag=approved&product-category.code="+this.inputModel.selectP+"&vendor.code="+this.inputModel.selectV+"&jenis_barang="+this.inputModel.jenis_barang).subscribe((out) => {
+      this.getDataold = out._id;
+
+      if (out == false){
+        this.prmJualService.update(prmJual).subscribe((response1) => {
+          if (response1 == false) {
+            this.toastrService.error('Approved Failed')
+            return
+          }
+          this.spinner = false;
+          this.modalConfirmDialog = false;
+          this.toastrService.success('Approved Success')
+          return
+        })
+      }else{
+        let histori = {
+          "_id" : this.getDataold,
+          "expired_date" : this.date_now,
+          "expired_time" : this.time,
+          "flag" : "expired",
+        }
+  
+        //ubah data lama menjadi histori
+        this.prmJualService.update(histori).subscribe((response) => {
+          if (response == false) {
+            this.toastrService.error('Update Existing Failed')
+            return
+          }
+          this.prmJualService.update(prmJual).subscribe((response1) => {
+            if (response1 == false) {
+              this.toastrService.error('Approved Failed')
+              return
+            }
+            this.spinner = false;
+            this.modalConfirmDialog = false;
+            this.toastrService.success('Approved Success')
+          })
+        })
+      console.debug('submitted data',  prmJual)
+      console.debug('submitted data',  histori)
       }
-      this.spinner = false;
-      this.modalConfirmDialog = false;
-      this.toastrService.success('Approve Success')
     })
-    console.debug('submitted data',  prmJual)
   }
 
   mainDeclineSubmit() {
@@ -442,8 +480,8 @@ export class ParameterGelleryComponent implements OnInit {
     this.params = this.category;
     
     // Session
-    const getUnit = this.sessionService.getUnit();
-    console.debug(getUnit + "Ini Unit");
+    // const getUnit = this.sessionService.getUnit();
+    // console.debug(getUnit + "Ini Unit");
     // this.params = this.params+"&unit.code="+getUnit["code"];
     this.params = this.params;
 

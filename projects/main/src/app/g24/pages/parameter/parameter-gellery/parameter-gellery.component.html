@@ -53,6 +53,7 @@
                             </form>
                             <clr-datagrid [clrDgLoading]="loadingDg">
                                 <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
+                                <clr-dg-column>Product Category</clr-dg-column>
                                 <clr-dg-column>Jenis Harga</clr-dg-column>
                                 <clr-dg-column>Vendor</clr-dg-column>
                                 <clr-dg-column>Status</clr-dg-column>
@@ -62,8 +63,9 @@
                                         <button class="action-item" (click)="mainConfirm(data)">Confirm</button>
                                     </clr-dg-action-overflow>
                                     <clr-dg-cell hidden>{{data._id}}</clr-dg-cell>
-                                    <clr-dg-cell>{{data.jenis_barang}}</clr-dg-cell>
-                                    <clr-dg-cell>{{data.vendor.name}}</clr-dg-cell>
+                                    <clr-dg-cell [style.width.px]="100">{{data['product-category'].name}}</clr-dg-cell>
+                                    <clr-dg-cell [style.width.px]="100">{{data.jenis_barang}}</clr-dg-cell>
+                                    <clr-dg-cell [style.width.px]="100">{{data.vendor.name}}</clr-dg-cell>
                                         <ng-container *ngIf="data.flag == 'approved'">
                                             <clr-dg-cell><span class="label label-success">Approved</span></clr-dg-cell>
                                         </ng-container>
@@ -372,7 +374,7 @@
             <!-- hidden field put here-->
             <input type="hidden" formaControlName="name_validation">
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline" (click)="modalConfirmDialog = false">Cancel</button>
+                <button type="button" class="btn btn-outline spinner spinner-inline" (click)="modalConfirmDialog = false">Cancel</button>
                 <button type="submit" class="btn btn-danger" (click)="mainDeclineSubmit()">
                     <span *ngIf="spinner==true" class="spinner spinner-inline">
                         Declined

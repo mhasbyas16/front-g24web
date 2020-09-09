@@ -39,6 +39,7 @@ export class SetupHargaComponent implements OnInit {
   tempProduct = null;
   findProduct = null;
   myRole = null;
+  getDataold =null;
   //params
   params = null;
   vendorCategory= "product-category.code=c00";
@@ -127,7 +128,7 @@ export class SetupHargaComponent implements OnInit {
     // CLR Datagrid loading
     this.loadingDg = true;
 
-    this.params = "?_hash=1&product-category.code=c00,c01,c02,c03,c04&_sortby=_id:2";
+    this.params = "?_ne=flag:expired&_hash=1&product-category.code=c00,c01,c02,c03,c04&_sortby=_id:2";
     let prod = data.inputProduct;
   
     const urlProduct = "?_sortby=_id:2&_hash=1&product-category.code="+prod;
@@ -148,6 +149,7 @@ export class SetupHargaComponent implements OnInit {
         this.loadingDg = false;
         return;
       } 
+      this.setupHarga = response;
       this.toastrService.success("Load "+response["length"]+" Data", "Setup Harga");
       this.loadingDg = false;
     }); 
@@ -314,19 +316,50 @@ export class SetupHargaComponent implements OnInit {
       "flag": "approved",
     }
 
-    // let endcodeSetup = DataTypeUtil.Encode(setup);
-
+    //get data approve lama
     this.spinner = true;
-    this.prmJualService.update(setup).subscribe((response) => {
-      this.spinner = false;
-      this.modalConfirmDialog = false;
-      if (response == false) {
-        this.toastrService.error('Approved Failed')
-        return
+    this.prmJualService.get("?flag=approved&product-category._id="+this.inputModel.productSelect).subscribe((out) => {
+      this.getDataold = out._id;
+
+      if (out == false){
+        this.prmJualService.update(setup).subscribe((response1) => {
+          if (response1 == false) {
+            this.toastrService.error('Approved Failed')
+            return
+          }
+          this.spinner = false;
+          this.modalConfirmDialog = false;
+          this.toastrService.success('Approved Success')
+          return
+        })
+      }else{
+        let histori = {
+          "_id" : this.getDataold,
+          "expired_date" : this.date_now,
+          "expired_time" : this.time,
+          "flag" : "expired",
+        }
+  
+        //ubah data lama menjadi histori
+        this.prmJualService.update(histori).subscribe((response) => {
+          if (response == false) {
+            this.toastrService.error('Update Existing Failed')
+            return
+          }
+          this.prmJualService.update(setup).subscribe((response1) => {
+            if (response1 == false) {
+              this.toastrService.error('Approved Failed')
+              return
+            }
+            this.spinner = false;
+            this.modalConfirmDialog = false;
+            this.toastrService.success('Approved Success')
+          })
+        })
+        console.debug('submitted data',  setup)
+        console.debug('submitted data',  histori)
       }
-      this.toastrService.success('Approved Success')
     })
-    console.debug('submitted data',  setup)
   }
 
   mainDeclineSubmit() {
