@@ -20,20 +20,17 @@ export class CheckoutBuybackComponent implements OnInit {
   formData: any;
   isiClientData: any;
   
-  
-  
-  
   //cart
   perhiasan = PERHIASAN;
   emasBatangan = LM;
-  giftSouvenir = GS;
+  souvenir = GS;
   berlian = BERLIAN;
   dinar = DINAR;
 
   //cart list
   jumlahPerhiasan:any;
   jumlahEmasBatangan:any;
-  jumlahgift:any;
+  jumlahSouvenir:any;
   jumlahBerlian:any;
   jumlahDinar:any;
  
@@ -79,7 +76,7 @@ export class CheckoutBuybackComponent implements OnInit {
     console.debug(PERHIASAN, "sadsda")
     this.jumlahPerhiasan = this.perhiasan.length;
     this.jumlahEmasBatangan = this.emasBatangan.length;
-    this.jumlahgift = this.giftSouvenir.length;
+    this.jumlahSouvenir = this.souvenir.length;
     this.jumlahBerlian = this.berlian.length;
     this.jumlahDinar = this.dinar.length;
 
