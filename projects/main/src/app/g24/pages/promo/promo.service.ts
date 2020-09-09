@@ -134,7 +134,8 @@ export class PromoService {
         // section2GiftSouvenir.code = 'c04';
         // }
         section2GiftSouvenir.name = 'Gift Dan Souvenir';
-        section2GiftSouvenir.code = ['c02','c04'];
+        section2GiftSouvenir.code = 'c02';
+        // section2GiftSouvenir.code = ['c02','c04'];
         let isiVendor = [];
         let isiDenom = [];
         let isiSeries = [];

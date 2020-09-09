@@ -204,6 +204,26 @@
                                             <app-card-perhiasan [li]="li" [data]="data"></app-card-perhiasan>
                                             <!-- end Perhiasan -->
                                         </ng-container>
+                                        <ng-container *ngIf="li.code == 'c01'">
+                                            <!-- Berlian -->
+                                            <app-card-berlian [li]="li" [data]="data"></app-card-berlian>
+                                            <!-- end Berlian -->
+                                        </ng-container>
+                                        <ng-container *ngIf="li.code == 'c05'">
+                                            <!-- mulia -->
+                                            <app-card-mulia [li]="li" [data]="data"></app-card-mulia>
+                                            <!-- end mulia -->
+                                        </ng-container>
+                                        <ng-container *ngIf="li.code == 'c06'">
+                                            <!-- dinar -->
+                                            <app-card-dinar [li]="li" [data]="data"></app-card-dinar>
+                                            <!-- end dinar -->
+                                        </ng-container>
+                                        <ng-container *ngIf="li.code == 'c02' || li.code == 'c04' ">
+                                            <!-- gift-souvenir -->
+                                            <app-card-gift-souvenir [li]="li" [data]="data"></app-card-gift-souvenir>
+                                            <!-- end gift-souvenir -->
+                                        </ng-container>
                                     </div>
                                 </div>
                             </div>
