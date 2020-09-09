@@ -12,11 +12,12 @@ import { PerhiasanBycodeComponent } from './buyback-bycode/perhiasan-bycode/perh
 import { MuliaBycodeComponent } from './buyback-bycode/mulia-bycode/mulia-bycode.component';
 import { BerlianBycodeComponent } from './buyback-bycode/berlian-bycode/berlian-bycode.component';
 import { GiftBycodeComponent } from './buyback-bycode/gift-bycode/gift-bycode.component';
+import { SouvenirBycodeComponent } from './buyback-bycode/souvenir-bycode/souvenir-bycode.component';
 
 
 
 @NgModule({
-  declarations: [BuybackBycodeComponent, PerhiasanBycodeComponent, MuliaBycodeComponent, BerlianBycodeComponent, GiftBycodeComponent],
+  declarations: [BuybackBycodeComponent, PerhiasanBycodeComponent, MuliaBycodeComponent, BerlianBycodeComponent, GiftBycodeComponent, SouvenirBycodeComponent],
   imports: [
     CommonModule,
     BuybackRoutingModule,

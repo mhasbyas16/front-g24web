@@ -36,10 +36,13 @@ export class BuybackBycodeComponent implements OnInit {
   isiEmasBatangan: any;
   totalIsiEmasBatangan: any;
 
-  //perhiasan
+  //berlian
   isiBerlian : any[];
   totalIsiBerlian : any;
- 
+  
+  //souvenir
+  isiSouvenir : any[];
+  totalIsiSouvenir : any;
 
   //global
   total : any
@@ -54,11 +57,14 @@ export class BuybackBycodeComponent implements OnInit {
   hargaTotalPerhiasan: any = 0
   hargaTotalEmasBatangan : any = 0
   hargaTotalBerlian : any = 0
+  hargaTotalSouvenir : any = 0
+
+
   totalCart: any = 0
   totalIsiCartPerhiasanBBC: any = 0
   totalIsiCartEmasBatanganBBC: any = 0
   totalIsiCartBerlianBBC: any = 0
-  
+  totalIsiCartSouvenirBBC: any = 0
 
   constructor(
     private toastrService:ToastrService,
@@ -121,6 +127,10 @@ export class BuybackBycodeComponent implements OnInit {
       this.isiBerlian =this.detailTransaction.product["BERLIAN"] 
       this.totalIsiBerlian=  this.isiBerlian.length
 
+      //souvenir
+      this.isiSouvenir =this.detailTransaction.product["GS"] 
+      this.totalIsiSouvenir=  this.isiSouvenir.length
+
       //loadingDG
       this.loadingDg = false;
 
@@ -144,6 +154,11 @@ export class BuybackBycodeComponent implements OnInit {
     this.hargaTotalBerlian = data.harga; 
   }
 
+  clearSouvenir(data:any){
+    this.totalIsiCartSouvenirBBC  = data.length;
+    this.hargaTotalSouvenir = data.harga; 
+  }
+
 
   totalIsiCartPerhiasan(val){
     this.totalIsiCartPerhiasanBBC = val
@@ -157,9 +172,13 @@ export class BuybackBycodeComponent implements OnInit {
     this.totalIsiCartBerlianBBC = val
   }
 
+  totalIsiCartSouvenir(val){
+    this.totalIsiCartSouvenirBBC = val
+  }
+
   totalJumlahCart(){
     this.totalCart = 0
-    this.totalCart = this.totalIsiCartPerhiasanBBC + this.totalIsiCartEmasBatanganBBC + this.totalIsiCartBerlianBBC
+    this.totalCart = this.totalIsiCartPerhiasanBBC + this.totalIsiCartEmasBatanganBBC + this.totalIsiCartBerlianBBC + this.totalIsiCartSouvenirBBC
     return this.totalCart
   }
 
@@ -173,6 +192,10 @@ export class BuybackBycodeComponent implements OnInit {
 
   HTotalBerlian(harga: any){
     this.hargaTotalBerlian = harga;
+  }
+
+  HTotalSouvenir(harga: any){
+    this.hargaTotalSouvenir = harga;
   }
 }
 

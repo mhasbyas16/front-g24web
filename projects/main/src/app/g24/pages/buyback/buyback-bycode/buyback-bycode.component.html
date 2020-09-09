@@ -33,10 +33,12 @@
                     [hargaTotalPerhiasan]="hargaTotalPerhiasan"
                     [hargaTotalEmasBatangan]="hargaTotalEmasBatangan"
                     [hargaTotalBerlian]="hargaTotalBerlian"
-                    
+                    [hargaTotalSouvenir]="hargaTotalSouvenir"
+
                     (clearPerhiasan)="clearPerhiasan($event)"
                     (clearEmasBatangan)="clearEmasBatangan($event)"
                     (clearBerlian)="clearBerlian($event)"
+                    (clearSouvenir)="clearSouvenir($event)"
                 >
                 </app-cart-buyback>
             </div>
@@ -121,6 +123,14 @@
                 (totalHargaBerlian)="HTotalBerlian($event)"
             >
             </app-berlian-bycode>
+            <br>
+            <app-souvenir-bycode
+                [totalIsiSouvenir] = "totalIsiSouvenir"
+                [isiSouvenir] = "isiSouvenir" 
+                (totalIsiCartSouvenir) = "totalIsiCartSouvenir($event)"
+                (totalHargaSouvenir)="HTotalSouvenir($event)">
+            </app-souvenir-bycode>
+
         </div>
     </div>
 </div>
