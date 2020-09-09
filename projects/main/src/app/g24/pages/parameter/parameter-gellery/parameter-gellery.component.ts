@@ -4,6 +4,7 @@ import { FormGroup } from '@angular/forms';
 //Session
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { DatePipe } from '@angular/common';
+import { DateService } from "../../../services/system/date.service";
 //Database
 import { VendorService } from '../../../services/vendor.service';
 import { ProductCategoryService } from '../../../services/product/product-category.service';
@@ -32,13 +33,17 @@ export class ParameterGelleryComponent implements OnInit {
 
   //title
   breadcrumb = "Parameter"
-  title = "Setup Logam Mulia"
+  title = "Setup Logam Mulia/Dinar"
   // spinner 
   spinner = false;
   //placeholder datagrid
   placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
   // ClrDatagrid
   loadingDg: boolean = false;
+  //datetime
+  timezone = "string";
+  date_now = "string";
+  time = "string";
   //list
   vendors = null;
   jenis = null;
@@ -52,13 +57,15 @@ export class ParameterGelleryComponent implements OnInit {
   nikUser = null;
   params = null;
   myRole = null;
+  product = null;
+  list_vendors = null;
   tempVendor = [];
  
-
-  vendorCategory= "product-category.code=c05";
-  category = "?_hash=1&product-category.code=c05";
-  produtCategory = "?_hash=1&product-category.code=c05";
-
+  vendorCategory= "product-category.code=c05,c06";
+  category = "?_hash=1&product-category.code=c05,c06&_sortby=_id:2";
+  produtCategory = null;
+  filterProduct = "?code=c05,c06";
+  
   static key = EMenuID.PRM_GALLERY;
   // dialog
   modalAddDialog: boolean = false;
@@ -78,6 +85,7 @@ export class ParameterGelleryComponent implements OnInit {
     private toastrService: ToastrService,
     //session
     private sessionService: SessionService,
+    private dateServices : DateService,
     //parameter
     private prmJualService : PrmJualService,
   ) { }
@@ -92,7 +100,7 @@ export class ParameterGelleryComponent implements OnInit {
   inputModel : any = {items : []};
   defaultInput(): any {
     return{
-      keterangan : null, 'jenis_barang': null, selectVendor: null
+      keterangan : null, 'jenis_barang': null, selectVendor: null, selectProduct: null
     }
   }
 
@@ -100,24 +108,29 @@ export class ParameterGelleryComponent implements OnInit {
   
   ngOnInit(): void {
     this.inputModel = this.defaultInput();
-    this.onListVendor();
     this.onListBarang();
-    this.onProductDenom();
+    this.onListProduct();
+    this.onSearchVendor();
     this.nikUser = this.sessionService.getUser();
     this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser)),"nik":this.nikUser["username"]};
-    // this.myRole = JSON.stringify(this.sessionService.getRole());
-    // console.debug(this.myRole + "Ini Role");
+    this.myRole = this.sessionService.getRole().name;
+    let params = "?";
+    this.dateServices.task(params).subscribe(output=>{
+      if(output!=false){
+        this.timezone = output;
+        let tgl = this.timezone.split("T");
+          this.date_now = tgl[0];
+          this.time = tgl[1].split("Z")[0];
+      }
+    })
+  }
+
+  muter(){
+    this.loadingDg = true
   }
 
    // modal add 
    mainAdd() {
-    this.productCategoryService.get("?code=c05&_hash=1").subscribe(output => {
-      if (output == false) {
-        this.toastrService.error(this.productCategoryService.message())
-        return
-      }
-      this.myproduct = output
-    });
     this.inputModel = this.defaultInput();
     this.modalAddDialog = true;
   }
@@ -139,20 +152,32 @@ export class ParameterGelleryComponent implements OnInit {
   mainAddSubmit(){
     if(this.validateInput()) return;
 
-    let now : Date = new Date;
-    let sNow = now.toISOString().split("T");
-    let time = sNow[1].split(".")[0];
+    //get data productCategory
+    let prod = null;
+    for(let i of this.product){
+      if (this.inputModel.selectProduct == i._id) {
+        prod = btoa(JSON.stringify(i));
+      }
+    }
+
+    //get data vendor
+    let vnd = null;
+    for(let i of this.list_vendors){
+      if (this.inputModel.selectVendor == i._id) {
+        vnd = btoa(JSON.stringify(i));
+      }
+    }
 
     let prmJual = {
       "jenis_barang" : this.inputModel.jenis_barang,
-      "product-category" : this.myproduct._hash,
+      "product-category" : prod,
       "product-category_encoded" : "base64",
-      "vendor" : this.inputModel.selectVendor,
+      "vendor" : vnd,
       "vendor_encoded" : "base64",
       "create_by" : this.nikUser["_hash"],
       "create_by_encoded" : "base64",
-      "create_date" : new Date().toISOString().split("T")[0],
-      "create_time" : time,
+      "create_date" : this.date_now,
+      "create_time" : this.time,
       "flag" : "submit",
       "keterangan" : this.inputModel.keterangan,
       "harga" : btoa(JSON.stringify(this.harga)),
@@ -274,22 +299,25 @@ export class ParameterGelleryComponent implements OnInit {
 
       this.inputModel = data;
       this.harga = this.inputModel.harga;
+      console.log('rego',this.harga);
+      this.inputModel.selectProduct = data['product-category'].name;
+      this.inputModel.selectVendor = data['vendor'].name;
+      this.inputModel.jenis_barang = data.jenis_barang;
+      this.inputModel.keterangan = data.keterangan;
+      // this.onChange(this.inputModel.selectProduct);
+
       this.modalConfirmDialog = true;
     }
 
   mainApproveSubmit() {
     if(this.validateInput()) return;
 
-    let now : Date = new Date;
-    let sNow = now.toISOString().split("T");
-    let time = sNow[1].split(".")[0];
-
     let prmJual = {
       "_id" : this.inputModel._id,
       "approve_by" : this.nikUser["_hash"],
       "approve_by_encoded" : "base64",
-      "aprrove_date" : new Date().toISOString().split("T")[0],
-      "approve_time" : time,
+      "approve_date" : this.date_now,
+      "approve_time" : this.time,
       "flag" : "approved",
     }
     
@@ -309,16 +337,12 @@ export class ParameterGelleryComponent implements OnInit {
   mainDeclineSubmit() {
     if(this.validateInput()) return;
 
-    let now : Date = new Date;
-    let sNow = now.toISOString().split("T");
-    let time = sNow[1].split(".")[0];
-
     let prmJual = {
       "_id" : this.inputModel._id,
       "decline_by" : this.nikUser["_hash"],
       "decline_by_encoded" : "base64",
-      "decline_date" : new Date().toISOString().split("T")[0],
-      "decline_time" : time,
+      "decline_date" : this.date_now,
+      "decline_time" : this.time,
       "flag" : "declined",
     }
     
@@ -336,6 +360,14 @@ export class ParameterGelleryComponent implements OnInit {
   }
 
   onListVendor(){
+    this.vendorService.list("?_hash=1&product-category._id="+this.produtCategory).subscribe((response: any) => {
+      if (response != false) {
+        this.list_vendors = response;
+      }      
+    });
+  }
+
+  onSearchVendor(){
     this.vendorService.list("?_hash=1&"+this.vendorCategory).subscribe((response: any) => {
       if (response != false) {
         this.vendors = response;
@@ -351,13 +383,39 @@ export class ParameterGelleryComponent implements OnInit {
     });
   }
 
+  onListProduct(){
+    this.productCategoryService.list(this.filterProduct).subscribe((response : any) => {
+      if (response != false) {
+        this.product = response;
+      }
+    });
+  }
+
+  onChangeProduct(data){
+    if (data == false) {
+      this.toastrService.error("Product not found");
+    }else{
+      this.produtCategory = data;
+      this.onProductDenom();
+      this.onListVendor();
+    }
+  }
+
+  onChange(data){
+    if (data == false) {
+      this.toastrService.error("Product not found");
+    }else{
+      this.produtCategory = data;
+      this.onProductDenom();
+    }
+  }
+
   harga : any[] =[];
 
   onProductDenom(){
-    this.ProductDenom.list(this.produtCategory+"&_sortby=value:1").subscribe((response :any) => {
+    this.ProductDenom.list("?product-category._id="+this.produtCategory+"&_sortby=value:1").subscribe((response :any) => {
       if (response != false) {
         this.denom = response;
-
         while(this.harga.length > 0) this.harga.pop(); // clear array
 
         for(let i = 0; i < response.length; i++)
@@ -378,8 +436,8 @@ export class ParameterGelleryComponent implements OnInit {
     let vendor = data.input_vendor_perhiasan;
     let barang = data.input_jenis_barang;
   
-    const urlVendor = "_hash=1&vendor.code="+vendor;
-    const urlBarang = "jenis_barang="+barang;
+    const urlVendor = "_hash=1&vendor.code="+vendor+"&_sortby=_id:2";
+    const urlBarang = "jenis_barang="+barang+"&_sortby=_id:2";
     
     this.params = this.category;
     

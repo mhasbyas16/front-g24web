@@ -1,5 +1,6 @@
 import { Component, OnInit, Output } from '@angular/core';
 import { ToastrService } from "ngx-toastr";
+import { trigger, transition, animate, style } from '@angular/animations'
 import { FormGroup } from '@angular/forms';
 import { DatePipe, JsonPipe } from '@angular/common';
 //select2
@@ -20,7 +21,19 @@ import { log } from 'console';
 @Component({
   selector: 'app-setup-margin',
   templateUrl: './setup-margin.component.html',
-  styleUrls: ['./setup-margin.component.scss']
+  styleUrls: ['./setup-margin.component.scss'],
+
+  animations: [
+    trigger('slideInOut', [
+      transition(':enter', [
+        style({transform: 'translateY(-100%)'}),
+        animate('500ms ease-in', style({transform: 'translateY(0%)'}))
+      ]),
+      transition(':leave', [
+        animate('500ms ease-in', style({transform: 'translateY(-100%)'}))
+      ])
+    ])
+  ]
 })
 export class SetupMarginComponent implements OnInit {
   //title
@@ -43,6 +56,9 @@ export class SetupMarginComponent implements OnInit {
   filterVendorProd = null;
   tempVendor = null;
   getProduct= null;
+  show = false;
+  allVendor = null;
+  myRole = null;
 
   // vendorCategory= "product-category.code=c05";
   // category = "?_hash=1&product-category.code=c05";
@@ -74,6 +90,7 @@ export class SetupMarginComponent implements OnInit {
   
   searchModel : any = {margin:"all", productCat: "all", transaction: "all"};
   channel: any[] = [];
+  ven: any[] = [];
   inputModel : any = {items : []};
   defaultInput(): any {
     return{
@@ -89,13 +106,17 @@ export class SetupMarginComponent implements OnInit {
     this.loadChannel();
     this.nikUser = this.sessionService.getUser();
     this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser)),"nik":this.nikUser["username"]};
-
+    this.myRole = this.sessionService.getRole().name;
     this.options = {
       multiple: true,
       closeOnSelect: false,
       width: '200',
       placeholder: 'Please Select the Product Category First'
     };
+  }
+
+  muter(){
+    this.loadingDg = true
   }
 
   validateInput(){
@@ -113,7 +134,7 @@ export class SetupMarginComponent implements OnInit {
   }
 
   onListTrasaction(){
-    this.transactionTypeService.list("?_hash=1&").subscribe((output: any) => {
+    this.transactionTypeService.list().subscribe((output: any) => {
       if (output != false) {
         this.transactionType = output;
       }      
@@ -121,7 +142,7 @@ export class SetupMarginComponent implements OnInit {
   }
 
   onListProductCategory(){
-    this.productCategoryService.list("?_hash=1&_sortby=name:2").subscribe((output: any) => {
+    this.productCategoryService.list("?_sortby=name:1").subscribe((output: any) => {
       if (output != false) {
         this.productCat = output;
       }      
@@ -129,45 +150,38 @@ export class SetupMarginComponent implements OnInit {
   }
 
   onChangeProduct(data){
-    let prod = JSON.parse(atob(data));
-    if (prod == null) {
+    if (data == '5ebba05bb980bd24b9201769' || data == '5efc0d5c592e3349d15f05a8') {
+      this.show = true;
+    }else{
+      this.show = false;
+    }
+    if (data == null) {
       this.toastrService.error(this.productCategoryService.message());
       return;
     } else {
-      this.getProduct = prod.code;
+      this.getProduct = data;
       this.loadVendors();
     }
   }
 
   loadVendors(){
-    this.vendorService.list("?_hash=1&product-category.code="+this.getProduct).subscribe(output => {
+    this.vendorService.list("?product-category._id="+this.getProduct).subscribe(output => {
       if (output == false) {
         this.toastrService.error("Vendor not found")
       }
+      this.allVendor = output
 
       let vd =[]
       for(let data of output){
-        vd.push({id:data._hash,text:data.name});
+        vd.push({id:data._id,text:data.name});
       }
       this.listVendor = vd;
       console.log('listVendor',this.listVendor);
     })
   }
 
-  async loadVendor(){
-    let vendors = await this.vendorService.list("?_hash=1&product-category.code="+this.getProduct).toPromise();
-    
-    while(this.vendors.length > 0) this.vendors.pop();
-    
-    for (let i = 0; i < vendors.length; i++) {
-      this.vendors.push({id:vendors[i]._hash,text:vendors[i].name});
-    }
-    this.listVendor = this.vendors;
-    console.log('listVendor',this.listVendor);
-  }
-
   async loadChannel(){
-    let channel = await this.channelService.list("?_hash").toPromise();
+    let channel = await this.channelService.list("").toPromise();
     for (let i = 0; i < channel.length; i++) {
       this.channel.push(channel[i]);
     }
@@ -179,24 +193,24 @@ export class SetupMarginComponent implements OnInit {
     // CLR Datagrid loading
     this.loadingDg = true;
 
-    this.params = null;
+    this.params = "?&_sortby=_id:2&";
     let transaction = data.input_transaction;
     let product = data.input_product;
   
-    const urlTransaction = "transaction-type.code="+transaction;
-    const urlProduct = "product-category.code="+product;
+    const urlTransaction = "transaction-type.code="+transaction+"&_sortby=_id:2";
+    const urlProduct = "product-category.code="+product+"&_sortby=_id:2";
     
     // Session
-    const getUnit = this.sessionService.getUnit();
-    console.debug(getUnit + "Ini Unit");
+    // const getUnit = this.sessionService.getUnit();
+    // console.debug(getUnit + "Ini Unit");
     // this.params = this.params+"&unit.code="+getUnit["code"];
-    this.params = this.params;
+    // this.params = this.params;
 
     if (transaction != 'all') {
-      this.params = this.params+"&"+urlTransaction;
+      this.params = this.params+urlTransaction;
     }
     if (product != 'all') {
-      this.params = this.params+"&"+urlProduct;
+      this.params = this.params+urlProduct;
     }
    
     // prmMargin
@@ -230,20 +244,47 @@ export class SetupMarginComponent implements OnInit {
     let sNow = now.toISOString().split("T");
     let time = sNow[1].split(".")[0];
 
-    let vnd = [];
-    for (let data of this.inputModel.selectVendor) {
-      vnd.push(JSON.parse(atob(data)));
+    //get data channel
+    let ch = null;
+    for(let i of this.channel){
+      if (this.inputModel.mychannel == i._id) {
+        ch = btoa(JSON.stringify(i));
+      }
+    }
+    //get product
+    let prod = null;
+    for(let i of this.productCat){
+      if (this.inputModel.product_category == i._id) {
+        prod = btoa(JSON.stringify(i));
+      }
+    }
+
+    let trans = null;
+    for(let i of this.transactionType){
+      if (this.inputModel.transaction_type == i._id) {
+        trans = btoa(JSON.stringify(i));
+      }
+    }
+
+    //get data vendor array
+    for(let i of this.allVendor){
+      for(let j of this.inputModel.selectVendor){
+        if (j == i._id) {
+          this.ven.push(i);
+        }
+      }
     }
       
     let margin = {
-      "channel" : this.inputModel.mychannel,
+      "channel" : ch,
       "channel_encoded" : "base64",
-      "product-category" : this.inputModel.product_category,
+      "product-category" : prod,
       "product-category_encoded" : "base64",
-      "transaction-type" : this.inputModel.transaction_type,
+      "transaction-type" : trans,
       "transaction-type_encoded" : "base64",
-      "margin" : parseInt(this.inputModel.margin),
-      "vendor" : btoa(JSON.stringify(vnd)),
+      "margin" : parseFloat(this.inputModel.margin),
+      "margin_encoded": "double",
+      "vendor" : btoa(JSON.stringify(this.ven)),
       "vendor_encoded" : "base64array",
       "create_by" : this.nikUser["_hash"],
       "create_by_encoded" : "base64",
@@ -252,9 +293,39 @@ export class SetupMarginComponent implements OnInit {
       "flag" : "submit",
       "keterangan" : this.inputModel.keterangan,
     }
+
+    let margin1 = {
+      "channel" : ch,
+      "channel_encoded" : "base64",
+      "product-category" : prod,
+      "product-category_encoded" : "base64",
+      "transaction-type" : trans,
+      "transaction-type_encoded" : "base64",
+      "margin" : parseFloat(this.inputModel.margin),
+      "margin_encoded": "double",
+      "margin_batu" : parseFloat(this.inputModel.margin_batu),
+      "margin_batu_encoded": "double",
+      "margin_berlian" : parseFloat(this.inputModel.margin_berlian),
+      "margin_berlian_encoded": "double",
+      "vendor" : btoa(JSON.stringify(this.ven)),
+      "vendor_encoded" : "base64array",
+      "create_by" : this.nikUser["_hash"],
+      "create_by_encoded" : "base64",
+      "create_date" : new Date().toISOString().split("T")[0],
+      "create_time" : time,
+      "flag" : "submit",
+      "keterangan" : this.inputModel.keterangan,
+    }
+
+    let tempSave = null;
+    if (this.getProduct == '5ebba05bb980bd24b9201769' || this.getProduct == '5efc0d5c592e3349d15f05a8'){
+      tempSave = margin1;
+    } else {
+      tempSave = margin;
+    }
     
     this.spinner = true;
-    this.prmMarginService.add(margin).subscribe((response) => {
+    this.prmMarginService.add(tempSave).subscribe((response) => {
       if (response == false) {
         this.toastrService.error('Add Failed')
         return
@@ -263,7 +334,7 @@ export class SetupMarginComponent implements OnInit {
       this.modalAddDialog = false;
       this.toastrService.success('Add Success')
     });
-    console.log("submitted data",margin);
+    console.log("submitted data", tempSave);
   }
   
   mainEdit(data){
@@ -277,6 +348,7 @@ export class SetupMarginComponent implements OnInit {
 
     this.inputModel = data;
     this.inputModel.product_category = btoa(JSON.stringify(data['product-category']));
+    this.onChangeProduct(this.inputModel.product_category);
     this.inputModel.transaction_type = btoa(JSON.stringify(data['transaction-type']));
     this.inputModel.mychannel = btoa(JSON.stringify(data.channel));
 
@@ -322,6 +394,7 @@ export class SetupMarginComponent implements OnInit {
     }
 
     let margin = {
+      "_id" : this.inputModel._id,
       "channel" : this.inputModel.mychannel,
       "channel_encoded" : "base64",
       "product-category" : this.inputModel.product_category,
@@ -329,6 +402,8 @@ export class SetupMarginComponent implements OnInit {
       "transaction-type" : this.inputModel.transaction_type,
       "transaction-type_encoded" : "base64",
       "margin" : parseInt(this.inputModel.margin),
+      "margin_batu" : parseFloat(this.inputModel.margin_batu),
+      "margin_berlian" : parseFloat(this.inputModel.margin_berlian),
       "vendor" : btoa(JSON.stringify(vnd)),
       "vendor_encoded" : "base64array",
       "create_by" : this.nikUser["_hash"],
@@ -338,7 +413,45 @@ export class SetupMarginComponent implements OnInit {
       "flag" : "submit",
       "keterangan" : this.inputModel.keterangan,
     }
-    console.log(margin)
+    let margin1 = {
+      "_id" : this.inputModel._id,
+      "channel" : this.inputModel.mychannel,
+      "channel_encoded" : "base64",
+      "product-category" : this.inputModel.product_category,
+      "product-category_encoded" : "base64",
+      "transaction-type" : this.inputModel.transaction_type,
+      "transaction-type_encoded" : "base64",
+      "margin" : parseInt(this.inputModel.margin),
+      "margin_batu" : parseFloat(this.inputModel.margin_batu),
+      "margin_berlian" : parseFloat(this.inputModel.margin_berlian),
+      "vendor" : btoa(JSON.stringify(vnd)),
+      "vendor_encoded" : "base64array",
+      "create_by" : this.nikUser["_hash"],
+      "create_by_encoded" : "base64",
+      "create_date" : new Date().toISOString().split("T")[0],
+      "create_time" : time,
+      "flag" : "submit",
+      "keterangan" : this.inputModel.keterangan,
+    }
+
+    let tempSave = null;
+    if (this.getProduct == 'c01' || this.getProduct == 'c03'){
+      tempSave = margin1;
+    } else {
+      tempSave = margin;
+    }
+    
+    this.spinner = true;
+    this.prmMarginService.update(tempSave).subscribe((response) => {
+      if (response == false) {
+        this.toastrService.error('Update Failed')
+        return
+      }
+      this.spinner = false;
+      this.modalEditDialog = false;
+      this.toastrService.success('Update Success')
+    });
+    console.log("submitted data", tempSave);
   }
 
   mainDelete(data) {
@@ -359,7 +472,6 @@ export class SetupMarginComponent implements OnInit {
     let margin = {
       "_id" : this.inputModel._id,
     }
-    console.log(this.inputModel._id)
     
     this.spinner = true;
     this.prmMarginService.delete(margin).subscribe((response) => {
@@ -384,68 +496,94 @@ export class SetupMarginComponent implements OnInit {
     });
 
     this.inputModel = data;
-    this.inputModel.product_category = btoa(JSON.stringify(data['product-category']));
-    this.inputModel.transaction_type = btoa(JSON.stringify(data['transaction-type']));
-    this.inputModel.mychannel = btoa(JSON.stringify(data.channel));
+    this.inputModel.product_category = data['product-category']._id;
+    this.onChangeProduct(this.inputModel.product_category);
+    this.inputModel.transaction_type = data['transaction-type']._id;
+    this.inputModel.mychannel = data.channel._id;
 
-    let productSelect = data['product-category'].code;
+    let productSelect = data['product-category']._id;
     this.getProduct = productSelect;
 
-    this.vendorService.list("?_hash=1&product-category.code="+this.getProduct).subscribe(output =>{
+    this.vendorService.list("?product-category._id="+this.getProduct).subscribe(output =>{
       let vd =[]
       for(let data of output){
-        vd.push({id:data._hash,text:data.name});
+        vd.push({id:data._id,text:data.name});
       }
       this.listVendor = vd;
       console.log('listVendor',this.listVendor);
     });
-
-    let tempVendor = data.vendor;
+    this.tempVendor = data.vendor;
     let myselect= [];
     let Selected= [];
 
-    for (let vs of tempVendor){
-      myselect.push(btoa(JSON.stringify(vs)));
+    for (let vs of this.tempVendor){
+      myselect.push(vs._id);
     }
+
     Selected = myselect
-    // console.log('decode', Selected);
 
     for (let i = 0; i < myselect.length; i++) {
       this.vendorSelected.push(myselect);
     }
     this.inputModel.selectVendor =  Selected;
-    console.log('vselected',this.inputModel.selectVendor);
+    console.log('vselected',this.inputModel.selectVendor)
 
     this.modalConfirmDialog = true;
   }
-
+  //submitapprove
   mainApproveSubmit() {
     if(this.validateInput()) return;
 
     let now : Date = new Date;
     let sNow = now.toISOString().split("T");
     let time = sNow[1].split(".")[0];
-
+      
     let margin = {
       "_id" : this.inputModel._id,
+      "margin" : parseFloat(this.inputModel.margin),
+      "margin_encoded": "double",
+      "keterangan" : this.inputModel.keterangan,
       "approve_by" : this.nikUser["_hash"],
       "approve_by_encoded" : "base64",
-      "aprrove_date" : new Date().toISOString().split("T")[0],
+      "approve_date" : new Date().toISOString().split("T")[0],
       "approve_time" : time,
       "flag" : "approved",
     }
+
+    let margin1 = {
+      "_id" : this.inputModel._id,
+      "margin" : parseFloat(this.inputModel.margin),
+      "margin_encoded": "double",
+      "margin_batu" : parseFloat(this.inputModel.margin_batu),
+      "margin_batu_encoded": "double",
+      "margin_berlian" : parseFloat(this.inputModel.margin_berlian),
+      "margin_berlian_encoded": "double",
+      "keterangan" : this.inputModel.keterangan,
+      "approve_by" : this.nikUser["_hash"],
+      "approve_by_encoded" : "base64",
+      "approve_date" : new Date().toISOString().split("T")[0],
+      "approve_time" : time,
+      "flag" : "approved",
+    }
+
+    let tempSave = null;
+    if (this.getProduct == '5ebba05bb980bd24b9201769' || this.getProduct == '5efc0d5c592e3349d15f05a8'){
+      tempSave = margin1;
+    } else {
+      tempSave = margin;
+    }
     
     this.spinner = true;
-    this.prmMarginService.update(margin).subscribe((response) => {
+    this.prmMarginService.update(tempSave).subscribe((response) => {
       if (response == false) {
-        this.toastrService.error('Approve Failed')
+        this.toastrService.error('Approved Failed')
         return
       }
       this.spinner = false;
       this.modalConfirmDialog = false;
-      this.toastrService.success('Approve Success')
-    })
-    console.debug('submitted data',  margin)
+      this.toastrService.success('Approved Success')
+    });
+    console.log("submitted data", tempSave);
   }
 
   mainDeclineSubmit() {
@@ -457,23 +595,49 @@ export class SetupMarginComponent implements OnInit {
 
     let margin = {
       "_id" : this.inputModel._id,
+      "margin" : parseInt(this.inputModel.margin),
+      "margin_encoded": "int",
+      "keterangan" : this.inputModel.keterangan,
       "decline_by" : this.nikUser["_hash"],
       "decline_by_encoded" : "base64",
       "decline_date" : new Date().toISOString().split("T")[0],
       "decline_time" : time,
       "flag" : "declined",
     }
+
+    let margin1 = {
+      "_id" : this.inputModel._id,
+      "margin" : parseInt(this.inputModel.margin),
+      "margin_encoded": "int",
+      "margin_batu" : parseInt(this.inputModel.margin_batu),
+      "margin_batu_encoded": "int",
+      "margin_berlian" : parseInt(this.inputModel.margin_berlian),
+      "margin_berlian_encoded": "int",
+      "keterangan" : this.inputModel.keterangan,
+      "decline_by" : this.nikUser["_hash"],
+      "decline_by_encoded" : "base64",
+      "decline_date" : new Date().toISOString().split("T")[0],
+      "decline_time" : time,
+      "flag" : "declined",
+    }
+
+    let tempSave = null;
+    if (this.getProduct == '5ebba05bb980bd24b9201769' || this.getProduct == '5efc0d5c592e3349d15f05a8'){
+      tempSave = margin1;
+    } else {
+      tempSave = margin;
+    }
     
     this.spinner = true;
-    this.prmMarginService.update(margin).subscribe((response) => {
+    this.prmMarginService.update(tempSave).subscribe((response) => {
       if (response == false) {
-        this.toastrService.error('Decline Failed')
+        this.toastrService.error('Declined Failed')
         return
       }
       this.spinner = false;
       this.modalConfirmDialog = false;
-      this.toastrService.success('Decline Success')
-    })
-    console.debug('submitted data',  margin)
+      this.toastrService.success('Declined Success')
+    });
+    console.log("submitted data", tempSave);
   }
 }

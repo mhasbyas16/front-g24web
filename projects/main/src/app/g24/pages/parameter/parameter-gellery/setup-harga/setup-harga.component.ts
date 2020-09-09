@@ -7,9 +7,9 @@ import { SessionService } from 'projects/platform/src/app/core-services/session.
 //Database
 import { VendorService } from '../../../../services/vendor.service';
 import { ProductCategoryService } from '../../../../services/product/product-category.service';
-
 import { PrmJualService } from '../../../../services/parameter/prm-jual.service';
 import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
+import { DateService } from "../../../../services/system/date.service";
 
 
 
@@ -37,11 +37,17 @@ export class SetupHargaComponent implements OnInit {
   nikUser= null;
   productSelect = null;
   tempProduct = null;
+  findProduct = null;
+  myRole = null;
   //params
   params = null;
   vendorCategory= "product-category.code=c00";
-  productFilter= "code=c00,c01,c02,c04";
+  productFilter= "code=c00,c01,c02,c03,c04&_sortby=name:1";
 
+  //datetime
+  timezone = "string";
+  date_now = "string";
+  time = "string";
   // dialog
   modalAddDialog: boolean = false;
   modalEditDialog: boolean = false;
@@ -55,11 +61,14 @@ export class SetupHargaComponent implements OnInit {
     private ProductCategorySerevice: ProductCategoryService,
     private toastrService: ToastrService,
     private datePipe: DatePipe,
+    private dateServices: DateService,
     //session
     private sessionService: SessionService,
     //parameter
     private prmJualService : PrmJualService,
   ) { }
+
+  searchModel : any = {product:"all"};
 
   inputModel : any = {items : []};
   defaultInput(): any {
@@ -69,16 +78,27 @@ export class SetupHargaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.onListVendor();
     this.onListCategory();
-    this.onDataGrid();
     this.inputModel = this.defaultInput();
     this.nikUser = this.sessionService.getUser();
     this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser)),"nik":this.nikUser["username"]};
+    this.myRole = this.sessionService.getRole().name;
+    let params = "?";
+    this.dateServices.task(params).subscribe(output=>{
+      if(output!=false){
+        this.timezone = output;
+        let tgl = this.timezone.split("T");
+          this.date_now = tgl[0];
+          this.time = tgl[1].split("Z")[0];
+      }
+    })
   }
 
-  validateInput()
-  {
+  muter(){
+    this.loadingDg = true;
+  }
+
+  validateInput(){
     for(let key in this.inputModel)
     {
       let value = this.inputModel[key];
@@ -89,33 +109,32 @@ export class SetupHargaComponent implements OnInit {
         return true
       }
     }
-
     return false
   }
-  //list jenis vendor 
-  onListVendor(){
-    this.vendorService.list("?_hash=1&"+this.vendorCategory).subscribe((response: any) => {
-      if (response != false) {
-        this.vendors = response;
-      }      
-    });
-  }
+
+  
+
   //list product category 
   onListCategory(){
-    this.ProductCategorySerevice.list("?_hash=1&"+this.productFilter).subscribe((response : any) => {
+    this.ProductCategorySerevice.list("?"+this.productFilter).subscribe((response : any) => {
       if (response != false) {
         this.product = response;
       }
     });
   }
 
-  onDataGrid(){
+  onDataGrid(data){
     // CLR Datagrid loading
     this.loadingDg = true;
 
-    this.params = null;
+    this.params = "?_hash=1&product-category.code=c00,c01,c02,c03,c04&_sortby=_id:2";
+    let prod = data.inputProduct;
   
-    this.params = "?_hash=1&product-category.code=c01,c00,c02,c04";
+    const urlProduct = "?_sortby=_id:2&_hash=1&product-category.code="+prod;
+
+    if (prod != 'all') {
+      this.params = urlProduct;
+    }
    
     // prmjual
     this.prmJualService.list(this.params).subscribe((response: any) => {
@@ -129,7 +148,6 @@ export class SetupHargaComponent implements OnInit {
         this.loadingDg = false;
         return;
       } 
-      this.setupHarga = response;
       this.toastrService.success("Load "+response["length"]+" Data", "Setup Harga");
       this.loadingDg = false;
     }); 
@@ -145,21 +163,25 @@ export class SetupHargaComponent implements OnInit {
 
   mainAddSubmit(){
     if(this.validateInput()) return;
+    //mencari product berdasarkan id
+    for (let i of this.product){
+      if(this.inputModel.productSelect == i._id){
+        this.findProduct = btoa(JSON.stringify(i));
+      }
+    }
 
-    let now : Date = new Date;
-    let sNow = now.toISOString().split("T");
-    let time = sNow[1].split(".")[0];
-      
     let setup = {
-      "product-category": this.inputModel.productSelect,
+      "product-category": this.findProduct,
       "product-category_encoded": "base64",
-      "harga_buyback": this.inputModel.harga_buyback,
-      "harga_baku": this.inputModel.harga_baku,
+      "harga_buyback": parseInt(this.inputModel.harga_buyback),
+      "harga_buyback_encoded": "int",
+      "harga_baku": parseInt(this.inputModel.harga_baku),
+      "harga_baku_encoded": "int",
       "keterangan": this.inputModel.keterangan,
       "create_by" : this.nikUser["_hash"],
       "create_by_encoded" : "base64",
-      "create_date" : new Date().toISOString().split("T")[0],
-      "create_time" : time,
+      "create_date" : this.date_now,
+      "create_time" : this.time,
       "flag": "submit",
     }
 
@@ -171,9 +193,7 @@ export class SetupHargaComponent implements OnInit {
         this.toastrService.error('Add Failed')
         return
       }
-      this.setupHarga = response;
       this.toastrService.success('Add Success')
-      this.onDataGrid();
     })
     console.debug('submitted data',  setup)
   }
@@ -188,8 +208,7 @@ export class SetupHargaComponent implements OnInit {
     });
 
     this.inputModel = data;
-    this.tempProduct = data['product-category'];
-    this.inputModel.productSelect = btoa(JSON.stringify(this.tempProduct)) ;
+    this.inputModel.productSelect = data['product-category']._id;
     this.modalEditDialog = true;
   }
 
@@ -200,12 +219,21 @@ export class SetupHargaComponent implements OnInit {
     let sNow = now.toISOString().split("T");
     let time = sNow[1].split(".")[0];
 
+    // this.dateServices.task().subcribe(output => {
+      
+    // });
+    // console.log('jam',this.dateServices.task());
+
+
+
     let setup = {
       "_id" : this.inputModel._id,
       "product-category": this.inputModel.productSelect,
       "product-category_encoded": "base64",
       "harga_buyback": parseInt(this.inputModel.harga_buyback),
+      "harga_buyback_encoded": "int",
       "harga_baku": parseInt(this.inputModel.harga_baku),
+      "harga_baku_encoded": "int",
       "keterangan": this.inputModel.keterangan,
       "update_by" : this.nikUser["_hash"],
       "update_by_encoded" : "base64",
@@ -215,7 +243,7 @@ export class SetupHargaComponent implements OnInit {
     }
 
     // let endcodeSetup = DataTypeUtil.Encode(setup);
-
+    return;
     this.spinner = true;
     this.prmJualService.update(setup).subscribe((response) => {
       this.spinner = false;
@@ -224,9 +252,7 @@ export class SetupHargaComponent implements OnInit {
         this.toastrService.error('Edit Failed')
         return
       }
-      this.setupHarga = response;
       this.toastrService.success('Edit Success')
-      this.onDataGrid();
     })
     console.debug('submitted data',  setup)
   }
@@ -252,14 +278,13 @@ export class SetupHargaComponent implements OnInit {
       }
       this.spinner = false;
       this.modalDeleteDialog = false;
-      this.onDataGrid();
       this.toastrService.success('Delete Success');
     })
     console.debug('submitted data',  setup)
   }
 
   mainConfirm(data) {
-    console.debug("dataEdit", data);
+    console.debug("dataConfirm", data);
 
     this.prmJualService.get("?_id="+data._id).subscribe((response) => {
       if (response == false) {
@@ -268,24 +293,24 @@ export class SetupHargaComponent implements OnInit {
     });
 
     this.inputModel = data;
-    this.tempProduct = data['product-category'];
-    this.inputModel.productSelect = btoa(JSON.stringify(this.tempProduct)) ;
+    this.inputModel.productSelect = data['product-category']._id;
     this.modalConfirmDialog = true;
   }
 
   mainApproveSubmit(){
     if(this.validateInput()) return;
 
-    let now : Date = new Date;
-    let sNow = now.toISOString().split("T");
-    let time = sNow[1].split(".")[0];
-
     let setup = {
       "_id" : this.inputModel._id,
+      "harga_buyback": parseInt(this.inputModel.harga_buyback),
+      "harga_buyback_encoded": "int",
+      "harga_baku": parseInt(this.inputModel.harga_baku),
+      "harga_baku_encoded": "int",
+      "keterangan": this.inputModel.keterangan,
       "approve_by" : this.nikUser["_hash"],
       "approve_by_encoded" : "base64",
-      "approve_date" : new Date().toISOString().split("T")[0],
-      "approve_time" : time,
+      "approve_date" : this.date_now,
+      "approve_time" : this.time,
       "flag": "approved",
     }
 
@@ -296,12 +321,10 @@ export class SetupHargaComponent implements OnInit {
       this.spinner = false;
       this.modalConfirmDialog = false;
       if (response == false) {
-        this.toastrService.error('Edit Failed')
+        this.toastrService.error('Approved Failed')
         return
       }
-      this.setupHarga = response;
-      this.toastrService.success('Edit Success')
-      this.onDataGrid();
+      this.toastrService.success('Approved Success')
     })
     console.debug('submitted data',  setup)
   }
@@ -309,16 +332,17 @@ export class SetupHargaComponent implements OnInit {
   mainDeclineSubmit() {
     if(this.validateInput()) return;
 
-    let now : Date = new Date;
-    let sNow = now.toISOString().split("T");
-    let time = sNow[1].split(".")[0];
-
     let setup = {
       "_id" : this.inputModel._id,
+      "harga_buyback": parseInt(this.inputModel.harga_buyback),
+      "harga_buyback_encoded": "int",
+      "harga_baku": parseInt(this.inputModel.harga_baku),
+      "harga_baku_encoded": "int",
+      "keterangan": this.inputModel.keterangan,
       "decline_by" : this.nikUser["_hash"],
       "decline_by_encoded" : "base64",
-      "decline_date" : new Date().toISOString().split("T")[0],
-      "decline_time" : time,
+      "decline_date" : this.date_now,
+      "decline_time" : this.time,
       "flag" : "declined",
     }
     
@@ -331,7 +355,6 @@ export class SetupHargaComponent implements OnInit {
       this.spinner = false;
       this.modalConfirmDialog = false;
       this.toastrService.success('Decline Success');
-      this.onDataGrid();
     })
     console.debug('submitted data',  setup)
   }

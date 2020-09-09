@@ -1,5 +1,7 @@
 <div  class="clr-col-12"><br></div>
-<button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus"></clr-icon></button> 
+<ng-container *ngIf="myRole == 'Keuangan'">
+    <button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus"></clr-icon></button> 
+</ng-container>
 <form #search="ngForm" id="logam-mulia" clrForm (ngSubmit)="onCariMargin(search.value)">
     <div class="clr-row">
         <div class="clr-col-12">
@@ -7,7 +9,7 @@
         </div>
         <div class="clr-col-6">
             <clr-select-container class="clr-form-control">
-                <label class="clr-control-label">Transaction Tpye</label>
+                <label class="clr-control-label">Transaction Type</label>
                 <select [(ngModel)]="searchModel.transaction" clrSelect name="input_transaction">
                     <option value="all" >All</option>
                     <ng-container *ngFor="let transaction of transactionType">
@@ -32,49 +34,48 @@
         <div class="clr-col-1">
             <div class="clr-form-control">
                 <div class="clr-control-container">
-                    <button class="btn btn-info-outline btn-sm">Cari</button>
+                    <button class="btn btn-info-outline btn-sm" (change)="muter()">Cari</button>
                 </div>
             </div>
         </div>
     </div>   
 </form>
 <div  class="clr-col-12"><br></div>
-<clr-datagrid>
-    <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
-    <clr-dg-column>Product Category</clr-dg-column>
-    <clr-dg-column>Transaction Type</clr-dg-column>
-    <clr-dg-column>Channel</clr-dg-column>
-    <clr-dg-column>Status</clr-dg-column>
-    
-    <clr-dg-row *clrDgItems="let row of dataMargin">
-        <clr-dg-action-overflow *ngIf="row.flag == 'submit';">
-            <button *ngIf="row.flag == 'submit';" class="action-item" (click)="mainEdit(row)">Edit</button>
-            <button *ngIf="row.flag == 'submit';" class="action-item" (click)="mainDelete(row)">Delete</button>
-            <button *ngIf="row.flag == 'submit';" class="action-item" (click)="mainConfirm(row)">Confirm</button>
-        </clr-dg-action-overflow>
-        <clr-dg-cell hidden>{{row._id}}</clr-dg-cell>
-        <clr-dg-cell>{{row['product-category'].name}}</clr-dg-cell>
-        <clr-dg-cell>{{row['transaction-type'].name}}</clr-dg-cell>
-        <clr-dg-cell>{{row['channel'].name}}</clr-dg-cell>
-            <ng-container *ngIf="row.flag == 'approved'">
-                <clr-dg-cell><span class="label label-success">Approved</span></clr-dg-cell>
-            </ng-container>
-            <ng-container *ngIf="row.flag == 'submit'">
-                <clr-dg-cell><span class="label label-warning">Waiting</span></clr-dg-cell>
-            </ng-container>
-            <ng-container *ngIf="row.flag == 'declined'">
-                <clr-dg-cell><span class="label label-danger">Declined</span></clr-dg-cell>
-            </ng-container>
-    </clr-dg-row>
-    <clr-dg-footer>
-        <clr-dg-pagination #pagination [clrDgPageSize]="5">
-          <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Users per page</clr-dg-page-size>
-          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
-          of {{pagination.totalItems}} Produk
-        </clr-dg-pagination>
-      </clr-dg-footer>
-</clr-datagrid>
-
+<div class="clr-col-12">
+    <clr-datagrid [clrDgLoading]="loadingDg">
+        <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
+        <clr-dg-column >Product Category</clr-dg-column>
+        <clr-dg-column >Transaction Type</clr-dg-column>
+        <clr-dg-column >Channel</clr-dg-column>
+        <clr-dg-column >Status</clr-dg-column>
+        
+        <clr-dg-row *clrDgItems="let row of dataMargin">
+            <clr-dg-action-overflow *ngIf="row.flag == 'submit' && myRole == 'Management';">
+                <button *ngIf="row.flag == 'submit';" class="action-item" (click)="mainConfirm(row)">Confirm</button>
+            </clr-dg-action-overflow>
+            <clr-dg-cell hidden>{{row._id}}</clr-dg-cell>
+            <clr-dg-cell [style.width.px]="65">{{row['product-category'].name}}</clr-dg-cell>
+            <clr-dg-cell [style.width.px]="100">{{row['transaction-type'].name}}</clr-dg-cell>
+            <clr-dg-cell [style.width.px]="30">{{row['channel'].name}}</clr-dg-cell>
+                <ng-container *ngIf="row.flag == 'approved'">
+                    <clr-dg-cell [style.width.px]="30"><span class="label label-success">Approved</span></clr-dg-cell>
+                </ng-container>
+                <ng-container *ngIf="row.flag == 'submit'">
+                    <clr-dg-cell [style.width.px]="30"><span class="label label-warning">Waiting</span></clr-dg-cell>
+                </ng-container>
+                <ng-container *ngIf="row.flag == 'declined'">
+                    <clr-dg-cell [style.width.px]="30"><span class="label label-danger">Declined</span></clr-dg-cell>
+                </ng-container>
+        </clr-dg-row>
+        <clr-dg-footer>
+            <clr-dg-pagination #pagination [clrDgPageSize]="5">
+            <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Data per page</clr-dg-page-size>
+            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+            of {{pagination.totalItems}} Data
+            </clr-dg-pagination>
+        </clr-dg-footer>
+    </clr-datagrid>
+</div>
 <!-- modalAdd -->
 <ng-container *ngIf="modalAddDialog">
     <form (ngSubmit)="mainAddSubmit()">
@@ -87,7 +88,7 @@
                         <clr-radio-container clrInline>
                             <label>Channel</label>
                             <clr-radio-wrapper *ngFor="let channels of channel">
-                                <input type="radio" clrRadio id="{{channels.name}}" name="channel" [(ngModel)]="inputModel.mychannel" [value]="channels._hash"/>
+                                <input type="radio" clrRadio id="{{channels.name}}" name="channel" [(ngModel)]="inputModel.mychannel" [value]="channels._id"/>
                                 <label>{{channels.name}}</label>
                             </clr-radio-wrapper>
                             <!-- <clr-control-helper>Helper text</clr-control-helper>
@@ -100,7 +101,7 @@
                             <select clrSelect name="product_category" [(ngModel)]="inputModel.product_category" (change)="onChangeProduct($event.target.value)">
                                 <ng-container>
                                     <option [value]="">-- Please Select --</option>
-                                    <option *ngFor="let prod of productCat" value="{{prod._hash}}">{{prod.name}}</option>
+                                    <option *ngFor="let prod of productCat" value="{{prod._id}}">{{prod.name}}</option>
                                 </ng-container>
                             </select>
                         </clr-select-container>
@@ -118,7 +119,7 @@
                             <label class="clr-control-label">Transaction Tpye</label>
                             <select [(ngModel)]="inputModel.transaction_type" clrSelect name="transaction_type">
                                 <ng-container *ngFor="let transaction of transactionType">
-                                    <option value="{{transaction._hash}}">{{transaction.name}}</option>
+                                    <option value="{{transaction._id}}">{{transaction.name}}</option>
                                 </ng-container>
                             </select>
                         </clr-select-container>
@@ -128,7 +129,31 @@
                             <label for="basic" class="clr-control-label">Margin</label>
                             <div class="clr-control-container">
                             <div class="clr-input-wrapper">
-                                <input [(ngModel)]="inputModel.margin" name="harga_jual" type="number" class="clr-input" />
+                                <input [(ngModel)]="inputModel.margin" name="margin" type="number" class="clr-input" />
+                                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                            </div>
+                            <span class="clr-subtext"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clr-col-6 animate-show-hide" *ngIf="show" [@slideInOut]>
+                        <div class="clr-form-control">
+                            <label for="basic" class="clr-control-label">Margin Batu</label>
+                            <div class="clr-control-container">
+                            <div class="clr-input-wrapper">
+                                <input [(ngModel)]="inputModel.margin_batu" name="margin_batu" type="number" class="clr-input" [value]="0"/>
+                                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                            </div>
+                            <span class="clr-subtext"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clr-col-6 animate-show-hide" *ngIf="show" [@slideInOut]>
+                        <div class="clr-form-control">
+                            <label for="basic" class="clr-control-label">Margin Berlian</label>
+                            <div class="clr-control-container">
+                            <div class="clr-input-wrapper">
+                                <input [(ngModel)]="inputModel.margin_berlian" name="margin_berlian" type="number" class="clr-input" [value]=0/>
                                 <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                             </div>
                             <span class="clr-subtext"></span>
@@ -219,6 +244,30 @@
                             </div>
                         </div>
                     </div>
+                    <div class="clr-col-6 animate-show-hide" *ngIf="show" [@slideInOut]>
+                        <div class="clr-form-control">
+                            <label for="basic" class="clr-control-label">Margin Batu</label>
+                            <div class="clr-control-container">
+                            <div class="clr-input-wrapper">
+                                <input [(ngModel)]="inputModel.margin_batu" name="margin_batu" type="number" class="clr-input" [value]="0"/>
+                                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                            </div>
+                            <span class="clr-subtext"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clr-col-6 animate-show-hide" *ngIf="show" [@slideInOut]>
+                        <div class="clr-form-control">
+                            <label for="basic" class="clr-control-label">Margin Berlian</label>
+                            <div class="clr-control-container">
+                            <div class="clr-input-wrapper">
+                                <input [(ngModel)]="inputModel.margin_berlian" name="margin_berlian" type="number" class="clr-input" [value]=0/>
+                                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                            </div>
+                            <span class="clr-subtext"></span>
+                            </div>
+                        </div>
+                    </div>
                     <div class="clr-col-12">
                         <clr-textarea-container>
                             <label>Keterangan</label>
@@ -257,7 +306,7 @@
                         <clr-radio-container clrInline>
                             <label>Channel</label>
                             <clr-radio-wrapper *ngFor="let channels of channel">
-                                <input type="radio" clrRadio id="{{channels.name}}" name="channel" [(ngModel)]="inputModel.mychannel" [value]="channels._hash" readonly/>
+                                <input type="radio" clrRadio id="{{channels.name}}" name="channel" [(ngModel)]="inputModel.mychannel" [value]="channels._id" disabled/>
                                 <label>{{channels.name}}</label>
                             </clr-radio-wrapper>
                             <!-- <clr-control-helper>Helper text</clr-control-helper>
@@ -267,10 +316,10 @@
                     <div class="clr-col-6">
                         <clr-select-container class="clr-form-control">
                             <label class="clr-control-label">Product Category</label>
-                            <select clrSelect name="product_category" [(ngModel)]="inputModel.product_category" (change)="onChangeProduct($event.target.value)" readonly>
+                            <select clrSelect name="product_category" [(ngModel)]="inputModel.product_category" (change)="onChangeProduct($event.target.value)" disabled>
                                 <ng-container>
                                     <option [value]="">-- Please Select --</option>
-                                    <option *ngFor="let prod of productCat" value="{{prod._hash}}">{{prod.name}}</option>
+                                    <option *ngFor="let prod of productCat" value="{{prod._id}}">{{prod.name}}</option>
                                 </ng-container>
                             </select>
                         </clr-select-container>
@@ -280,15 +329,15 @@
                         <ng-select2 name="vendor"
                             [data]="listVendor"
                             [options]="options"
-                            [(ngModel)]="inputModel.selectVendor" readonly>
+                            [(ngModel)]="inputModel.selectVendor" disabled>
                         </ng-select2>
                     </div>
                     <div class="clr-col-6">
                         <clr-select-container class="clr-form-control">
                             <label class="clr-control-label">Transaction Tpye</label>
-                            <select [(ngModel)]="inputModel.transaction_type" clrSelect name="transaction_type" readonly>
+                            <select [(ngModel)]="inputModel.transaction_type" clrSelect name="transaction_type" disabled>
                                 <ng-container *ngFor="let transaction of transactionType">
-                                    <option value="{{transaction._hash}}">{{transaction.name}}</option>
+                                    <option value="{{transaction._id}}">{{transaction.name}}</option>
                                 </ng-container>
                             </select>
                         </clr-select-container>
@@ -299,6 +348,30 @@
                             <div class="clr-control-container">
                             <div class="clr-input-wrapper">
                                 <input [(ngModel)]="inputModel.margin" name="harga_jual" type="number" class="clr-input"/>
+                                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                            </div>
+                            <span class="clr-subtext"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clr-col-6 animate-show-hide" *ngIf="show" [@slideInOut]>
+                        <div class="clr-form-control">
+                            <label for="basic" class="clr-control-label">Margin Batu</label>
+                            <div class="clr-control-container">
+                            <div class="clr-input-wrapper">
+                                <input [(ngModel)]="inputModel.margin_batu" name="margin_batu" type="number" class="clr-input" [value]="0"/>
+                                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                            </div>
+                            <span class="clr-subtext"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clr-col-6 animate-show-hide" *ngIf="show" [@slideInOut]>
+                        <div class="clr-form-control">
+                            <label for="basic" class="clr-control-label">Margin Berlian</label>
+                            <div class="clr-control-container">
+                            <div class="clr-input-wrapper">
+                                <input [(ngModel)]="inputModel.margin_berlian" name="margin_berlian" type="number" class="clr-input" [value]=0/>
                                 <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                             </div>
                             <span class="clr-subtext"></span>
