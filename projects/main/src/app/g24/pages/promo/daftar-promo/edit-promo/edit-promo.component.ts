@@ -107,7 +107,7 @@ export class EditPromoComponent implements OnInit {
   }
   passingData(){
     if (
-      this.passingDinar == this.getDataDinar ) {
+      this.passingMulia == this.getDataMulia ) {
 
       this.getDataPromosi();
     }     
@@ -201,7 +201,6 @@ export class EditPromoComponent implements OnInit {
     if (arr.some(function(el){ return el.code === "c01"}) == true) {
       this.berlian = true;
       this.dataToChild = data;
-      console.debug('treu')
     }else{
       this.berlian = false;
     }  

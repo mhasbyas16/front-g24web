@@ -131,12 +131,13 @@
             [getEditData]="dataToChild"
             (dataDinar)="getDinar($event)"></app-wizard-dinar>
         </ng-container>
-        <!-- <ng-container *ngIf="mulia">
+        <ng-container *ngIf="mulia">
             <app-wizard-mulia
             [kuotaProduk]="kuotaProduk"
             [getData]="getDataMulia"
+            [getEditData]="dataToChild"
             (dataMulia)="getMulia($event)"></app-wizard-mulia>
-        </ng-container> -->
+        </ng-container>
         <!-- 
         <ng-container *ngIf="giftSouvenir">
             <app-wizard-gift-souvenir

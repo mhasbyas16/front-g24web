@@ -113,7 +113,7 @@ export class WizardDinarComponent implements OnInit, OnChanges {
       let ven=[];
       let vendorVal = [];
   
-      this.vendorService.list('?_hash=1').subscribe((response:any)=>{
+      this.vendorService.list("?_hash=1&product-category.code=c06&_sortby=name:1").subscribe((response:any)=>{
         if (response == false) {
           this.toastrService.error("Get Vendor Error");
           return;
@@ -149,7 +149,7 @@ export class WizardDinarComponent implements OnInit, OnChanges {
       let denom=[];
       let denomVal = [];
   
-      this.productDenomService.list('?_hash=1').subscribe((response:any)=>{
+      this.productDenomService.list("?_hash=1&product-category.code=c06&_sortby=name:1").subscribe((response:any)=>{
         if (response == false) {
           this.toastrService.error("Get Denom Error");
           return;

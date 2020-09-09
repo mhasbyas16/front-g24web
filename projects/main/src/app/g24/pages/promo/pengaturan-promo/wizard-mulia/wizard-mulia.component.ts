@@ -22,9 +22,12 @@ export class WizardMuliaComponent implements OnInit, OnChanges {
 
   @Input() kuotaProduk:boolean = false;
   @Input() getData:boolean = false;
+  @Input() getEditData:any;
 
   jenisPromosi:any;
 
+  dinarDataEdit = [];
+  dinarDataEdit2:any;
   selectVendor:boolean = false;
   selectDenom:boolean = false;
   section2_mulia: FormGroup = null;
@@ -51,12 +54,132 @@ export class WizardMuliaComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.formMulia();
     this.settingMulia();
+    this.editData(this.getEditData);
     this.options = {
       multiple: true,
       theme: 'classic',
       closeOnSelect: false,
       width: '300'
     };
+  }
+
+  editData(data:any){
+    if (data == null) {
+      return;
+    }
+   
+    // this.formPerhiasan();
+
+    this.valueVendorMulia = [];
+    this.vendorMulia = [];
+    this.valueDenom = [];
+    let arr = [];
+    
+    for (let mulia of data.product) {
+      if (mulia.code == "c05") {
+        arr.push(mulia);
+      }       
+    }
+    console.debug(arr,"isi dinar arr");
+    this.dinarDataEdit = arr;
+   
+    for (let get of this.dinarDataEdit) {
+      this.dinarDataEdit2 =get;
+      this.section2_mulia.patchValue({pickVendor: get.pickVendor}) 
+      this.section2_mulia.patchValue({pickDenom: get.pickDenom}) 
+      this.section2_mulia.patchValue({quota : get.quota})
+      this.section2_mulia.patchValue({sizeTypePromotion : get.sizeTypePromotion})      
+
+      // typePromotion
+      let tp=[];
+      let tpVal = [];
+  
+      this.promotionTypeService.list('?_hash=1').subscribe((response:any)=>{
+        if (response == false) {
+          this.toastrService.error("Get type promotion Error");
+          return;
+        }
+          for (let res of response) {
+            tp.push(res);
+
+            if (res.code == get.typePromotion.code) {
+              this.section2_mulia.patchValue({typePromotion:res._hash})
+            }
+         
+          }
+          this.jenisPromosi=tp;
+      })
+
+      // vendor
+      let ven=[];
+      let vendorVal = [];
+  
+      this.vendorService.list("?_hash=1&product-category.code=c05&_sortby=name:1").subscribe((response:any)=>{
+        if (response == false) {
+          this.toastrService.error("Get Vendor Error");
+          return;
+        }
+
+        if (get.vendor == '1') {
+          for (let res of response) {
+            ven.push({id:res._hash,text:res.name});       
+          }
+          this.section2_mulia.patchValue({vendor:'1'})
+          this.select2Vendor('1');
+        }else{
+          for (let res of response) {
+            ven.push({id:res._hash,text:res.name});
+    
+            for (let isi of get.vendor) {
+              if (res.code == isi.code) {
+                vendorVal.push(res._hash);
+              }
+            }          
+          }
+          this.valueVendorMulia = vendorVal;
+    
+          this.section2_mulia.patchValue({vendor:'pv'})
+          this.select2Vendor('pv');
+        }
+        this.vendorMulia = ven ;
+      })
+
+      
+
+      // purity
+      let denom=[];
+      let denomVal = [];
+  
+      this.productDenomService.list("?_hash=1&product-category.code=c05&_sortby=name:1").subscribe((response:any)=>{
+        if (response == false) {
+          this.toastrService.error("Get Denom Error");
+          return;
+        }
+
+        if (get.denom == '1') {
+          for (let res of response) {
+            denom.push({id:res._hash,text:res.name});         
+          }
+          this.section2_mulia.patchValue({denom:'1'})
+          this.select2Denom('1');
+        }else{
+          for (let res of response) {
+            denom.push({id:res._hash,text:res.name});
+    
+            for (let isi of get.denom) {
+              if (res.code == isi.code) {
+                denomVal.push(res._hash);
+              }
+            }          
+          }
+          this.valueDenom = denomVal;
+          
+          this.section2_mulia.patchValue({denom:'pd'})
+          this.select2Denom('pd');
+        }
+        this.denomMulia = denom ;
+      })
+    }
   }
 
   settingMulia(){

@@ -55,8 +55,8 @@
                     <label class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">Jenis Berlian</label>
                     <select formControlName="typeBerlian" class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrSelect (click)="select2typeBerlian($event.target.value)" >
                         <option disabled selected [value]="">-- Select One --</option>
-                        <option [value]="'1'">Semua Jenis Perhiasan</option>
-                        <option [value]="'pj'">Pilih Jenis Perhiasan</option>
+                        <option [value]="'1'">Semua Jenis Berlian</option>
+                        <option [value]="'pj'">Pilih Jenis Berlian</option>
                     </select>
                 </clr-select-container><br>
                 <ng-container *ngIf="selectTypeBerlian">
@@ -66,7 +66,7 @@
                             <ng-select2 
                                 formControlName="pickTypeBerlian" 
                                 [data]="jenisBerlian"
-                                [(ngModel)]="valuejenisBerlian"
+                                [(ngModel)]="valueJenisBerlian"
                                 [options]="options2"></ng-select2>
                         </div>
                     </div>                                         
