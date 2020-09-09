@@ -43,6 +43,9 @@ export class DataTypeUtil {
         let toAppend = {};
         for(let key in source)
         {
+            let tipe_data = typeof source[key];
+
+            if(tipe_data == 'boolean') continue;
 
             if(source.hasOwnProperty(key+"_encoded")) // mencegah duplikat *_encoded
             {

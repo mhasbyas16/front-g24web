@@ -160,7 +160,7 @@
                                 Pajak
                             </clr-dg-column>
                 
-                            <clr-dg-row *clrDgItems="let data of input.items; let i = index;" [clrDgItem]="data">
+                            <clr-dg-row *clrDgItems="let data of input?.items; let i = index;" [clrDgItem]="data">
                                 <!-- <input readonly type="text" class="clr-input" [(ngModel)]="input.items[i]['sku']" [ngModelOptions]="{standalone:true}"> -->
                                 <clr-dg-cell>{{data?.sku}} </clr-dg-cell>
                                 <clr-dg-cell>{{GetDisplayValue(data['product-purity'])}}</clr-dg-cell>

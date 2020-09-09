@@ -1,6 +1,8 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, TemplateRef, ViewContainerRef } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { Component, OnInit, ComponentFactoryResolver, ViewChild, Input, ElementRef, AfterViewInit, TemplateRef, ChangeDetectionStrategy, ViewContainerRef, Output } from '@angular/core';
+import { NgForm, Form, FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 
+import { isArray } from 'util';
+import { ClarityModule } from '@clr/angular';
 import { ToastrService } from 'ngx-toastr';
 import { BasePersistentFields } from '../../../../lib/base/base-persistent-fields';
 import { InitiationType } from '../../../../lib/enums/initiation-type';
@@ -8,31 +10,41 @@ import { PaymentType } from '../../../../lib/enums/payment-type';
 import { DocumentStatus } from '../../../../lib/enums/document-status.enum';
 import { ModalErrorType } from '../../../../lib/enums/modal-error-type.enum';
 import { EMenuID } from '../../../../lib/enums/emenu-id.enum';
+import { VendorService } from '../../../../services/vendor.service';
 import { InisiasiService } from '../../../../services/stock/inisiasi.service';
 import { ProductCategoryService } from '../../../../services/product/product-category.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
+import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
+import { ProductJenisService } from '../../../../services/product/product-jenis.service';
+import { ProductPurityService } from '../../../../services/product/product-purity.service';
+import { ProductGoldColorService } from '../../../../services/product/product-gold-color.service';
+import { ProductDiamondColorService } from '../../../../services/product/product-diamond-color.service';
+import { ProductDenomService } from '../../../../services/product/product-denom.service';
+import { ProductClarityService } from '../../../../services/product/product-clarity.service';
 import { DatePipe } from '@angular/common';
 import { StringHelper } from '../../../../lib/helper/string-helper';
+import { ModalOutlet } from '../../../../lib/helper/modal-outlet';
 import { EPriviledge } from '../../../../lib/enums/epriviledge.enum';
 import { OrderStatus } from '../../../../lib/enum/order-status';
+import { OrdersModule } from '../../../orders/orders.module';
 import { IDetailCallbackListener } from '../../../../lib/base/idetail-callback-listener';
-import { DetailItemPenerimaanGiftComponent } from './detail-item-penerimaan-gift/detail-item-penerimaan-gift.component';
+import { DetailItemInisiasiApprovalPerhiasanComponent } from './detail-item-inisiasi-approval-perhiasan/detail-item-inisiasi-approval-perhiasan.component';
 
 @Component({
-  selector: 'detail-penerimaan-gift',
-  templateUrl: './detail-penerimaan-gift.component.html',
-  styleUrls: ['./detail-penerimaan-gift.component.scss'],
+  selector: 'detail-inisiasi-approval-perhiasan',
+  templateUrl: './detail-inisiasi-approval-perhiasan.component.html',
+  styleUrls: ['./detail-inisiasi-approval-perhiasan.component.scss'],
   providers : [DatePipe]
   // changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DetailPenerimaanGiftComponent extends BasePersistentFields implements OnInit, AfterViewInit, IDetailCallbackListener
+export class DetailInisiasiApprovalPerhiasanComponent extends BasePersistentFields implements OnInit, AfterViewInit
 {
   @ViewChild('container', { read: ViewContainerRef}) container : ViewContainerRef;
 
   // @ViewChild('inisiasi', {static: false}) inisiasi : NgForm;
   @ViewChild('product') product : ElementRef;
-  @ViewChild('item_terima') modalItemTerima : DetailItemPenerimaanGiftComponent;
-
+  
+  @ViewChild('item_terima') modalItemTerima : DetailItemInisiasiApprovalPerhiasanComponent;
   btoa = btoa;
   parseInt = parseInt;
   console = console;
@@ -84,15 +96,14 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
   defaultItem() :any
   {
     return {
-      sku : null, 'product-denom' : null, 'product-series' : null,
-      ongkos_pieces : 0, pajak : 0, vendor : null
-     }
+      sku : null, 'product-purity' : null, 'product-jenis' : null, 'product-gold-color' : null, 
+      berat : 0, baku_tukar : 0, gram_tukar : 0, ongkos : 0, pajak : 0 }
   }
 
   InitiationType = Object.values(InitiationType);
   PaymentType = Object.values(PaymentType);
-  DocumentStatus = Object.values(DocumentStatus);
   ErrorType = ModalErrorType;
+  OrderStatus = OrderStatus;
 
   modalOpen = false;
   errorTitle = "";
@@ -216,8 +227,20 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
   }
 
   constructor(
+    private resolver : ComponentFactoryResolver,
+    private datePipe : DatePipe,
+    // private unitService : UnitService,
+    private jenisService : ProductJenisService,
+    private kadarService : ProductPurityService,
+    private gColorService : ProductGoldColorService,
+    private dColorService : ProductDiamondColorService,
+    private vendorService : VendorService,
+    private denomService : ProductDenomService,
+    // private shapeService : ShapeService,
+    private clarityService : ProductClarityService,
     private inisiasiService : InisiasiService,
     private productCatService : ProductCategoryService,
+    // private logService : LogService,
 
     private toastr : ToastrService,
     private session : SessionService)
@@ -230,12 +253,9 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
 
   initFormSearch() {
     let fg : FormGroup = new FormGroup({
-      no_po : new FormControl(""),
-      nomor_nota : new FormControl(""),
-      create_date_start : new FormControl(""),
+      no_po : new FormControl("", Validators.required),
+      create_date_start : new FormControl("", Validators.required),
       create_date_end : new FormControl(""),
-      tgl_bayar_start : new FormControl(""),
-      tgl_bayar_end : new FormControl(""),
       order_status : new FormControl("")
 
     });
@@ -246,11 +266,20 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
 
   async ngOnInit(): Promise<void>
   {
+    this.input = this.defaultInput();
     this.user = this.session.getUser();
+    window['slc'] = this.selected
+    // console.log("user",this.user);
+    
+    // window['perhiasan'] = this.perhiasanInput;
 
     await this.LoadAllParameter();
 
     this.initFormSearch();
+
+    // NotificationUtil.Show(Notification.ERROR("fade", NotificationSize.DEFAULT))
+
+    // ModalOutlet.AddModal('inisiasi-detail');
 
     this.onProductChanged();
   }
@@ -261,7 +290,7 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
     {
       this.products.pop();
     }
-    let products = await this.productCatService.list("?code=c04").toPromise();
+    let products = await this.productCatService.list("?code=c00").toPromise();
 
     console.log(products);
 
@@ -272,9 +301,53 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
     this.products.sort((a, b) => ('' + a.name).localeCompare(b.name));
   }
 
+  async LoadJenis()
+  {
+    let jeniss = await this.jenisService.list("?").toPromise();
+    for(let i = 0; i < jeniss.length; i++)
+    {
+      this.jeniss.push(jeniss[i]);
+    }
+    this.jeniss.sort((a,b) => ('' + a.name).localeCompare(b.name));
+  }
+
+  async LoadKadar()
+  {
+    let kadars = await this.kadarService.list("?").toPromise();
+    for(let i = 0; i < kadars.length; i++)
+    {
+      this.kadars.push(kadars[i]);
+    }
+    this.kadars.sort((a,b) => parseInt(a.name) - parseInt(b.name))
+  }
+
+  async LoadGWarna()
+  {
+    let warnas = await this.gColorService.list("?").toPromise();
+    for(let i = 0; i < warnas.length; i++)
+    {
+      this.warnas.push(warnas[i]);
+    }
+    this.warnas.sort((a,b) => ('' + a.name).localeCompare(b.name))
+  }
+
+  async LoadVendor()
+  {
+    let vendors = await this.vendorService.list("?product-category.code=c00").toPromise();
+    for(let i = 0; i < vendors.length; i++)
+    {
+      this.vendors.push(vendors[i]);
+    }
+    this.vendors.sort((a,b) => ('' + a.name).localeCompare(b.name))
+  }
+
   async LoadAllParameter()
   {
     this.LoadProductCategory();
+    this.LoadVendor();
+    this.LoadJenis();
+    this.LoadKadar();
+    this.LoadGWarna();
     
     this.onProductChanged();
   }
@@ -292,10 +365,10 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
   {
     for(let i = 0; i < this.products.length; i++)
     {
-      let kategori = this.products[i];
-      if(kategori.code == "c04")
+      let perhiasan = this.products[i];
+      if(perhiasan.code == "c00")
       {
-        this.input['product-category'] = kategori;
+        this.input['product-category'] = perhiasan;
         break;
       }
     }
@@ -307,9 +380,9 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
     while(this.datas.length > 0) this.datas.pop(); // clear datas
 
     // console.dir(JSON.stringify(this.searchModel))
-    // window['fg'] = this.searchFG;
-    // window['ctrl'] = this.searchFG.controls;
-    // console.log(this.searchFG.controls)
+    window['fg'] = this.searchFG;
+    window['ctrl'] = this.searchFG.controls;
+    console.log(this.searchFG.controls)
     if(!this.searchFG.get("order_status").valid || !this.searchFG.get("create_date_start").valid)
     {
       this.toastr.warning("Mohon isi semua data yang mandatory !!", "Form incomplete!");
@@ -318,7 +391,7 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
 
     let create_start = this.searchFG.get("create_date_start").value;
     create_start = StringHelper.StandardFormatDate("/", create_start, "MM/dd/yyyy");
-    // console.log(create_start)
+    console.log(create_start)
 
     let create_end = this.searchFG.get("create_date_end").value;
     
@@ -328,40 +401,15 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
       return;
     }
 
-    let bayar_start = this.searchFG.get("tgl_bayar_start").value;
-
-    let bayar_end = this.searchFG.get("tgl_bayar_end").value;
-    if(((bayar_end != "" && bayar_end != null)) && (bayar_start == null && bayar_start == ""))
-    {
-      this.toastr.warning("Tanggal Bayar akhir kosong");
-      return;
-    }
-
     let create_p = "";
     if((create_start != "" && create_start != null) && (create_end != "" && create_end != null))
     {
       create_end = StringHelper.StandardFormatDate("/", create_end, "MM/dd/yyyy");
       create_p += "&_between=tgl_inisiasi&_start="+create_start+"&_end="+create_end;
     } 
-    else if((create_start != "" || bayar_start != null))
+    else if((create_start != "" || create_end != null))
     {
       create_p += "&tgl_inisiasi="+create_start;
-    }
-
-    let bayar_p = "";
-    if((bayar_start != "" && bayar_start != null))
-    {
-      bayar_start = StringHelper.StandardFormatDate("/",bayar_start, "MM/dd/yyyy");
-    }
-
-    if((bayar_end != "" && bayar_end != null) && (bayar_start != "" && bayar_start != null))
-    {
-      bayar_end = StringHelper.StandardFormatDate("/", bayar_end, "MM/dd/yyyy");
-      bayar_p += "&_between=tgl_bayar&_start="+bayar_start+"&_end="+bayar_end;
-    }
-    else if((bayar_start != "" && bayar_start != null))
-    {
-      bayar_p += "&tgl_bayar="+bayar_start;
     }
 
     let order_status = this.searchFG.get("order_status").value;
@@ -369,16 +417,12 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
     let order_status_p = "";
     switch(order_status)
     {
-      case '0':
+      case OrderStatus.SUBMIT.code:
         order_status_p = "&order_status="+ OrderStatus.SUBMIT.code;
         break;
 
-      case '1':
-        order_status_p = "&order_status=" + OrderStatus.TERIMA_PARTIAL.code;
-        break;
-
-      case '2':
-        order_status_p = "&order_status=" + OrderStatus.TERIMA_FULL.code;
+      case OrderStatus.APPROVAL.code:
+        order_status_p = "";
         break;
 
       default:
@@ -394,7 +438,13 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
 
     let unit_p = "&unit=" + this.unit['code'];
 
-    let params = "?product-category.code=c04&status_bayar=1" + bayar_p + create_p + order_status_p + unit_p;
+    let no_po_p = "";
+    if(this.searchFG.get('no_po').value != null && this.searchFG.get('no_po').value != "")
+    {
+      no_po_p = "&no_po=" + this.searchFG.get('no_po').value;
+    }
+
+    let params = "?product-category.code=c00" + create_p + order_status_p + unit_p + no_po_p;
     // params += "&unit="+ this.unit.code;
     
     this.loading = true;
@@ -423,6 +473,22 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
 
   }
 
+  searchValid(model : any) : boolean
+  {
+    if(model == null)
+    {
+      this.openMessageBox(ModalErrorType.ERROR, "Pencarian Gagal", "Model null")
+      return false;
+    }
+
+    if(model.no_po == "")
+    {
+      return false;
+    }
+
+    return true;
+  }
+
   Debug()
   {
     console.log(this.input, "model", this.selected);
@@ -438,6 +504,29 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
         this.errorMessage = output;
       }
     })
+  }
+
+  onEdit()
+  {
+    if(this.selected.order_status == "0") return;
+    // if(this.selected.length != 1) return;
+    // switch(this.selected.product_code)
+    // {
+      // case '01':
+        // let key = Modals.get(DetailInisiasiPerhiasanComponent.key);
+
+    // }
+    // ModalOutlet.AddModal('inisiasi-det-perhiasan');
+  }
+
+  onExportAll()
+  {
+
+  }
+
+  onExportSelected()
+  {
+
   }
 
   validateInput()
@@ -456,6 +545,81 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
     return false
   }
 
+  openMessageBox(type : string, title: string, message: string)
+  {
+    this.errorType = type
+    this.errorTitle = title
+    this.errorMessage = message
+    this.modalOpen = true
+  }
+
+  ModelChange(key : string, event : any)
+  {
+    console.log("event", event);
+    // this.searchModel[key] = event.
+  }
+
+  OnSelectedChange(event : any)
+  {
+    // let target = event;
+    // console.log("tgt", target, target.value);
+  }
+
+  validateAdd(item : any)
+  {
+    for(let key in item)
+    {
+      if(item[key] == null || item[key] == "null")
+      {
+        this.toastr.warning(this.GetDisplayName(key) + ' belum diisi.', "Peringatan!");
+        return true;
+      }
+
+      if(item[key] == 0)
+      {
+        this.toastr.warning(this.GetDisplayName(key) + ' masih 0', "Peringatan!");
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  onAddItem()
+  {
+    let tempItem = {
+      sku : null, 'product-purity' : null, 'product-jenis' : null, 'product-gold-color' : null, 
+      berat : 0, baku_tukar : 0, gram_tukar : 0, ongkos : 0, pajak : 0};
+
+    
+    Object.assign(tempItem, this.selected);
+
+    if(this.validateAdd(tempItem))
+    {
+      return;
+    }
+    
+    this.input['items'].push(tempItem);
+
+    for(let i = 0; i < this.input.length; i++)
+    {
+      let ass = {no : i};
+      let item = this.input.items[i];
+      Object.assign(item, ass);
+      console.log(item)
+    }
+
+    // this.onResetItem();
+  }
+
+  onDeleteItem()
+  {
+    let i = this.input['items'].indexOf(this.selected);
+    console.log(i)
+    this.input['items']?.splice(this.selectedId, 1);
+    this.onResetItem();
+  }
+
   onResetItem()
   {
     this.selected = this.defaultItem();
@@ -464,6 +628,7 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
   getBeratFromItems()
   {
     if(this.input == null) return 0;
+
     let berat = 0.0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -478,6 +643,7 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
   getPiecesFromItems()
   {
     if(this.input == null) return 0;
+
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -493,6 +659,7 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
   getBakuTukarFromItems()
   {
     if(this.input == null) return 0;
+
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -508,6 +675,7 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
   getGramTukarFromItems()
   {
     if(this.input == null) return 0;
+
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -523,6 +691,7 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
   getOngkosFromItems()
   {
     if(this.input == null) return 0;
+
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -538,6 +707,7 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
   getPajakFromItems()
   {
     if(this.input == null) return 0;
+    
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -624,6 +794,11 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
     return this.selected.pajak;
   }
 
+  hitungHarga()
+  {
+
+  }
+
   ValidateField(object : any, key : string, validationMethod?)
   {
     if(object) return false;
@@ -637,7 +812,7 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
     return true;
   }
 
-  onTerima()
+  onApprove()
   {
     if(this.selected.order_status == 'terima_full')
     {

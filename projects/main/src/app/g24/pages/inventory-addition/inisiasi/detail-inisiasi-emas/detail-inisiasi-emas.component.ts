@@ -678,6 +678,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
 
   getBeratFromItems()
   {
+    if(this.input == null) return 0;
     let berat = 0.0;
     let item = {};
     for(let i = 0; i < this.input.items.length; i++)
@@ -694,6 +695,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
 
   getPiecesFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -708,6 +710,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
   
   getBakuTukarFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -722,6 +725,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
   
   getGramTukarFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -736,6 +740,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
   
   getOngkosFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -750,6 +755,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
   
   getPajakFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -831,11 +837,11 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
 
     // if(hpajak == null) return 0;
     
-    let persenPajak = 2.00; // harusnya dari DB
+    let persenPajak = 45; // harusnya dari DB
 
     let pajakItem : number = 0;
     
-    pajakItem = (100 / (100+persenPajak) * item.total_harga * persenPajak/100);
+    pajakItem = (item.total_harga * persenPajak)/ 10000;
 
     // if(this.input.tipe_bayar == PaymentType.MAKLON.code && item.totalHarga != 0)
     //   this.pajakCounted = true;

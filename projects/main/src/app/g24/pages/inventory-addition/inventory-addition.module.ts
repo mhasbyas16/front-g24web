@@ -21,6 +21,9 @@ import { DetailPenerimaanGiftComponent } from './penerimaan/detail-penerimaan-gi
 import { DetailItemPenerimaanGiftComponent } from './penerimaan/detail-penerimaan-gift/detail-item-penerimaan-gift/detail-item-penerimaan-gift.component';
 import { DetailPenerimaanEmasComponent } from './penerimaan/detail-penerimaan-emas/detail-penerimaan-emas.component';
 import { DetailItemPenerimaanEmasComponent } from './penerimaan/detail-penerimaan-emas/detail-item-penerimaan-emas/detail-item-penerimaan-emas.component';
+import { InisiasiApprovalComponent } from './inisiasi-approval/inisiasi-approval.component';
+import { DetailInisiasiApprovalPerhiasanComponent } from './inisiasi-approval/detail-inisiasi-approval-perhiasan/detail-inisiasi-approval-perhiasan.component';
+import { DetailItemInisiasiApprovalPerhiasanComponent } from './inisiasi-approval/detail-inisiasi-approval-perhiasan/detail-item-inisiasi-approval-perhiasan/detail-item-inisiasi-approval-perhiasan.component';
 
 @NgModule({
   declarations: 
@@ -41,7 +44,10 @@ import { DetailItemPenerimaanEmasComponent } from './penerimaan/detail-penerimaa
     DetailPenerimaanGiftComponent,
     DetailItemPenerimaanGiftComponent,
     DetailPenerimaanEmasComponent,
-    DetailItemPenerimaanEmasComponent], 
+    DetailItemPenerimaanEmasComponent,
+    InisiasiApprovalComponent,
+    DetailInisiasiApprovalPerhiasanComponent,
+    DetailItemInisiasiApprovalPerhiasanComponent], 
   imports: [
     CommonModule,
     InventoryAdditionRoutingModule,

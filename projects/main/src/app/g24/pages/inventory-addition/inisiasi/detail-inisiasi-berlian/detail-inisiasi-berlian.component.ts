@@ -689,6 +689,7 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
 
   getBeratFromItems()
   {
+    if(this.input == null) return 0;
     let berat = 0.0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -702,6 +703,7 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
 
   getPiecesFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -716,6 +718,7 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
   
   getBakuTukarFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -730,6 +733,7 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
   
   getGramTukarFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -744,6 +748,7 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
   
   getOngkosFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -758,6 +763,7 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
   
   getPajakFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {

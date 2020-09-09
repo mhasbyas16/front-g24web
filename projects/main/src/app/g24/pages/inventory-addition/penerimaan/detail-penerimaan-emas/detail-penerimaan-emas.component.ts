@@ -463,6 +463,7 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
 
   getBeratFromItems()
   {
+    if(this.input == null) return 0;
     let berat = 0.0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -476,6 +477,7 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
 
   getPiecesFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -490,6 +492,7 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
   
   getBakuTukarFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -504,6 +507,7 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
   
   getGramTukarFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -518,6 +522,7 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
   
   getOngkosFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -532,6 +537,7 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
   
   getPajakFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {

@@ -468,7 +468,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
       return;
     }
 
-    let unit_p = this.unit['code'];
+    let unit_p = "&unit=" + this.unit['code'];
 
     let params = "?product-category.code=c00&status_bayar=1" + bayar_p + create_p + order_status_p + unit_p;
     // params += "&unit="+ this.unit.code;
@@ -653,6 +653,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
 
   getBeratFromItems()
   {
+    if(this.input == null) return 0;
     let berat = 0.0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -666,6 +667,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
 
   getPiecesFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -680,6 +682,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
   
   getBakuTukarFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -694,6 +697,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
   
   getGramTukarFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -708,6 +712,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
   
   getOngkosFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -722,6 +727,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
   
   getPajakFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {

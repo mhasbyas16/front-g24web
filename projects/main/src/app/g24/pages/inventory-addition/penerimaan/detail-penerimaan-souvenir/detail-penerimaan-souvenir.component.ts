@@ -409,9 +409,9 @@ export class DetailPenerimaanSouvenirComponent extends BasePersistentFields impl
       return;
     }
 
-    let unit_p = this.unit['code'];
+    let unit_p = "&unit=" + this.unit['code'];
 
-    let params = "?product-category.code=c02&status_bayar" + bayar_p + create_p + order_status_p + unit_p;
+    let params = "?product-category.code=c02&status_bayar=1" + bayar_p + create_p + order_status_p + unit_p;
     // params += "&unit="+ this.unit.code;
     
     this.loading = true;
@@ -480,10 +480,14 @@ export class DetailPenerimaanSouvenirComponent extends BasePersistentFields impl
 
   getBeratFromItems()
   {
+    if(this.input == null) return 0;
+
     let berat = 0.0;
     for(let i = 0; i < this.input.items.length; i++)
     {
-      if(this.input.items[i].berat == null || this.input.items[i].berat == "null")
+      if(this.input == null)
+        continue;
+      if(this.input?.items[i]?.berat == null || this.input?.items[i]?.berat == "null")
         continue;
       berat += parseFloat(this.input.items[i].berat);
     }
@@ -493,11 +497,13 @@ export class DetailPenerimaanSouvenirComponent extends BasePersistentFields impl
 
   getPiecesFromItems()
   {
+    if(this.input == null) return 0;
+
     let value = 0;
-    for(let i = 0; i < this.input.items.length; i++)
+    for(let i = 0; i < this.input?.items.length; i++)
     {
-      if(this.input.items[i]?.pieces == null || this.input.items[i].pieces == "null")
-        continue;
+      if(this.input?.items[i]?.pieces == null || this.input?.items[i]?.pieces == "null")
+        return;
       value += parseInt(this.input.items[i].pieces);
     }
 
@@ -507,6 +513,8 @@ export class DetailPenerimaanSouvenirComponent extends BasePersistentFields impl
   
   getBakuTukarFromItems()
   {
+    if(this.input == null) return 0;
+
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -521,6 +529,8 @@ export class DetailPenerimaanSouvenirComponent extends BasePersistentFields impl
   
   getGramTukarFromItems()
   {
+    if(this.input == null) return 0;
+
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -535,6 +545,8 @@ export class DetailPenerimaanSouvenirComponent extends BasePersistentFields impl
   
   getOngkosFromItems()
   {
+    if(this.input == null) return 0;
+
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -549,6 +561,8 @@ export class DetailPenerimaanSouvenirComponent extends BasePersistentFields impl
   
   getPajakFromItems()
   {
+    if(this.input == null) return 0;
+
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {

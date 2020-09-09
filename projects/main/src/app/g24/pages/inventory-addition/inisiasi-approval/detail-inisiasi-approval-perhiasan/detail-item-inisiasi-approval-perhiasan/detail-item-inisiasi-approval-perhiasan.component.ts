@@ -5,24 +5,23 @@ import { ProductJenisService } from 'projects/main/src/app/g24/services/product/
 import { ProductGoldColorService } from 'projects/main/src/app/g24/services/product/product-gold-color.service';
 import { ToastrService } from 'ngx-toastr';
 import { FlagProduct, TipeStock, LocationProduct } from 'projects/main/src/app/g24/lib/enum/flag-product';
-import { VendorService } from 'projects/main/src/app/g24/services/vendor.service';
 import { EPriviledge } from 'projects/main/src/app/g24/lib/enums/epriviledge.enum';
 import { OrderStatus } from 'projects/main/src/app/g24/lib/enum/order-status';
 import { ProductService } from 'projects/main/src/app/g24/services/product/product.service';
 import { DataTypeUtil } from 'projects/main/src/app/g24/lib/helper/data-type-util';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { IDetailCallbackListener } from 'projects/main/src/app/g24/lib/base/idetail-callback-listener';
-import { OrdersModule } from '../../../../orders/orders.module';
+import { PaymentType } from 'projects/main/src/app/g24/lib/enums/payment-type';
 
 /**
  * Penerimaan perhiasan baru isi ke stock/product
  */
 @Component({
-  selector: 'detail-item-penerimaan-souvenir',
-  templateUrl: './detail-item-penerimaan-souvenir.component.html',
-  styleUrls: ['./detail-item-penerimaan-souvenir.component.scss']
+  selector: 'detail-item-inisiasi-approval-perhiasan',
+  templateUrl: './detail-item-inisiasi-approval-perhiasan.component.html',
+  styleUrls: ['./detail-item-inisiasi-approval-perhiasan.component.scss']
 })
-export class DetailItemPenerimaanSouvenirComponent implements OnInit {
+export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
 
   constructor
   (
@@ -47,13 +46,13 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
 
   LoadAllParameter()
   {
-    // this.LoadJenis();
+    this.LoadJenis();
   }
 
   async LoadJenis()
   {
     this.jeniss = [];
-    let jeniss = await this.jenisService.list("?product-category.code=c02").toPromise();
+    let jeniss = await this.jenisService.list("?product-category.code=c00").toPromise();
     if(jeniss)
     {
       if(jeniss.length <= 0)
@@ -108,7 +107,7 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
       return;
     }
 
-    this.inisiasiService.list("?_or=product-category.code=c02&no_po="+id).subscribe(output => 
+    this.inisiasiService.list("?_or=product-category.code=c00&no_po="+id).subscribe(output => 
     {
       if(output != false)
       {
@@ -172,13 +171,32 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
     return object.name;
   }
 
+  GetDisplayName(key : string) : string
+  {
+    let name = "";
+    switch(key)
+    {
+      case PaymentType.UANG.code:
+        name = PaymentType.UANG.name;
+        break;
+
+      case PaymentType.MAKLON.code:
+        name = PaymentType.MAKLON.name;
+        break;
+
+        default:
+
+    }
+    return name;
+  }
+
   // lanjut 
   defaultProduct()
   {
     return {
-      _id : "", code : "", sku : "",
-      "product-jenis" : null, "product-category" : null, "product-denom" : null, "product-series" : null,
-      berat : 0.00, ongkos_pieces : 0.0, unit : null,
+      _id : "", code : "", sku : "", 
+      "product-jenis" : null, "product-category" : null, "product-purity" : null, "product-gold-color" : null,
+      berat : 0.00, baku_tukar : 0.0, ongkos : 0.0, unit : null,
       tipe_stock : "stock", vendor : null, flag : "stock", location : "",
       no_po : "", no_item_po : 0, no_index_products : 0,
       hpp_inisiasi : 0, hpp : 0
@@ -225,8 +243,20 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
     this.hitungHPP(productIndex, itemIndex);
   }
 
+  hitungGramTukar(productIndex, itemIndex)
+  {
+    if(this.inisiasi == null) return 0;
+
+    let item = this.inisiasi.items[itemIndex];
+    let product = item.products[productIndex];
+
+    let berat
+  }
+
   hitungHPP(productIndex, itemIndex)
   {
+    if(this.inisiasi == null) return 0;
+
     let item = this.inisiasi.items[itemIndex];
     let product = item.products[productIndex];
 
@@ -250,6 +280,45 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
     {
       this.toastr.error("HPP is NaN");
       return;
+    }
+  }
+
+  onAddProduct(itemsIndex)
+  {
+    let item = this.inisiasi.items[itemsIndex];
+
+    let def = this.defaultProduct();
+    def.sku = item['sku'];
+    def['product-category'] = this.inisiasi['product-category'];
+    def['vendor'] = this.inisiasi['vendor'];
+    def["product-purity"] = item['product-purity'];
+    def["product-gold-color"] = item['product-gold-color'];
+    def['product-jenis'] = item['product-jenis'];
+    def.baku_tukar = item['baku_tukar'] / 10.0;
+    def.no_po = this.inisiasi['no_po'];
+    def.ongkos = item['ongkos'];
+    def.flag = FlagProduct.STOCK.code;
+    def.tipe_stock = TipeStock.STOCK.code;
+    def.location = LocationProduct.PUSAT.code;
+    def.no_item_po = item.products.length;
+
+    if(!item['products'])
+    {
+      let array = [];
+
+      array.push(def);
+      item['products'] = array;
+    }
+    else
+    {
+      let products : any[] = item['products'];
+      if(products.length >= item.pieces)
+      {
+        this.toastr.warning("Jumlah barang pada bulk tersebut sudah sesuai pesanan");
+        return;
+      }
+
+      products.push(def);
     }
   }
 
@@ -278,17 +347,17 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
         def.sku = item['sku'];
         def['product-category'] = this.inisiasi['product-category'];
         def['vendor'] = this.inisiasi['vendor'];
-        def["product-denom"] = item['product-denom'];
-        def["product-series"] = item['product-series'];
+        def["product-purity"] = item['product-purity'];
+        def["product-gold-color"] = item['product-gold-color'];
+        def['product-jenis'] = item['product-jenis'];
+        def.baku_tukar = item['baku_tukar'] / 10.0;
         def.no_po = this.inisiasi['no_po'];
-        def.ongkos_pieces = item['ongkos_pieces'];
+        def.ongkos = item['ongkos'];
         def.flag = FlagProduct.STOCK.code;
         def.tipe_stock = TipeStock.STOCK.code;
         def.location = LocationProduct.PUSAT.code;
         def.no_item_po = i;
         def.no_index_products = p;
-        def.hpp_inisiasi = Number(item.total_harga) / item.pieces;
-        def.hpp = def.hpp_inisiasi;
         def.unit = this.unit;
 
         products.push(def);
@@ -305,6 +374,71 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
       this.toastr.warning("Barang sudah masuk ke Stock", "Tidak dapat menghapus data.");
       return;
     }
+  }
+
+  getTotalBeratOfItem(item)
+  {
+    let berat : number = 0.0;
+    let products = item['products'];
+
+    for(let i = 0; i < products.length; i++)
+    {
+      let pBerat : number = (isNaN(Number(products[i].berat)) ? 0 : Number(products[i].berat));
+      berat += pBerat;
+    }
+
+    return Number(berat.toFixed(2));
+  }
+
+  beratStyleValid(item)
+  {
+    let products = item?.products;
+    let len = products == null ? 0 : products.length
+    let berat : number = 0.0;
+
+    for(let i = 0; i < len; i++)
+    {
+      let pBerat : number = (isNaN(Number(products[i].berat)) ? 0 : Number(products[i].berat));
+
+      berat += Number(pBerat);
+    }
+    
+    if(berat == Number(item.berat)) return {};
+
+    return {'text-decoration': 'underline','text-decoration-color': 'red', 'color' : 'red'};
+  }
+  
+  getTotalGramTukarOfItem(item)
+  {
+    let gram_tukar : number = 0.0;
+    let products = item['products'];
+
+    for(let i = 0; i < products.length; i++)
+    {
+      let pGramTukar : number = (isNaN(Number(products[i].gram_tukar)) ? 0 : Number(products[i].gram_tukar));
+
+      gram_tukar += pGramTukar;
+    }
+
+    return Number(gram_tukar.toFixed(2));
+  }
+
+  gramTukarStyleValid(item)
+  {
+    let products = item?.products;
+    let len = products == null ? 0 : products.length
+    let value : number = 0.0;
+
+    for(let i = 0; i < len; i++)
+    {
+      let pGramTukar : number = (isNaN(Number(products[i].gram_tukar)) ? 0 : Number(products[i].gram_tukar));
+
+      value += Number(pGramTukar);
+    }
+    
+    if(Number(value.toFixed(2)) == item.gram_tukar) return {};
+
+    return {'text-decoration': 'underline','text-decoration-color': 'red', 'color' : 'red'};
   }
 
   /**
@@ -432,6 +566,7 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
     this.inisiasi.terima_by = this.user.username;
     let items = this.inisiasi.items;
     let productNoId = [];
+    let ids = [];
     console.log(items);
     
     for(let i = 0; i < items.length; i++)
@@ -507,5 +642,111 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
     //   let product = result[i];
       
     // }
+  }
+
+  getBeratFromItems()
+  {
+    if(this.inisiasi == null) return 0;
+
+    let berat = 0.0;
+    for(let i = 0; i < this.inisiasi.items.length; i++)
+    {
+      if(this.inisiasi.items[i].berat == null || this.inisiasi.items[i].berat == "null")
+        continue;
+      berat += parseFloat(this.inisiasi.items[i].berat);
+    }
+    this.inisiasi['total_berat'] = Math.round(berat * 100) / 100;
+    return berat;
+  }
+
+  getPiecesFromItems()
+  {
+    if(this.inisiasi == null) return 0;
+
+    let value = 0;
+    for(let i = 0; i < this.inisiasi.items.length; i++)
+    {
+      if(this.inisiasi.items[i]?.pieces == null || this.inisiasi.items[i].pieces == "null")
+        continue;
+      value += parseInt(this.inisiasi.items[i].pieces);
+    }
+
+    this.inisiasi['total_piece'] = Math.round(value * 100) / 100;
+    return value;
+  }
+  
+  getBakuTukarFromItems()
+  {
+    if(this.inisiasi == null) return 0;
+
+    let value = 0;
+    for(let i = 0; i < this.inisiasi.items.length; i++)
+    {
+      if(this.inisiasi.items[i]?.baku_tukar == null || this.inisiasi.items[i]?.baku_tukar == "null")
+        continue;
+        value += parseInt(this.inisiasi.items[i].baku_tukar);
+    }
+
+    this.inisiasi['total_baku_tukar'] = Math.round(value * 100) / 100;
+    return value;
+  }
+  
+  getGramTukarFromItems()
+  {
+    if(this.inisiasi == null) return 0;
+
+    let value = 0;
+    for(let i = 0; i < this.inisiasi.items.length; i++)
+    {
+      if(this.inisiasi.items[i]?.gram_tukar == null || this.inisiasi.items[i]?.gram_tukar == "null")
+        continue;
+        value += parseFloat(this.inisiasi.items[i].gram_tukar);
+    }
+
+    this.inisiasi['total_gram_tukar'] = Math.round(value * 100) / 100;
+    return value;
+  }
+  
+  getOngkosFromItems()
+  {
+    if(this.inisiasi == null) return 0;
+
+    let value = 0;
+    for(let i = 0; i < this.inisiasi.items.length; i++)
+    {
+      if(this.inisiasi.items[i]?.ongkos == null || this.inisiasi.items[i]?.ongkos == "null")
+        continue;
+        value += parseFloat(this.inisiasi.items[i].ongkos);
+    }
+
+    this.inisiasi['total_ongkos'] = Math.round(value * 100) / 100;
+    return value;
+  }
+  
+  getPajakFromItems()
+  {
+    if(this.inisiasi == null) return 0;
+
+    let value = 0;
+    for(let i = 0; i < this.inisiasi.items.length; i++)
+    {
+      if(this.inisiasi.items[i]?.pajak == null || this.inisiasi.items[i]?.pajak == "null")
+        continue;
+        value += parseFloat(this.inisiasi.items[i].pajak);
+    }
+
+    this.inisiasi['total_pajak'] = Math.round(value * 100) / 100;
+    return value;
+  }
+
+  hitungTotalHarga()
+  {
+    if(this.inisiasi == null) return 0;
+
+    let hbaku = Number(this.inisiasi['harga_baku']);
+    let total_gram_tukar = this.getGramTukarFromItems();
+
+    this.inisiasi['total_harga'] = Math.round(hbaku * total_gram_tukar * 100) /100;
+    return this.inisiasi['total_harga'];
   }
 }

@@ -537,6 +537,9 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
   isAlreadyTerima(product)
   {
     let key = product.no_item_po + "-" + product.no_index_products;
+
+    if(this.mode == EPriviledge.READ) return true;
+
     if(this.idTerima.has(key))
     {
       console.log(key, "key");

@@ -693,6 +693,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
 
   getBeratFromItems()
   {
+    if(this.input == null) return 0;
     let berat = 0.0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -706,6 +707,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
 
   getPiecesFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -720,6 +722,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   
   getBakuTukarFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -734,6 +737,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   
   getGramTukarFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -748,6 +752,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   
   getOngkosFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -762,6 +767,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   
   getPajakFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {

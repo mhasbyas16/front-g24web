@@ -1,6 +1,7 @@
 export const management = [
       {_id: "0001", type: "menu", name : "Inventory Addition", icons: "yang bagus", color : "warna-warni", componentId : "x1001", parentId: "", module: "x1"},
       {_id: "0002",type: "sub-menu", name : "Inisiasi", icons: "yang bagus", color : "warna-warni", componentId : "1001", parentId: "x1001", module: "x1", menu : {_id: "0001"}},
+      {_id: "0002",type: "sub-menu", name : "Approval Inisiasi", icons: "yang bagus", color : "warna-warni", componentId : "1002", parentId: "x1001", module: "x1", menu : {_id: "0001"}},
       {_id: "0002",type: "sub-menu", name : "Penerimaan", icons: "yang bagus", color : "warna-warni", componentId : "1005", parentId: "x1001", module: "x1", menu : {_id: "0001"}},
       
       {_id: "0001", type: "menu", name : "Inventory Management", icons: "yang bagus", color : "warna-warni", componentId : "x2", parentId: "", module: "x2"},

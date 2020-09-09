@@ -814,15 +814,15 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
 
     let pajakItem : number = 0;
     
-    if(this.input.tipe_bayar == 'U')
-      pajakItem = (100 / (100+persenPajak) * item.total_harga * persenPajak/100);
+    if(this.input.tipe_bayar == PaymentType.UANG.code)
+      pajakItem = (item.total_harga * persenPajak/100);
     else
       pajakItem = ongkos * persenPajak/100;
 
-    if(this.input.tipe_bayar == 'M' && item.totalHarga != 0)
+    if(this.input.tipe_bayar == PaymentType.MAKLON.code && item.totalHarga != 0)
       this.pajakCounted = true;
     
-    if(this.input.tipe_bayar == 'M' && (ongkos != 0 || ongkos != null))
+    if(this.input.tipe_bayar == PaymentType.MAKLON.code && (ongkos != 0 || ongkos != null))
       this.pajakCounted = true;
     
     item.pajak = Math.trunc(pajakItem);

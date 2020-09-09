@@ -6,10 +6,10 @@
             <div class="card-header">
                     List Item pada Inisiasi/PO: {{inisiasi?.no_po}}
             </div>
-            <div class="card-body">
+            <!-- <div class="card-body">
                 <p>Jumlah Ceklist</p>
                 <input type="number" min=0 [(ngModel)]="checkNumber">
-            </div>
+            </div> -->
             <clr-datagrid>
                 <clr-dg-action-bar>
                     <!-- <div class="btn-group">
@@ -54,7 +54,7 @@
                             <thead>
                                 <tr>
                                     <!-- <th><button [disabled]="mode == EPriviledge.READ ? true : null" class="btn btn-primary btn-icon btn-sm" (click)="onAddProduct(itemsIndex)" type="button" ><clr-icon shape="plus"></clr-icon></button></th> -->
-                                    <th><input type="checkbox" [(ngModel)]="data.checked" (change)="onCheckAll(data)" /></th>
+                                    <!-- <th><input type="checkbox" [(ngModel)]="data.checked" (change)="onCheckAll(data)" /></th> -->
                                     <th>No.</th>
                                     <th>_id</th>
                                     <th>SKU</th>
@@ -70,7 +70,7 @@
                                 <ng-container *ngFor="let product of data?.products; let productIndex = index">
                                     <tr>
                                         <!-- <td><button [disabled]="mode == EPriviledge.READ ? true : null" class="btn btn-danger btn-icon btn-sm" (click)="onDeleteProduct(itemsIndex, productIndex)" type="button"><clr-icon shape="minus"></clr-icon></button></td> -->
-                                        <td><input [disabled]="isAlreadyTerima(product)" type="checkbox" [(ngModel)]="product.isTerima" /></td>
+                                        <!-- <td><input [disabled]="isAlreadyTerima(product)" type="checkbox" [(ngModel)]="product.isTerima" /></td> -->
                                         <td>{{productIndex + 1}}</td>
                                         <td>{{product?._id}}</td>
                                         <td>{{product?.sku}}</td>
