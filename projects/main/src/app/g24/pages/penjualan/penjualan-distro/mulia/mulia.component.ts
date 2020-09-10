@@ -156,12 +156,11 @@ export class MuliaComponent implements OnInit {
           this.productService.count(this.params+"&"+urlFlag).subscribe((response: any) => {
             this.qty = response.count;
             // cari prm-jual product
-            this.prmJualService.get(this.muliaCategory+"&"+urlVendor+"&flag=approved").subscribe((Jualresponse: any) => {
+            this.prmJualService.get(this.muliaCategory+"&"+urlVendor+"&flag=approved"+"&jenis_barang=jual").subscribe((Jualresponse: any) => {
               let prmJual = Jualresponse.harga;
               for (let index = 0; index < prmJual.length; index++) {
                   if (prmJual[index]["product-denom"].code == denom) {
                     this.hargaBaku = prmJual[index].harga_baku
-                    
                   }
               }
               console.debug(this.hargaBaku,"hargaBaku")
