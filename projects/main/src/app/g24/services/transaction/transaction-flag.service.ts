@@ -59,7 +59,7 @@ export class TransactionFlagService {
       }
     }
     let data = Object.assign(batch,perhiasan,lm,gs,berlian,dinar);
-
+    console.debug(data,"data update flag");
     this.productService.batchUpdate(data).subscribe((response:any)=>{
       if (response == false) {
         console.debug("product flag update failed");
