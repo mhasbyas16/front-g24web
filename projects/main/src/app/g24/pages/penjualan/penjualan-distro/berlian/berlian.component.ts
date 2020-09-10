@@ -34,8 +34,14 @@ export class BerlianComponent implements OnInit {
   loadingDg: boolean = false;
   //params
   params = null;
-  vendorCategory= "product-category.code=c01";
+  berlianCategory= "product-category.code=c01";
   category = "?_hash=1&product-category.code=c01&flag=stock";
+
+  channel = "channel.code=ch02";
+  transactionType = "transaction-type.code=t01";
+  flagApp = "flag=approved";
+
+
   //list
   vendors = null;
   jenis = null;
@@ -77,7 +83,7 @@ export class BerlianComponent implements OnInit {
   }
 
   onListVendor(){
-    this.vendorService.list("?_hash=1&"+this.vendorCategory).subscribe((response: any) => {
+    this.vendorService.list("?_hash=1&"+this.berlianCategory).subscribe((response: any) => {
       if (response != false) {
         this.vendors = response;
       }      
@@ -147,7 +153,7 @@ export class BerlianComponent implements OnInit {
         }  
         this.berlians = response;
         // pricing
-        this.prmJualService.get("?"+this.vendorCategory+"&flag=approved").subscribe((Jualresponse: any) => {
+        this.prmJualService.get("?"+this.berlianCategory+"&flag=approved").subscribe((Jualresponse: any) => {
           if (Jualresponse != false) {
             this.hargaBaku = Jualresponse.harga_baku;
           }
@@ -155,7 +161,7 @@ export class BerlianComponent implements OnInit {
             if (PPNresponse != false) {
               ppn = PPNresponse['0']['ppn'];
             }      
-            this.prmMarginService.get("?"+this.vendorCategory).subscribe((Marginresponse: any) => {
+            this.prmMarginService.get("?"+this.berlianCategory+"&"+this.channel+"&"+this.transactionType+"&"+this.flagApp).subscribe((Marginresponse: any) => {
               if (Marginresponse != false) {
                 this.margin = Marginresponse;
               }      
@@ -167,9 +173,9 @@ export class BerlianComponent implements OnInit {
                  Number(this.berlians[index]['berat']),
                  this.margin['margin'],
                  Number(this.berlians[index]['hppBatu']),
-                 Number(this.margin['marginBatu']),
+                 Number(this.margin['margin_batu']),
                  Number(this.berlians[index]['hppBerlian']),
-                 Number(this.margin['marginBerlian']),
+                 Number(this.margin['margin_berlian']),
                  Number(this.berlians[index]['ongkosPembuatan']));
                 // harga_baku:any,kadar:any,berat:any,margin:any,hppBatu:any,marginBatu:any,hppBerlian:any,marginBerlian:any,ongkos:any
                 this.datalist = this.datalist*((100/100)+(Number(ppn)/100));

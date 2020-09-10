@@ -48,14 +48,18 @@ export class MuliaComponent implements OnInit {
   total = 0;
   selected: any[] = [];
   
-  //category
+  ////params
   vendorCategory = "product-category.code=c05";
   category = "?_hash&product-category.code=c05";
 
   muliaCategory = "?product-category.code=c05";
 
-   //params
-   params = null;
+  channel = "channel.code=ch02";
+  transactionType = "transaction-type.code=t01";
+
+  flagApp = "flag=approved";
+  jenisBarang = "jenis_barang=Jual";
+  params = null;
 
   constructor(
   //app
@@ -156,8 +160,9 @@ export class MuliaComponent implements OnInit {
           this.productService.count(this.params+"&"+urlFlag).subscribe((response: any) => {
             this.qty = response.count;
             // cari prm-jual product
-            this.prmJualService.get(this.muliaCategory+"&"+urlVendor+"&flag=approved"+"&jenis_barang=jual").subscribe((Jualresponse: any) => {
+            this.prmJualService.get(this.muliaCategory+"&"+urlVendor+"&"+this.flagApp+"&"+this.jenisBarang).subscribe((Jualresponse: any) => {
               let prmJual = Jualresponse.harga;
+              console.debug(prmJual)
               for (let index = 0; index < prmJual.length; index++) {
                   if (prmJual[index]["product-denom"].code == denom) {
                     this.hargaBaku = prmJual[index].harga_baku
@@ -165,12 +170,10 @@ export class MuliaComponent implements OnInit {
               }
               console.debug(this.hargaBaku,"hargaBaku")
               //cari margin penjualan
-              this.prmMarginService.get("?"+this.vendorCategory).subscribe((Marginresponse: any) => {
-                let prmMargin = Marginresponse
-                console.debug(prmMargin.margin,'margin')
-                let hargaLM = this.pricingService.priceLogamMulia(this.hargaBaku, Number(prmMargin.margin));
+              this.prmMarginService.get(this.muliaCategory+"&"+this.channel+"&"+this.transactionType+"&"+this.flagApp).subscribe((Marginresponse: any) => {
+                let prmMargin = Marginresponse.margin
+                let hargaLM = this.pricingService.priceLogamMulia(this.hargaBaku, Number(prmMargin));
                 hargaLM =  Math.ceil(hargaLM/1000)*1000;
-                console.debug( hargaLM,'hargaLM')
                 cariMulia.push({
                   "vendor" : this.mulias[0].vendor.name,
                   "denom" : this.mulias[0]['product-denom'].name,
