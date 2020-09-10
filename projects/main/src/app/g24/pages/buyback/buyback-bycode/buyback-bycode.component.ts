@@ -75,6 +75,7 @@ export class BuybackBycodeComponent implements OnInit {
   totalIsiCartDinarBBC: any = 0
 
   productCategoryMulia= "product-category.code=c05";
+  jenisBarang = "jenis_barang=Buyback";
 
   constructor(
     private toastrService:ToastrService,
@@ -135,12 +136,16 @@ export class BuybackBycodeComponent implements OnInit {
       
       //mulia
       this.isiEmasBatangan =this.detailTransaction.product["LM"]
+      let hargaBBEmas : any[];
       for (let isi of this.isiEmasBatangan) {
-       let hargass = 21323000
-       isi.hargass = hargass
-      //  console.debug(isi,"wews")
-        this.prmJualService.get("?"+this.productCategoryMulia+"&flag=approved"+"&vendor.code="+isi.detail['vendor'].code).subscribe((BBresponse: any) => {
-          console.debug(BBresponse,"wews")
+
+        this.prmJualService.get("?"+this.productCategoryMulia+"&flag=approved"+"&vendor.code="+isi.detail['vendor'].code+"&"+this.jenisBarang).subscribe((BBresponse: any) => {
+          hargaBBEmas = BBresponse.harga
+          for (let index = 0; index < hargaBBEmas.length; index++) {
+            if (hargaBBEmas[index]["product-denom"].code == isi.detail['product-denom']) {
+              // this.hargaBaku = prmJual[index].harga_baku
+            }
+        }
         })
         
         // console.debug(this.isiEmasBatangan.detail['product-denom'].name , "denom")
