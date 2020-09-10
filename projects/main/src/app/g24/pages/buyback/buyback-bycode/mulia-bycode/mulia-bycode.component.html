@@ -17,7 +17,7 @@
                     <clr-dg-cell>{{d.detail['product-denom'].name}}</clr-dg-cell>
                     <clr-dg-cell>{{d.noSeri}}</clr-dg-cell>
                     <clr-dg-cell>
-                       2000000
+                        {{d.hargass}}
                     </clr-dg-cell>
                     <clr-dg-cell><span style="float: right;">
                         <ng-container *ngIf="cekItemArray(d.detail.code) == true; else plus">
@@ -26,7 +26,7 @@
                             </button>                
                         </ng-container>
                         <ng-template #plus >
-                            <button type="button" class="btn btn-icon btn-sm btn-success" (click)="addToCart(d.detail.code, d.detail.vendor.name, d.detail['product-denom'].name, d.noSeri )" aria-label="home" >
+                            <button type="button" class="btn btn-icon btn-sm btn-success" (click)="addToCart(d.detail.code, d.detail.vendor.name, d.detail['product-denom'].name, d.noSeri, d.hargass )" aria-label="home" >
                                 <clr-icon shape="plus"></clr-icon>
                             </button>       
                         </ng-template>

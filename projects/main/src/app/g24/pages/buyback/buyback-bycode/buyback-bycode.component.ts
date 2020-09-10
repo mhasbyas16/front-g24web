@@ -136,7 +136,12 @@ export class BuybackBycodeComponent implements OnInit {
       //mulia
       this.isiEmasBatangan =this.detailTransaction.product["LM"]
       for (let isi of this.isiEmasBatangan) {
-        console.debug(isi.detail['product-denom'].name)
+       let hargass = 21323000
+       isi.hargass = hargass
+      //  console.debug(isi,"wews")
+        this.prmJualService.get("?"+this.productCategoryMulia+"&flag=approved"+"&vendor.code="+isi.detail['vendor'].code).subscribe((BBresponse: any) => {
+          console.debug(BBresponse,"wews")
+        })
         
         // console.debug(this.isiEmasBatangan.detail['product-denom'].name , "denom")
         // console.debug(this.isiEmasBatangan.detail['vendor'].name , "vendor")
