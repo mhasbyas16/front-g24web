@@ -4,7 +4,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 
 //service 
-
+import { ProductService } from '../../../services/product/product.service';
 import { ClientService } from '../../../services/client/client.service';
 import { BankService } from '../../../services/transaction/bank.service';
 import { TransactionMethodService } from '../../../services/transaction/transaction-method.service';
@@ -86,6 +86,7 @@ export class CheckoutComponent implements OnInit {
     private transactionBankInstallment: TransactionBankInstallmentService,
     private userService: UserService,
     private transactionFlagService:TransactionFlagService,
+    private productService:ProductService,
     //ng
     private toastr: ToastrService,
     private sessionService: SessionService,
@@ -438,10 +439,15 @@ export class CheckoutComponent implements OnInit {
     
     // data.metodeBayar =
 
-    
+    this.productService.batchUpdate(this.transactionFlagService.batchUpdate()).subscribe((response:any)=>{
+      if (response == false) {
+        console.debug("product flag update failed", this.transactionFlagService.batchUpdate());
+      }
+      
+      console.debug(this.transactionFlagService.batchUpdate(), 'product flaf update success');
+    })
     this.transactionService.add(data).subscribe((response:any)=> {
       if (response != false) {
-        this.transactionFlagService.batchUpdate();
         this.validModel = false;
         this.toastr.success(this.transactionService.message(), "Transaction Success");
         this.checkoutModal = false;
