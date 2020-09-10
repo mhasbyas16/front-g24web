@@ -1,20 +1,20 @@
 <ng-container *ngIf="true">
     <form clrForm class="clr-form-compact">
         <!-- tipe Perhiasan -->
-        <ng-container *ngIf="li.typePerhiasan == 1; else typePerhiasanList">
+        <ng-container *ngIf="li.typeBerlian == 1; else typeBerlianList">
             <clr-input-container>
-                <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">tipe Perhiasan</label>
+                <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">tipe Berlian</label>
                 <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
                 <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">Semua Tipe Perhiasan</label>
             </clr-input-container>
         </ng-container> 
-        <ng-template #typePerhiasanList>
+        <ng-template #typeBerlianList>
             <clr-input-container>
-                <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">tipe Perhiasan</label>
+                <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">tipe Berlian</label>
                 <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
                 <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">
                     <ol class="list">
-                        <li *ngFor="let isi of li.typePerhiasan">{{isi.name}}</li>
+                        <li *ngFor="let isi of li.typeBerlian">{{isi.name}}</li>
                     </ol>
                 </label>
             </clr-input-container>

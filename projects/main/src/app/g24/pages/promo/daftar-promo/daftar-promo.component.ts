@@ -24,12 +24,14 @@ export class DaftarPromoComponent implements OnInit {
   loadingDg: boolean = false;
   actionModal: boolean = false;
   confirmation:boolean = false;
+  confirmModal:boolean = false;
 
   isiPromosi : FormGroup = null;
   search: FormGroup = null;
 
   promotion =[];
   data:any;
+  confirm:any;
 
   modalTitle:any;
   view:any;
@@ -39,7 +41,7 @@ export class DaftarPromoComponent implements OnInit {
   tglMaker:any;
   tglStart:any;
   tglEnd:any;
-  
+  tglApproval:any;
   constructor(
     private promotionSettingService : PromotionSettingService,
     private toastrService : ToastrService,
@@ -180,6 +182,16 @@ export class DaftarPromoComponent implements OnInit {
     tahun = tglSplit["2"];
     bulanTerbilang = this.tanggalService.bulanGenerate(bulan);
     this.tglEnd = hari+' '+bulanTerbilang+' '+tahun;
+
+    // Approval
+    // tanggal Approval
+    tgl =this.data.approvalDate;
+    tglSplit = tgl.split("/");
+    bulan = Number(tglSplit["0"]);
+    hari = tglSplit["1"];
+    tahun = tglSplit["2"];
+    bulanTerbilang = this.tanggalService.bulanGenerate(bulan);
+    this.tglApproval = hari+' '+bulanTerbilang+' '+tahun;
     
 
     console.debug(this.data,"action")
@@ -200,29 +212,58 @@ export class DaftarPromoComponent implements OnInit {
     });
 
     this.isiPromosi.patchValue({_id:id,flag:flag});
-
+    this.confirm = 1;
+    this.confirmModal = true;
     this.confirmation = true;
   }
 
-  confirmationPromotion(){
-
-    if (!this.isiPromosi.valid) {
-      this.toastrService.error("Gagal Mengupdate Promosi");
-      return;
-    }
+  confirmationPromotion(val){
 
     let data = this.isiPromosi.getRawValue();
 
-    this.promotionSettingService.update(data).subscribe((response:any)=>{
-      if (response == false) {
+    if (val == 1) {
+      if (!this.isiPromosi.valid) {
         this.toastrService.error("Gagal Mengupdate Promosi");
         return;
       }
-      this.actionModal = false;
-      this.confirmation = false;
-      this.filterPromotion('name');
-      this.toastrService.success("Sukses Update");
+  
+      this.promotionSettingService.update(data).subscribe((response:any)=>{
+        if (response == false) {
+          this.toastrService.error("Gagal Mengupdate Promosi");
+          return;
+        }
+        this.actionModal = false;
+        this.confirmModal = false;
+        this.confirmation = false;
+        this.filterPromotion('name');
+        this.toastrService.success("Sukses Update");
+      });
+    }else{
+      this.promotionSettingService.delete(data).subscribe((response:any)=>{
+        if (response == false) {
+          this.toastrService.error("Gagal Menghapus Promosi");
+          return;
+        }
+        this.actionModal = false;
+        this.confirmModal = false;
+        this.confirmation = false;
+        this.filterPromotion('name');
+        this.toastrService.success("Sukses Menghapus Data");
+      });
+    }
+    
+  }
+
+  // delete
+  deletePromo(id){
+    console.debug(id);
+    this.isiPromosi = new FormGroup({
+      _id: new FormControl(id)
     });
+    this.modalTitle = "Delete";
+    this.confirm = 2;
+    this.confirmModal = true;
+    this.confirmation = true;
   }
 
   static key = EMenuID.DAFTAR_PROMO;
