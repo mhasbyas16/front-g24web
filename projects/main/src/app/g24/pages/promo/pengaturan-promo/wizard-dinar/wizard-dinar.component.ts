@@ -22,6 +22,8 @@ export class WizardDinarComponent implements OnInit, OnChanges {
   @Input() kuotaProduk:boolean = false;
   @Input() getData:boolean = false;
   @Input() getEditData:any;
+  @Input() promoMargin:boolean = false;
+
 
   jenisPromosi:any;
 

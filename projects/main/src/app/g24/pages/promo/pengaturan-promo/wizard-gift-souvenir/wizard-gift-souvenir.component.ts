@@ -25,6 +25,7 @@ export class WizardGiftSouvenirComponent implements OnInit, OnChanges {
   @Input() getData:boolean = false;
   @Input() tipe:any;
   @Input() getEditData:any;
+  @Input() promoMargin:boolean = false;
 
 
   jenisPromosi:any;

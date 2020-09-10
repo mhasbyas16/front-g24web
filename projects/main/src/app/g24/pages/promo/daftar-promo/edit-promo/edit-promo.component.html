@@ -79,6 +79,15 @@
                     </div>
                 </div>
             </ng-container>
+
+            <!-- budget cost -->
+            <clr-select-container>
+                <label class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2">Biaya Anggaran</label>
+                <select formControlName="budget-cost" class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrSelect (click)="select2BudgetCost($event.target.value)" >
+                    <option disabled selected [value]="">-- Select One --</option>
+                    <option *ngFor="let list of budgetCost" [value]="list._hash">{{list.name}}</option>
+                </select>
+            </clr-select-container>
             
 
             <clr-select-container>
@@ -97,6 +106,7 @@
                 </clr-input-container>
             </ng-container>
 
+            <input type="hidden" formControlName="budget-cost_encoded">
             <!-- <input type="hidden" formControlName="maker">
             <input type="hidden" formControlName="maker_encoded">
             <input type="hidden" formControlName="makerDate">
@@ -112,6 +122,7 @@
         <ng-template clrPageTitle>Setting Produk</ng-template>
         <ng-container *ngIf="perhiasan">
             <app-wizard-perhiasan
+            [promoMargin]="passingPromoMargin"
             [kuotaProduk]="kuotaProduk"
             [getData]="getDataPerhiasan"
             [getEditData]="dataToChild"
@@ -119,6 +130,7 @@
         </ng-container>
         <ng-container *ngIf="berlian">
             <app-wizard-berlian
+            [promoMargin]="passingPromoMargin"
             [kuotaProduk]="kuotaProduk"
             [getData]="getDataBerlian"
             [getEditData]="dataToChild"
@@ -126,6 +138,7 @@
         </ng-container>
         <ng-container *ngIf="dinar">
             <app-wizard-dinar
+            [promoMargin]="passingPromoMargin"
             [kuotaProduk]="kuotaProduk"
             [getData]="getDataDinar"
             [getEditData]="dataToChild"
@@ -133,6 +146,7 @@
         </ng-container>
         <ng-container *ngIf="mulia">
             <app-wizard-mulia
+            [promoMargin]="passingPromoMargin"
             [kuotaProduk]="kuotaProduk"
             [getData]="getDataMulia"
             [getEditData]="dataToChild"
@@ -141,6 +155,7 @@
         
         <ng-container *ngIf="giftSouvenir">
             <app-wizard-gift-souvenir
+            [promoMargin]="passingPromoMargin"
             [kuotaProduk]="kuotaProduk"
             [getData]="getDataGiftSouvenir"
             [getEditData]="dataToChild"

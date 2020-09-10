@@ -24,6 +24,7 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
   @Input() kuotaProduk:boolean = false;
   @Input() getData:boolean = false;
   @Input() getEditData:any;
+  @Input() promoMargin:boolean = false;
   
   // @Input() editData:boolean = false;
 
@@ -339,12 +340,12 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
       this.jenisPerhiasan = data3;
     })
 
+    this.jenisPromosi=[];
     this.promotionTypeService.list("?_hash=1").subscribe((response:any)=>{
       if (response == false) {
         this.toastrService.error("load jenis perhiasan failed");
         return;
       }
-
       this.jenisPromosi = response;
     })
   }

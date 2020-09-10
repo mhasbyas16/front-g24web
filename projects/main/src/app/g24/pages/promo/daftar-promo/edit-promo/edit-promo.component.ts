@@ -17,6 +17,7 @@ import { PromotionSettingService } from '../../../../services/promotion/promotio
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { UnitService } from '../../../../services/system/unit.service';
 import { ProductCategoryService } from '../../../../services/product/product-category.service';
+import { BudgetCostService } from '../../../../services/promotion/budget-cost.service';
 
 
 @Component({
@@ -40,6 +41,7 @@ export class EditPromoComponent implements OnInit {
   editPromosi:boolean = false;
   inputKuota:boolean = false;
   kuotaProduk:boolean = false;
+  passingPromoMargin:boolean = false;
 
   tipeGS:any;
 
@@ -50,6 +52,7 @@ export class EditPromoComponent implements OnInit {
   valueUnit:string[];
   public options:Options;
   public options2:Options;
+  budgetCost:any;
 
   // get data ke child
   getDataPerhiasan:boolean = false;
@@ -76,6 +79,8 @@ export class EditPromoComponent implements OnInit {
     private toastrService: ToastrService,
     private promoService:PromoService,
     private promotionSetiingService : PromotionSettingService,
+    private budgetCostService:BudgetCostService
+
   ) { }
 
   ngOnInit(): void {
@@ -275,6 +280,16 @@ export class EditPromoComponent implements OnInit {
     });
     this.selectKuota(data.typeQuota);
 
+    this.budgetCostService.list('?_hash=1').subscribe((response:any)=>{
+      if (response == false) {
+        this.toastrService.error("Get Budget Cost Failed");
+        return;
+      }
+      this.budgetCost = response;
+      this.section1_edit.patchValue({'budget-cost':data['budget-cost'].code});
+      this.select2BudgetCost(data['budget-cost'].code);
+    })
+
     // units
     let Unit=[];
     let UnitVal = [];
@@ -357,6 +372,16 @@ export class EditPromoComponent implements OnInit {
     }
   }
 
+  select2BudgetCost(val){
+    let isi = JSON.parse(atob(val));
+    if (isi.code == 'promomargin') {
+      this.passingPromoMargin= true;
+      console.debug('promo margin')
+    }else{
+      this.passingPromoMargin = false;
+    }
+  }
+
   select2Product(val){
     if (val == 'pp'){
       this.selectProduct = true;
@@ -391,6 +416,8 @@ export class EditPromoComponent implements OnInit {
       'pickProduct-category' : new FormControl (""),
       typeQuota : new FormControl ("", Validators.required),  
       quota : new FormControl (""),
+      'budget-cost': new FormControl ("", Validators.required),
+      'budget-cost_encoded': new FormControl ("base64")
       // maker : new FormControl (this.nikUser._hash, Validators.required),
       // maker_encoded : new FormControl ("base64"),
       // makerDate: new FormControl(this.datePipe.transform(Date.now(),'MM/dd/yyyy'), Validators.required),

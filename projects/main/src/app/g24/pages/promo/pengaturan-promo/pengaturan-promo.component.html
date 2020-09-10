@@ -103,6 +103,14 @@
                                                 </div>
                                             </ng-container>
                                             
+                                            <!-- budget cost -->
+                                            <clr-select-container>
+                                                <label class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2">Biaya Anggaran</label>
+                                                <select formControlName="budget-cost" class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrSelect (click)="select2BudgetCost($event.target.value)" >
+                                                    <option disabled selected [value]="">-- Select One --</option>
+                                                    <option *ngFor="let list of budgetCost" [value]="list._hash">{{list.name}}</option>
+                                                </select>
+                                            </clr-select-container>
 
                                             <clr-select-container>
                                                 <label class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2">Kuota Promo</label>
@@ -127,6 +135,8 @@
                                             <input type="hidden" formControlName="approval">
                                             <input type="hidden" formControlName="approvalDate">
                                             <input type="hidden" formControlName="approvalTime">
+                                            <input type="hidden" formControlName="budget-cost_encoded">
+                                            
                                         </form>
                                     </clr-wizard-page>
 
@@ -135,24 +145,28 @@
                                         <ng-template clrPageTitle>Setting Produk</ng-template>
                                         <ng-container *ngIf="perhiasan">
                                             <app-wizard-perhiasan
+                                            [promoMargin]="passingPromoMargin"
                                             [kuotaProduk]="kuotaProduk"
                                             [getData]="getDataPerhiasan"
                                             (dataPerhiasan)="getPerhiasan($event)"></app-wizard-perhiasan>
                                         </ng-container>
                                         <ng-container *ngIf="mulia">
                                             <app-wizard-mulia
+                                            [promoMargin]="passingPromoMargin"
                                             [kuotaProduk]="kuotaProduk"
                                             [getData]="getDataMulia"
                                             (dataMulia)="getMulia($event)"></app-wizard-mulia>
                                         </ng-container>
                                         <ng-container *ngIf="berlian">
                                             <app-wizard-berlian
+                                            [promoMargin]="passingPromoMargin"
                                             [kuotaProduk]="kuotaProduk"
                                             [getData]="getDataBerlian"
                                             (dataBerlian)="getBerlian($event)"></app-wizard-berlian>
                                         </ng-container>
                                         <ng-container *ngIf="giftSouvenir">
                                             <app-wizard-gift-souvenir
+                                            [promoMargin]="passingPromoMargin"
                                             [kuotaProduk]="kuotaProduk"
                                             [getData]="getDataGiftSouvenir"
                                             [tipe]="tipeGS"
@@ -160,6 +174,7 @@
                                         </ng-container>
                                         <ng-container *ngIf="dinar">
                                             <app-wizard-dinar
+                                            [promoMargin]="passingPromoMargin"
                                             [kuotaProduk]="kuotaProduk"
                                             [getData]="getDataDinar"
                                             (dataDinar)="getDinar($event)"></app-wizard-dinar>

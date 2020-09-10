@@ -18,6 +18,8 @@ import { ProductPurityService } from '../../../services/product/product-purity.s
 import { ProductJenisService } from '../../../services/product/product-jenis.service';
 import { PromotionSettingService } from '../../../services/promotion/promotion-setting.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
+import { BudgetCostService } from '../../../services/promotion/budget-cost.service';
+
 
 @Component({
   selector: 'app-pengaturan-promo',
@@ -45,6 +47,8 @@ export class PengaturanPromoComponent implements OnInit {
   selectProduct:boolean = false;
   inputKuota:boolean = false;  
   kuotaProduk:boolean = false;
+  passingPromoMargin:boolean = false;
+  budgetCost:any;
 
   // get data ke child
   getDataPerhiasan:boolean = false;
@@ -93,7 +97,8 @@ export class PengaturanPromoComponent implements OnInit {
     private sessionService: SessionService,
     private toastrService: ToastrService,
     private datePipe: DatePipe,
-    private promoService:PromoService
+    private promoService:PromoService,
+    private budgetCostService:BudgetCostService
   ) { }
 
   ngOnInit(): void {
@@ -102,6 +107,7 @@ export class PengaturanPromoComponent implements OnInit {
     this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser))} ;
     this.form();
     this.getUnit();
+    this.getBudgetCost();
     // product category
     let pd = [];
     this.productCategoryService.list('?_hash=1').subscribe((response:any)=>{
@@ -132,6 +138,15 @@ export class PengaturanPromoComponent implements OnInit {
     };
   }
 
+  getBudgetCost(){
+    this.budgetCostService.list('?_hash=1').subscribe((response:any)=>{
+      if (response == false) {
+        this.toastrService.error("Get Budget Cost Failed");
+        return;
+      }
+      this.budgetCost = response;
+    })
+  }
   getUnit(){
     let data = [];
     let unitarry = [];
@@ -155,6 +170,16 @@ export class PengaturanPromoComponent implements OnInit {
     }else{
       this.selectdistro = false;
       console.debug(val,"isi select")
+    }
+  }
+
+  select2BudgetCost(val){
+    let isi = JSON.parse(atob(val));
+    if (isi.code == 'promomargin') {
+      this.passingPromoMargin= true;
+      console.debug('promo margin')
+    }else{
+      this.passingPromoMargin = false;
     }
   }
 
@@ -253,6 +278,8 @@ export class PengaturanPromoComponent implements OnInit {
       approval : new FormControl (""),
       approvalDate: new FormControl(""),
       approvalTime: new FormControl(""),
+      'budget-cost': new FormControl ("", Validators.required),
+      'budget-cost_encoded': new FormControl ("base64")
     });
   }
 

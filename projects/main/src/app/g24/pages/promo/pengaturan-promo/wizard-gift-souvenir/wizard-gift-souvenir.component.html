@@ -82,7 +82,18 @@
                     <label class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">Jenis Promo</label>
                     <select class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrSelect formControlName="typePromotion">
                         <option disabled selected value="">-- select one --</option>
-                        <option *ngFor="let item of jenisPromosi" [value]="item._hash">{{item.name}}</option>
+                        <ng-container *ngFor="let item of jenisPromosi">
+                            <ng-container *ngIf="promoMargin == true; else JP">
+                                <ng-container *ngIf="item.code == 'pt07'">
+                                    <option [value]="item._hash">{{item.name}}</option>
+                                </ng-container>
+                            </ng-container>
+                            <ng-template #JP>
+                                <ng-container *ngIf="item.code != 'pt07'">
+                                    <option [value]="item._hash">{{item.name}}</option>
+                                </ng-container>
+                            </ng-template>
+                        </ng-container>
                     </select>
                 </clr-select-container> 
                 <div class="clr-row">
