@@ -117,4 +117,5 @@ export enum EMenuID {
     //parameter
     PARAMETER             = '20000',
     PRM_GALLERY         = '20001',
+    PRM_GLOBAL         = '20002',
  }

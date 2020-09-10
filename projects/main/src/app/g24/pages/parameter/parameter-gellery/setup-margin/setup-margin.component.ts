@@ -14,9 +14,9 @@ import { TransactionTypeService } from '../../../../services/transaction/transac
 import { ProductCategoryService } from '../../../../services/product/product-category.service';
 import { VendorService } from '../../../../services/vendor.service';
 import { PrmMarginService } from '../../../../services/parameter/prm-margin.service';
-
+import { DateService } from "../../../../services/system/date.service";
 import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
-import { log } from 'console';
+
 
 @Component({
   selector: 'app-setup-margin',
@@ -59,16 +59,22 @@ export class SetupMarginComponent implements OnInit {
   show = false;
   allVendor = null;
   myRole = null;
+  getDataold = null;
 
   // vendorCategory= "product-category.code=c05";
   // category = "?_hash=1&product-category.code=c05";
   // produtCategory = "?_hash=1&product-category.code=c05";
 
+  //datetime
+  timezone = "string";
+  date_now = "string";
+  time = "string";
   // dialog
   modalAddDialog: boolean = false;
   modalEditDialog: boolean = false;
   modalDeleteDialog: boolean = false;
   modalConfirmDialog: boolean = false;
+  modalDetailDialog: boolean = false;
   // select2
   listVendor : Array<Select2OptionData>;
   vendorSelected: Array<any> = [];
@@ -86,6 +92,7 @@ export class SetupMarginComponent implements OnInit {
     private toastrService: ToastrService,
     //session
     private sessionService: SessionService,
+    private dateServices: DateService,
   ) { }
   
   searchModel : any = {margin:"all", productCat: "all", transaction: "all"};
@@ -107,12 +114,21 @@ export class SetupMarginComponent implements OnInit {
     this.nikUser = this.sessionService.getUser();
     this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser)),"nik":this.nikUser["username"]};
     this.myRole = this.sessionService.getRole().name;
-    this.options = {
-      multiple: true,
-      closeOnSelect: false,
-      width: '200',
-      placeholder: 'Please Select the Product Category First'
-    };
+    let params = "?";
+    this.dateServices.task(params).subscribe(output=>{
+      if(output!=false){
+        this.timezone = output;
+        let tgl = this.timezone.split("T");
+          this.date_now = tgl[0];
+          this.time = tgl[1].split("Z")[0];
+      }
+    })
+    // this.options = {
+    //   multiple: true,
+    //   closeOnSelect: false,
+    //   width: '200',
+    //   placeholder: 'Please Select the Product Category First'
+    // };
   }
 
   muter(){
@@ -150,18 +166,19 @@ export class SetupMarginComponent implements OnInit {
   }
 
   onChangeProduct(data){
+    this.getProduct = data;
     if (data == '5ebba05bb980bd24b9201769' || data == '5efc0d5c592e3349d15f05a8') {
       this.show = true;
     }else{
       this.show = false;
     }
-    if (data == null) {
-      this.toastrService.error(this.productCategoryService.message());
-      return;
-    } else {
-      this.getProduct = data;
-      this.loadVendors();
-    }
+    // if (data == null) {
+    //   this.toastrService.error(this.productCategoryService.message());
+    //   return;
+    // } else {
+    //   this.getProduct = data;
+    //   this.loadVendors();
+    // }
   }
 
   loadVendors(){
@@ -199,12 +216,6 @@ export class SetupMarginComponent implements OnInit {
   
     const urlTransaction = "transaction-type.code="+transaction;
     const urlProduct = "product-category.code="+product;
-    
-    // Session
-    // const getUnit = this.sessionService.getUnit();
-    // console.debug(getUnit + "Ini Unit");
-    // this.params = this.params+"&unit.code="+getUnit["code"];
-    // this.params = this.params;
 
     if (transaction != 'all') {
       this.params = this.params+urlTransaction;
@@ -240,10 +251,6 @@ export class SetupMarginComponent implements OnInit {
   mainAddSubmit(){
     if(this.validateInput()) return;
 
-    let now : Date = new Date;
-    let sNow = now.toISOString().split("T");
-    let time = sNow[1].split(".")[0];
-
     //get data channel
     let ch = null;
     for(let i of this.channel){
@@ -267,13 +274,13 @@ export class SetupMarginComponent implements OnInit {
     }
 
     //get data vendor array
-    for(let i of this.allVendor){
-      for(let j of this.inputModel.selectVendor){
-        if (j == i._id) {
-          this.ven.push(i);
-        }
-      }
-    }
+    // for(let i of this.allVendor){
+    //   for(let j of this.inputModel.selectVendor){
+    //     if (j == i._id) {
+    //       this.ven.push(i);
+    //     }
+    //   }
+    // }
       
     let margin = {
       "channel" : ch,
@@ -284,12 +291,12 @@ export class SetupMarginComponent implements OnInit {
       "transaction-type_encoded" : "base64",
       "margin" : parseFloat(this.inputModel.margin),
       "margin_encoded": "double",
-      "vendor" : btoa(JSON.stringify(this.ven)),
-      "vendor_encoded" : "base64array",
+      // "vendor" : btoa(JSON.stringify(this.ven)),
+      // "vendor_encoded" : "base64array",
       "create_by" : this.nikUser["_hash"],
       "create_by_encoded" : "base64",
-      "create_date" : new Date().toISOString().split("T")[0],
-      "create_time" : time,
+      "create_date" : this.date_now,
+      "create_time" : this.time,
       "flag" : "submit",
       "keterangan" : this.inputModel.keterangan,
     }
@@ -307,12 +314,12 @@ export class SetupMarginComponent implements OnInit {
       "margin_batu_encoded": "double",
       "margin_berlian" : parseFloat(this.inputModel.margin_berlian),
       "margin_berlian_encoded": "double",
-      "vendor" : btoa(JSON.stringify(this.ven)),
-      "vendor_encoded" : "base64array",
+      // "vendor" : btoa(JSON.stringify(this.ven)),
+      // "vendor_encoded" : "base64array",
       "create_by" : this.nikUser["_hash"],
       "create_by_encoded" : "base64",
-      "create_date" : new Date().toISOString().split("T")[0],
-      "create_time" : time,
+      "create_date" : this.date_now,
+      "create_time" : this.time,
       "flag" : "submit",
       "keterangan" : this.inputModel.keterangan,
     }
@@ -486,6 +493,26 @@ export class SetupMarginComponent implements OnInit {
     console.debug('submitted data',  margin)
   }
 
+  mainDetail(data){
+    console.debug("dataDetail", data);
+
+    this.prmMarginService.get("?_id="+data._id).subscribe((response) => {
+      if (response == false) {
+        this.toastrService.error(this.prmMarginService.message());
+      }
+    });
+
+    this.inputModel = data;
+    this.inputModel.product_category = data['product-category'].name;
+    this.inputModel.product = data['product-category']._id;
+    this.onChangeProduct(this.inputModel.product);
+    this.inputModel.transaction_type = data['transaction-type'].name;
+    this.inputModel.mychannel = data.channel.name;
+    this.inputModel.keterangan = data.keterangan;
+
+    this.modalDetailDialog = true;
+  }
+
   mainConfirm(data){
     console.debug("dataConfirm", data);
 
@@ -501,42 +528,39 @@ export class SetupMarginComponent implements OnInit {
     this.inputModel.transaction_type = data['transaction-type']._id;
     this.inputModel.mychannel = data.channel._id;
 
-    let productSelect = data['product-category']._id;
-    this.getProduct = productSelect;
+    // let productSelect = data['product-category']._id;
+    // this.getProduct = productSelect;
 
-    this.vendorService.list("?product-category._id="+this.getProduct).subscribe(output =>{
-      let vd =[]
-      for(let data of output){
-        vd.push({id:data._id,text:data.name});
-      }
-      this.listVendor = vd;
-      console.log('listVendor',this.listVendor);
-    });
-    this.tempVendor = data.vendor;
-    let myselect= [];
-    let Selected= [];
+    // this.vendorService.list("?product-category._id="+this.getProduct).subscribe(output =>{
+    //   let vd =[]
+    //   for(let data of output){
+    //     vd.push({id:data._id,text:data.name});
+    //   }
+    //   this.listVendor = vd;
+    //   console.log('listVendor',this.listVendor);
+    // });
+    // this.tempVendor = data.vendor;
+    // let myselect= [];
+    // let Selected= [];
 
-    for (let vs of this.tempVendor){
-      myselect.push(vs._id);
-    }
+    // for (let vs of this.tempVendor){
+    //   myselect.push(vs._id);
+    // }
 
-    Selected = myselect
+    // Selected = myselect
 
-    for (let i = 0; i < myselect.length; i++) {
-      this.vendorSelected.push(myselect);
-    }
-    this.inputModel.selectVendor =  Selected;
-    console.log('vselected',this.inputModel.selectVendor)
+    // for (let i = 0; i < myselect.length; i++) {
+    //   this.vendorSelected.push(myselect);
+    // }
+    // this.inputModel.selectVendor =  Selected;
+    // console.log('vselected',this.inputModel.selectVendor)
 
     this.modalConfirmDialog = true;
   }
+
   //submitapprove
   mainApproveSubmit() {
     if(this.validateInput()) return;
-
-    let now : Date = new Date;
-    let sNow = now.toISOString().split("T");
-    let time = sNow[1].split(".")[0];
       
     let margin = {
       "_id" : this.inputModel._id,
@@ -545,8 +569,8 @@ export class SetupMarginComponent implements OnInit {
       "keterangan" : this.inputModel.keterangan,
       "approve_by" : this.nikUser["_hash"],
       "approve_by_encoded" : "base64",
-      "approve_date" : new Date().toISOString().split("T")[0],
-      "approve_time" : time,
+      "approve_date" : this.date_now,
+      "approve_time" : this.time,
       "flag" : "approved",
     }
 
@@ -561,8 +585,8 @@ export class SetupMarginComponent implements OnInit {
       "keterangan" : this.inputModel.keterangan,
       "approve_by" : this.nikUser["_hash"],
       "approve_by_encoded" : "base64",
-      "approve_date" : new Date().toISOString().split("T")[0],
-      "approve_time" : time,
+      "approve_date" : this.date_now,
+      "approve_time" : this.time,
       "flag" : "approved",
     }
 
@@ -572,26 +596,55 @@ export class SetupMarginComponent implements OnInit {
     } else {
       tempSave = margin;
     }
-    
+
+    //get data approve lama
     this.spinner = true;
-    this.prmMarginService.update(tempSave).subscribe((response) => {
-      if (response == false) {
-        this.toastrService.error('Approved Failed')
-        return
+    this.prmMarginService.get("?flag=approved&product-category._id="+this.inputModel.product_category).subscribe((out) => {
+      this.getDataold = out._id;
+
+      if (out == false){
+        this.prmMarginService.update(tempSave).subscribe((response1) => {
+          if (response1 == false) {
+            this.toastrService.error('Approved Failed')
+            return
+          }
+          this.spinner = false;
+          this.modalConfirmDialog = false;
+          this.toastrService.success('Approved Success')
+          return
+        })
+      }else{
+        let histori = {
+          "_id" : this.getDataold,
+          "expired_date" : this.date_now,
+          "expired_time" : this.time,
+          "flag" : "expired",
+        }
+  
+        //ubah data lama menjadi histori
+        this.prmMarginService.update(histori).subscribe((response) => {
+          if (response == false) {
+            this.toastrService.error('Update Existing Failed')
+            return
+          }
+          this.prmMarginService.update(tempSave).subscribe((response1) => {
+            if (response1 == false) {
+              this.toastrService.error('Approved Failed')
+              return
+            }
+            this.spinner = false;
+            this.modalConfirmDialog = false;
+            this.toastrService.success('Approved Success')
+          })
+        })
+        console.debug('submitted data',  tempSave)
+        console.debug('submitted data',  histori)
       }
-      this.spinner = false;
-      this.modalConfirmDialog = false;
-      this.toastrService.success('Approved Success')
-    });
-    console.log("submitted data", tempSave);
+    })
   }
 
   mainDeclineSubmit() {
     if(this.validateInput()) return;
-
-    let now : Date = new Date;
-    let sNow = now.toISOString().split("T");
-    let time = sNow[1].split(".")[0];
 
     let margin = {
       "_id" : this.inputModel._id,
@@ -600,8 +653,8 @@ export class SetupMarginComponent implements OnInit {
       "keterangan" : this.inputModel.keterangan,
       "decline_by" : this.nikUser["_hash"],
       "decline_by_encoded" : "base64",
-      "decline_date" : new Date().toISOString().split("T")[0],
-      "decline_time" : time,
+      "decline_date" : this.date_now,
+      "decline_time" : this.time,
       "flag" : "declined",
     }
 
@@ -616,8 +669,8 @@ export class SetupMarginComponent implements OnInit {
       "keterangan" : this.inputModel.keterangan,
       "decline_by" : this.nikUser["_hash"],
       "decline_by_encoded" : "base64",
-      "decline_date" : new Date().toISOString().split("T")[0],
-      "decline_time" : time,
+      "decline_date" : this.date_now,
+      "decline_time" : this.time,
       "flag" : "declined",
     }
 

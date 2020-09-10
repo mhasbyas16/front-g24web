@@ -12,9 +12,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NavModule } from '../../nav/nav.module';
 import { DatePipe } from '@angular/common';
 import { NgSelect2Module } from "ng-select2";
+import { ParameterGlobalComponent } from './parameter-global/parameter-global.component';
 
 @NgModule({
-  declarations: [ParameterGelleryComponent, SetupHargaComponent, SetupMarginComponent],
+  declarations: [ParameterGelleryComponent, SetupHargaComponent, SetupMarginComponent, ParameterGlobalComponent],
   imports: [
     CommonModule,
     ClarityModule,

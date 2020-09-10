@@ -73,6 +73,7 @@ export class ParameterGelleryComponent implements OnInit {
   modalEditDialog: boolean = false;
   modalDeleteDialog: boolean = false;
   modalConfirmDialog: boolean = false;
+  modalDetailDialog: boolean = false;
   // dialog  form
   form: FormGroup = null;
 
@@ -296,22 +297,37 @@ export class ParameterGelleryComponent implements OnInit {
     console.debug('submitted data',  prmJual)
   }
 
-    mainConfirm(data) {
-      console.debug("dataConfirm", data);
+  mainDetail(data) {
+    console.debug("dataDetail", data);
 
-      this.inputModel = data;
-      this.harga = this.inputModel.harga;
-      // console.log('rego',this.harga);
-      this.inputModel.selectProduct = data['product-category'].name;
-      this.inputModel.selectVendor = data['vendor'].name;
-      this.inputModel.selectP = data['product-category'].code;
-      this.inputModel.selectV = data['vendor'].code;
-      this.inputModel.jenis_barang = data.jenis_barang;
-      this.inputModel.keterangan = data.keterangan;
-      // this.onChange(this.inputModel.selectProduct);
+    this.inputModel = data;
+    this.harga = this.inputModel.harga;
+    // console.log('rego',this.harga);
+    this.inputModel.selectProduct = data['product-category'].name;
+    this.inputModel.selectVendor = data['vendor'].name;
+    this.inputModel.jenis_barang = data.jenis_barang;
+    this.inputModel.keterangan = data.keterangan;
+    // this.onChange(this.inputModel.selectProduct);
 
-      this.modalConfirmDialog = true;
-    }
+    this.modalDetailDialog = true;
+  }
+
+  mainConfirm(data) {
+    console.debug("dataConfirm", data);
+
+    this.inputModel = data;
+    this.harga = this.inputModel.harga;
+    // console.log('rego',this.harga);
+    this.inputModel.selectProduct = data['product-category'].name;
+    this.inputModel.selectVendor = data['vendor'].name;
+    this.inputModel.selectP = data['product-category'].code;
+    this.inputModel.selectV = data['vendor'].code;
+    this.inputModel.jenis_barang = data.jenis_barang;
+    this.inputModel.keterangan = data.keterangan;
+    // this.onChange(this.inputModel.selectProduct);
+
+    this.modalConfirmDialog = true;
+  }
 
   mainApproveSubmit() {
     if(this.validateInput()) return;

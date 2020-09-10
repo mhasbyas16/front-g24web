@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from "ngx-toastr";
-import {FormGroup, Validators, FormControl } from '@angular/forms';
+import { trigger, transition, animate, style } from '@angular/animations'
+import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 //Session
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
@@ -16,8 +17,22 @@ import { DateService } from "../../../../services/system/date.service";
 @Component({
   selector: 'app-setup-harga',
   templateUrl: './setup-harga.component.html',
-  styleUrls: ['./setup-harga.component.scss']
+  styleUrls: ['./setup-harga.component.scss'],
+
+  animations: [
+    trigger('slideInOut', [
+      transition(':enter', [
+        style({transform: 'translateY(-100%)'}),
+        animate('500ms ease-in', style({transform: 'translateY(0%)'}))
+      ]),
+      transition(':leave', [
+        animate('500ms ease-in', style({transform: 'translateY(-100%)'}))
+      ])
+    ])
+  ]
+
 })
+
 export class SetupHargaComponent implements OnInit {
 
   //title
@@ -39,7 +54,9 @@ export class SetupHargaComponent implements OnInit {
   tempProduct = null;
   findProduct = null;
   myRole = null;
-  getDataold =null;
+  getDataold = null;
+  getProduct = null;
+  show = false;
   //params
   params = null;
   vendorCategory= "product-category.code=c00";
@@ -54,6 +71,7 @@ export class SetupHargaComponent implements OnInit {
   modalEditDialog: boolean = false;
   modalDeleteDialog: boolean = false;
   modalConfirmDialog: boolean = false;
+  modalDetailDialog: boolean = false;
   // dialog  form
   form: FormGroup = null;
   constructor(
@@ -122,6 +140,15 @@ export class SetupHargaComponent implements OnInit {
         this.product = response;
       }
     });
+  }
+
+  onChangeProduct(data){
+    this.getProduct = data;
+    if (data == '5ebba05bb980bd24b9201769') {
+      this.show = true;
+    }else{
+      this.show = false;
+    }
   }
 
   onDataGrid(data){
@@ -283,6 +310,23 @@ export class SetupHargaComponent implements OnInit {
       this.toastrService.success('Delete Success');
     })
     console.debug('submitted data',  setup)
+  }
+
+  mainDetail(data) {
+    console.debug("dataConfirm", data);
+
+    this.prmJualService.get("?_id="+data._id).subscribe((response) => {
+      if (response == false) {
+        this.toastrService.error(this.prmJualService.message());
+      }
+    });
+
+    this.inputModel = data;
+    this.inputModel.productSelect = data['product-category'].name;
+    this.inputModel.harga_buyback = data.harga_buyback;
+    this.inputModel.harga_baku = data.harga_baku;
+    this.inputModel.keterangnan = data.keterangan;
+    this.modalDetailDialog = true;
   }
 
   mainConfirm(data) {

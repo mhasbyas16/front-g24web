@@ -1,0 +1,41 @@
+<div class="clr-row">
+    <div class="card" style="margin-top: 0em;">
+        <div class="card-header">
+            Parameter Harga
+        </div>
+        <div class="card-block">
+            <div class="card-text">
+                <div  class="clr-col-12"><br></div>
+                <ng-container>
+                    <button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus"></clr-icon></button>
+                </ng-container>
+
+                <div class="clr-col-sm-12 clr-col-md-12 clr-col-lg-12"></div>
+                <clr-datagrid [clrDgLoading]="loadingDg">
+                    <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
+                    <clr-dg-column>Code</clr-dg-column>
+                    <clr-dg-column>Value</clr-dg-column>
+                    <clr-dg-column>Keterangan</clr-dg-column>
+
+                    <clr-dg-row *clrDgItems="let data of dataList">
+                        <clr-dg-action-overflow>
+                            <button class="action-item" (click)="mainEdit(data)">Edit</button>
+                            <button class="action-item" (click)="mainDetail(data)">Detail</button>
+                        </clr-dg-action-overflow>
+                        <clr-dg-cell hidden>{{data._id}}</clr-dg-cell>
+                        <clr-dg-cell [style.width.px]="100">{{data.code}}</clr-dg-cell>
+                        <clr-dg-cell [style.width.px]="100">{{data.amount}}</clr-dg-cell>
+                        <clr-dg-cell [style.width.px]="100">{{data.keterangan}}</clr-dg-cell>
+                    </clr-dg-row>
+                    <clr-dg-footer>
+                        <clr-dg-pagination #pagination [clrDgPageSize]="5">
+                            <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Data per page</clr-dg-page-size>
+                            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                            of {{pagination.totalItems}} Data
+                        </clr-dg-pagination>
+                    </clr-dg-footer>
+                </clr-datagrid>
+            </div>
+        </div>
+    </div>
+</div>
