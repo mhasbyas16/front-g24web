@@ -13,7 +13,7 @@ import { TransactionService } from '../../../services/transaction/transaction.se
 import { TransactionEdcTypeService } from '../../../services/transaction/transaction-edc-type.service';
 import { TransactionCardTypeService } from '../../../services/transaction/transaction-card-type.service';
 import { TransactionBankInstallmentService } from '../../../services/transaction/transaction-bank-installment.service';
-
+import { TransactionFlagService } from '../../../services/transaction/transaction-flag.service';
 // session service
 import { UserService } from 'projects/platform/src/app/services/security/user.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
@@ -85,7 +85,7 @@ export class CheckoutComponent implements OnInit {
     private transactionCardType: TransactionCardTypeService,
     private transactionBankInstallment: TransactionBankInstallmentService,
     private userService: UserService,
-
+    private transactionFlagService:TransactionFlagService,
     //ng
     private toastr: ToastrService,
     private sessionService: SessionService,
@@ -441,6 +441,7 @@ export class CheckoutComponent implements OnInit {
     
     this.transactionService.add(data).subscribe((response:any)=> {
       if (response != false) {
+        this.transactionFlagService.batchUpdate();
         this.validModel = false;
         this.toastr.success(this.transactionService.message(), "Transaction Success");
         this.checkoutModal = false;

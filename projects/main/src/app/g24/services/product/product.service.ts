@@ -30,6 +30,10 @@ export class ProductService {
     return this.commonService.update(this.key, data);
   }
 
+  batchUpdate(data){
+    return this.commonService.batchUpdate(this.key, data);
+  }
+
   add(data) {
     return this.commonService.add(this.key, data);
   }
