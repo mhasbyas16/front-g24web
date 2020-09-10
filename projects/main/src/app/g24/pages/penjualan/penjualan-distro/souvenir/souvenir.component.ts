@@ -50,12 +50,13 @@ export class SouvenirComponent implements OnInit {
   total = 0;
   selected: any[] = [];
 
-  //category
-  vendorCategory = "product-category.code=c02";
+  //params
+  souvenirCategory = "product-category.code=c02";
   category = "?_hash&product-category.code=c02";
-
-   //params
-   params = null;
+  params = null;
+  channel = "channel.code=ch02";
+  transactionType = "transaction-type.code=t01";
+  flagApp = "flag=approved";
 
   constructor(
   //app
@@ -92,7 +93,7 @@ export class SouvenirComponent implements OnInit {
     // this.checkProduct();
   }
   onListVendor(){
-    this.vendorService.list("?_hash=1&"+this.vendorCategory).subscribe((response: any) => {
+    this.vendorService.list("?_hash=1&"+this.souvenirCategory).subscribe((response: any) => {
       if (response != false) {
         this.vendors = response;
         this.vendors.sort(function (a, b) {
@@ -171,17 +172,17 @@ export class SouvenirComponent implements OnInit {
           console.debug(this.souvenirs[0].ongkos_pieces , "ongkos")
           this.productService.count(this.params).subscribe((response: any) => {
             this.qty = response.count;
-            this.prmJualService.list(this.category).subscribe((Jualresponse: any) => {
+            this.prmJualService.get("?"+this.souvenirCategory+"&"+this.flagApp).subscribe((Jualresponse: any) => {
               let prmJual = Jualresponse;
               
-              console.debug(prmJual[0]['harga_baku'],'hargabaku')
-              this.prmMarginService.list("?"+this.vendorCategory).subscribe((Marginresponse: any) => {
+              // console.debug(prmJual[0]['harga_baku'],'hargabaku')
+              this.prmMarginService.get("?"+this.souvenirCategory+"&"+this.flagApp).subscribe((Marginresponse: any) => {
                 let prmMargin = Marginresponse
-                console.debug(prmMargin[0].margin,'margin')
+               
                 this.prmPpnService.list().subscribe((PPNresponse: any) => {
                   let ppn = PPNresponse
                   
-                  let hargaSouvenir = this.pricingService.priceSouvenir((prmJual[0]['harga_baku']), Number(prmMargin[0].margin), Number(this.souvenirs[0]['product-denom'].value), Number(ppn[0].ppn), this.souvenirs[0].ongkos_pieces);
+                  let hargaSouvenir = this.pricingService.priceSouvenir((prmJual['harga_baku']), Number(prmMargin.margin), Number(this.souvenirs[0]['product-denom'].value), Number(ppn[0].ppn), this.souvenirs[0].ongkos_pieces);
                   hargaSouvenir =  Math.ceil(hargaSouvenir/1000)*1000;
                   console.debug( hargaSouvenir,'hargaSouvenir')
                   cariSouvenir.push({

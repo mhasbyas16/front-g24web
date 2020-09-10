@@ -2,6 +2,17 @@
     <div class="clr-row">
         <div class="clr-col-4">
             <clr-select-container class="clr-form-control">
+                <label class="clr-control-label">Vendor</label>
+                <select [(ngModel)]="searchModel.vendors" clrSelect name="input_vendor_dinar" ngModel>
+                    <option  value="pilih" >Pilih Vendor</option>
+                    <ng-container *ngFor="let vendor of vendors">
+                        <option value="{{vendor.code}}">{{vendor.name}}</option>
+                    </ng-container>
+                </select>
+            </clr-select-container>
+        </div>
+        <div class="clr-col-3">
+            <clr-select-container class="clr-form-control">
                 <label class="clr-control-label">Denom</label>
                 <select [(ngModel)]="searchModel.denoms" clrSelect name="input_denom_dinar" ngModel>
                     <option value="pilih">Pilih Denom</option>

@@ -48,11 +48,15 @@ export class DinarComponent implements OnInit {
   selected: any[] = [];
 
   //category
-  vendorCategory = "product-category.code=c06";
+  dinarCategory = "product-category.code=c06";
   category = "?_hash&product-category.code=c06";
 
    //params
-   params = null;
+  params = null;
+  channel = "channel.code=ch02";
+  transactionType = "transaction-type.code=t01";
+  flagApp = "flag=approved";
+  jenisBarang = "jenis_barang=Jual";
 
 
   constructor(
@@ -80,6 +84,7 @@ export class DinarComponent implements OnInit {
 
   ngOnInit(): void {
     this.onListDenom();
+    this.onListVendor();
   }
 
   onListDenom(){
@@ -94,11 +99,24 @@ export class DinarComponent implements OnInit {
       }      
     });
   }
+
+  onListVendor(){
+    this.vendorService.list("?_hash=1&"+this.dinarCategory).subscribe((response: any) => {
+      if (response != false) {
+        this.vendors = response;
+        this.vendors.sort(function (a, b) {
+          if (a.name < b.name) { return -1; }
+          if (a.name > b.name) { return 1; }
+          return 0;
+        })
+      }      
+    });
+  }
   onCariDinar(data){
     this.loadingDg = true;
    
     let denom = data.input_denom_dinar;
-    
+    let vendor = data.input_vendor_dinar;
     let cariDinar : any[] = [];
 
     let harga = 2000000;
@@ -106,8 +124,9 @@ export class DinarComponent implements OnInit {
     console.debug(denom, "denomnya")
 
     const urlDenom = "product-denom.code="+denom;
+    const urlVendor = "vendor.code="+vendor;
     this.params = this.category;
-    this.params = this.params+"&"+urlDenom;
+    this.params = this.params+"&"+urlDenom+"&"+urlVendor
     if (denom == "pilih") {
       this.toastrService.error("Pilih Denom Terlebih Dahulu");
       this.loadingDg = false;
@@ -127,23 +146,16 @@ export class DinarComponent implements OnInit {
         this.dinars = response
         this.productService.count(this.params).subscribe((response: any) => {
           this.qty = response.count;
-          this.prmJualService.get("?"+this.vendorCategory).subscribe((Jualresponse: any) => {
+          this.prmJualService.get("?"+this.dinarCategory+"&"+this.flagApp+"&"+this.jenisBarang).subscribe((Jualresponse: any) => {
             let prmJual = Jualresponse.harga
             for (let index = 0; index < prmJual.length; index++) {
               if (prmJual[index]["product-denom"].code == denom) {
                 this.hargaBaku = prmJual[index].harga_baku
               }
             }
-            console.debug(this.hargaBaku,"hargaBaku")
-            console.debug(prmJual, "wewe")
-            this.prmMarginService.list("?"+this.vendorCategory).subscribe((Marginresponse: any) => {
+            this.prmMarginService.get("?"+this.dinarCategory+"&"+this.channel+"&"+this.transactionType+"&"+this.flagApp).subscribe((Marginresponse: any) => {
               let prmMargin = Marginresponse
-
-              console.debug(this.dinars,"din")
-              console.debug(prmJual,"jual")
-              console.debug(prmMargin,"marg")
-
-              let hargaDinar = this.pricingService.priceDinar(this.hargaBaku, Number(prmMargin[0].margin));
+              let hargaDinar = this.pricingService.priceDinar(this.hargaBaku, Number(prmMargin.margin));
               hargaDinar = Math.ceil(hargaDinar/1000)*1000;
                 cariDinar.push({
                   "vendor" : this.dinars[0].vendor.name,

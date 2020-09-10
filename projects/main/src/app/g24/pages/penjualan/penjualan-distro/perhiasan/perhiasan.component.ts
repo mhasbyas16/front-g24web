@@ -41,8 +41,12 @@ export class PerhiasanComponent implements OnInit {
 
   //params
   params = null;
-  vendorCategory= "product-category.code=c00";
+  perhiasanCategory= "product-category.code=c00";
   category = "?_hash=1&product-category.code=c00&flag=stock";
+  flagApp = "flag=approved";
+
+  channel = "channel.code=ch02";
+  transactionType = "transaction-type.code=t01";
 
   //parameter
   margin = null;
@@ -81,7 +85,7 @@ export class PerhiasanComponent implements OnInit {
   }
 
   onListVendor(){
-    this.vendorService.list("?_hash=1&"+this.vendorCategory).subscribe((response: any) => {
+    this.vendorService.list("?_hash=1&"+this.perhiasanCategory).subscribe((response: any) => {
       if (response != false) {
         this.vendors = response;
       }      
@@ -151,7 +155,7 @@ export class PerhiasanComponent implements OnInit {
         }  
         this.perhiasans = response;
         // pricing
-        this.prmJualService.get("?"+this.vendorCategory+"&flag=approved").subscribe((Jualresponse: any) => {
+        this.prmJualService.get("?"+this.perhiasanCategory+"&"+this.flagApp).subscribe((Jualresponse: any) => {
           if (Jualresponse != false) {
             this.hargaBaku = Jualresponse.harga_baku;
           }
@@ -159,7 +163,7 @@ export class PerhiasanComponent implements OnInit {
             if (PPNresponse != false) {
               ppn = PPNresponse['0']['ppn']; 
             }      
-            this.prmMarginService.get("?"+this.vendorCategory).subscribe((Marginresponse: any) => {
+            this.prmMarginService.get("?"+this.perhiasanCategory+"&"+this.channel+"&"+this.transactionType).subscribe((Marginresponse: any) => {
               if (Marginresponse != false) {
                 this.margin = Marginresponse;
               }      
