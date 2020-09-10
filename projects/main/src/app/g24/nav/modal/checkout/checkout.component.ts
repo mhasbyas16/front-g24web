@@ -14,6 +14,8 @@ import { TransactionEdcTypeService } from '../../../services/transaction/transac
 import { TransactionCardTypeService } from '../../../services/transaction/transaction-card-type.service';
 import { TransactionBankInstallmentService } from '../../../services/transaction/transaction-bank-installment.service';
 import { TransactionFlagService } from '../../../services/transaction/transaction-flag.service';
+import { TransactionTypeService } from '../../../services/transaction/transaction-type.service';
+
 // session service
 import { UserService } from 'projects/platform/src/app/services/security/user.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
@@ -87,6 +89,7 @@ export class CheckoutComponent implements OnInit {
     private userService: UserService,
     private transactionFlagService:TransactionFlagService,
     private productService:ProductService,
+    private transactionTypeService:TransactionTypeService,
     //ng
     private toastr: ToastrService,
     private sessionService: SessionService,
@@ -183,6 +186,8 @@ export class CheckoutComponent implements OnInit {
       periodePayment: new FormControl (""),
       idAi: new FormControl ("", Validators.required),
       namaPemasar: new FormControl (this.nikUser["name"]),
+      'transaction-type' : new FormControl ("", Validators.required),
+      'transaction-type_encoded' : new FormControl ("base64"),
     });
     
     for (let isi of LM) {
@@ -196,6 +201,7 @@ export class CheckoutComponent implements OnInit {
 
     this.idTransaksi();
     this.getUnit();
+    this.getTransactionType();
     //
     this.P = this.perhiasan.length;
     this.logam = this.lm.length;
@@ -209,6 +215,13 @@ export class CheckoutComponent implements OnInit {
     this.getBank(); 
     this.getTransactionMethod();   
     this.getTransactionBankMethod();
+  }
+  getTransactionType(){
+    this.transactionTypeService.get("?_hash=1&code=t01").subscribe((response:any)=>{
+      if (response != false) {
+        this.formData.patchValue({'transaction-type':response["_hash"]});
+      }
+    })
   }
 
   getNikPemasar(){
@@ -424,14 +437,8 @@ export class CheckoutComponent implements OnInit {
     // 
     data.product = btoa(JSON.stringify({PERHIASAN,LM,BERLIAN,GS,DINAR})) ;
     data.product_encoded = "base64";
-    data["transaction-type"] = btoa(JSON.stringify({
-      "code" : "t01",
-      "name" : "Penjualan Tunai Cash and Carry",
-      "status" : 1
-    }));
     let nomT = data["nominalTransaksi"] 
     data["nominalTransaksi"] = nomT.replace(/,/g, '')
-    data["transaction-type_encoded"]= "base64";
     delete data["cif"];
     delete data["namaPemasar"];
     delete data["nik"];
