@@ -280,13 +280,19 @@ export class EditPromoComponent implements OnInit {
     });
     this.selectKuota(data.typeQuota);
 
+    let bcs=[];
     this.budgetCostService.list('?_hash=1').subscribe((response:any)=>{
       if (response == false) {
         this.toastrService.error("Get Budget Cost Failed");
         return;
       }
-      this.budgetCost = response;
-      this.section1_edit.patchValue({'budget-cost':data['budget-cost'].code});
+      for (let isi of response ) {
+        bcs.push(isi)
+        if (isi.code == data['budget-cost'].code) {
+          this.section1_edit.patchValue({'budget-cost':isi._hash});
+        }
+      }
+      this.budgetCost = bcs;
       this.select2BudgetCost(data['budget-cost'].code);
     })
 
