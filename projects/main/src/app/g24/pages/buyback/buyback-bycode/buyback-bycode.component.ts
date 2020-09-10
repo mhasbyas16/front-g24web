@@ -10,6 +10,7 @@ import { TransactionService } from '../../../services/transaction/transaction.se
 
 import { TanggalService } from '../../../lib/helper/tanggal.service';
 import { PrmJualService } from '../../../services/parameter/prm-jual.service';
+import { PricingService } from '../../../services/pricing.service';
 
 
 @Component({
@@ -75,11 +76,16 @@ export class BuybackBycodeComponent implements OnInit {
   totalIsiCartDinarBBC: any = 0
 
   productCategoryMulia= "product-category.code=c05";
+  productCategoryBerlian= "product-category.code=c01";
+  productCategorySouvenir= "product-category.code=c02";
+  productCategoryDinar= "product-category.code=c06";
+
   jenisBarang = "jenis_barang=Buyback";
 
   constructor(
     private toastrService:ToastrService,
     private transactionService: TransactionService,
+    private pricingService: PricingService,
     // private sessionService: SessionService,
     private tanggalService:TanggalService,
     private prmJualService: PrmJualService
@@ -138,28 +144,29 @@ export class BuybackBycodeComponent implements OnInit {
       this.isiEmasBatangan =this.detailTransaction.product["LM"]
       let hargaBBEmas : any[];
       for (let isi of this.isiEmasBatangan) {
-
         this.prmJualService.get("?"+this.productCategoryMulia+"&flag=approved"+"&vendor.code="+isi.detail['vendor'].code+"&"+this.jenisBarang).subscribe((BBresponse: any) => {
           hargaBBEmas = BBresponse.harga
           for (let index = 0; index < hargaBBEmas.length; index++) {
-            if (hargaBBEmas[index]["product-denom"].code == isi.detail['product-denom']) {
-              // this.hargaBaku = prmJual[index].harga_baku
+            if (hargaBBEmas[index]["product-denom"].code == isi.detail['product-denom'].code) {
+              isi.hargaBB = hargaBBEmas[index]['harga_baku']
             }
         }
         })
-        
-        // console.debug(this.isiEmasBatangan.detail['product-denom'].name , "denom")
-        // console.debug(this.isiEmasBatangan.detail['vendor'].name , "vendor")
-        // this.prmJualService.get("?"+this.productCategoryMulia+"&flag=approved"+"&vendor=").subscribe((BBresponse: any) => {
-          
-        // })
-        
       } 
       this.totalIsiEmasBatangan=  this.isiEmasBatangan.length
 
       //berlian
       this.isiBerlian =this.detailTransaction.product["BERLIAN"] 
+      let BBBerlian : any;
+      for (let isi of this.isiBerlian) {
+        this.prmJualService.get("?"+this.productCategoryBerlian+"&flag=approved").subscribe((BBresponse: any) => {
+          BBBerlian = BBresponse
+          this.hargaBB = this.pricingService.buybackPriceBerlian(BBBerlian.harga_buyback, isi['detail'].berat, isi['detail']['product-purity'].name, BBBerlian.potongan_bb_batu, BBBerlian.potongan_bb_berlian, isi['detail'].hppBatu, isi['detail'].hppBerlian   )
+          isi.hargaBB = this.hargaBB
+        })
+      } 
       this.totalIsiBerlian=  this.isiBerlian.length
+      
 
       //souvenir
       this.isiSouvenir =this.detailTransaction.product["GS"] 

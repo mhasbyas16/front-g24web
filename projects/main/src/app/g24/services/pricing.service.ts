@@ -69,4 +69,13 @@ export class PricingService {
     console.debug(hargaBBPerhiasan, "wew")
     return hargaBBPerhiasan
   }
+
+  buybackPriceBerlian(hargaBB: any, berat: any, kadar: any, potBbBatu: any, potBbBerlian: any, hppBBBatu: any, hppBBBerlian: any){
+    let hargaBBBerlian = 0
+
+    hargaBBBerlian = ( (Number(hargaBB) * Number(berat) * Number(kadar) / 1000) + (Number(hppBBBatu) * (100-potBbBatu)/100) + (Number(hppBBBerlian) * (100-potBbBerlian)/100) )
+    hargaBBBerlian = Math.floor(hargaBBBerlian/10000)*10000
+   
+    return hargaBBBerlian
+  }
 }
