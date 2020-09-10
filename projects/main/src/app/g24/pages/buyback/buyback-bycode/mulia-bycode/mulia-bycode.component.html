@@ -17,7 +17,7 @@
                     <clr-dg-cell>{{d.detail['product-denom'].name}}</clr-dg-cell>
                     <clr-dg-cell>{{d.noSeri}}</clr-dg-cell>
                     <clr-dg-cell>
-                        {{d.hargass}}
+                        Rp. {{d.hargaBB | number}}
                     </clr-dg-cell>
                     <clr-dg-cell><span style="float: right;">
                         <ng-container *ngIf="cekItemArray(d.detail.code) == true; else plus">
