@@ -58,6 +58,8 @@ export class DinarComponent implements OnInit {
   flagApp = "flag=approved";
   jenisBarang = "jenis_barang=Jual";
 
+  flagBarang = "flag=stock";
+
 
   constructor(
       //app
@@ -131,7 +133,7 @@ export class DinarComponent implements OnInit {
       this.toastrService.error("Pilih Denom Terlebih Dahulu");
       this.loadingDg = false;
     }else{
-      this.productService.list(this.params).subscribe((response: any) => {
+      this.productService.list(this.params+"&"+this.flagBarang).subscribe((response: any) => {
         this.datadinars = null
         if (response == false) {
           this.toastrService.error("Data Not Found", "Dinar");
@@ -144,7 +146,7 @@ export class DinarComponent implements OnInit {
           return;
         }
         this.dinars = response
-        this.productService.count(this.params).subscribe((response: any) => {
+        this.productService.count(this.params+"&"+this.flagBarang).subscribe((response: any) => {
           this.qty = response.count;
           this.prmJualService.get("?"+this.dinarCategory+"&"+this.flagApp+"&"+this.jenisBarang).subscribe((Jualresponse: any) => {
             let prmJual = Jualresponse.harga
@@ -191,7 +193,7 @@ export class DinarComponent implements OnInit {
       let codeDinar = this.cartList.map(el => el.code);
       let cekItem : any;
       
-      this.productService.list(params).subscribe((response: any) => {
+      this.productService.list(params+"&"+this.flagBarang).subscribe((response: any) => {
         dn = response
         let udahDiCart = 0;
         console.debug(dn, 'awal')
