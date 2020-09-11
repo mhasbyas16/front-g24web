@@ -70,12 +70,23 @@ export class PricingService {
     return hargaBBPerhiasan
   }
 
-  buybackPriceBerlian(hargaBB: any, berat: any, kadar: any, potBbBatu: any, potBbBerlian: any, hppBBBatu: any, hppBBBerlian: any){
+  buybackPriceBerlian(hargaBB: any, berat: any, kadar: any, potBbBerlian : any, potBbBatu: any, hppBBBatu: any, hppBBBerlian: any){
     let hargaBBBerlian = 0
 
     hargaBBBerlian = ( (Number(hargaBB) * Number(berat) * Number(kadar) / 1000) + (Number(hppBBBatu) * (100-potBbBatu)/100) + (Number(hppBBBerlian) * (100-potBbBerlian)/100) )
     hargaBBBerlian = Math.floor(hargaBBBerlian/10000)*10000
-   
+    console.debug(hargaBB, "hargaBB")
+    console.debug(berat, "berat")
+    console.debug(kadar, "kadar")
+    console.debug(potBbBatu, "potBbBatu")
+    console.debug(potBbBerlian, "potBbBerlian")
+    console.debug(hppBBBatu, "hppBBBatu")
+    console.debug(hppBBBerlian, "hppBBBerlian")
+    console.debug(hargaBBBerlian, "hargaBBBerlian")
+    let cek1 =  (Number(hargaBB) * Number(berat) * Number(kadar) / 1000)
+    let cek2 = (Number(hppBBBatu) * (100-potBbBatu)/100)
+    console.debug(cek1, "cek1")
+    console.debug(cek2, "cek2")
     return hargaBBBerlian
   }
 }

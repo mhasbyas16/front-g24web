@@ -172,7 +172,7 @@ export class BuybackBycodeComponent implements OnInit {
       this.isiSouvenir =this.detailTransaction.product["GS"] 
       this.totalIsiSouvenir=  this.isiSouvenir.length
 
-       //souvenir
+       //dinar
        this.isiDinar =this.detailTransaction.product["DINAR"] 
        this.totalIsiDinar=  this.isiSouvenir.length
 
