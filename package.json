@@ -31,6 +31,7 @@
     "jsbarcode": "^3.11.0",
     "ng-select2": "^1.2.2",
     "ngx-barcode": "^0.3.0",
+    "ngx-mask": "^10.0.1",
     "ngx-toastr": "^12.1.0",
     "pdfmake": "^0.1.68",
     "rxjs": "^6.5.5",

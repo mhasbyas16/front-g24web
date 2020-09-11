@@ -32,7 +32,7 @@
                         <div class="clr-form-control">
                             <label class="clr-control-label">Tanggal Inisiasi</label>
                             <div class="clr-control-container">
-                                <input readonly [(ngModel)]="input.create_date" class="clr-input" type="date" name="create_date" required />
+                                <input readonly [(ngModel)]="input.create_date" class="clr-input" type="date" name="create_date" (change)="input['create_date'] = date" />
                                 <span class="clr-subtext">Tanggal Inisiasi dilakukan</span>
                             </div>
                         </div>
@@ -67,10 +67,35 @@
                     <div class="clr-col-6">
                         <clr-select-container class="clr-form-control">
                             <label class="clr-control-label">Tipe Bayar</label>
-                            <select [disabled]="input.items?.length != 0" [(ngModel)]="input.tipe_bayar" #tipe_bayar clrSelect name="tipe_bayar">
+                            <select [disabled]="input.items?.length != 0" [(ngModel)]="input.tipe_bayar" #tipe_bayar clrSelect name="tipe_bayar" (ngModelChange)="onTipeBayarChanged()">
                                 <option value=null></option>
-                                <ng-container *ngFor="let pay of PaymentType">
+                                <ng-container *ngFor="let pay of PaymentTypeValues">
                                     <option value="{{pay.code}}">{{pay.name}}</option>
+                                </ng-container>
+                            </select>
+                        </clr-select-container>
+                    </div>
+                </div>
+                
+                <div class="clr-row" *ngIf="input.tipe_bayar == PaymentType.UANG.code">
+                    <div class="clr-col-6">
+                        <clr-select-container class="clr-form-control">
+                            <label class="clr-control-label">Asal Uang</label>
+                            <select [disabled]="input.items?.length != 0" [(ngModel)]="input.asal_uang" #tipe_bayar clrSelect name="asal_uang">
+                                <option value="kas">Kas</option>
+                                <option value="bank">Bank</option>
+                            </select>
+                        </clr-select-container>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-6" *ngIf="input.asal_uang == 'bank'">
+                        <clr-select-container class="clr-form-control">
+                            <label class="clr-control-label">Bank</label>
+                            <select [disabled]="input.items?.length != 0" [(ngModel)]="input.bank" #tipe_bayar clrSelect name="bank">
+                                <option [ngValue]="null">--Select One--</option>
+                                <ng-container *ngFor="let bank of banks">
+                                    <option [ngValue]="bank.code">{{bank.name}}</option>
                                 </ng-container>
                             </select>
                         </clr-select-container>
@@ -82,7 +107,7 @@
                         <div class="clr-form-control">
                             <label class="clr-control-label">Harga Baku</label>
                             <div class="clr-control-container">
-                                <input [readOnly]="input.items?.length != 0" min=0 [(ngModel)]="input.harga_baku" (ngModelChange)="hitungHarga()" (change)="hitungHarga()" class="clr-input" type="number" name="harga_baku" />
+                                <input mask="separator" thousandSeparator="," [readOnly]="input.items?.length != 0" min=0 [(ngModel)]="input.harga_baku" (ngModelChange)="hitungHarga()" (change)="hitungHarga()" class="clr-input" type="text" name="harga_baku" />
                             </div>
                         </div>
                     </div>
@@ -91,17 +116,18 @@
                         <div class="clr-form-control">
                             <label class="clr-control-label">Harga Acuan Pajak</label>
                             <div class="clr-control-container">
-                                <input [readOnly]="input.items?.length != 0" min=0 [(ngModel)]="input.pajak" (ngModelChange)="hitungAllPajak()" (change)="hitungAllPajak()" class="clr-input" type="number" name="harga_pajak" />
+                                <input mask="separator" thousandSeparator="," [readOnly]="input.items?.length != 0" min=0 [(ngModel)]="input.pajak" (ngModelChange)="hitungAllPajak()" (change)="hitungAllPajak()" class="clr-input" type="text" name="harga_pajak" />
                                 <span class="clr-subtext">Harga sebagai acuan perhitungan pajak per SKU</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <ng-container *ngTemplateOutlet="Perhiasan">
+                <div class="clr-row">
+                    <ng-container *ngTemplateOutlet="Perhiasan">
 
-                </ng-container>
-
+                    </ng-container>
+                </div>
                 <div class="clr-row">
                     <div class="card" style="margin-top: 0em;">
                         <div class="card-header">
@@ -154,13 +180,13 @@
                                 <clr-dg-cell>{{GetDisplayValue(data['product-purity'])}}</clr-dg-cell>
                                 <clr-dg-cell>{{GetDisplayValue(data['product-jenis'])}}</clr-dg-cell>
                                 <clr-dg-cell>{{GetDisplayValue(data['product-gold-color'])}}</clr-dg-cell>
-                                <clr-dg-cell>{{data?.berat}}</clr-dg-cell>
+                                <clr-dg-cell>{{data?.berat | mask : '.2'}}</clr-dg-cell>
                                 <clr-dg-cell>{{data?.pieces}}</clr-dg-cell>
                                 <clr-dg-cell>{{data?.baku_tukar}}</clr-dg-cell>
-                                <clr-dg-cell>{{data?.gram_tukar}}</clr-dg-cell>
+                                <clr-dg-cell>{{data?.gram_tukar | mask : '.2'}}</clr-dg-cell>
                                 <clr-dg-cell>{{data?.ongkos}}</clr-dg-cell>
                                 <!-- <clr-dg-cell>{{data.gram_tukar}}</clr-dg-cell><input readonly type="number" class="clr-input" [ngModel]="input.items[i]['pajak'] = 0" [ngModelOptions]="{standalone:true}"> -->
-                                <clr-dg-cell>{{data?.pajak | number : '2.'}} </clr-dg-cell>
+                                <clr-dg-cell>{{data?.pajak | mask : 'separator' : ','}} </clr-dg-cell>
                                 <!-- <clr-dg-cell>
                                     <clr-select-container class="clr-form-control">
                                         <select [(ngModel)]="input['vendor']" [ngModelOptions]="{standalone:true}" #vendor class="clr-select" name="vendor">
@@ -177,33 +203,42 @@
                             <clr-dg-footer>
                                 <div class="clr-row">
                                     <div class="clr-col-1">Total Berat: </div>
-                                    <div class="clr-col-2"><p [ngStyle]="beratStyleValid()">{{getBeratFromItems()}} gram.</p></div>
+                                    <div class="clr-col-2"><p [ngStyle]="beratStyleValid()">{{getBeratFromItems() | mask : '0*.00'}} gram.</p></div>
                                     <div class="clr-col-1">Total Pieces: </div>
-                                    <div class="clr-col-2"><p [ngStyle]="piecesStyleValid()">{{getPiecesFromItems()}} piece.</p></div>
+                                    <div class="clr-col-2"><p [ngStyle]="piecesStyleValid()">{{getPiecesFromItems() | mask : 'separator' : ','}} piece.</p></div>
                                     <div class="clr-col-1">Total Baku Tukar: </div>
-                                    <div class="clr-col-2"><p [ngStyle]="bakuTukarStyleValid()">{{getBakuTukarFromItems()}}.</p></div>
+                                    <div class="clr-col-2"><p [ngStyle]="bakuTukarStyleValid()">{{getBakuTukarFromItems() | mask : 'separator' : ','}}.</p></div>
                                     <div class="clr-col-1">Total Gram Tukar: </div>
-                                    <div class="clr-col-2"><p [ngStyle]="gramTukarStyleValid()">{{getGramTukarFromItems()}} gram.</p></div>
+                                    <div class="clr-col-2"><p [ngStyle]="gramTukarStyleValid()">{{getGramTukarFromItems() | mask : '0*.00'}} gram.</p></div>
                                 </div>
                                 <div class="clr-row">
+                                    <div class="clr-col-1">Total Pajak: </div>
+                                    <div class="clr-col-2"><p><span [ngStyle]="{'float' : 'left'}">Rp.</span><span [ngStyle]="pajakStyleValid()">{{getPajakFromItems() | mask : 'separator' : ','}}.</span></p></div>
                                     <div class="clr-col-1">Total Ongkos: </div>
                                     <div class="clr-col-2"><p [ngStyle]="ongkosStyleValid()">{{getOngkosFromItems()}}.</p></div>
-                                    <div class="clr-col-1">Total Pajak: </div>
-                                    <div class="clr-col-2"><p><span [ngStyle]="{'float' : 'left'}">Rp.</span><span [ngStyle]="pajakStyleValid()">{{getPajakFromItems()}}.</span></p></div>
                                     <div class="clr-col-6"></div>
                                 </div>
-                                <div class="clr-row">\
+                                <div class="clr-row">
+                                    <div class="clr-col-1">Total DPP : </div>
+                                    <div class="clr-col-2">
+                                        <p><span>Rp.</span>
+                                            <span [ngStyle]="totalDPPStyleValid()">{{hitungTotalDPP() | mask : 'separator' : ','}}</span>
+                                            <!-- <span><input readonly min=0 class="clr-input" type="number" [(ngModel)]="input.total_harga" [ngModelOptions]="{standalone : true}"></span> -->
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="clr-row">
                                     <div class="clr-col-1">Total Harga : </div>
                                     <div class="clr-col-2">
                                         <p><span>Rp.</span>
-                                            <span [ngStyle]="totalHargaStyleValid()">{{hitungTotalHarga()}}</span>
+                                            <span [ngStyle]="totalHargaStyleValid()">{{hitungTotalHarga() | mask : 'separator' : ','}}</span>
                                             <!-- <span><input readonly min=0 class="clr-input" type="number" [(ngModel)]="input.total_harga" [ngModelOptions]="{standalone : true}"></span> -->
                                         </p>
                                     </div>
                                 </div>
                                 <div>
                                     <clr-dg-pagination #pagination [clrDgPageSize]="10">
-                                        <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Items per page</clr-dg-page-size>
+                                        <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100, 0]">Items per page</clr-dg-page-size>
                                         {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
                                         of {{pagination.totalItems}} items
                                     </clr-dg-pagination>
@@ -223,7 +258,7 @@
             <!-- <button class="btn btn-secondary align-right" (click)="doSearch()">
                 Cari
             </button> -->
-            <button form="inisiasi" class="btn btn-secondary" (click)="ResetAll(inisiasi)">
+            <button form="inisiasi" class="btn btn-secondary" (click)="ResetAll()">
                 Reset
             </button>
         </div>

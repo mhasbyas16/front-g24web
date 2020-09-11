@@ -1,31 +1,32 @@
 import { Component, OnInit, ComponentFactoryResolver, ViewChild, Input, ElementRef, AfterViewInit, TemplateRef, ChangeDetectionStrategy, ViewContainerRef, Output } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { NgForm, Form, FormGroup, FormBuilder } from '@angular/forms';
+
+import { isArray } from 'util';
 import { ToastrService } from 'ngx-toastr';
-import { BasePersistentFields } from '../../../../lib/base/base-persistent-fields';
 import { InitiationType } from '../../../../lib/enums/initiation-type';
 import { PaymentType } from '../../../../lib/enums/payment-type';
 import { DocumentStatus } from '../../../../lib/enums/document-status.enum';
 import { ModalErrorType } from '../../../../lib/enums/modal-error-type.enum';
 import { EMenuID } from '../../../../lib/enums/emenu-id.enum';
+import { ProductSeriesService } from '../../../../services/product/product-series.service';
 import { VendorService } from '../../../../services/vendor.service';
+import { ProductDenomService } from '../../../../services/product/product-denom.service';
 import { InisiasiService } from '../../../../services/stock/inisiasi.service';
 import { ProductCategoryService } from '../../../../services/product/product-category.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
-import { ProductJenisService } from '../../../../services/product/product-jenis.service';
-import { ProductPurityService } from '../../../../services/product/product-purity.service';
-import { ProductGoldColorService } from '../../../../services/product/product-gold-color.service';
-import { ProductDiamondColorService } from '../../../../services/product/product-diamond-color.service';
-import { ProductDenomService } from '../../../../services/product/product-denom.service';
-import { ProductClarityService } from '../../../../services/product/product-clarity.service';
-
+import { BasePersistentFields } from '../../../../lib/base/base-persistent-fields';
+import { ServerDateTimeService } from '../../../../services/system/server-date-time.service';
+import { JurnalInisiasiService } from '../../../../services/keuangan/jurnal/stock/jurnal-inisiasi.service';
+ 
 @Component({
-  selector: 'detail-inisiasi-berlian',
-  templateUrl: './detail-inisiasi-berlian.component.html',
-  styleUrls: ['./detail-inisiasi-berlian.component.scss']
+  selector: 'detail-inisiasi-dinar',
+  templateUrl: './detail-inisiasi-dinar.component.html',
+  styleUrls: ['./detail-inisiasi-dinar.component.scss']
   // changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DetailInisiasiBerlianComponent extends BasePersistentFields implements OnInit, AfterViewInit
+// @DContent(InisiasiComponent.key)
+export class DetailInisiasiDinarComponent extends BasePersistentFields implements OnInit, AfterViewInit
 {
   @ViewChild('container', { read: ViewContainerRef}) container : ViewContainerRef;
 
@@ -33,8 +34,7 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
   // @ViewChild('inisiasi', {static: false}) inisiasi : NgForm;
   @ViewChild('product') product : ElementRef;
 
-  @ViewChild('Berlian', {static: false}) berlianInput : TemplateRef<any>;
-  @ViewChild('Adiratna', {static: false}) adiratnaInput : TemplateRef<any>;
+  @ViewChild('Dinar', {static: false}) dinarInput : TemplateRef<any>;
 
   btoa = btoa;
   parseInt = parseInt;
@@ -47,14 +47,14 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
 
   products : any[] = [];
   vendors : any[] = [];
-  jeniss : any[] = [];
-  kadars : any[] = [];
-  warnas : any[] = [];
   denoms : any[] = [];
   series : any[] = [];
-  colors : any[] = [];
-  shapes : any[] = [];
-  claritys : any[] = [];
+  banks : any[] = [];
+
+  date : string = "";
+  time : string = "";
+
+  errorHappened : boolean = false;
 
   parentPage : number = 0;
 
@@ -78,10 +78,12 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
   defaultInput() : any
   {
     return {
-      nomor_nota : null, tgl_inisiasi : new Date().toISOString().split("T")[0],  harga_baku : 0, pajak : 0, 
+      nomor_nota : null, tgl_inisiasi : this.date, create_date : this.date, create_time : this.time,
+      // harga_baku : 0, pajak : 0,
       'product-category' : null, vendor : null, tipe_bayar : null,
-      total_berat : 0, total_piece : 0, total_baku_tukar : 0, total_gram_tukar : 0,
-      total_ongkos : 0, total_pajak : 0, total_harga : 0,
+      total_berat : 0, total_piece : 0,
+      // total_ongkos : 0,
+      total_pajak : 0, total_harga : 0,
       items : []
     };
   }
@@ -89,12 +91,16 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
   defaultItem() :any
   {
     return {
-      sku : null, 'product-purity' : null, 'product-jenis' : null, 'product-gold-color' : null, 
-      berat : 0, baku_tukar : 0, gram_tukar : 0, ongkos : 0, pajak : 0 }
+      sku : null, 'product-denom' : null, 
+      total_berat : 0,
+      pieces : 0, pajak : 0,
+      harga_piece : 0, total_harga : 0
+    }
   }
 
   InitiationType = Object.values(InitiationType);
-  PaymentType = Object.values(PaymentType);
+  PaymentTypeValues = Object.values(PaymentType);
+  PaymentType = PaymentType;
   DocumentStatus = Object.values(DocumentStatus);
   ErrorType = ModalErrorType;
 
@@ -113,6 +119,25 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
 
     switch(key)
     {
+      case 'pajak':
+        name = "Pajak";
+        break;
+      case 'ongkos_pieces':
+        name = "Ongkos per Piece";
+        break;
+
+      case 'ongkos':
+        name = "Ongkos";
+        break;
+
+      case 'product-series':
+        name = "Series/Jenis";
+        break;
+
+      case 'harga_piece':
+        name = "Harga per Piece";
+        break;
+
       case 'total_ongkos':
         name = "Total Ongkos";
         break;
@@ -221,17 +246,15 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
 
   constructor(
     private resolver : ComponentFactoryResolver,
+    private jurnalInisiasi : JurnalInisiasiService,
+    
     // private unitService : UnitService,
-    private jenisService : ProductJenisService,
-    private kadarService : ProductPurityService,
-    private gColorService : ProductGoldColorService,
-    private dColorService : ProductDiamondColorService,
+    private seriesService : ProductSeriesService,
     private vendorService : VendorService,
     private denomService : ProductDenomService,
-    // private shapeService : ShapeService,
-    private clarityService : ProductClarityService,
     private inisiasiService : InisiasiService,
     private productCatService : ProductCategoryService,
+    private dateService : ServerDateTimeService,
     // private logService : LogService,
 
     private toastr : ToastrService,
@@ -242,19 +265,20 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
 
   async ngOnInit(): Promise<void>
   {
-    this.input = this.defaultInput();
-    this.user = this.session.getUser();
+    this.errorHappened = false;
     // console.log("user",this.user);
     
     // window['perhiasan'] = this.perhiasanInput;
-
+    await this.LoadDate();
     await this.LoadAllParameter();
+    console.log("dt", this.date);
+
+    this.input = this.defaultInput();
+    this.user = this.session.getUser();
 
     // NotificationUtil.Show(Notification.ERROR("fade", NotificationSize.DEFAULT))
 
     // ModalOutlet.AddModal('inisiasi-detail');
-
-    this.onProductChanged();
   }
 
   async LoadProductCategory()
@@ -263,7 +287,7 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
     {
       this.products.pop();
     }
-    let products = await this.productCatService.list("?code=c00").toPromise();
+    let products = await this.productCatService.list("?code=c06").toPromise();
 
     console.log(products);
 
@@ -274,49 +298,9 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
     this.products.sort((a, b) => ('' + a.name).localeCompare(b.name));
   }
 
-  async LoadJenis()
-  {
-    let jeniss = await this.jenisService.list("?").toPromise();
-    for(let i = 0; i < jeniss.length; i++)
-    {
-      this.jeniss.push(jeniss[i]);
-    }
-    this.jeniss.sort((a,b) => ('' + a.name).localeCompare(b.name));
-  }
-
-  async LoadKadar()
-  {
-    let kadars = await this.kadarService.list("?").toPromise();
-    for(let i = 0; i < kadars.length; i++)
-    {
-      this.kadars.push(kadars[i]);
-    }
-    this.kadars.sort((a,b) => parseInt(a.name) - parseInt(b.name))
-  }
-
-  async LoadGWarna()
-  {
-    let warnas = await this.gColorService.list("?").toPromise();
-    for(let i = 0; i < warnas.length; i++)
-    {
-      this.warnas.push(warnas[i]);
-    }
-    this.warnas.sort((a,b) => ('' + a.name).localeCompare(b.name))
-  }
-
-  async LoadColor()
-  {
-    let colors = await this.dColorService.list("?").toPromise();
-    for(let i = 0; i < colors.length; i++)
-    {
-      this.colors.push(colors[i]);
-    }
-    this.colors.sort((a,b) => ('' + a.name).localeCompare(b.name));
-  }
-
   async LoadVendor()
   {
-    let vendors = await this.vendorService.list("?product-category.code=c00").toPromise();
+    let vendors = await this.vendorService.list("?product-category.code=c06").toPromise();
     for(let i = 0; i < vendors.length; i++)
     {
       this.vendors.push(vendors[i]);
@@ -326,7 +310,7 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
 
   async LoadDenom()
   {
-    let denoms = await this.denomService.list("?").toPromise();
+    let denoms = await this.denomService.list("?product-category.code=c06").toPromise();
     for(let i = 0; i < denoms.length; i++)
     {
       this.denoms.push(denoms[i]);
@@ -334,57 +318,63 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
     this.denoms.sort((a,b) => ('' + a.name).localeCompare(b.name))
   }
   
-  async LoadClarity()
+  async LoadSeries()
   {
-    let claritys = await this.clarityService.list("?").toPromise();
-    for(let i = 0; i < claritys.length; i++)
+    let series = await this.seriesService.list("?").toPromise();
+    for(let i = 0; i < series.length; i++)
     {
-      this.claritys.push(claritys[i]);
+      this.series.push(series[i]);
     }
-    this.claritys.sort((a,b) => ('' + a.name).localeCompare(b.name))
+    this.series.sort((a,b) => ('' + a.name).localeCompare(b.name))
+  }
+
+  async LoadDate()
+  {
+    let resp = await this.dateService.task("").toPromise();
+    if(resp == false)
+    {
+      this.errorHappened = true;
+      return;
+    }
+
+    let dtarr = resp.split("T");
+    this.date = dtarr[0];
+    this.time = dtarr[0].split("Z")[0];
   }
 
   async LoadAllParameter()
   {
     this.LoadProductCategory();
     this.LoadVendor();
-    this.LoadJenis();
-    this.LoadKadar();
-    this.LoadGWarna();
-    this.LoadColor()
     this.LoadDenom();
-    // this.LoadShape();
-    this.LoadClarity();
+    this.LoadSeries();
     
     this.onProductChanged();
   }
 
   ngAfterViewInit()
   {
-    window['perhiasan'] = this.berlianInput;
+
   }
 
-  ResetAll(form2reset : NgForm)
+  async ResetAll()
   {
-    this.formInput = null;
+    await this.LoadDate();
     this.input = this.defaultInput();
-    form2reset.reset();
-    console.log(form2reset.valid, this.input)
+    console.log(this.input);
   }
 
   onProductChanged()
   {
-    this.input['create_date'] = new Date().toISOString().split("T")[0];
+    
+  }
+  
+  onTipeBayarChanged()
+  {
+    this.input.bank = null;
+    this.input.asal_uang = "";
 
-    for(let i = 0; i < this.products.length; i++)
-    {
-      let perhiasan = this.products[i];
-      if(perhiasan.code == "c00")
-      {
-        this.input['product-category'] = perhiasan;
-        break;
-      }
-    }
+    this.hitungAllPajak();
   }
 
   loading = false;
@@ -497,7 +487,7 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
   {
     if(model == null)
     {
-      this.openMessageBox(ModalErrorType.ERROR, "Pencarian Gagal", "Model null")
+      this.toastr.error("Pencarian Gagal", "Model null");
       return false;
     }
 
@@ -518,39 +508,70 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
       return;
     }
 
-
-    let now : Date = new Date();
-    let sNow = now.toISOString().split("T");
-    let date = sNow[0];
-    let time = sNow[1].split(".")[0];
+    let date = this.date;
+    let date_split = date.split("-");
+    let time = this.time;
 
     let no = this.input['no_po'];
     console.log(no, "no")
 
-    let def = 
+    if(this.user?.unit == null)
     {
-      no_po : this.input['no_po'],//"IN0000512",
+      this.toastr.warning("Unit dari User belum di-Assign. Harap hubungi IT Support/Helpdesk.", "Error!");
+      return;
+    }
+
+    let PO = "PO" + this.user.unit.code + date_split[0].substring(1, 3) + date_split[1] + "[0,5]";
+
+    let def =
+    {
+      no_po : PO,
+      __format : "no_po:inc",
       create_date : this.input['create_date'],
       create_time : time,
       create_by : this.user.username,
       unit : this.user.unit.code,
-      flag : "submit",
+      order_status : "submit",
+      status_bayar : '1',
       __version : new Date().getMilliseconds(),
       __version_d : "0",
-      vendor : null,
-      'product-category' : null,
+      items : this.input['items'],
+      _log : 1
+      // vendor : null,
+      // 'product-category' : null,
     };
+    Object.assign(def, this.input);
     let init = DataTypeUtil.Encode(def);
 
     this.inisiasiService.add(init).subscribe(output => {
-      if(output != false)
+      if(output == false)
       {
         this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + this.inisiasiService.message);
+        return;
+      } else {
+        this.toastr.success("Inisiasi Berhasil. Harap hubungi Kepala Departemen untuk melakukan Approval. No. PO : " + output.no_po, "Info", {disableTimeOut : true, closeButton : true, tapToDismiss : false});
+        this.ResetAll();
+        this.doAccounting(output._id);
       }
     });
     // console.log(output);
   }
 
+  doAccounting(idInisiasi :string)
+  {
+    this.jurnalInisiasi.bayar(idInisiasi).subscribe(output => {
+      if(output == false)
+      {
+        let msg = this.jurnalInisiasi.message();
+        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg);
+        // console.log()
+        return;
+      } else {
+        this.toastr.success("Jurnal berhasil.")
+        return;
+      }
+    });
+  }
   Debug()
   {
     console.log(this.input, "model", this.selected);
@@ -595,6 +616,8 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
   {
     for(let key in this.input)
     {
+      if(key == 'total_pajak' && this.input.tipe_bayar == PaymentType.UANG.code) continue;
+
       let value = this.input[key];
       console.log(value, key, 'key')
       if(value == null || value == "null" || value == 0 || (typeof value === 'number' && value === 0))
@@ -607,28 +630,44 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
     return false
   }
 
-  openMessageBox(type : string, title: string, message: string)
-  {
-    this.errorType = type
-    this.errorTitle = title
-    this.errorMessage = message
-    this.modalOpen = true
-  }
-
-  ModelChange(key : string, event : any)
-  {
-    console.log("event", event);
-    // this.searchModel[key] = event.
-  }
-
-  OnSelectedChange(event : any)
-  {
-    // let target = event;
-    // console.log("tgt", target, target.value);
-  }
-
   validateAdd(item : any)
   {
+    if(this.input['tipe_bayar'] == PaymentType.UANG.code && this.input['asal_uang'] == "")
+    {
+      this.toastr.warning("Asal Uang belum diisi", "Peringatan!");
+      return true;
+    }
+
+    if(this.input.asal_uang == 'bank' && this.input.bank == null)
+    {
+      this.toastr.warning('Bank belum diisi.', "Peringatan!");
+      return true;
+    }
+
+    if(this.input.nomor_nota == null || this.input.nomor_nota == "")
+    {
+      this.toastr.warning("Nomor nota belum diisi", "Peringatan!");
+      return true;
+    }
+
+    if(this.input['product-category'] == null)
+    {
+      this.toastr.warning("Jenis Produk belum diisi", "Peringatan!");
+      return true;
+    }
+
+    if(this.input['vendor'] == null)
+    {
+      this.toastr.warning("Vendor belum diisi", "Peringatan!");
+      return true;
+    }
+
+    if(this.input['tipe_bayar'] == null)
+    {
+      this.toastr.warning("Tipe bayar belum diisi", "Peringatan!");
+      return true;
+    }
+
     for(let key in item)
     {
       if(item[key] == null || item[key] == "null")
@@ -649,9 +688,7 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
 
   onAddItem()
   {
-    let tempItem = {
-      sku : null, 'product-purity' : null, 'product-jenis' : null, 'product-gold-color' : null, 
-      berat : 0, baku_tukar : 0, gram_tukar : 0, ongkos : 0, pajak : 0};
+    let tempItem = this.defaultItem();
 
     
     Object.assign(tempItem, this.selected);
@@ -663,13 +700,13 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
     
     this.input['items'].push(tempItem);
 
-    for(let i = 0; i < this.input.length; i++)
-    {
-      let ass = {no : i};
-      let item = this.input.items[i];
-      Object.assign(item, ass);
-      console.log(item)
-    }
+    // for(let i = 0; i < this.input.items.length; i++)
+    // {
+    //   let ass = {no : i};
+    //   let item = this.input.items[i];
+    //   Object.assign(item, ass);
+    //   console.log(item)
+    // }
 
     // this.onResetItem();
   }
@@ -691,14 +728,17 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
   {
     if(this.input == null) return 0;
     let berat = 0.0;
+    let item = {};
     for(let i = 0; i < this.input.items.length; i++)
     {
-      if(this.input.items[i].berat == null || this.input.items[i].berat == "null")
+      if(this.input.items[i]['product-denom'] == null || this.input.items[i]['product-denom'] == "null")
         continue;
-      berat += parseFloat(this.input.items[i].berat);
+
+      item = this.input.items[i];
+      berat += parseFloat(item['product-denom'].value) * parseInt(item['pieces']);
     }
-    this.input['total_berat'] = berat;
-    return berat;
+    this.input['total_berat'] = Number(berat.toFixed(2));
+    return this.input['total_berat'];
   }
 
   getPiecesFromItems()
@@ -742,8 +782,8 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
         value += parseInt(this.input.items[i].gram_tukar);
     }
 
-    this.input['total_gram_tukar'] = value;
-    return value;
+    this.input['total_gram_tukar'] = Number(value.toFixed(2));
+    return this.input['total_gram_tukar'];
   }
   
   getOngkosFromItems()
@@ -752,9 +792,9 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
-      if(this.input.items[i]?.ongkos == null || this.input.items[i]?.ongkos == "null")
+      if(this.input.items[i]?.total_ongkos == null || this.input.items[i]?.total_ongkos == "null")
         continue;
-        value += parseInt(this.input.items[i].ongkos);
+        value += parseInt(this.input.items[i].total_ongkos);
     }
 
     this.input['total_ongkos'] = value;
@@ -772,7 +812,7 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
         value += parseInt(this.input.items[i].pajak);
     }
 
-    this.input['total_pajak'] = value;
+    this.input['total_pajak'] = Math.round(value);
     return value;
   }
 
@@ -826,33 +866,61 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
     {
       let item = this.input.items[i];
 
-      this.hitungPajak(item);
+      this.countItemPajak(item);
       console.log(item)
     }
     
-    this.hitungPajak();
+    this.countItemPajak();
+  }
+  
+  hitungTotalDPP()
+  {
+    if(this.input == null)
+    {
+      return 0;
+    }
+
+    let total_harga = Math.round(Number(this.input['total_harga']));
+    if(total_harga == 0)
+    {
+      return 0;
+    }
+
+    let total_pajak = Math.round(this.input['total_pajak']);
+
+    total_harga -= total_pajak;
+
+    this.input['total_dpp'] = total_harga;
+    return this.input['total_dpp'];
   }
 
-  hitungPajak(item? : any)
+  // pajakCounted : boolean = false;
+  countItemPajak(item? : any)
   {
-    item = item == null ? this.selected : item;
-    let ongkos : number = item.ongkos;
-    let hpajak : number= this.input?.pajak;
-    let berat : number= item.berat;
+    // this.pajakCounted = false;
+    if(!item)
+      item = this.Selected;
+      
+    // let hpajak : number= this.input?.pajak;
+    // let ongkos : number = this.input?.ongkos_pieces;
 
-    if(ongkos == null || hpajak == null || berat == null) return 0;
+    // if(hpajak == null) return 0;
     
-    let persenPajak = 2.00;
+    let persenPajak = 45; // harusnya dari DB
 
-    let pajakItem : number = (ongkos/1000) * berat * hpajak * persenPajak / 100; 
-    item.pajak = Math.trunc(pajakItem);
-    console.log(pajakItem)
+    let pajakItem : number = 0;
+    
+    pajakItem = (item.total_harga * persenPajak)/ 10000;
+
+    // if(this.input.tipe_bayar == PaymentType.MAKLON.code && item.totalHarga != 0)
+    //   this.pajakCounted = true;
+    
+    // if(this.input.tipe_bayar == PaymentType.MAKLON.code && (ongkos != 0 || ongkos != null))
+    //   this.pajakCounted = true;
+    
+    item['pajak'] = Math.trunc(pajakItem);
+    console.log(pajakItem, 'pajak');
     return this.selected.pajak;
-  }
-
-  hitungHarga()
-  {
-
   }
 
   ValidateField(object : any, key : string, validationMethod?)
@@ -867,4 +935,124 @@ export class DetailInisiasiBerlianComponent extends BasePersistentFields impleme
 
     return true;
   }
+
+  onPiecesChanged()
+  {
+    // this.countItemTotalOngkos();
+    this.countItemTotalBerat();
+    this.countItemTotalHarga();
+    // this.countItemHargaPiece();
+    this.countItemPajak();
+    this.countItemTotalHarga();
+  }
+
+  onDenomChanged()
+  {
+    this.countItemTotalHarga();
+    // this.countItemHargaPiece();
+    this.countItemTotalBerat();
+  }
+
+  onOngkosChanged()
+  {
+    this.countItemTotalOngkos();
+    // this.countItemHargaPiece();
+    this.countItemTotalHarga();
+  }
+
+  onHargaBakuChanged()
+  {
+    for(let item in this.input['items'])
+    {
+      // this.countItemTotalBerat();
+      // this.countItemTotalOngkos();
+      // this.countItemHargaPiece();
+      // this.countItemTotalHarga();
+      // this.countItemPajak();
+    }
+  }
+
+  onHargaPieceChanged()
+  {
+    this.countItemTotalHarga();
+    this.countItemPajak();
+  }
+  
+  countItemTotalOngkos(item? : any)
+  {
+    if(!item)
+      item = this.Selected;
+
+    let pieces = item['pieces'];
+    let ongkos_pieces = item['ongkos_pieces'];
+  
+    item['total_ongkos'] = parseFloat(pieces) * parseFloat(ongkos_pieces);
+  }
+
+  countItemTotalBerat(item? : any)
+  {
+    if(!item)
+      item = this.Selected;
+    let pieces = item['pieces'];
+    let denom = item['product-denom']?.value;
+
+    item['total_berat'] = Number((parseFloat(pieces) * parseFloat(denom)).toFixed(2));
+  }
+
+  countItemHargaPiece(item? : any)
+  {
+    if(!item)
+      item = this.Selected;
+
+    let harga_baku = this.input['harga_baku'];
+    let denom = item['product-denom']?.value;
+    let ongkos_pieces = item['ongkos_pieces'];
+    let persenPajak = 2;
+
+    item['harga_piece'] = ( (parseFloat(denom) * parseFloat(harga_baku)) +  parseFloat(ongkos_pieces) ) * ( (100 + persenPajak)/100 );
+    console.log(item, 'item harga piece');
+  }
+
+  countItemTotalHarga(item? : any)
+  {
+    if(!item)
+      item = this.Selected;
+
+    let pieces = item['pieces'];
+    let harga = item['harga_piece'];
+
+    item['total_harga'] = parseInt(pieces) * parseInt(harga);
+    console.log(item, 'item harga total', pieces, harga);
+    this.countItemPajak(item);
+  }
+
+  
+  totalHargaStyleValid()
+  {
+    if(this.hitungTotalHarga() > 0) return {};
+
+    return {'text-decoration': 'underline','text-decoration-color': 'red', 'color' : 'red'};
+  }
+  
+  hitungTotalHarga()
+  {
+    let items = this.input['items'];
+    let value : number = 0.0;
+
+    for(let i = 0; i < items.length; i++)
+    {
+      value += Number(items[i].total_harga);
+    }
+    this.input['total_harga'] = value;
+
+    return this.input['total_harga'];
+  }
+  
+  totalDPPStyleValid()
+  {
+    if(this.hitungTotalDPP() > 0) return {};
+    
+    return {'text-decoration': 'underline','text-decoration-color': 'red', 'color' : 'red'};
+  }
+
 }

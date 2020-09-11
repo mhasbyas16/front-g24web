@@ -2,7 +2,7 @@
 <div class="clr-row">
     <div class="card" style="margin-top: 0em;">
         <div class="card-header">
-            <b>Approval Inisiasi Perhiasan</b>
+            Penerimaan Dinar
         </div>
         <div class="card-block">
             <form [formGroup]="searchFG" clrLayout="compact" #penerimaan id="penerimaan" clrForm>
@@ -10,8 +10,15 @@
                     <div class="clr-col-4">
                         <clr-input-container>
                             <label class="clr-control-label">Nomor PO</label>
-                            <input required clrInput #no_po formControlName="no_po" placeholder="PO00005120000001" />
+                            <input clrInput #no_po formControlName="no_po" placeholder="PO00005120000001" />
                             <span class="clr-subtext">Nomor PO untuk dicari</span>
+                        </clr-input-container>
+                    </div>
+                    <div class="clr-col-4">
+                        <clr-input-container>
+                            <label class="clr-control-label">Nomor Nota</label>
+                            <input clrInput type="text" formControlName="nomor_nota" />
+                            <span class="clr-subtext">Nomor Nota pembelian</span>
                         </clr-input-container>
                     </div>
                 </div>
@@ -53,7 +60,28 @@
                         &nbsp;
                     </div>
                 </div>
-
+                
+                <div class="clr-row">
+                    <div class="clr-col-12">
+                        <label class="clr-control-label">Tanggal Bayar</label>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-2">
+                        <clr-date-container>
+                            <input clrDate type="date" formControlName="tgl_bayar_start" />
+                            <clr-control-helper class="clr-subtext">Tanggal Bayar Awal</clr-control-helper>
+                        </clr-date-container>
+                    </div>
+                    <div class="clr-col-2">
+                    </div>
+                    <div class="clr-col-2">
+                        <clr-date-container>
+                            <input clrDate type="date" formControlName="tgl_bayar_end" />
+                            <clr-control-helper class="clr-subtext">Tanggal Bayar Akhir</clr-control-helper>
+                        </clr-date-container>
+                    </div>
+                </div>
                 <div class="clr-row">
                     <div class="clr-row-2">
                         <label class="clr-control-label">Status Order</label>
@@ -61,8 +89,9 @@
                     <div class="clr-row-2">
                         <clr-select-container>
                                 <select required clrSelect formControlName="order_status">
-                                    <option selected value="{{OrderStatus.SUBMIT.code}}">Submit</option>
-                                    <option value="{{OrderStatus.APPROVAL.code}}">Approved</option>
+                                    <option selected value="0">Belum Terima</option>
+                                    <option value="1">Sudah Terima (Partial)</option>
+                                    <option value="2">Sudah Terima (Full)</option>
                                 </select>
                             <clr-control-error class="required" *clrIfError="'required'">This is a required field</clr-control-error>
                             <!-- <clr-control-helper class="required">*</clr-control-helper> -->
@@ -94,7 +123,7 @@
         <clr-datagrid [clrDgLoading]="loading" [(clrDgSingleSelected)]="selected">
             <clr-dg-action-bar>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-secondary" (click)="onApprove()" *ngIf="Selected?.order_status == OrderStatus.SUBMIT.code && Selected?.order_status != null"><clr-icon shape="pencil"></clr-icon>Approve</button>
+                    <button type="button" class="btn btn-sm btn-secondary" (click)="onTerima()" *ngIf="Selected?.order_status!= 'terima_full' && Selected?.order_status != null"><clr-icon shape="pencil"></clr-icon>Terima</button>
                     <button type="button" class="btn btn-sm btn-secondary" (click)="onLihat()" *ngIf="Selected?._id != ''"><clr-icon shape="view-list"></clr-icon>Lihat</button>
                     <button type="button" class="btn btn-sm btn-secondary" (click)="Debug()"><clr-icon shape="bug"></clr-icon>Debug</button>
                 </div>
@@ -113,26 +142,26 @@
             </clr-dg-action-bar>
             
             <!-- 10 Kolom -->
-            <clr-dg-column [clrDgField]="'no_po'">
+            <clr-dg-column>
                 Nomor PO
             </clr-dg-column>
             <clr-dg-column>
                 Jenis Produk
             </clr-dg-column>
-            <clr-dg-column [clrDgField]="'vendor.name'">
+            <clr-dg-column>
                 Vendor
             </clr-dg-column>
-            <clr-dg-column [clrDgField]="'create_date'">
+            <clr-dg-column>
                 Tanggal Inisiasi
+            </clr-dg-column>
+            <clr-dg-column>
+                Tanggal Bayar
             </clr-dg-column>
             <clr-dg-column>
                 Jumlah Barang
             </clr-dg-column>
             <clr-dg-column>
                 Total Berat
-            </clr-dg-column>
-            <clr-dg-column>
-                Total Harga
             </clr-dg-column>
             <clr-dg-column>
                 Status
@@ -144,9 +173,9 @@
                 <clr-dg-cell>{{GetDisplayValue(data['product-category'])}}</clr-dg-cell>
                 <clr-dg-cell>{{GetDisplayValue(data['vendor'])}}</clr-dg-cell>
                 <clr-dg-cell>{{data?.create_date}}</clr-dg-cell>
+                <clr-dg-cell>{{data?.tgl_bayar}}</clr-dg-cell>
                 <clr-dg-cell>{{data?.total_piece}}</clr-dg-cell>
                 <clr-dg-cell>{{data?.total_berat}}</clr-dg-cell>
-                <clr-dg-cell>{{data?.total_harga}}</clr-dg-cell>
                 <clr-dg-cell>{{data?.order_status}}</clr-dg-cell>
             </clr-dg-row>
 
@@ -158,15 +187,15 @@
                         of {{pagination.totalItems}} items
                     </clr-dg-pagination>
                 </div>
-                  {{ input ? input.items.length : 0}} items.
+                  {{ input.items.length}} items.
             </clr-dg-footer>
         </clr-datagrid>
     </div>
 </div>
 
-<detail-item-inisiasi-approval-perhiasan #item_terima>
+<detail-item-penerimaan-dinar #item_terima>
 
-</detail-item-inisiasi-approval-perhiasan>
+</detail-item-penerimaan-dinar>
 
 <clr-modal #modalMsg [(clrModalOpen)]="modalOpen" [clrModalStaticBackdrop]="false">
 <h3 class="modal-title">{{errorTitle}}</h3>

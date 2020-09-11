@@ -1,19 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { InisiasiService } from 'projects/main/src/app/g24/services/stock/inisiasi.service';
-import { ProductPurityService } from 'projects/main/src/app/g24/services/product/product-purity.service';
-import { ProductJenisService } from 'projects/main/src/app/g24/services/product/product-jenis.service';
-import { ProductGoldColorService } from 'projects/main/src/app/g24/services/product/product-gold-color.service';
 import { ToastrService } from 'ngx-toastr';
 import { FlagProduct, TipeStock, LocationProduct } from 'projects/main/src/app/g24/lib/enum/flag-product';
-import { VendorService } from 'projects/main/src/app/g24/services/vendor.service';
 import { EPriviledge } from 'projects/main/src/app/g24/lib/enums/epriviledge.enum';
 import { OrderStatus } from 'projects/main/src/app/g24/lib/enum/order-status';
 import { ProductService } from 'projects/main/src/app/g24/services/product/product.service';
 import { DataTypeUtil } from 'projects/main/src/app/g24/lib/helper/data-type-util';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { IDetailCallbackListener } from 'projects/main/src/app/g24/lib/base/idetail-callback-listener';
-import { OrdersModule } from '../../../../orders/orders.module';
-import { ProductSeriesService } from 'projects/main/src/app/g24/services/product/product-series.service';
 
 /**
  * Penerimaan gift baru isi ke stock/product
@@ -31,9 +25,6 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
     private session : SessionService,
 
     private inisiasiService : InisiasiService,
-    private kadarService : ProductPurityService,
-    private seriesService : ProductSeriesService,
-    private goldColorService : ProductGoldColorService,
     private productService : ProductService
   ) { }
 
@@ -84,7 +75,7 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
       return;
     }
 
-    this.inisiasiService.list("?_or=product-category.code=c04&no_po="+id).subscribe(output => 
+    this.inisiasiService.list("?_or=product-category.code=c05&no_po="+id).subscribe(output => 
     {
       if(output != false)
       {

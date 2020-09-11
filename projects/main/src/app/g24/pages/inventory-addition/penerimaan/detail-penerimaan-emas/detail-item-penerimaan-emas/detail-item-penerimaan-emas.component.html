@@ -47,7 +47,7 @@
                     <clr-dg-cell>{{data?.pieces}}</clr-dg-cell>
                     <!-- <clr-dg-cell>{{data?.ongkos_pieces}}</clr-dg-cell> -->
                     <!-- <clr-dg-cell>{{data.gram_tukar}}</clr-dg-cell><input readonly type="number" class="clr-input" [ngModel]="input.items[i]['pajak'] = 0" [ngModelOptions]="{standalone:true}"> -->
-                    <clr-dg-cell>{{data?.pajak | number : '2.'}} </clr-dg-cell>
+                    <clr-dg-cell>{{data?.pajak}} </clr-dg-cell>
                     
                     <clr-dg-row-detail *clrIfExpanded="false" (clrIfExpandedChange)="onExpand(itemsIndex)">
                         <table class="table table-compact">
