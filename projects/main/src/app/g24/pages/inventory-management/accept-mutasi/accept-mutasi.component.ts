@@ -9,6 +9,8 @@ import { DataTypeUtil } from '../../../lib/helper/data-type-util';
 import { UnitService } from '../../../services/system/unit.service';
 import { ProductJenisService } from '../../../services/product/product-jenis.service';
 import { ServerDateTimeService } from '../../../services/system/server-date-time.service';
+import { FlagProduct } from '../../../lib/enum/flag-product';
+import { ProductService } from '../../../services/product/product.service';
 
 @Component({
   selector: 'app-accept-mutasi',
@@ -56,7 +58,8 @@ static key = EMenuID.TERIMA_MUTASI;
     private sessionservice : SessionService,
     private productjenis : ProductJenisService,
 	  private datetimeservice : ServerDateTimeService,
-    private toastr : ToastrService
+    private toastr : ToastrService,
+    private productservice : ProductService
   ) { }
 
   ngOnInit(): void {
@@ -168,7 +171,10 @@ static key = EMenuID.TERIMA_MUTASI;
   }
 
   onAccept(){
-  if(Object.keys(this.data_view).length==0){
+    if(!this.data_view){
+      this.toastr.warning("Data belum dipilih","Peringatan");
+      return;
+    }else if(Object.keys(this.data_view).length==0){
     this.toastr.warning("Data belum dipilih","Peringatan");
     return;
   }
@@ -232,7 +238,10 @@ static key = EMenuID.TERIMA_MUTASI;
   }
 
   onView(){
-    if(Object.keys(this.data_view).length==0){
+    if(!this.data_view){
+      this.toastr.warning("Data belum dipilih","Peringatan");
+      return;
+    }else if(Object.keys(this.data_view).length==0){
       this.toastr.warning("Data belum dipilih","Peringatan");
       return;
     }
@@ -394,6 +403,10 @@ static key = EMenuID.TERIMA_MUTASI;
         return false;
       break;
 
+      case "__version":
+        return false;
+      break;
+
       case "id":
         return false;
       break;
@@ -431,25 +444,70 @@ static key = EMenuID.TERIMA_MUTASI;
 	  
 	  for(let i=0; i < this.listflag.length; i++){
       if(this.listflag[i].flag=="approved"){
-      let data = {
-        _id : this.listflag[i]._id,
-        flag : 'accept',
-        update_by : this.sessionservice.getUser().username,
-        update_date : this.date_now,
-        update_time : this.time,
-		tgl_terima : this.date_now
-      };
-  
-      console.log(data);
-  
-  
-      let r = DataTypeUtil.Encode(data);
-      this.mutasiservice.update(r).subscribe(output=>{
-        if(output!=false){
-          console.log(output);
-		  this.modalaccept = false;
+        
+        let data = {
+          _id : this.listflag[i]._id,
+          flag : 'accept',
+          update_by : this.sessionservice.getUser().username,
+          update_date : this.date_now,
+          update_time : this.time,
+      tgl_terima : this.date_now
+        };
+        
+        console.log(data);
+
+        for(let i = 0; i < this.items.length; i++){
+          console.log("id items",this.items[i]._id);
+        
+          let updateproduct = {
+            _id : this.items[i]._id,
+            unit : this.sessionservice.getUser().unit,
+            flag : FlagProduct.STOCK.code
+          }
+
+          console.log(updateproduct);
+        
+            let updproduct = DataTypeUtil.Encode(updateproduct)
+            let r = DataTypeUtil.Encode(data);
+            this.mutasiservice.update(r).subscribe(output=>{
+              if(output==false){
+                if(this.mutasiservice.message()!=""){
+                  return;
+                }
+              }
+
+              this.productservice.update(updproduct).subscribe(data=>{
+                if(data==false){
+                  if(this.productservice.message()!=""){
+                    return;
+                  }
+                }
+              })
+              this.toastr.success("Data berhasil diterima","Sukses");
+              this.modalaccept = false;
+            })
         }
-      })
+
+
+    //   let data = {
+    //     _id : this.listflag[i]._id,
+    //     flag : 'accept',
+    //     update_by : this.sessionservice.getUser().username,
+    //     update_date : this.date_now,
+    //     update_time : this.time,
+		// tgl_terima : this.date_now
+    //   };
+  
+    //   console.log(data);
+  
+  
+    //   let r = DataTypeUtil.Encode(data);
+    //   this.mutasiservice.update(r).subscribe(output=>{
+    //     if(output!=false){
+    //       console.log(output);
+		//   this.modalaccept = false;
+    //     }
+    //   })
     }else{
           this.toastr.warning("Data yang bisa diterima adalah tipe flag approved","Peringatan");
     }

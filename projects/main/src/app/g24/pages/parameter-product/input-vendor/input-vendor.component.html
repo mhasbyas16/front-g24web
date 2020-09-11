@@ -1,21 +1,21 @@
 <div class="clr-row">
 	<div class="card">
             <div class="card-header">
-                Param Denom
+                Param Vendor
             </div>
             <div class="card-block">
             	<div class="clr-row">
             		<div class="clr-col-6">
             			<div class="clr-form-control">
-							<label class="clr-control-label">Nama Kategori</label>
-							<clr-input-container>
+                            <label class="clr-control-label">Produk Kategori</label>
+                            <clr-input-container>
                                 <input [(ngModel)]="search.kategori" clrInput name="kategori" placeholder="Cari Kategori">
                             </clr-input-container>
             				<!--div class="clr-control-container">
             				<select [(ngModel)]="search.kategori" clrSelect name="kategori">
             					<option [ngValue]=""></option>
             					<ng-container *ngFor="let data of data_kategori">
-            						<option [ngValue]="data">{{data.code}}</option>
+            						<option [ngValue]="data">{{data.name}}</option>
             					</ng-container>
             				</select>
             				</div-->
@@ -27,7 +27,7 @@
 							<div class="clr-control-container">
 								<select [(ngModel)]="search.code" clrSelect name="code">
 									<option [ngValue]=""></option>
-									<ng-container *ngFor="let data of datadenom">
+									<ng-container *ngFor="let data of datavendor">
 										<option [ngValue]="data">{{data.code}}</option>
 									</ng-container>
 								</select>	
@@ -68,18 +68,14 @@
         <clr-dg-column>
             Name
         </clr-dg-column>
-        <clr-dg-column>
-            Value
-        </clr-dg-column>
 
-        <clr-dg-row *clrDgItems="let data of listdenom" [clrDgItem]="data">
+        <clr-dg-row *clrDgItems="let data of listvendor" [clrDgItem]="data">
             <clr-dg-cell>{{data.code}}</clr-dg-cell>
             <clr-dg-cell>{{data.name}}</clr-dg-cell>
-            <clr-dg-cell>{{data.value}}</clr-dg-cell>
         </clr-dg-row>
 
         <clr-dg-footer>
-            {{listdenom.length}} data
+            {{listvendor.length}} data
         </clr-dg-footer>
     </clr-datagrid>
             </div>
@@ -92,14 +88,14 @@
 
 <!--MODAL TAMBAH DATA-->
 <clr-modal [(clrModalOpen)]="modaltambah">
-    <h3 class="modal-title">Tambah Param Denom</h3>
+    <h3 class="modal-title">Tambah Param Vendor</h3>
     <div class="modal-body">
     	<div class="clr-row">
     		<div class="clr-col-6">
     			<div class="clr-form-control">
     				<clr-input-container>
-				    <label>Name</label>
-					<input type="text" clrInput [(ngModel)]="input.name" name="name" required />
+				    <label>Kode</label>
+					<input type="text" clrInput [(ngModel)]="input.code" name="code" required />
 				    <clr-control-error>Wajib di isi</clr-control-error>
 				  </clr-input-container>
     			</div>
@@ -107,27 +103,13 @@
 			<div class="clr-col-6">
     			<div class="clr-form-control">
     				<clr-input-container>
-				    <label>Value</label>
-					<input type="number" clrInput [(ngModel)]="input.value" name="value" required />
-					<clr-control-helper>Harap isi. Dan jangan lupa menggunakan titik (.)</clr-control-helper>
-				    <clr-control-error>Wajib di isi. Dan jangan lupa menggunakan titik (.)</clr-control-error>
+				    <label>Name</label>
+					<input clrInput [(ngModel)]="input.name" name="name" required />
+					<clr-control-error>Wajib di isi</clr-control-error>
 				  </clr-input-container>
     			</div>
     		</div>
-		</div>
-		
-		<!--SELECT2-->
-		<!--div class="clr-row">
-			<div class="clr-col-6">
-				<ng-select2 name="kategori"
-							[data]="exampleData"
-							[options]="option"
-							[width]="300"
-							[value]="exampleData"
-							[(ngModel)]="input.kategori"
-							></ng-select2>
-			</div>
-		</div-->
+    	</div>
 
         <!--GRID KATEGORI-->
 	        <div class="clr-row">
@@ -211,7 +193,7 @@
 
 <!--MODAL UPDATE DATA-->
 <clr-modal [(clrModalOpen)]="modalupdate">
-    <h3 class="modal-title">Update Denom</h3>
+    <h3 class="modal-title">Update Venodr</h3>
     <div class="modal-body">
     	<div class="clr-row">
     		<div class="clr-col-6">
@@ -242,19 +224,6 @@
 				  </clr-input-container>
     			</div>
     		</div>
-		</div>
-
-		<div class="clr-row">
-			<div class="clr-col-6">
-				<div class="clr-form-control">
-					<clr-input-container>
-						<label>Value</label>
-						<input type="number" clrInput [(ngModel)]="dataupdate.value" name="value" value="{{dataupdate.value}}" required/>
-						<clr-control-helper>Harap isi. Dan jangan lupa menggunakan titik (.)</clr-control-helper>
-						<clr-control-error>Wajib di isi. Dan jangan lupa menggunakan titik (.)</clr-control-error>
-					</clr-input-container>
-				</div>
-			</div>
 		</div>
 		
 		<div class="clr-row">
@@ -336,7 +305,7 @@
 
 <!--MODAL LIHAT DATA-->
 <clr-modal [(clrModalOpen)]="modalview">
-    <h3 class="modal-title">Detail Denom</h3>
+    <h3 class="modal-title">Detail Vendor</h3>
     <div class="modal-body">
     	<div class="clr-row">
 			<div class="card">
@@ -349,18 +318,14 @@
 					<clr-dg-column>
 						Name
 					</clr-dg-column>
-					<clr-dg-column>
-						Value
-					</clr-dg-column>
-	
-					<clr-dg-row *clrDgItems="let data of listviewdenom" [clrDgItem]="data">
+			
+					<clr-dg-row *clrDgItems="let data of listviewvendor" [clrDgItem]="data">
 						<clr-dg-cell>{{data.code}}</clr-dg-cell>
 						<clr-dg-cell>{{data.name}}</clr-dg-cell>
-						<clr-dg-cell>{{data.value}}</clr-dg-cell>
 					</clr-dg-row>
 	
 					<clr-dg-footer>
-						{{listviewdenom.length}} data
+						{{listviewvendor.length}} data
 					</clr-dg-footer>
 			</clr-datagrid>
 

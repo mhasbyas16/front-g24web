@@ -92,24 +92,26 @@ modalupdate : boolean = false;
   Simpan(){
   	let code = this.input["code"];
   	let name = this.input["name"];
-  	let ket  = this.input["ket"];
-  	let data = {
-  		code : code.toUpperCase(),
-  		name : name,
-  		note : ket,
-  		category : "product-series"
-	  }
+	let ket  = this.input["ket"];
+	  
+	  if(!code || !name || !ket){
+		this.toastr.warning("Kode, nama series atau note belum di isi","Peringatan");
+		return;
+	}
+
 	  for(let i = 0; i < this.dataseries.length; i++){
-		  if(this.dataseries[i].code == code || this.dataseries[i].name == name){
-			  this.toastr.warning("Kode atau nama series sudah ada");
+		  if(this.dataseries[i].code == code.toUpperCase()){
+			  this.toastr.warning("Kode sudah tersedia","Peringatan");
 			  return;
 		  }
 	  }
 
-	  if(!code || !name || !ket){
-		  this.toastr.warning("Kode, nama series atau note belum di isi","Peringatan");
-		  return;
-	  }
+	  let data = {
+		code : code.toUpperCase(),
+		name : name,
+		note : ket,
+		category : "product-series"
+	}
   	let ff = DataTypeUtil.Encode(data);
   	this.seriesservice.add(ff).subscribe(data=>{
   		if(data==false){
@@ -125,7 +127,10 @@ modalupdate : boolean = false;
   }
 
   Ubah(){
-	  if(Object.keys(this.data_view).length==0){
+	if(!this.data_view){
+		this.toastr.warning("Data belum dipilih","Peringatan");
+		return;
+	}else if(Object.keys(this.data_view).length==0){
 		  this.toastr.warning("Data belum dipilih","Peringatan");
 		  return;
 	  }
@@ -164,7 +169,10 @@ modalupdate : boolean = false;
   }
 
   Hapus(){
-	if(Object.keys(this.data_view).length==0){
+	if(!this.data_view){
+		this.toastr.warning("Data belum dipilih","Peringatan");
+		return;
+	}else if(Object.keys(this.data_view).length==0){
 		this.toastr.warning("Data belum dipilih","Peringatan");
 		return;
 	}

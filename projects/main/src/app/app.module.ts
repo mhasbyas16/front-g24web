@@ -6,6 +6,9 @@ import { AppComponent } from './app.component';
 import { LayoutsModule } from './layouts/layouts.module';
 import { ClarityModule } from '@clr/angular';
 
+//SELECT2
+import { NgSelect2Module } from 'ng-select2';
+
 @NgModule({
   declarations: [
     AppComponent
@@ -14,7 +17,8 @@ import { ClarityModule } from '@clr/angular';
     BrowserModule,
     AppRoutingModule,
     ClarityModule,
-
+    NgSelect2Module,
+    
     LayoutsModule,
   ],
   providers: [],

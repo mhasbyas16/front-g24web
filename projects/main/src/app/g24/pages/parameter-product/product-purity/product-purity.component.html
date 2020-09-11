@@ -87,13 +87,14 @@
 <clr-modal [(clrModalOpen)]="modaltambah">
     <h3 class="modal-title">Tambah Param Purity</h3>
     <div class="modal-body">
-    	<div class="clr-row">
+    	<div class="clr-row" style="padding-bottom: 10px;">
     		<div class="clr-col-6">
     			<div class="clr-form-control">
     				<clr-input-container>
 				    <label>Kode</label>
-				    <input type="number" clrInput [(ngModel)]="input.code" name="code" required />
-				    <clr-control-error>Wajib di isi</clr-control-error>
+				    <input clrInput [(ngModel)]="input.code" name="code" minlength="3" maxlength="3" required />
+					<clr-control-helper><clr-icon shape="info-circle"></clr-icon> Harap isi dengan angka</clr-control-helper>
+					<clr-control-error>Wajib di isi. Dan input harus 3 digit angka</clr-control-error>
 				  </clr-input-container>
     			</div>
     		</div>
@@ -101,8 +102,9 @@
     			<div class="clr-form-control">
     				<clr-input-container>
 				    <label>Nama Purity</label>
-				    <input type="number" clrInput [(ngModel)]="input.name" name="name" required />
-				    <clr-control-error>Wajib di isi</clr-control-error>
+				    <input clrInput [(ngModel)]="input.name" name="name" minlength="3" maxlength="3" required />
+					<clr-control-helper><clr-icon shape="info-circle"></clr-icon> Harap isi dengan angka</clr-control-helper>
+					<clr-control-error>Wajib di isi. Dan input harus 3 digit angka</clr-control-error>
 				  </clr-input-container>
     			</div>
     		</div>
@@ -142,8 +144,9 @@
     			<div class="clr-form-control">
     				<clr-input-container>
 				    <label>Nama Purity</label>
-				    <input clrInput [(ngModel)]="dataupdate.name" name="name" value="{{dataupdate.name}}" required />
-				    <clr-control-error>Wajib di isi</clr-control-error>
+				    <input clrInput [(ngModel)]="dataupdate.name" name="name" maxlength="3" value="{{dataupdate.name}}" required />
+					<clr-control-helper><clr-icon shape="info-circle"></clr-icon> Harap isi dengan angka</clr-control-helper>
+				    <clr-control-error>Wajib di isi. Dan input harus 3 digit angka</clr-control-error>
 				  </clr-input-container>
     			</div>
     		</div>

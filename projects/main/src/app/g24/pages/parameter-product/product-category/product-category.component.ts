@@ -68,26 +68,39 @@ jumlah : number = 0;
 
   SearchData(){
   	let params = "?";
-  	for(let key in this.search){
-  		if(this.search[key]==""||this.search[key]==null)continue;
-  		switch(key){
-  			case "code":
-  			params += "code="+this.search[key].code+"&";
-  			break;
+	  
+	  if(!this.search["kategori"]){
 
-  			case "name":
-  			params += "name="+this.search[key].name+"&";
-  			break;
+		// for(let key in this.search){
+		// 		if(this.search[key]==""||this.search[key]==null)continue;
+		// 		switch(key){
+		// 			case "code":
+		// 			params += "code="+this.search[key].code+"&";
+		// 			break;
+	  
+		// 			default:
+		// 			 params += key+="="+this.search[key]+"&";
+		// 			 break;
+		// 		}
+		// 	}
 
-  			default:
-  			 params += key+="="+this.search[key]+"&";
-  			 break;
-  		}
-  	}
-  	this.kategoriservice.list(params).subscribe(data=>{
+		this.kategoriservice.list(params).subscribe(data=>{
+			if(data==false){
+				if(this.kategoriservice.message()!=""){
+					this.toastr.info("Data tidak ditemukan","Informasi");
+					this.listkategori = [];
+					return;
+				}
+			}
+			this.listkategori = data;
+		})
+		  return;
+	  }
+  	this.kategoriservice.list(params+"name_regex=1&name="+this.search["kategori"]).subscribe(data=>{
   		if(data==false){
   			if(this.kategoriservice.message()!=""){
-  				this.toastr.info("Data tidak ditemukan","Informasi");
+				  this.toastr.info("Data tidak ditemukan","Informasi");
+				  this.listkategori = [];
   				return;
   			}
   		}
@@ -101,10 +114,14 @@ jumlah : number = 0;
   }
 
   Ubah(){
-	if(Object.keys(this.data_view).length == 0){
+	if(!this.data_view){
+		this.toastr.warning("Data belum dipilih","Peringatan");
+		return;
+	}else if(Object.keys(this.data_view).length == 0){
 		this.toastr.warning("Data belum dipilih","Peringatan");
 		return;
 	}
+	
   	this.modalupdate = true;
   	this.uptodate = [];
   	this.uptodate.push(this.data_view);
@@ -139,7 +156,10 @@ jumlah : number = 0;
   }
 
   Hapus(){
-	if(Object.keys(this.data_view).length==0){
+	if(!this.data_view){
+		this.toastr.warning("Data belum dipilih","Peringatan");
+		return;
+	}else if(Object.keys(this.data_view).length==0){
 		this.toastr.warning("Data belum dipilih","Peringatan");
 		return;
 	}

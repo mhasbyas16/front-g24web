@@ -115,7 +115,10 @@ modalupdate : boolean = false;
   }
 
   Ubah(){
-	if(Object.keys(this.data_view).length==0){
+	if(!this.data_view){
+		this.toastr.warning("Data belum dipilih","Peringatan");
+		return;
+	}else if(Object.keys(this.data_view).length==0){
 		this.toastr.warning("Data belum dipilih","Peringatan");
 		return;
 	}
@@ -153,7 +156,10 @@ modalupdate : boolean = false;
   }
 
   Hapus(){
-	if(Object.keys(this.data_view).length==0){
+	if(!this.data_view){
+		this.toastr.warning("Data belum dipilih","Peringatan");
+		return;
+	}else if(Object.keys(this.data_view).length==0){
 		this.toastr.warning("Data belum dipilih","Peringatan");
 		return;
 	}

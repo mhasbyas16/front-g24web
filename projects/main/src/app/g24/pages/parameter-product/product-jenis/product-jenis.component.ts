@@ -81,7 +81,8 @@ modalview : boolean = false;
   }
 
   SearchData(){
-  	let params = "?";
+	  let params = "?";
+	if(!this.search["kategori"]){
   	for(let key in this.search){
   		if(this.search[key]==""||this.search[key]==null)continue;
   			switch (key) {
@@ -89,9 +90,9 @@ modalview : boolean = false;
   					params += "code="+this.search[key].code+"&";
 				break;
 
-				case "kategori":
-					params += "product-category.code="+this.search[key].code+"&";
-				break;
+				// case "kategori":
+				// 	params += "product-category.code="+this.search[key].code+"&";
+				// break;
   				
   				default:
   					params += key+="="+this.search[key]+"&";
@@ -101,16 +102,36 @@ modalview : boolean = false;
   		this.jenisservice.list(params).subscribe(data=>{
   			if(data==false){
   				if(this.jenisservice.message()!=""){
-  					this.toastr.info("Data tidak ditemukan","Informasi");
+					  this.toastr.info("Data tidak ditemukan","Informasi");
+					  this.listjenis = [];
   					return;
   				}
   			}
   			this.listjenis = data;
-        for(let i =0; i < this.listjenis.length; i++){
-        this.detailkategori = this.listjenis[i];
-        console.log(this.detailkategori["product-category"]);
-      }
-  		})
+			for(let i =0; i < this.listjenis.length; i++){
+			this.detailkategori = this.listjenis[i];
+			console.log(this.detailkategori["product-category"]);
+			}
+		  })
+
+		  return;
+		}
+
+		this.jenisservice.list(params+"product-category.name_regex=1&product-category.name="+this.search["kategori"]).subscribe(data=>{
+			if(data==false){
+				if(this.jenisservice.message()!=""){
+					this.toastr.info("Data tidak ditemukan","Informasi");
+					this.listjenis = [];
+					return;
+				}
+			}
+			this.listjenis = data;
+			for(let i =0; i < this.listjenis.length; i++){
+			this.detailkategori = this.listjenis[i];
+			console.log(this.detailkategori["product-category"]);
+			}
+		})
+
 
 
   }
@@ -213,7 +234,10 @@ modalview : boolean = false;
   }
 
   Ubah(){
-	  if(Object.keys(this.data_view).length==0){
+	if(!this.data_view){
+		this.toastr.warning("Data belum dipilih","Peringatan");
+		return;
+	}else if(Object.keys(this.data_view).length==0){
 		  this.toastr.warning("Data belum dipilih","Peringatan");
 		  return;
 	  }
@@ -288,7 +312,10 @@ modalview : boolean = false;
   }
 
   Detail(){
-	if(Object.keys(this.data_view).length==0){
+	if(!this.data_view){
+		this.toastr.warning("Data belum dipilih","Peringatan");
+		return;
+	}else if(Object.keys(this.data_view).length==0){
 		this.toastr.warning("Data belum dipilih","Peringatan");
 		return;
 	}

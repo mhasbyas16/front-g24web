@@ -27,6 +27,7 @@ import { ProductClarityService } from '../../../services/product/product-clarity
 import { ServerDateTimeService } from '../../../services/system/server-date-time.service';
 import { ProductSeriesService } from '../../../services/product/product-series.service';
 import { TipeStock } from '../../../lib/enum/flag-product';
+import { FlagProduct } from '../../../lib/enum/flag-product';
 
 @Component({
   selector: 'app-mutasi',
@@ -435,6 +436,8 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
 	  let ktr = this.addinput['keterangan'];
     let vdr = this.addinput['vndr'];
 
+
+    //UPDATE PRODUK
     let value = 0;
     for(let index = 0; index < this.itemsdata.length; index++){
 
@@ -484,6 +487,9 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
       
     }
 
+
+
+
     for(let index =0; index < this.itemsdata.length; index++){
       data.items.push(this.itemsdata[index]);
     }
@@ -497,6 +503,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
       this.toastr.warning("Field Unit Tujuan belum dipilih atau data barang yang dimutasi belum di tambah. Dan cek kembali field keterangan","Peringatan");
       // this.itemsdata = [];
       this.berat = 0;
+      this.jml_hpp = 0;
       return;
     }
     this.mutasiservice.add(cfg).subscribe(output => {
@@ -505,11 +512,49 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
         this.products = [];
         this.listdt = [];
         this.berat = 0;
+        this.jml_hpp = 0;
         this.addinput = {};
         this.searchModel = {};
         this.itemsinmutasi = [];
       }
+
+      for(let i = 0; i < this.itemsdata.length; i++){
+        console.log(this.itemsdata[i]._id);
+        let updateproduk = {
+          _id : this.itemsdata[i]._id,
+          flag : FlagProduct.TRANSIT.code
+        }
+  
+        let encode = DataTypeUtil.Encode(updateproduk);
+        this.productservice.update(encode).subscribe(data=>{
+          if(data==false){
+            if(this.productservice.message()!=""){
+              return;
+            }
+          }
+        })
+      }
+      this.toastr.success("Data berhasil di mutasi","Berhasil");
     })
+
+    
+    // for(let i = 0; i < this.itemsdata.length; i++){
+    //   console.log(this.itemsdata[i]._id);
+    //   let updateproduk = {
+    //     _id : this.itemsdata[i]._id,
+    //     flag : FlagProduct.TRANSIT.code
+    //   }
+
+    //   let encode = DataTypeUtil.Encode(updateproduk);
+    //   this.productservice.update(encode).subscribe(data=>{
+    //     if(data==false){
+    //       if(this.productservice.message()!=""){
+    //         return;
+    //       }
+    //     }
+    //     this.toastr.success("Data berhasil di mutasi","Berhasil");
+    //   })
+    // }
      
   }
 
@@ -651,7 +696,10 @@ refresh(){
 }
 
 onView(){
-  if(Object.keys(this.data_view).length==0){
+  if(!this.data_view){
+		this.toastr.warning("Data belum dipilih","Peringatan");
+		return;
+	}else if(Object.keys(this.data_view).length==0){
     this.toastr.warning("Data belum dipilih","Peringatan");
     return;
   }
@@ -813,6 +861,10 @@ GetDisplayName(key : string) : string
   except(key : string){
     switch(key){
       case "_id":
+        return false;
+      break;
+
+      case "__version":
         return false;
       break;
 

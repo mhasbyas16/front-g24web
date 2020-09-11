@@ -93,17 +93,25 @@ modalupdate : boolean = false;
   Simpan(){
   	let code = this.input["code"];
 	let name = this.input["name"];
+	let validate = /^[0-9]+$/;
 	let str = "k"+code;
   	let data = {
   		code : str,
   		name : name,
   		category : "product-purity"
 	  }
+	  
 	  if(!name || !code){
-		  this.toastr.warning("Data belum di isi","Peringatan");
+	  this.toastr.warning("Nama Purity atau kode belum di isi","Peringatan");
+		  return;
+	  }else if(!name.match(validate)||!code.match(validate)){
+		  this.toastr.info("Harap input dengan angka","Informasi");
+		  return;
+	  }else if(name.length < 3 || code.length < 3){
+		  this.toastr.info("Input harus 3 digit","Informasi");
 		  return;
 	  }
-	  
+	
 	  for(let i = 0; i < this.datapurity.length; i++){
 		  if(this.datapurity[i].code==str || this.datapurity[i].name==name){
 			  this.toastr.warning("Data kode atau nama purity sudah ada","Peringatan");
@@ -125,7 +133,10 @@ modalupdate : boolean = false;
   }
 
   Ubah(){
-	if(Object.keys(this.data_view).length==0){
+	if(!this.data_view){
+		this.toastr.warning("Data belum dipilih","Peringatan");
+		return;
+	}else if(Object.keys(this.data_view).length==0){
 		this.toastr.warning("Data belum dipilih","Peringatan");
 		return;
 	}
@@ -138,6 +149,17 @@ modalupdate : boolean = false;
   }
 
   Update(){
+	let validate = /^[0-9]+$/;
+	if(!this.dataupdate["name"]){
+		this.toastr.warning("Nama Purity belum diisi","Peringatan");
+		return;
+	}else if(!this.dataupdate["name"].match(validate)){
+		this.toastr.info("Harap input dengan angka","Informasi");
+		return;
+	}else if(this.dataupdate["name"].length < 3){
+		this.toastr.info("Info harus 3 digit angka","Informasi");
+		return;
+	}
   	for(let i = 0; i < this.uptodate.length; i++){
   		console.log(this.uptodate[i]._id);
   		let data = {
@@ -164,7 +186,10 @@ modalupdate : boolean = false;
   }
 
   Hapus(){
-	  if(Object.keys(this.data_view).length==0){
+	if(!this.data_view){
+		this.toastr.warning("Data belum dipilih","Peringatan");
+		return;
+	}else if(Object.keys(this.data_view).length==0){
 		  this.toastr.warning("Data belum dipilih","Peringatan");
 		  return;
 	  }

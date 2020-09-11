@@ -9,6 +9,11 @@ import { environment } from 'src/environments/environment';
 import { Observable, config } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
+//SELECT2
+
+import { Select2OptionData } from 'ng-select2';
+import { Option } from 'select2';
+
 //ALERT
 import { ToastrService } from 'ngx-toastr';
 
@@ -17,6 +22,7 @@ import { ProductService } from '../../../services/product/product.service';
 import { PrmJualService } from '../../../services/parameter/prm-jual.service';
 import { ProductDenomService } from '../../../services/product/product-denom.service';
 import { ProductCategoryService } from '../../../services/product/product-category.service';
+import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-product-denom',
@@ -28,6 +34,13 @@ import { ProductCategoryService } from '../../../services/product/product-catego
 export class ProductDenomComponent implements OnInit {
 static key = EMenuID.PARAM_DENOM;
 
+//SELECT2
+public option : Option;
+public exampleData : Array<Select2OptionData>;
+tesSelect2 : boolean = false;
+datamultiple : any[] = [];
+inputmultiple : any = {items:[]};
+//----------------------------------------------------------
 
 search : any = {};
 input : any = {};
@@ -35,6 +48,9 @@ searchProduct : any = {};
 data_view : any = {};
 dataupdate : any = {};
 dataupdatekategori : any[] = [];
+
+
+
 select_kategori : any = {};
 select_kategori_add : any = {};
 select_kategori_upd : any = {};
@@ -81,6 +97,15 @@ modalview : boolean = false;
 			  }
 		  }
 		  this.data_kategori = data;
+		//   this.exampleData = data;
+		  for(let i =0; i < data.length; i++){
+			  this.datamultiple.push({id:data[i]._id,text:data[i].name});
+
+			}
+			this.exampleData = this.datamultiple;
+			console.log("Tes",this.exampleData);
+		//   console.log(this.exampleData);
+		  this.option = {multiple: true}
 	  })
 	  let num = AlphaNumeric.Encode(this.datadenom.length);
 	  console.log(num);
@@ -92,13 +117,14 @@ modalview : boolean = false;
   }
 
   SearchData(){
-  	let params = "?";
-  	for(let key in this.search){
+	  let params = "?";
+	  if(!this.search["kategori"]){
+  		for(let key in this.search){
   		if(this.search[key]==""||this.search[key]==null)continue;
   			switch (key) {
-  				case "kategori":
-  					params += "product-category.code="+this.search[key].code+"&";
-				break;
+  				// case "kategori":
+  				// 	params += "product-category.code="+this.search[key].code+"&";
+				// break;
 				
 				case "code":
 					params += "code="+this.search[key].code+"&";
@@ -118,7 +144,21 @@ modalview : boolean = false;
   				}
   			}
   			this.listdenom = data;
-  		})
+		  })
+
+		  return;
+		}
+
+		this.productdenom.list(params+"product-category.name_regex=1&product-category.name="+this.search["kategori"]).subscribe(data=>{
+			if(data==false){
+				if(this.productdenom.message()!=""){
+					this.toastr.info("Data tidak ditemukan","Informasi");
+					this.listdenom = [];
+					return;
+				}
+			}
+			this.listdenom = data;
+		})
   }
 
   Tambah(){
@@ -132,9 +172,11 @@ modalview : boolean = false;
   				return;
   			}
   		}
-  		this.datakategori = data;
-  	})
+		  this.datakategori = data;
+	  })
+	  
   }
+
 
   TambahKategori(){
 	  
@@ -219,7 +261,10 @@ modalview : boolean = false;
 
 
   Ubah(){
-	if(Object.keys(this.data_view).length == 0){
+	if(!this.data_view){
+		this.toastr.warning("Data belum dipilih","Peringatan");
+		return;
+	}else if(Object.keys(this.data_view).length == 0){
 		this.toastr.warning("Data belum dipilih","Peringatan");
 		return;
 	}
@@ -302,7 +347,10 @@ modalview : boolean = false;
 
 
   Detail(){
-	if(Object.keys(this.data_view).length == 0){
+	if(!this.data_view){
+		this.toastr.warning("Data belum dipilih","Peringatan");
+		return;
+	}else if(Object.keys(this.data_view).length == 0){
 		this.toastr.warning("Data belum dipilih","Peringatan");
 		return;
 	}
