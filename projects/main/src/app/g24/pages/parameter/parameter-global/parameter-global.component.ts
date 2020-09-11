@@ -86,17 +86,17 @@ export class ParameterGlobalComponent implements OnInit {
     // prmjual
     this.prmGlobalService.list().subscribe((response: any) => {
       if (response == false) {
-        this.toastrService.error("Data Not Found", "Logam Mulia");
+        this.toastrService.error("Data Not Found", "Parameter Global");
         this.loadingDg = false;
         return;
       }  
       if (response["length"] == 0) {
-        this.toastrService.error("Data Not Found", "Logam Mulia");
+        this.toastrService.error("Data Not Found", "Parameter Global");
         this.loadingDg = false;
         return;
       } 
       this.dataList = response;
-      this.toastrService.success("Load "+response["length"]+" Data", "Logam Mulia");
+      this.toastrService.success("Load "+response["length"]+" Data", "Parameter Global");
       this.loadingDg = false;
     }); 
   }
