@@ -5,11 +5,7 @@
         </div>
         <div class="card-block">
             <div class="card-text">
-                <div  class="clr-col-12"><br></div>
-                <ng-container>
-                    <button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus"></clr-icon></button>
-                </ng-container>
-
+                <button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus"></clr-icon></button>
                 <div class="clr-col-sm-12 clr-col-md-12 clr-col-lg-12"></div>
                 <clr-datagrid [clrDgLoading]="loadingDg">
                     <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
@@ -24,7 +20,7 @@
                         </clr-dg-action-overflow>
                         <clr-dg-cell hidden>{{data._id}}</clr-dg-cell>
                         <clr-dg-cell [style.width.px]="100">{{data.code}}</clr-dg-cell>
-                        <clr-dg-cell [style.width.px]="100">{{data.amount}}</clr-dg-cell>
+                        <clr-dg-cell [style.width.px]="100">{{data.value}}</clr-dg-cell>
                         <clr-dg-cell [style.width.px]="100">{{data.keterangan}}</clr-dg-cell>
                     </clr-dg-row>
                     <clr-dg-footer>
@@ -39,3 +35,160 @@
         </div>
     </div>
 </div>
+
+<!-- modalAdd -->
+<ng-container *ngIf="modalAddDialog">
+    <form (ngSubmit)="mainAddSubmit();">
+        <clr-modal [clrModalSize]="'md'" [clrModalOpen]="modalAddDialog" [clrModalClosable]="false"
+            [clrModalStaticBackdrop]="true">
+            <h3 class="modal-title">Add {{title}}</h3>
+            <div class="modal-body ">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="clr-row">
+                            <div class="clr-col-6">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Code</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input name="code" class="clr-input" [(ngModel)]="inputModel.input_code"/>
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-6">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Value</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input name="value" type="number" class="clr-input" [(ngModel)]="inputModel.input_value"/>
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-12">
+                                <clr-textarea-container>
+                                    <label>Keterangan</label>
+                                    <textarea clrTextarea name="input_keterangan" [(ngModel)]="inputModel.input_keterangan"></textarea>
+                                    <clr-control-error *clrIfError="'required'">Wajib Diisi</clr-control-error>
+                                </clr-textarea-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- hidden field put here-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" (click)="modalAddDialog = false">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    <span *ngIf="spinner==true" class="spinner spinner-inline">
+                        Saving
+                    </span>
+                    <ng-container *ngIf="spinner==false">
+                        Save
+                    </ng-container>
+                </button>
+            </div>
+        </clr-modal>
+    </form>
+</ng-container>
+
+<!-- modalEdit -->
+<ng-container *ngIf="modalEditDialog">
+    <form (ngSubmit)="mainEditSubmit();">
+        <clr-modal [clrModalSize]="'md'" [clrModalOpen]="modalEditDialog" [clrModalClosable]="false"
+            [clrModalStaticBackdrop]="true">
+            <h3 class="modal-title">Edit {{title}}</h3>
+            <div class="modal-body ">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="clr-row">
+                            <div class="clr-col-6">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Code</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input name="code" class="clr-input" [(ngModel)]="inputModel.input_code"/>
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-6">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Value</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input name="value" type="number" class="clr-input" [(ngModel)]="inputModel.input_value"/>
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-12">
+                                <clr-textarea-container>
+                                    <label>Keterangan</label>
+                                    <textarea clrTextarea required name="keterangan" [(ngModel)]="inputModel.input_keterangan"></textarea>
+                                    <clr-control-error *clrIfError="'required'">Wajib Diisi</clr-control-error>
+                                </clr-textarea-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- hidden field put here-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" (click)="modalEditDialog = false">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    <span *ngIf="spinner==true" class="spinner spinner-inline">
+                        Saving
+                    </span>
+                    <ng-container *ngIf="spinner==false">
+                        Save
+                    </ng-container>
+                </button>
+            </div>
+        </clr-modal>
+    </form>
+</ng-container>
+
+<!-- modalAdd -->
+<ng-container *ngIf="modalDetailDialog">
+    <form>
+        <clr-modal [clrModalSize]="'md'" [clrModalOpen]="modalDetailDialog" [clrModalClosable]="false"
+            [clrModalStaticBackdrop]="true">
+            <h3 class="modal-title">Edit {{title}}</h3>
+            <div class="modal-body ">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="clr-row">
+                            <div class="clr-col-6">
+                                    <label for="basic" class="clr-control-label">Code</label>
+                                    <label>{{inputModel.input_code}}</label>
+                            </div>
+                            <div class="clr-col-6">
+                                <label for="basic" class="clr-control-label">Value</label>
+                                <label>{{inputModel.input_value}}</label>
+                            </div>
+                            <div class="clr-col-12"><br></div>
+                            <div class="clr-col-12">
+                                <label for="basic" class="clr-control-label">Keterangan</label>
+                                <label>{{inputModel.input_keterangan}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- hidden field put here-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" (click)="modalDetailDialog = false">Cancel</button>
+            </div>
+        </clr-modal>
+    </form>
+</ng-container>

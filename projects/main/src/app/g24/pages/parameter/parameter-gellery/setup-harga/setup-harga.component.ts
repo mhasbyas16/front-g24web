@@ -144,7 +144,7 @@ export class SetupHargaComponent implements OnInit {
 
   onChangeProduct(data){
     this.getProduct = data;
-    if (data == '5ebba05bb980bd24b9201769') {
+    if (this.getProduct == '5ebba05bb980bd24b9201769') {
       this.show = true;
     }else{
       this.show = false;
@@ -214,8 +214,35 @@ export class SetupHargaComponent implements OnInit {
       "flag": "submit",
     }
 
+    let setup1 = {
+      "product-category": this.findProduct,
+      "product-category_encoded": "base64",
+      "harga_buyback": parseInt(this.inputModel.harga_buyback),
+      "harga_buyback_encoded": "int",
+      "harga_baku": parseInt(this.inputModel.harga_baku),
+      "harga_baku_encoded": "int",
+      "potongan_bb_batu": parseInt(this.inputModel.potongan_batu),
+      "potongan_bb_batu_encoded": "int",
+      "potongan_bb_berlian": parseInt(this.inputModel.potongan_berlian),
+      "potongan_bb_berlian_encoded": "int",
+      "keterangan": this.inputModel.keterangan,
+      "create_by" : this.nikUser["_hash"],
+      "create_by_encoded" : "base64",
+      "create_date" : this.date_now,
+      "create_time" : this.time,
+      "flag": "submit",
+    }
+
+    let tempSetup = null;
+    console.debug(this.inputModel.productSelect,"cuk")
+    if (this.inputModel.productSelect == '5ebba05bb980bd24b9201769'){
+      tempSetup = setup1;
+    }else{
+      tempSetup = setup;
+    }
+
     this.spinner = true;
-    this.prmJualService.add(setup).subscribe((response) => {
+    this.prmJualService.add(tempSetup).subscribe((response) => {
       this.spinner = false;
       this.modalAddDialog = false;
       if (response == false) {
@@ -224,7 +251,7 @@ export class SetupHargaComponent implements OnInit {
       }
       this.toastrService.success('Add Success')
     })
-    console.debug('submitted data',  setup)
+    console.debug('submitted data',  tempSetup)
   }
 
   mainEdit(data) {
@@ -323,6 +350,10 @@ export class SetupHargaComponent implements OnInit {
 
     this.inputModel = data;
     this.inputModel.productSelect = data['product-category'].name;
+    this.inputModel.productS = data['product-category']._id;
+    this.onChangeProduct(this.inputModel.productS);
+    this.inputModel.potongan_batu = data.potongan_bb_batu;
+    this.inputModel.potongan_berlian = data.potongan_bb_berlian;
     this.inputModel.harga_buyback = data.harga_buyback;
     this.inputModel.harga_baku = data.harga_baku;
     this.inputModel.keterangnan = data.keterangan;
@@ -339,7 +370,11 @@ export class SetupHargaComponent implements OnInit {
     });
 
     this.inputModel = data;
-    this.inputModel.productSelect = data['product-category']._id;
+    this.inputModel.productSelect = data['product-category'].name;
+    this.inputModel.productS = data['product-category']._id;
+    this.onChangeProduct(this.inputModel.productS);
+    this.inputModel.potongan_batu = data.potongan_bb_batu;
+    this.inputModel.potongan_berlian = data.potongan_bb_berlian;
     this.modalConfirmDialog = true;
   }
 
@@ -360,13 +395,39 @@ export class SetupHargaComponent implements OnInit {
       "flag": "approved",
     }
 
+    let setup1 = {
+      "_id" : this.inputModel._id,
+      "harga_buyback": parseInt(this.inputModel.harga_buyback),
+      "harga_buyback_encoded": "int",
+      "harga_baku": parseInt(this.inputModel.harga_baku),
+      "harga_baku_encoded": "int",
+      "potongan_bb_batu": parseInt(this.inputModel.potongan_batu),
+      "potongan_bb_batu_encoded": "int",
+      "potongan_bb_berlian": parseInt(this.inputModel.potongan_berlian),
+      "potongan_bb_berlian_encoded": "int",
+      "keterangan": this.inputModel.keterangan,
+      "approve_by" : this.nikUser["_hash"],
+      "approve_by_encoded" : "base64",
+      "approve_date" : this.date_now,
+      "approve_time" : this.time,
+      "flag": "approved",
+    }
+
+    let tempSetup = null;
+    console.debug(this.inputModel.productSelect,"cuk")
+    if (this.inputModel.productSelect == '5ebba05bb980bd24b9201769'){
+      tempSetup = setup1;
+    }else{
+      tempSetup = setup;
+    }
+
     //get data approve lama
     this.spinner = true;
     this.prmJualService.get("?flag=approved&product-category._id="+this.inputModel.productSelect).subscribe((out) => {
       this.getDataold = out._id;
 
       if (out == false){
-        this.prmJualService.update(setup).subscribe((response1) => {
+        this.prmJualService.update(tempSetup).subscribe((response1) => {
           if (response1 == false) {
             this.toastrService.error('Approved Failed')
             return
@@ -390,7 +451,7 @@ export class SetupHargaComponent implements OnInit {
             this.toastrService.error('Update Existing Failed')
             return
           }
-          this.prmJualService.update(setup).subscribe((response1) => {
+          this.prmJualService.update(tempSetup).subscribe((response1) => {
             if (response1 == false) {
               this.toastrService.error('Approved Failed')
               return

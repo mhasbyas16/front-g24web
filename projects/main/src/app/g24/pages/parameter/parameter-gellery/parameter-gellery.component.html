@@ -9,8 +9,8 @@
                     <clr-tab>
                         <button clrTabLink>Logam Mulia dan Dinar </button>
                         <clr-tab-content >
-                            <div  class="clr-col-12"><br></div>
                             <ng-container *ngIf="myRole == 'Keuangan'">
+                                <div  class="clr-col-12"><br></div>
                                 <button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus"></clr-icon></button>
                             </ng-container>
                             <form #searchLogamMulia="ngForm" id="logam-mulia" clrForm (ngSubmit)="onCariLogamMulia(searchLogamMulia.value)">

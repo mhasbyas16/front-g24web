@@ -1,5 +1,5 @@
-<div  class="clr-col-12"><br></div>
 <ng-container *ngIf="myRole == 'Keuangan'">
+    <div  class="clr-col-12"><br></div>
     <button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus"></clr-icon></button> 
 </ng-container>
 <form #search="ngForm" id="logam-mulia" clrForm (ngSubmit)="onDataGrid(search.value)">
@@ -66,7 +66,7 @@
 
 <!-- modalAdd -->
 <ng-container *ngIf="modalAddDialog">
-    <form (ngSubmit)="mainAddSubmit();">
+    <form (ngSubmit)="mainAddSubmit();" name="fm">
         <clr-modal [clrModalSize]="'md'" [clrModalOpen]="modalAddDialog" [clrModalClosable]="false"
             [clrModalStaticBackdrop]="true">
             <h3 class="modal-title">Add {{title}}</h3>
@@ -75,8 +75,7 @@
                     <div class="clr-col-12">
                         <clr-select-container class="clr-form-control">
                             <label class="clr-control-label">Product Category</label>
-                            <select clrSelect name="product_category" [(ngModel)]="inputModel.productSelect">
-                                <!-- <select clrSelect name="product_category" [(ngModel)]="inputModel.productSelect" (change)="onChangeProduct($event.target.value)"> -->
+                            <select clrSelect name="product_category" [(ngModel)]="inputModel.productSelect" (change)="onChangeProduct($event.target.value)">
                                 <ng-container *ngFor="let prod of product">
                                     <option value="{{prod._id}}">{{prod.name}}</option>
                                 </ng-container>
@@ -112,7 +111,7 @@
                             <label for="basic" class="clr-control-label">Potongan BB Batu</label>
                             <div class="clr-control-container">
                             <div class="clr-input-wrapper">
-                                <input [(ngModel)]="inputModel.potongan_batu" name="potongan_batu" type="number" class="clr-input" [value]=0/>
+                                <input [(ngModel)]="inputModel.potongan_batu" name="potongan_batu" type="number" class="clr-input" placeholder="0" min="0" max="100"/>
                                 <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                             </div>
                             <span class="clr-subtext"></span>
@@ -121,10 +120,10 @@
                     </div>
                     <div class="clr-col-6 animate-show-hide" *ngIf="show" [@slideInOut]>
                         <div class="clr-form-control">
-                            <label for="basic" class="clr-control-label">Margin Berlian</label>
+                            <label for="basic" class="clr-control-label">Potongan BB Berlian</label>
                             <div class="clr-control-container">
                             <div class="clr-input-wrapper">
-                                <input [(ngModel)]="inputModel.potongan_berlian" name="potongan_berlian" type="number" class="clr-input" [value]=0/>
+                                <input [(ngModel)]="inputModel.potongan_berlian" name="potongan_berlian" type="number" class="clr-input" placeholder="0" min="0" max="100"/>
                                 <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                             </div>
                             <span class="clr-subtext"></span>
@@ -168,13 +167,7 @@
                 <div class="clr-row">
                     <div class="clr-col-12">
                         <label class="clr-control-label">Product Category</label>
-                        <clr-select-container class="clr-form-control">
-                            <select clrSelect name="product_category" [(ngModel)]="inputModel.productSelect" disabled>
-                                <ng-container *ngFor="let prod of product">
-                                    <option value="{{prod._id}}">{{prod.name}}</option>
-                                </ng-container>
-                            </select>
-                        </clr-select-container>
+                        <label>{{inputModel.productSelect}}</label>
                     </div>
                     <div class="clr-col-6">
                         <div class="clr-form-control">
@@ -197,6 +190,30 @@
                                     <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                                 </div>
                                 <span class="clr-subtext"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clr-col-6 animate-show-hide" *ngIf="show" [@slideInOut]>
+                        <div class="clr-form-control">
+                            <label for="basic" class="clr-control-label">Potongan BB Batu</label>
+                            <div class="clr-control-container">
+                            <div class="clr-input-wrapper">
+                                <input [(ngModel)]="inputModel.potongan_batu" name="potongan_batu" type="number" class="clr-input" placeholder="0" min="0" max="100"/>
+                                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                            </div>
+                            <span class="clr-subtext"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clr-col-6 animate-show-hide" *ngIf="show" [@slideInOut]>
+                        <div class="clr-form-control">
+                            <label for="basic" class="clr-control-label">Potongan BB Berlian</label>
+                            <div class="clr-control-container">
+                            <div class="clr-input-wrapper">
+                                <input [(ngModel)]="inputModel.potongan_berlian" name="potongan_berlian" type="number" class="clr-input" placeholder="0" min="0" max="100"/>
+                                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                            </div>
+                            <span class="clr-subtext"></span>
                             </div>
                         </div>
                     </div>
@@ -247,15 +264,25 @@
                         <label class="clr-control-label">Product Category</label>
                         <label>{{inputModel.productSelect}}</label>
                     </div>
+                    <div class="clr-col-12"><br></div>
                     <div class="clr-col-6">
                         <label class="clr-control-label">Harga Buyback</label>
                         <label>Rp. {{inputModel.harga_buyback | number}}</label>
                     </div>
-                    <div class="clr-col-12"><br></div>
                     <div class="clr-col-6">
                         <label class="clr-control-label">Harga Dasar Jual</label>
                         <label>Rp. {{inputModel.harga_baku | number}}</label>
                     </div>
+                    <div class="clr-col-12 animate-show-hide" *ngIf="show" [@slideInOut]><br></div>
+                    <div class="clr-col-6 animate-show-hide" *ngIf="show" [@slideInOut]>
+                        <label for="basic" class="clr-control-label">Potongan BB Batu</label>
+                        <label>{{inputModel.potongan_batu}}</label>
+                    </div>
+                    <div class="clr-col-6 animate-show-hide" *ngIf="show" [@slideInOut]>
+                        <label class="clr-control-label">Potongan BB Berlian</label>
+                        <label>{{inputModel.potongan_berlian}}</label>
+                    </div>
+                    <div class="clr-col-12"><br></div>
                     <div class="clr-col-6">
                         <label class="clr-control-label">Keterangan</label>
                         <label>{{inputModel.keterangan}}</label>
