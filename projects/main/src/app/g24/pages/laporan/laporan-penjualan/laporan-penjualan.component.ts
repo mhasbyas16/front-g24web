@@ -30,6 +30,9 @@ export class LaporanPenjualanComponent implements OnInit {
   // Harga
   totalP=0;
   totalBerlian=0;
+  totalHargaLM=0;
+  totalHargaGS=0
+  totalHargaDinar=0
   listTotalHarga=[];
 
   //
@@ -46,14 +49,14 @@ export class LaporanPenjualanComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.from();
+    this.form();
     this.datepick();
     this.filterTransaction('id');
   }
   totalHarga(val){
     this.totalP = this.totalP+Number(val);
   }
-  from(){
+  form(){
     this.search = new FormGroup({
       from: new FormControl(this.datePipe.transform(Date.now(),'MM/dd/yyyy')),
       to: new FormControl(this.datePipe.transform(Date.now(),'MM/dd/yyyy')),
@@ -166,16 +169,31 @@ export class LaporanPenjualanComponent implements OnInit {
       for (let isi of this.transactions) {
         this.totalP = 0;
         this.totalBerlian=0;
+        this.totalHargaLM=0;
+        this.totalHargaGS=0;
+        this.totalHargaDinar=0;
         for (let hp of isi.product["PERHIASAN"]) {
           this.totalP = this.totalP + hp.harga;
         }
         for (let hb of isi.product["BERLIAN"]) {
           this.totalBerlian = this.totalBerlian + hb.harga;
         }
+        for (let hLM of isi.product["LM"]) {
+          this.totalHargaLM = this.totalHargaLM + hLM.harga;
+        }
+        for (let hGS of isi.product["GS"]) {
+          this.totalHargaGS = this.totalHargaGS + hGS.harga;
+        }
+        for (let hDN of isi.product["DINAR"]) {
+          this.totalHargaDinar = this.totalHargaDinar + hDN.harga;
+        }
         this.listTotalHarga.push({
           "idTransaction":isi.idTransaction,
           "hargaP":this.totalP,
           "hargaB":this.totalBerlian,
+          "hargaLM":this.totalHargaLM,
+          "hargaGS":this.totalHargaGS,
+          "hargaDinar":this.totalHargaDinar
         });
       }
      // console.debug(this.listTotalHarga ,"alkjfdljajkladkljadkla")

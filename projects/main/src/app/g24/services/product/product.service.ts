@@ -10,6 +10,10 @@ export class ProductService {
 
   constructor(private commonService:CommonService) { }
 
+
+  count(params?) {
+    return this.commonService.count(this.key, params);
+  }
   list(params?) {
     return this.commonService.list(this.key, params);
   }
@@ -24,6 +28,10 @@ export class ProductService {
 
   update(data) {
     return this.commonService.update(this.key, data);
+  }
+
+  batchUpdate(data){
+    return this.commonService.batchUpdate(this.key, data);
   }
 
   add(data) {

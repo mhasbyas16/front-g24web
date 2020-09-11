@@ -1,0 +1,312 @@
+<ng-container *ngIf="checkoutModal">
+    <clr-modal [(clrModalOpen)]="checkoutModal" [clrModalSize]="'xl'" >
+        <h3 class="modal-title" >Check Out {{totalBelanja | number}} <clr-icon shape="coin-bag" class="is-solid cart-color"></clr-icon></h3>
+        <div class="modal-body">
+            <form class="clr-form clr-form-horizontal" [formGroup]="formData">
+                <div class="card" style="margin-top: 0;">
+                    <div class="card-header">
+                        Detail Pencarian
+                    </div>
+                    <div class="card-block">
+                        <div class="card-text">
+                            <div class="clr-row">
+                                <div class="clr-col-4">
+                                    <clr-input-container class="margin-top-remove">
+                                        <label>CIF</label>
+                                        <input clrInput type="text" formControlName="cif" readonly style="background-color: #fbffc9;">
+                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                        <clr-control-error *clrIfError="'pattern'">This is a required field 0 - 9</clr-control-error>
+                                    </clr-input-container> 
+                                </div>
+                                <div class="clr-col-3" style="margin-left: 30px;" >
+                                    <div class="btn-group btn-outline-primary btn-sm">
+                                        <button type="button" class="btn"  style="align-content: center;" (click)="searchNasabah.openModal()">Cari</button>
+                                        <button type="button" class="btn btn-outline-success" >Tambah</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <clr-input-container class="margin-top-remove">
+                                <label>Nama Nasabah</label>
+                                <input clrInput type="text" formControlName="name" readonly style="background-color: #fbffc9;">
+                                <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                            </clr-input-container> 
+                        </div> 
+                        <!-- hidden field put here-->
+                        <input type="hidden" formaControlName="idPenjualan_validation">                                                             
+                    </div>
+                </div>
+                <br>
+                 <!-- card list -->
+                 <div class="card" style="margin-top: 0;">
+                    <div class="card-header">
+                        List Buyback
+                    </div>
+                    <div class="card-block">
+                        <div class="card-text">
+                            <ng-container *ngIf="jumlahPerhiasan > 0">
+                                <div class="clr-row">
+                                    <div class="card" style="margin-top: 0;">
+                                        <div class="card-header">
+                                            Perhiasan
+                                        </div>
+                                        <div class="card-block">
+                                            <ul class="list-group">
+                                                <ng-container *ngFor="let ip of perhiasan | keyvalue">
+                                                    <li class="list-group-item">
+                                                        <div class="clr-row" style="padding-top: 0;">
+                                                            <div class="clr-col-2" >
+                                                                <span>{{ip.value.code}}</span>
+                                                            </div>
+                                                            <div class="clr-col-1">
+                                                                <span>{{ip.value.vendor}}</span>
+                                                            </div>
+                                                            <div class="clr-col-1">
+                                                                <span>{{ip.value.jenis}}</span>
+                                                            </div>
+                                                            <div class="clr-col-1">
+                                                                <span>{{ip.value.warna}}</span>
+                                                            </div>
+                                                            <div class="clr-col-1">
+                                                                <span>{{ip.value.kadar}}</span>
+                                                            </div>
+                                                            <div class="clr-col-1">
+                                                                <span>{{ip.value.berat}}</span>
+                                                            </div>
+                                                            <div class="clr-col-1">
+                                                                <span>{{ip.value.kondisi}}</span>
+                                                            </div>
+                                                            <div class="clr-col-1">
+                                                               
+                                                            </div>
+                                                            <div class="clr-col-3">
+                                                                <span class="left"> Rp. {{ip.value.hargaBB| number}}</span>
+                                                            </div>
+                                                        </div>
+                                                    </li>                                        
+                                                </ng-container>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>        
+                            </ng-container>
+
+                            <ng-container *ngIf="jumlahEmasBatangan > 0">
+                                <div class="clr-row">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            Logam Mulia
+                                        </div>
+                                        <div class="card-block">
+                                            <div class="card-block" style="padding: 0">
+                                                <ul class="list-group">
+                                                    <ng-container *ngFor="let ip of emasBatangan | keyvalue" style="padding: 0;">
+                                                        <li class="list-group-item">
+                                                            <div class="clr-row" style="padding-top: 0;">
+                                                               
+                                                                <div class="clr-col-3">
+                                                                    <span>{{ip.value.code}}</span>
+                                                                </div>
+                                                                <div class="clr-col-2">
+                                                                    <span>{{ip.value.vendor}}</span>
+                                                                </div>
+                                                                <div class="clr-col-2">
+                                                                    <span>{{ip.value.denom}}</span>
+                                                                </div>
+                                                               
+                                                                <div class="clr-col-2">
+                                                                    <span>{{ip.value.noSeri}}</span>
+                                                                </div>
+                                                                <div class="clr-col-3">
+                                                                    <span class="left"> Rp. {{ip.value.hargaBB| number}}</span>
+                                                                </div>
+                                                                
+                                                            </div>
+                                                        </li>                                        
+                                                    </ng-container>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>        
+                            </ng-container>
+
+                            <ng-container *ngIf="jumlahBerlian > 0">
+                                <div class="clr-row">
+                                    <div class="card" style="margin-top: 0;">
+                                        <div class="card-header">
+                                            Berlian
+                                        </div>
+                                        <div class="card-block">
+                                            <ul class="list-group">
+                                                <ng-container *ngFor="let ip of berlian | keyvalue">
+                                                    <li class="list-group-item">
+                                                        <div class="clr-row" style="padding-top: 0;">
+                                                            <div class="clr-col-2" >
+                                                                <span>{{ip.value.code}}</span>
+                                                            </div>
+                                                            <div class="clr-col-1">
+                                                                <span>{{ip.value.vendor}}</span>
+                                                            </div>
+                                                            <div class="clr-col-1">
+                                                                <span>{{ip.value.jenis}}</span>
+                                                            </div>
+                                                            <div class="clr-col-1">
+                                                                <span>{{ip.value.warna}}</span>
+                                                            </div>
+                                                            <div class="clr-col-1">
+                                                                <span>{{ip.value.kadar}}</span>
+                                                            </div>
+                                                            <div class="clr-col-1">
+                                                                <span>{{ip.value.berat}}</span>
+                                                            </div>
+                                                            <div class="clr-col-1">
+                                                                <span>{{ip.value.kondisi}}</span>
+                                                            </div>
+                                                            <div class="clr-col-1">
+                                                               
+                                                            </div>
+                                                            <div class="clr-col-3">
+                                                                <span class="left"> Rp. {{ip.value.hargaBB| number}}</span>
+                                                            </div>
+                                                        </div>
+                                                    </li>                                        
+                                                </ng-container>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>        
+                            </ng-container>
+                            <ng-container *ngIf="jumlahSouvenir > 0">
+                                <div class="clr-row">
+                                    <div class="card" style="margin-top: 0;">
+                                        <div class="card-header">
+                                            Souvenir
+                                        </div>
+                                        <div class="card-block">
+                                            <ul class="list-group">
+                                                <ng-container *ngFor="let ip of souvenir | keyvalue">
+                                                    <li class="list-group-item">
+                                                        <div class="clr-row" style="padding-top: 0;">
+                                                            <div class="clr-col-2" >
+                                                                <span>{{ip.value.code}}</span>
+                                                            </div>
+                                                            <div class="clr-col-2" >
+                                                                <span>{{ip.value.vendor}}</span>
+                                                            </div>
+                                                            <div class="clr-col-1" >
+                                                                <span>{{ip.value.denom}}</span>
+                                                            </div>
+                                                            <div class="clr-col-2" >
+                                                                <span>{{ip.value.series}}</span>
+                                                            </div>
+                                                            <div class="clr-col-2" >
+                                                                <span>{{ip.value.kondisi}}</span>
+                                                            </div>
+                                                            <div class="clr-col-3">
+                                                                <span class="left"> Rp. {{ip.value.hargaBB| number}}</span>
+                                                            </div>
+                                                        </div>
+                                                    </li>                                        
+                                                </ng-container>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>        
+                            </ng-container>
+                            <ng-container *ngIf="jumlahDinar > 0">
+                                <div class="clr-row">
+                                    <div class="card" style="margin-top: 0;">
+                                        <div class="card-header">
+                                            Dinar
+                                        </div>
+                                        <div class="card-block">
+                                            <ul class="list-group">
+                                                <ng-container *ngFor="let ip of dinar | keyvalue">
+                                                    <li class="list-group-item">
+                                                        <div class="clr-row" style="padding-top: 0;">
+                                                            <div class="clr-col-2" >
+                                                                <span>{{ip.value.code}}</span>
+                                                            </div>
+                                                            <div class="clr-col-2" >
+                                                                <span>{{ip.value.vendor}}</span>
+                                                            </div>
+                                                            <div class="clr-col-1" >
+                                                                <span>{{ip.value.denom}}</span>
+                                                            </div>
+                                                            <div class="clr-col-2" >
+                                                                <span>{{ip.value.kondisi}}</span>
+                                                            </div>
+                                                            <div class="clr-col-3">
+                                                                <span class="left"> Rp. {{ip.value.hargaBB| number}}</span>
+                                                            </div>
+                                                        </div>
+                                                    </li>                                        
+                                                </ng-container>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>        
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 0;">
+                    <div class="card-header">
+                        Total : Rp. {{totalBelanja | number}} 
+                    </div>
+                    <div class="card-block">
+                        <div class="card-text">
+                            <div class="clr-row">
+                                <div class="clr-col-4" >
+                                    <clr-input-container  class="margin-top-remove">
+                                        <label>ID Transaksi</label>
+                                        <input clrInput type="text" [value]="idtransaksiBB" fromControlName="idTransactionBB" readonly>
+                                    </clr-input-container>
+                                </div>
+                                <div class="clr-col-3" style="margin-left: 30px;" >
+                                    <button type="button" class="btn btn-sm btn-primary-outline " (click)="refreshId()"><clr-icon shape="refresh"></clr-icon></button>
+                                </div>
+                            </div>
+                            <clr-radio-container clrInline>
+                                <label>Metode Bayar</label>
+                                <clr-radio-wrapper *ngFor="let i of transactionMethod" >
+                                    <input type="radio" clrRadio formControlName="metodeBayar" [attr.checked]="'01'==i.code" name="metodeBayar" [value]="i._hash" (click)="bankValid(i._hash)"/>
+                                    <label>
+                                        <img class="img-responsive2" [attr.src]="'assets/images/metode/'+i.icon" alt="">
+                                        {{i.name}}</label>
+                                </clr-radio-wrapper>
+                            </clr-radio-container>
+                            <clr-input-container>
+                                <label>Nominal Transaksi</label>
+                                <input clrInput type="text" formControlName="nominalTransaksi" (keyup)="diterimaUang($event.target.value)">
+                            </clr-input-container>
+                            <clr-input-container>
+                                <label>Kembali</label>
+                                <input clrInput type="text" formControlName="kembali" [value]="kembali | number" readonly>
+                            </clr-input-container>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="button" class="btn btn-block btn-primary" (click)="transaction()">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </clr-modal>
+</ng-container>
+<ng-container *ngIf="validModel">
+    <clr-modal [(clrModalOpen)]="validModel" [clrModalSize]="'sm'">
+        <h3 class="modal-title">Confirmation</h3>
+        <div class="modal-body">
+            <p>Do You Want Process This Transaction ?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger-outline" (click)="validModel = false" >Cancel</button>
+            <button type="button" class="btn btn-primary" (click)="storeTransaction()">Process</button>
+        </div>
+    </clr-modal>
+</ng-container>
+
+<app-add-nasabah #addNasabah (clientData)="getClientData($event)"></app-add-nasabah>
+<app-search-nasabah #searchNasabah (clientData)="getClientData($event)"></app-search-nasabah>
