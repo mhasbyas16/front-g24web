@@ -34,4 +34,8 @@ export class InisiasiService {
     return this.commonService.delete(this.key, data);
   }
 
+  count(params) {
+    return this.commonService.count(this.key, params);
+  }
+
 }

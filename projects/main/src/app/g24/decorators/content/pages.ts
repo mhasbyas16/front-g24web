@@ -31,6 +31,7 @@ export const DContent = (key : string) : any =>
 {
     return (cls) =>
     {
+        console.log(key, "key");
         Pages.register(key, cls);
     }
 }

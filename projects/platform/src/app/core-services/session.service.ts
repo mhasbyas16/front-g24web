@@ -8,6 +8,7 @@ export class SessionService {
 
   // server: string = "http://localhost:8000";
   server: string = "http://34.87.141.184:8000";
+  // server: string = "http://192.168.0.21:8000";
   pasphrase = "";
 
   constructor() {

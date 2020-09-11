@@ -3,7 +3,6 @@ import { NgForm, Form, FormGroup, FormBuilder } from '@angular/forms';
 
 import { isArray } from 'util';
 import { ClarityModule } from '@clr/angular';
-import { EventEmitter } from 'protractor';
 import { ToastrService } from 'ngx-toastr';
 import { BasePersistentFields } from '../../../../lib/base/base-persistent-fields';
 import { InitiationType } from '../../../../lib/enums/initiation-type';
@@ -15,13 +14,14 @@ import { VendorService } from '../../../../services/vendor.service';
 import { InisiasiService } from '../../../../services/stock/inisiasi.service';
 import { ProductCategoryService } from '../../../../services/product/product-category.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
-import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
 import { ProductJenisService } from '../../../../services/product/product-jenis.service';
 import { ProductPurityService } from '../../../../services/product/product-purity.service';
 import { ProductGoldColorService } from '../../../../services/product/product-gold-color.service';
 import { ProductDiamondColorService } from '../../../../services/product/product-diamond-color.service';
 import { ProductDenomService } from '../../../../services/product/product-denom.service';
 import { ProductClarityService } from '../../../../services/product/product-clarity.service';
+import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
+import { OrderStatus } from '../../../../lib/enum/order-status';
 
 @Component({
   selector: 'detail-inisiasi-perhiasan',
@@ -89,6 +89,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   {
     return {
       nomor_nota : null, tgl_inisiasi : new Date().toISOString().split("T")[0],  harga_baku : 0, pajak : 0, 
+      create_date : new Date().toISOString().split("T")[0],
       'product-category' : null, vendor : null, tipe_bayar : null,
       total_berat : 0, total_piece : 0, total_baku_tukar : 0, total_gram_tukar : 0,
       total_ongkos : 0, total_pajak : 0, total_harga : 0,
@@ -99,7 +100,8 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   defaultItem() :any
   {
     return {
-      sku : null, 'product-purity' : null, 'product-jenis' : null, 'product-gold-color' : null, 
+      sku : null, 'product-purity' : null, 'product-gold-color' : null,
+      'product-jenis' : null,
       berat : 0, baku_tukar : 0, gram_tukar : 0, ongkos : 0, pajak : 0 }
   }
 
@@ -478,7 +480,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
       return false;
     }
 
-    if(model.init_no == "")
+    if(model.no_po == "")
     {
       return false;
     }
@@ -499,36 +501,48 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     let now : Date = new Date;
     let sNow = now.toISOString().split("T");
     let date = sNow[0];
+    let date_split = date.split("-");
     let time = sNow[1].split(".")[0];
 
-    let no = this.input['init_no'];
+    let no = this.input['no_po'];
     console.log(no, "no")
 
-    if(this.user.unit == null)
+    if(this.user?.unit == null)
     {
       this.toastr.warning("Unit dari User belum di-Assign. Harap hubungi IT Support/Helpdesk.", "Error!");
       return;
     }
 
+    let PO = "PO" + this.user.unit.code + date_split[0].substring(1, 3) + date_split[1] + "[0,5]";
+
     let def = 
     {
-      // init_no : "PO" + this.user.unit.code + "",//"IN0000512",
+      no_po : PO,
+      __format : "no_po:inc",
       create_date : this.input['create_date'],
       create_time : time,
       create_by : this.user.username,
       unit : this.user.unit.code,
-      flag : "submit",
+      order_status : OrderStatus.SUBMIT.code,
+      status_bayar : '1',
       __version : new Date().getMilliseconds(),
       __version_d : "0",
+      items : this.input['items']
       // vendor : null,
       // 'product-category' : null,
     };
+    Object.assign(def, this.input);
     let init = DataTypeUtil.Encode(def);
-
+    
     this.inisiasiService.add(init).subscribe(output => {
-      if(output != false)
+      if(output == false)
       {
-        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + this.inisiasiService.message);
+        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + this.inisiasiService.message());
+      } else {
+        this.toastr.success("Inisiasi Berhasil. Harap hubungi Kepala Departemen untuk melakukan Approval. No. PO : " + output.no_po, "Info", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
+        console.log(output,'ts');
+        this.input = this.defaultInput();
+        this.input.create_date = new Date().toISOString().split("T")[0];
       }
     });
     // console.log(output);
@@ -632,8 +646,15 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
 
   onAddItem()
   {
+    if(this.input['product-category'] == null || this.input['vendor'] == null)
+    {
+      this.toastr.warning("Kategori Produk atau Vendor belum diisi");
+      return;
+    }
+
     let tempItem = {
-      sku : null, 'product-purity' : null, 'product-jenis' : null, 'product-gold-color' : null, 
+      sku : null, 'product-purity' : null, 'product-gold-color' : null,
+      'product-jenis' : null,
       berat : 0, baku_tukar : 0, gram_tukar : 0, ongkos : 0, pajak : 0};
 
     
@@ -661,7 +682,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   {
     let i = this.input['items'].indexOf(this.selected);
     console.log(i)
-    this.input['items']?.splice(this.selectedId, 1);
+    this.input['items']?.splice(i, 1);
     this.onResetItem();
   }
 
@@ -672,6 +693,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
 
   getBeratFromItems()
   {
+    if(this.input == null) return 0;
     let berat = 0.0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -685,6 +707,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
 
   getPiecesFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -699,6 +722,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   
   getBakuTukarFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -713,12 +737,13 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   
   getGramTukarFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
       if(this.input.items[i]?.gram_tukar == null || this.input.items[i]?.gram_tukar == "null")
         continue;
-        value += parseInt(this.input.items[i].gram_tukar);
+        value += parseFloat(this.input.items[i].gram_tukar);
     }
 
     this.input['total_gram_tukar'] = value;
@@ -727,12 +752,13 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   
   getOngkosFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
       if(this.input.items[i]?.ongkos == null || this.input.items[i]?.ongkos == "null")
         continue;
-        value += parseInt(this.input.items[i].ongkos);
+        value += parseFloat(this.input.items[i].ongkos);
     }
 
     this.input['total_ongkos'] = value;
@@ -741,16 +767,24 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   
   getPajakFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
       if(this.input.items[i]?.pajak == null || this.input.items[i]?.pajak == "null")
         continue;
-        value += parseInt(this.input.items[i].pajak);
+        value += parseFloat(this.input.items[i].pajak);
     }
 
     this.input['total_pajak'] = value;
     return value;
+  }
+  
+  totalHargaStyleValid()
+  {
+    if(this.hitungTotalHarga() > 0) return {};
+
+    return {'text-decoration': 'underline','text-decoration-color': 'red', 'color' : 'red'};
   }
 
   beratStyleValid()
@@ -815,13 +849,13 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     item = item == null ? this.selected : item;
     let ongkos : number = item.ongkos;
     let hpajak : number= this.input?.pajak;
-    let berat : number= item.berat;
+    let gram_tukar : number= item.gram_tukar;
 
-    if(ongkos == null || hpajak == null || berat == null) return 0;
+    if(ongkos == null || hpajak == null || gram_tukar == null) return 0;
     
     let persenPajak = 2.00;
 
-    let pajakItem : number = (ongkos/1000) * berat * hpajak * persenPajak / 100; 
+    let pajakItem : number = (ongkos/1000) * gram_tukar * hpajak * persenPajak / 100;
     item.pajak = Math.trunc(pajakItem);
     console.log(pajakItem)
     return this.selected.pajak;
@@ -843,5 +877,67 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
       return validationMethod();
 
     return true;
+  }
+
+  onKadarChanged(item)
+  {
+    item = item ? item : this.selected;
+
+    this.hitungOngkos(item);
+    this.hitungGramTukar(item);
+  }
+
+  onBeratChanged(item)
+  {
+    item = item ? item : this.selected;
+
+    this.hitungPajak(item);
+    this.hitungGramTukar(item);
+  }
+  
+  onGramTukarChanged(item)
+  {
+    item = item ? item : this.selected;
+
+    this.hitungPajak(item);
+    this.hitungTotalHarga();
+  }
+
+  onBakuTukarChanged(item)
+  {
+    this.hitungOngkos(item);
+    this.hitungGramTukar(item);
+    this.hitungPajak(item);
+  }
+
+  hitungOngkos(item)
+  {
+    item = item ? item : this.selected;
+
+    let kadar = Number(item['product-purity'].name);
+    let baku_tukar = Number(item['baku_tukar']);
+
+    item.ongkos = baku_tukar - kadar;
+  }
+
+  hitungGramTukar(item)
+  {
+    item = item ? item : this.selected;
+
+    let berat = Number(item.berat);
+    let baku_tukar = Number(item.baku_tukar);
+
+    item.gram_tukar = baku_tukar * berat / 1000;
+    item.gram_tukar = Number(item.gram_tukar.toFixed(2));
+    console.log(item.gram_tukar);
+  }
+
+  hitungTotalHarga()
+  {
+    let hbaku = Number(this.input['harga_baku']);
+    let total_gram_tukar = this.getGramTukarFromItems();
+
+    this.input['total_harga'] = hbaku * total_gram_tukar;
+    return this.input['total_harga'];
   }
 }
