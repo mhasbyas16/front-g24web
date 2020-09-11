@@ -31,9 +31,9 @@
 </form>
 <clr-datagrid [clrDgLoading]="loadingDg">
     <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
+    <clr-dg-column>Product Category</clr-dg-column>
     <clr-dg-column>Harga Buyback</clr-dg-column>
     <clr-dg-column>Harga Dasar Jual</clr-dg-column>
-    <clr-dg-column>Product Category</clr-dg-column>
     <clr-dg-column>Status</clr-dg-column>
 
     <clr-dg-row *clrDgItems="let row of setupHarga">
@@ -42,9 +42,9 @@
             <button class="action-item" (click)="mainDetail(row)">Detail</button>
         </clr-dg-action-overflow>
         <clr-dg-cell hidden>{{row._id}}</clr-dg-cell>
+        <clr-dg-cell>{{row['product-category'].name}}</clr-dg-cell>
         <clr-dg-cell>Rp. {{row['harga_buyback'] | number}}</clr-dg-cell>
         <clr-dg-cell>Rp. {{row['harga_baku'] | number}}</clr-dg-cell>
-        <clr-dg-cell>{{row['product-category'].name}}</clr-dg-cell>
             <ng-container *ngIf="row.flag == 'approved'">
                 <clr-dg-cell><span class="label label-success">Approved</span></clr-dg-cell>
             </ng-container>
