@@ -1,19 +1,12 @@
 import { Injectable } from '@angular/core';
-import { CommonService } from "../../../../../../platform/src/app/core-services/common.service";
+import { CommonService } from 'projects/platform/src/app/core-services/common.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProductService {
-
-  key = "master-api/product";
-
+export class TransactionTypeService {
+  key = "master-api/transaction-type";
   constructor(private commonService:CommonService) { }
-
-
-  count(params?) {
-    return this.commonService.count(this.key, params);
-  }
   list(params?) {
     return this.commonService.list(this.key, params);
   }
@@ -28,10 +21,6 @@ export class ProductService {
 
   update(data) {
     return this.commonService.update(this.key, data);
-  }
-
-  batchUpdate(data){
-    return this.commonService.batchUpdate(this.key, data);
   }
 
   add(data) {

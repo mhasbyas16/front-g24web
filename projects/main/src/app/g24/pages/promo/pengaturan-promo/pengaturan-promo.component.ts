@@ -18,6 +18,8 @@ import { ProductPurityService } from '../../../services/product/product-purity.s
 import { ProductJenisService } from '../../../services/product/product-jenis.service';
 import { PromotionSettingService } from '../../../services/promotion/promotion-setting.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
+import { BudgetCostService } from '../../../services/promotion/budget-cost.service';
+
 
 @Component({
   selector: 'app-pengaturan-promo',
@@ -36,6 +38,8 @@ export class PengaturanPromoComponent implements OnInit {
   perhiasan:boolean = false;
   berlian:boolean = false;
   mulia:boolean = false;
+  giftSouvenir:boolean = false;
+  dinar:boolean = false;
 
   manualWizard: boolean = false;
   penjualanWizard: boolean = false;
@@ -43,12 +47,22 @@ export class PengaturanPromoComponent implements OnInit {
   selectProduct:boolean = false;
   inputKuota:boolean = false;  
   kuotaProduk:boolean = false;
+  passingPromoMargin:boolean = false;
+  budgetCost:any;
 
   // get data ke child
   getDataPerhiasan:boolean = false;
+  getDataMulia:boolean = false;
+  getDataGiftSouvenir:boolean = false;
+  getDataBerlian:boolean = false;
+  getDataDinar:boolean = false;
 
   // passing data strore promosi
   passingPerhiasan:boolean = false;
+  passingMulia:boolean = false;
+  passingDinar:boolean = false;
+  passingGiftSouvenir:boolean = false;
+  passingBerlian:boolean = false;
 
   section1_penjualan: FormGroup = null;
   // Data 
@@ -58,6 +72,7 @@ export class PengaturanPromoComponent implements OnInit {
   public options:Options;
   public options2:Options;
   nikUser:any;
+  tipeGS:any;
 
   // select2
   productCategory:Array<Select2OptionData>;
@@ -82,7 +97,8 @@ export class PengaturanPromoComponent implements OnInit {
     private sessionService: SessionService,
     private toastrService: ToastrService,
     private datePipe: DatePipe,
-    private promoService:PromoService
+    private promoService:PromoService,
+    private budgetCostService:BudgetCostService
   ) { }
 
   ngOnInit(): void {
@@ -91,6 +107,7 @@ export class PengaturanPromoComponent implements OnInit {
     this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser))} ;
     this.form();
     this.getUnit();
+    this.getBudgetCost();
     // product category
     let pd = [];
     this.productCategoryService.list('?_hash=1').subscribe((response:any)=>{
@@ -121,6 +138,15 @@ export class PengaturanPromoComponent implements OnInit {
     };
   }
 
+  getBudgetCost(){
+    this.budgetCostService.list('?_hash=1').subscribe((response:any)=>{
+      if (response == false) {
+        this.toastrService.error("Get Budget Cost Failed");
+        return;
+      }
+      this.budgetCost = response;
+    })
+  }
   getUnit(){
     let data = [];
     let unitarry = [];
@@ -147,6 +173,16 @@ export class PengaturanPromoComponent implements OnInit {
     }
   }
 
+  select2BudgetCost(val){
+    let isi = JSON.parse(atob(val));
+    if (isi.code == 'promomargin') {
+      this.passingPromoMargin= true;
+      console.debug('promo margin')
+    }else{
+      this.passingPromoMargin = false;
+    }
+  }
+
   select2Product(val){
     if (val == 'pp'){
       this.selectProduct = true;
@@ -170,11 +206,14 @@ export class PengaturanPromoComponent implements OnInit {
   }
 
   productSelect(){
+    this.promoService.product.splice(0);
     let arr = [];
     if (this.selectProduct != true) {
       this.perhiasan = true;
       this.berlian = true;
       this.mulia = true;
+      this.giftSouvenir = true;
+      this.dinar= true;
     }else{
       let productCat:any;
     for (let section of this.section1_penjualan.get("pickProduct-category").value) {
@@ -196,24 +235,20 @@ export class PengaturanPromoComponent implements OnInit {
     }else{
       this.berlian = false;
     }  
-    
-    // if (productCat.code == "c02") {
-    //   this.berlian = true;
-    // }else{
-    //   this.berlian = false;
-    // } 
 
-    // if (productCat.code == "c03") {
-    //   this.berlian = true;
-    // }else{
-    //   this.berlian = false;
-    // } 
+    if (arr.some(function(el){ return el.code === "c06"}) == true) {
+      this.dinar = true;
+    }else{
+      this.dinar = false;
+    }  
 
-    // if (productCat.code == "c04") {
-    //   this.berlian = true;
-    // }else{
-    //   this.berlian = false;
-    // } 
+    if (arr.some(function(el){ return el.code === "c02"}) == true || arr.some(function(el){ return el.code === "c04"}) == true) {
+      this.giftSouvenir = true;
+      this.tipeGS ='s';
+    }else{
+      this.giftSouvenir = false;
+      this.tipeGS ='';
+    } 
 
     if (arr.some(function(el){ return el.code === "c05"}) == true) {
       this.mulia = true;
@@ -243,6 +278,8 @@ export class PengaturanPromoComponent implements OnInit {
       approval : new FormControl (""),
       approvalDate: new FormControl(""),
       approvalTime: new FormControl(""),
+      'budget-cost': new FormControl ("", Validators.required),
+      'budget-cost_encoded': new FormControl ("base64")
     });
   }
 
@@ -260,13 +297,36 @@ export class PengaturanPromoComponent implements OnInit {
     console.debug(this.section1_penjualan.get("product-category").value)
   }
 
+  // get data
   getPerhiasan(data){
       this.passingPerhiasan = data;
       this.passingData();
   }
+  getMulia(data){
+    this.passingMulia = data;
+    this.passingData();
+  }
+  getDinar(data){
+    this.passingDinar = data;
+    this.passingData();
+  }
+  getGiftSouvenir(data){
+    this.passingGiftSouvenir = data;
+    this.passingData();
+  }
+
+  getBerlian(data){
+    this.passingBerlian = data;
+    this.passingData();
+  }
 
   passingData(){
-    if (this.passingPerhiasan == this.getDataPerhiasan) {
+    if (this.passingPerhiasan == this.getDataPerhiasan && 
+      this.passingMulia == this.getDataMulia &&
+      this.passingDinar == this.getDataDinar &&
+      this.passingGiftSouvenir == this.getDataGiftSouvenir &&
+      this.passingBerlian == this.getDataBerlian) {
+
       this.getDataPromosi();
     }    
   }
@@ -332,6 +392,22 @@ export class PengaturanPromoComponent implements OnInit {
     if (this.perhiasan == true) {
       this.getDataPerhiasan = true;
     }    
+
+    if(this.mulia == true){
+      this.getDataMulia = true;
+    }
+    
+    if (this.dinar == true) {
+      this.getDataDinar = true;
+    }
+
+    if(this.giftSouvenir == true){
+      this.getDataGiftSouvenir = true;
+    }
+
+    if(this.berlian == true){
+      this.getDataBerlian = true;
+    }
     
   }
 

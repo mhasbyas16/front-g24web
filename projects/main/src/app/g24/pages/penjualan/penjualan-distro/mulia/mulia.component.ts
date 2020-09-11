@@ -194,7 +194,7 @@ export class MuliaComponent implements OnInit {
   
   cekItemArray(data: any){
     // const code = this.cartList.map(el => el.code);
-    const code = this.cartList.map(el => el.code);
+    const code = this.cartList.map(el => el.detail._id);
     const ARR = code.includes(data);
     return ARR;
   }
