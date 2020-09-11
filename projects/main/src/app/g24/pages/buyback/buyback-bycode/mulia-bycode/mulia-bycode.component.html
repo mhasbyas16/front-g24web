@@ -1,0 +1,41 @@
+<ng-container *ngIf="totalIsiEmasBatangan > 0">
+    <div class="card" style="margin-top: 0em;">
+        <div class="card-header">
+           Emas Batangan
+        </div>
+        <div class="card-block">
+            <clr-datagrid>
+                <clr-dg-column>Kode</clr-dg-column>
+                <clr-dg-column>Vendor</clr-dg-column>
+                <clr-dg-column>Denom</clr-dg-column>
+                <clr-dg-column>No Seri</clr-dg-column>
+                <clr-dg-column>Harga</clr-dg-column>
+                <clr-dg-column class="right"></clr-dg-column>
+                <clr-dg-row *clrDgItems="let d of isiEmasBatangan">
+                    <clr-dg-cell>{{d.detail.code}}</clr-dg-cell>
+                    <clr-dg-cell>{{d.detail.vendor.name}}</clr-dg-cell>
+                    <clr-dg-cell>{{d.detail['product-denom'].name}}</clr-dg-cell>
+                    <clr-dg-cell>{{d.noSeri}}</clr-dg-cell>
+                    <clr-dg-cell>
+                        Rp. {{d.hargaBB | number}}
+                    </clr-dg-cell>
+                    <clr-dg-cell><span style="float: right;">
+                        <ng-container *ngIf="cekItemArray(d.detail.code) == true; else plus">
+                            <button type="button" class="btn btn-icon btn-sm  disabled" aria-label="home" >
+                                <clr-icon shape="minus"></clr-icon>
+                            </button>                
+                        </ng-container>
+                        <ng-template #plus >
+                            <button type="button" class="btn btn-icon btn-sm btn-success" (click)="addToCart(d.detail.code, d.detail.vendor.name, d.detail['product-denom'].name, d.noSeri, d.hargass )" aria-label="home" >
+                                <clr-icon shape="plus"></clr-icon>
+                            </button>       
+                        </ng-template>
+                    </span>
+                    </clr-dg-cell>
+                </clr-dg-row>
+            </clr-datagrid>
+        </div>
+    </div>
+</ng-container>
+
+

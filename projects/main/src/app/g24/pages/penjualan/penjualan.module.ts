@@ -6,11 +6,17 @@ import { ClarityModule } from '@clr/angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PerhiasanComponent } from './penjualan-distro/perhiasan/perhiasan.component';
 import { NavModule } from '../../nav/nav.module';
+import { NgxBarcodeModule } from 'ngx-barcode';
+import { MuliaComponent } from './penjualan-distro/mulia/mulia.component';
 import { BerlianComponent } from './penjualan-distro/berlian/berlian.component';
 import { DatePipe } from '@angular/common';
+import { SouvenirComponent } from './penjualan-distro/souvenir/souvenir.component';
+import { DinarComponent } from './penjualan-distro/dinar/dinar.component';
+
+
 
 @NgModule({
-  declarations: [PenjualanDistroComponent, PerhiasanComponent, BerlianComponent],
+  declarations: [PenjualanDistroComponent, PerhiasanComponent, BerlianComponent, MuliaComponent, SouvenirComponent, DinarComponent],
   imports: [
     CommonModule,
     PenjualanRoutingModule,

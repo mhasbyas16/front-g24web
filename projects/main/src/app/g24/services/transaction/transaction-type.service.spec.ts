@@ -13,5 +13,4 @@ describe('TransactionTypeService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
-  
 });

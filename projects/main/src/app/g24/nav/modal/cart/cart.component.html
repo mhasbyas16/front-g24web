@@ -16,7 +16,7 @@
                 <div class="clr-row">
                     <div class="card" style="margin-top: 0;">
                         <div class="card-header">
-                            Perhiasan
+                            Perhiasan {{perhiasan}}
                         </div>
                         <div class="card-block">
                             <ul class="list-group">
@@ -68,19 +68,36 @@
                             Logam Mulia
                         </div>
                         <div class="card-block">
-                            <div class="card-media-block">
-                                <img src="..." class="card-media-image">
-                                <div class="card-media-description">
-                                    <span class="card-media-title">
-                                        Project A
-                                    </span>
-                                    <span class="card-media-text">
-                                        Owner: John Doe
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="card-text">
-                                ...
+                            <div class="card-block" style="padding: 0">
+                                <ul class="list-group">
+                                    <ng-container *ngFor="let ip of cartLogam | keyvalue" style="padding: 0;">
+                                        <li class="list-group-item">
+                                            <div class="clr-row" style="padding-top: 0;">
+                                               
+                                                <div class="clr-col-2">
+                                                    <span>{{ip.value.code}}</span>
+                                                </div>
+                                                <div class="clr-col-2">
+                                                    <span>{{ip.value.vendor}}</span>
+                                                </div>
+                                                <div class="clr-col-2">
+                                                    <span>{{ip.value.denom}}</span>
+                                                </div>
+                                                <div class="clr-col-2">
+                                                    <span>{{ip.value.flag | titlecase}}</span>
+                                                </div>
+                                                <div class="clr-col-3">
+                                                    <span class="left"> Rp. {{ip.value.harga| number}}</span>
+                                                </div>
+                                                <div class="clr-col-1">
+                                                    <button type="button" class="btn btn-icon btn-sm btn-danger" aria-label="home" (click)="removeItemMulia(ip.key, ip.value.harga )">
+                                                        <clr-icon shape="minus"></clr-icon>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </li>                                        
+                                    </ng-container>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -136,26 +153,43 @@
                 </div>        
             </ng-container>
 
-            <ng-container *ngIf="gift > 0">
+            <ng-container *ngIf="souvenir > 0">
                 <div class="clr-row">
                     <div class="card">
                         <div class="card-header">
                             Gift Dan Souvenir
                         </div>
                         <div class="card-block">
-                            <div class="card-media-block">
-                                <img src="..." class="card-media-image">
-                                <div class="card-media-description">
-                                    <span class="card-media-title">
-                                        Project A
-                                    </span>
-                                    <span class="card-media-text">
-                                        Owner: John Doe
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="card-text">
-                                ...
+                            <div class="card-block" style="padding: 0">
+                                <ul class="list-group">
+                                    <ng-container *ngFor="let ip of cartSouvenir | keyvalue" style="padding: 0;">
+                                        <li class="list-group-item">
+                                            <div class="clr-row" style="padding-top: 0;">
+                                               
+                                                <div class="clr-col-2">
+                                                    <span>{{ip.value.code}}</span>
+                                                </div>
+                                                <div class="clr-col-2">
+                                                    <span>{{ip.value.vendor}}</span>
+                                                </div>
+                                                <div class="clr-col-2">
+                                                    <span>{{ip.value.denom}}</span>
+                                                </div>
+                                                <div class="clr-col-2">
+                                                    <span>{{ip.value.flag | titlecase}}</span>
+                                                </div>
+                                                <div class="clr-col-3">
+                                                    <span class="left"> Rp. {{ip.value.harga| number}}</span>
+                                                </div>
+                                                <div class="clr-col-1">
+                                                    <button type="button" class="btn btn-icon btn-sm btn-danger" aria-label="home" (click)="removeItemSouvenir(ip.key, ip.value.harga )">
+                                                        <clr-icon shape="minus"></clr-icon>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </li>                                        
+                                    </ng-container>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -169,19 +203,34 @@
                             Dinar
                         </div>
                         <div class="card-block">
-                            <div class="card-media-block">
-                                <img src="..." class="card-media-image">
-                                <div class="card-media-description">
-                                    <span class="card-media-title">
-                                        Project A
-                                    </span>
-                                    <span class="card-media-text">
-                                        Owner: John Doe
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="card-text">
-                                ...
+                            <div class="card-block" style="padding: 0">
+                                <ul class="list-group">
+                                    <ng-container *ngFor="let ip of cartDinar | keyvalue" style="padding: 0;">
+                                        <li class="list-group-item">
+                                            <div class="clr-row" style="padding-top: 0;">
+                                               
+                                                <div class="clr-col-2">
+                                                    <span>{{ip.value.code}}</span>
+                                                </div>
+                                                <div class="clr-col-2">
+                                                    <span>{{ip.value.vendor}}</span>
+                                                </div>
+                                                <div class="clr-col-4">
+                                                    <span>{{ip.value.denom}}</span>
+                                                </div>
+                                                
+                                                <div class="clr-col-3">
+                                                    <span class="left"> Rp. {{ip.value.harga| number}}</span>
+                                                </div>
+                                                <div class="clr-col-1">
+                                                    <button type="button" class="btn btn-icon btn-sm btn-danger" aria-label="home" (click)="removeItemDinar(ip.key, ip.value.harga )">
+                                                        <clr-icon shape="minus"></clr-icon>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </li>                                        
+                                    </ng-container>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -191,10 +240,10 @@
         </div>
         <div class="modal-footer">
             <ng-container *ngIf="total > 0">
-                <span>Total : Rp. {{hargaPerhiasan+hargaLogam+hargaBerlian+hargaGift+hargaDinar | number}}</span>
+                <span>Total : Rp. {{hargaPerhiasan+hargaLogamMulia+hargaBerlian+hargaSouvenir+hargaDinar | number}}</span>
             <button type="button" class="btn btn-warning" (click)="removeCart()">Clear</button>
             <!-- <button type="button" class="btn btn-outline" (click)="cartModal = false">Cancel</button> -->
-                <button type="button" class="btn btn-primary" (click)="CO.openModal(hargaPerhiasan+hargaLogam+hargaBerlian+hargaGift+hargaDinar)">Check Out</button>
+                <button type="button" class="btn btn-primary" (click)="CO.openModal(hargaPerhiasan+hargaLogamMulia+hargaBerlian+hargaSouvenir+hargaDinar)">Check Out</button>
             </ng-container>            
         </div>
     </clr-modal>

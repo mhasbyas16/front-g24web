@@ -1,0 +1,85 @@
+<ng-container *ngIf="true">
+    <form clrForm class="clr-form-compact">
+
+        <!-- series -->
+        <ng-container *ngIf="li.series == 1; else seriesList">
+            <clr-input-container>
+                <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Series</label>
+                <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">Semua Series</label>
+            </clr-input-container>
+        </ng-container> 
+        <ng-template #seriesList>
+            <clr-input-container>
+                <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Series</label>
+                <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">
+                    <ol class="list">
+                        <li *ngFor="let isi of li.series">{{isi.name}}</li>
+                    </ol>
+                </label>
+            </clr-input-container>
+        </ng-template> 
+
+        <!-- vendor -->
+        <ng-container *ngIf="li.vendor == 1; else vendorList">
+            <clr-input-container>
+                <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Vendor</label>
+                <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">Semua Vendor</label>
+            </clr-input-container>
+        </ng-container> 
+        <ng-template #vendorList>
+            <clr-input-container>
+                <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Vendor</label>
+                <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">
+                    <ol class="list">
+                        <li *ngFor="let isi of li.vendor">{{isi.name}}</li>
+                    </ol>
+                </label>
+            </clr-input-container>
+        </ng-template> 
+        
+        <!-- denom -->
+        <ng-container *ngIf="li.denom == 1; else denomList">
+            <clr-input-container>
+                <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Denom</label>
+                <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">Semua Denom</label>
+            </clr-input-container>
+        </ng-container> 
+        <ng-template #denomList>
+            <clr-input-container>
+                <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Denom</label>
+                <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">
+                    <ol class="list">
+                        <li *ngFor="let isi of li.denom">{{isi.name}}</li>
+                    </ol>
+                </label>
+            </clr-input-container>
+        </ng-template> 
+
+        <ng-container *ngIf="data.typeQuota == 2">
+            <clr-input-container>
+                <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Kuota</label>
+                <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{li.quota}}</label>
+            </clr-input-container>
+        </ng-container> 
+
+        <clr-input-container>
+            <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Tipe Promosi</label>
+            <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+            <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{li.typePromotion.name}}</label>
+        </clr-input-container>
+        
+        <clr-input-container>
+            <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Besar Tipe Promosi</label>
+            <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+            <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{li.sizeTypePromotion}}</label>
+        </clr-input-container>
+ 
+    </form>
+</ng-container>

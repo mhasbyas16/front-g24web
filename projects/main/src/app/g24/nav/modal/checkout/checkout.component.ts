@@ -4,7 +4,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 
 //service 
-
+import { ProductService } from '../../../services/product/product.service';
 import { ClientService } from '../../../services/client/client.service';
 import { BankService } from '../../../services/transaction/bank.service';
 import { TransactionMethodService } from '../../../services/transaction/transaction-method.service';
@@ -13,6 +13,8 @@ import { TransactionService } from '../../../services/transaction/transaction.se
 import { TransactionEdcTypeService } from '../../../services/transaction/transaction-edc-type.service';
 import { TransactionCardTypeService } from '../../../services/transaction/transaction-card-type.service';
 import { TransactionBankInstallmentService } from '../../../services/transaction/transaction-bank-installment.service';
+import { TransactionFlagService } from '../../../services/transaction/transaction-flag.service';
+import { TransactionTypeService } from '../../../services/transaction/transaction-type.service';
 
 // session service
 import { UserService } from 'projects/platform/src/app/services/security/user.service';
@@ -31,61 +33,63 @@ export class CheckoutComponent implements OnInit {
   //
   @Output() cartModal = new EventEmitter();
 
-  validModel:boolean= false;
-  bankForm:boolean = false;
-  edc:boolean = false;
-  edc2:boolean = false;
-  edc3:boolean = false;
-  installmentCont:boolean = false;
-  periodeIns:boolean = false;
+  validModel: boolean = false;
+  bankForm: boolean = false;
+  edc: boolean = false;
+  edc2: boolean = false;
+  edc3: boolean = false;
+  installmentCont: boolean = false;
+  periodeIns: boolean = false;
   // cart
-   administrasi:string = "";
-   perhiasan = PERHIASAN;
-   lm = LM;
-   gs = GS;
-   berlian = BERLIAN;
-   dinar = DINAR;
+  administrasi: string = "";
+  perhiasan = PERHIASAN;
+  lm = LM;
+  gs = GS;
+  berlian = BERLIAN;
+  dinar = DINAR;
 
-   // total harga
-   totalBelanja: number;
-   checkoutModal: boolean;  
-   nikUser:any;
-   
-   // cart list
-   P:any;
-   logam:any;
-   gift:any;
-   B:any;
-   D:any;
+  // total harga
+  totalBelanja: number;
+  checkoutModal: boolean;
+  nikUser: any;
 
-   //
-   formData: FormGroup = null;
-   //
-   isiClientData=null;
-   //
-   detail:any;
-   bank:any;
-   edcTipe:any;
-   cardTipe:any;
-   bankInstallment:any;
-   transactionMethod:any;
-   transactionBankMethod:any;
-   installmentPeriod:any;
-   kembali:any;
-   diterima:any;
-   
-   idtransaksi:any;
+  // cart list
+  P: any;
+  logam: any;
+  gift: any;
+  B: any;
+  D: any;
+
+  //
+  formData: FormGroup = null;
+  //
+  isiClientData = null;
+  //
+  detail: any;
+  bank: any;
+  edcTipe: any;
+  cardTipe: any;
+  bankInstallment: any;
+  transactionMethod: any;
+  transactionBankMethod: any;
+  installmentPeriod: any;
+  kembali: any;
+  diterima: any;
+
+  idtransaksi: any;
   constructor(
     private clientService: ClientService,
     private bankService: BankService,
-    private transactionMethodService : TransactionMethodService,
-    private transactionBankMethodService : TransactionBankMethodService,
+    private transactionMethodService: TransactionMethodService,
+    private transactionBankMethodService: TransactionBankMethodService,
     private transactionService: TransactionService,
     private transactionEdcType: TransactionEdcTypeService,
     private transactionCardType: TransactionCardTypeService,
     private transactionBankInstallment: TransactionBankInstallmentService,
     private userService: UserService,
-
+    private transactionFlagService: TransactionFlagService,
+    private productService: ProductService,
+    private transactionTypeService: TransactionTypeService,
     //ng
     private toastr: ToastrService,
     private sessionService: SessionService,
@@ -94,38 +98,39 @@ export class CheckoutComponent implements OnInit {
 
   ngOnInit(): void {
     this.nikUser = this.sessionService.getUser();
-    this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser)),"nik":this.nikUser["username"]} ;
+    this.nikUser = { "_hash": btoa(JSON.stringify(this.nikUser)), "nik": this.nikUser["username"], "name": this.nikUser["name"], "username": this.nikUser["username"] };
   }
 
-  idTransaksi(){
+  idTransaksi() {
     this.idtransaksi = null;
     let inc = null;
-    let d1 = this.datePipe.transform(Date.now(),'01/01/yyyy');
-    let d2 = this.datePipe.transform(Date.now(),'12/31/yyyy');
-    let d3 = this.datePipe.transform(Date.now(),'yy');
+    let d1 = this.datePipe.transform(Date.now(), '01/01/yyyy');
+    let d2 = this.datePipe.transform(Date.now(), '12/31/yyyy');
+    let d3 = this.datePipe.transform(Date.now(), 'yy');
     let unit = this.sessionService.getUnit();
 
-    let params="?_between=makerDate&_start="+d1+"&_end="+d2;
-    this.transactionService.count(params).subscribe((response:any)=>{  
-      let count = JSON.stringify(response["count"]+1);
+    let params = "?_between=makerDate&_start=" + d1 + "&_end=" + d2;
+
+    this.transactionService.list(params + '&_sortby=idAi:0&_rows=1').subscribe((response: any) => {
+      let count = JSON.stringify(Number(response["0"]["idAi"]) + 1);
       switch (count.length) {
         case 1:
-          inc = "000000"+count;
+          inc = "000000" + count;
           break;
         case 2:
-          inc = "00000"+count;
+          inc = "00000" + count;
           break;
         case 3:
-          inc = "0000"+count;
+          inc = "0000" + count;
           break;
         case 4:
-          inc = "000"+count;
+          inc = "000" + count;
           break;
         case 5:
-          inc = "00"+count;
+          inc = "00" + count;
           break;
         case 6:
-          inc = "0"+count;
+          inc = "0" + count;
           break;
         case 7:
           inc = count;
@@ -133,49 +138,70 @@ export class CheckoutComponent implements OnInit {
         default:
           break;
       }
-      this.idtransaksi = unit.code+"06"+d3+inc;
-      this.formData.patchValue({idTransaction:this.idtransaksi});
-    })
+      this.idtransaksi = unit.code + "06" + d3 + inc;
+      this.formData.patchValue({ idTransaction: this.idtransaksi, idAi: Number(response["0"]["idAi"]) + 1 });
+    });
+
   }
-  
-  openModal(totalHarga: any){    
+
+  refreshId() {
+    this.idTransaksi();
+  }
+
+  openModal(totalHarga: any) {
+
     this.formData = new FormGroup({
       idTransaction: new FormControl(""),
-      idTransaction_validation: new FormControl("unique:idPenjualan"),
-      cif: new FormControl ("", [Validators.required, Validators.pattern(/^[0-9]*$/)]),
-      name: new FormControl ("",[ Validators.required]),
-      client: new FormControl ("", Validators.required),
+      idTransaction_validation: new FormControl("unique:idTransaction"),
+      cif: new FormControl("", [Validators.required, Validators.pattern(/^[0-9]*$/)]),
+      name: new FormControl("", [Validators.required]),
+      client: new FormControl("", Validators.required),
       client_encoded: new FormControl("base64"),
-      metodeBayar: new FormControl (""),
-      metodeBayar_encoded: new FormControl ("base64"),
-      bankTujuan: new FormControl (""),
-      bankAsal: new FormControl (""),
-      bankTujuan_encoded: new FormControl ("base64"),
-      transactionMetodeBank: new FormControl (""),
-      transactionMetodeBank_encoded: new FormControl ("base64"),
+      metodeBayar: new FormControl("", Validators.required),
+      metodeBayar_encoded: new FormControl("base64"),
+      bankTujuan: new FormControl(""),
+      bankAsal: new FormControl(""),
+      bankTujuan_encoded: new FormControl("base64"),
+      transactionMetodeBank: new FormControl(""),
+      transactionMetodeBank_encoded: new FormControl("base64"),
       admBank: new FormControl(""),
-      maker: new FormControl (this.nikUser["_hash"], [Validators.required]),
+      maker: new FormControl(this.nikUser["_hash"], [Validators.required]),
       maker_encoded: new FormControl("base64"),
-      makerDate: new FormControl(this.datePipe.transform(Date.now(),'MM/dd/yyyy'), Validators.required),
-      makerTime: new FormControl(this.datePipe.transform(Date.now(),'h:mm:ss a'), Validators.required),
-      jumlahTerima: new FormControl (totalHarga, Validators.required),
+      makerDate: new FormControl(this.datePipe.transform(Date.now(), 'MM/dd/yyyy'), Validators.required),
+      makerTime: new FormControl(this.datePipe.transform(Date.now(), 'h:mm:ss a'), Validators.required),
+      jumlahTerima: new FormControl(totalHarga, Validators.required),
       unit: new FormControl(""),
       unit_encoded: new FormControl("base64"),
-      nominalTransaksi: new FormControl (""),
-      kembali: new FormControl (""),
-      nik: new FormControl (""),
-      nikPemasar: new FormControl ("", Validators.required),
-      nikPemasar_encoded: new FormControl ("base64"),
-      edcType: new FormControl (""),
-      edcType_encoded: new FormControl ("base64"),
+      nominalTransaksi: new FormControl(""),
+      kembali: new FormControl(""),
+      nik: new FormControl(this.nikUser["username"]),
+      nikPemasar: new FormControl(this.nikUser["_hash"], Validators.required),
+      nikPemasar_encoded: new FormControl("base64"),
+      edcType: new FormControl(""),
+      edcType_encoded: new FormControl("base64"),
       cardType: new FormControl(""),
-      cardType_encoded: new FormControl ("base64"),
-      installment:new FormControl (""),
-      installment_encoded: new FormControl ("base64"),
-      periodePayment: new FormControl ("")
+      cardType_encoded: new FormControl("base64"),
+      installment: new FormControl(""),
+      installment_encoded: new FormControl("base64"),
+      periodePayment: new FormControl(""),
+      idAi: new FormControl("", Validators.required),
+      namaPemasar: new FormControl(this.nikUser["name"]),
+      'transaction-type': new FormControl("", Validators.required),
+      'transaction-type_encoded': new FormControl("base64"),
     });
+
+    for (let isi of LM) {
+      this.formData.addControl(isi.code, new FormControl(isi.Value, [Validators.required, Validators.minLength(9)]))
+    }
+
+    // if (LM.length > 0) {
+
+    // }
+
+
     this.idTransaksi();
     this.getUnit();
+    this.getTransactionType();
     //
     this.P = this.perhiasan.length;
     this.logam = this.lm.length;
@@ -186,62 +212,70 @@ export class CheckoutComponent implements OnInit {
     this.checkoutModal = true;
     this.cartModal.emit(false);
     this.totalBelanja = totalHarga;
-    this.getBank(); 
-    this.getTransactionMethod();   
+    this.getBank();
+    this.getTransactionMethod();
     this.getTransactionBankMethod();
   }
+  getTransactionType() {
+    this.transactionTypeService.get("?_hash=1&code=t01").subscribe((response: any) => {
+      if (response != false) {
+        this.formData.patchValue({ 'transaction-type': response["_hash"] });
+      }
+    })
+  }
 
-  getNikPemasar(){
+  getNikPemasar() {
     const value = this.formData.get('nik').value;
-    this.userService.list("?_hash=1&username="+value).subscribe((response:any)=>{
+    this.userService.list("?_hash=1&username=" + value).subscribe((response: any) => {
       if (response['length'] != 0) {
-        console.debug(response,"data pemasar");
-        this.toastr.success('Success Get NIK Pemasar Name '+response["0"]["name"],'NIK Pemasar');
-        this.formData.patchValue({nikPemasar:response["0"]['_hash']});
-      }else{
-        this.toastr.error('NIK Pemasar Not Found, Filed Get','NIK Pemasar');
-        this.formData.patchValue({nikPemasar:""});
+        console.debug(response, "data pemasar");
+        this.toastr.success('Success Get NIK Pemasar Name ' + response["0"]["name"], 'NIK Pemasar');
+        this.formData.patchValue({ nikPemasar: response["0"]['_hash'], namaPemasar: response["0"]["name"] });
+      } else {
+        this.toastr.error('NIK Pemasar Not Found, Filed Get', 'NIK Pemasar');
+        this.formData.patchValue({ nikPemasar: "", namaPemasar: "" });
         return;
       }
-      
+
     });
   }
 
-  getUnit(){
+  getUnit() {
     const unitString = btoa(JSON.stringify(this.sessionService.getUnit()));
-    this.formData.patchValue({unit: unitString});
+    this.formData.patchValue({ unit: unitString });
   }
 
-  closeModal(){
+  closeModal() {
     this.edc = false;
     this.edc2 = false;
     this.edc3 = false;
     this.bankForm = false;
-    this.installmentCont =false;
+    this.installmentCont = false;
     this.checkoutModal = false;
     this.cartModal.emit(true);
   }
 
-  loadData(){
+  loadData() {
     this.perhiasan;
     this.lm;
-    this.gs;  
+    this.gs;
     this.berlian
     this.dinar;
+    console.debug(this.gs, "wew data")
   }
 
   // pembayaran
 
-  getBankInstallment(){
-    this.transactionBankInstallment.list("?_hash=1").subscribe((response:any)=>{
+  getBankInstallment() {
+    this.transactionBankInstallment.list("?_hash=1").subscribe((response: any) => {
       if (response != false) {
         this.bankInstallment = response;
       }
     });
   }
 
-  periodeInstallment(val){
-    this.transactionBankInstallment.list("?_hash=1&code="+val).subscribe((response:any)=>{
+  periodeInstallment(val) {
+    this.transactionBankInstallment.list("?_hash=1&code=" + val).subscribe((response: any) => {
       if (response != false) {
         this.installmentPeriod = response;
       }
@@ -249,156 +283,177 @@ export class CheckoutComponent implements OnInit {
     this.periodeIns = true;
   }
 
-  bankValid(val){
-    this.administrasi= "";
-    this.formData.patchValue({admBank: this.administrasi});
+  bankValid(val) {
+    this.administrasi = "";
+    this.formData.patchValue({ admBank: this.administrasi });
     this.edc2 = false;
     this.edc3 = false;
-    console.debug(val,"bank valid");
+    console.debug(val, "bank valid");
     let cod = JSON.parse(atob(val));
     if (cod["code"] == "01") {
       this.bankForm = false;
       this.edc = false;
-      this.installmentCont =false;
+      this.installmentCont = false;
     } else if (cod["code"] == "02") {
       this.bankForm = true;
       this.edc = false;
-      this.installmentCont =false;
-    } else if (cod["code"] == "03"){
+      this.installmentCont = false;
+    } else if (cod["code"] == "03") {
       this.bankForm = false;
       this.edc = true;
-      this.installmentCont =false;
+      this.installmentCont = false;
     }
-    else if (cod["code"] == "04"){
+    else if (cod["code"] == "04") {
       this.getBankInstallment();
       this.bankForm = false;
       this.edc = false;
-      this.installmentCont =true;
+      this.installmentCont = true;
     }
     this.formData.patchValue({
       transaksiMetodeBank: "",
-      bankAsal:"",
-      bankTujuan:"",
+      bankAsal: "",
+      bankTujuan: "",
       nominalTransaksi: "",
-      kembali:""
+      kembali: ""
     });
   }
-  jenisEdc(){
-    this.transactionEdcType.list("?_hash=1").subscribe((response:any)=>{
+  jenisEdc() {
+    this.transactionEdcType.list("?_hash=1").subscribe((response: any) => {
       if (response != false) {
         this.edcTipe = response;
       }
     });
     this.edc2 = true;
   }
-  jenisKartu(){
-    this.transactionCardType.list("?_hash=1").subscribe((response:any)=>{
+  jenisKartu() {
+    this.transactionCardType.list("?_hash=1").subscribe((response: any) => {
       if (response != false) {
         this.cardTipe = response;
       }
     });
     this.edc3 = true;
-    console.debug(this.formData.get('edcType').value,"EDCTYOE");
+    console.debug(this.formData.get('edcType').value, "EDCTYOE");
   }
 
-  bankAdm(val){
-    this.administrasi= "";
-    this.formData.patchValue({admBank: this.administrasi});
+  bankAdm(val) {
+    this.administrasi = "";
+    this.formData.patchValue({ admBank: this.administrasi });
     let Jc = JSON.parse(atob(val));
     let Je = JSON.parse(atob(this.formData.get('edcType').value));
-    let Pem = JSON.parse(atob(this.formData.get('transaksiMetodeBank').value));
+    let Pem = JSON.parse(atob(this.formData.get('transactionMetodeBank').value));
     //debit
     if (Pem["code"] == "02") {
       if (Jc["code"] == Je["code"]) {
-        this.administrasi= "";
-        this.formData.patchValue({admBank: this.administrasi});
-      }else{
-        
-        this.administrasi = JSON.stringify((0.15/100)*this.totalBelanja);
-        this.formData.patchValue({admBank: this.administrasi});
+        this.administrasi = "";
+        this.formData.patchValue({ admBank: this.administrasi });
+      } else {
+
+        this.administrasi = JSON.stringify((0.15 / 100) * this.totalBelanja);
+        this.formData.patchValue({ admBank: this.administrasi });
       }
       // kredit
-    }else if(Pem["code"] == "01"){
+    } else if (Pem["code"] == "01") {
       if (Jc["code"] == Je["code"]) {
-        this.administrasi= "";
-        this.formData.patchValue({admBank: this.administrasi});
-      }else{
-        this.administrasi = JSON.stringify((1/100)*this.totalBelanja);
-        this.formData.patchValue({admBank: this.administrasi});
+        this.administrasi = "";
+        this.formData.patchValue({ admBank: this.administrasi });
+      } else {
+        this.administrasi = JSON.stringify((1 / 100) * this.totalBelanja);
+        this.formData.patchValue({ admBank: this.administrasi });
       }
-    }else{
-      this.administrasi= "";
-      this.formData.patchValue({admBank: this.administrasi});
-    } 
-    
+    } else {
+      this.administrasi = "";
+      this.formData.patchValue({ admBank: this.administrasi });
+    }
+
   }
 
-  diterimaUang(total){
+  diterimaUang(total) {
+    total = total.replace(/,/g, '')
     this.diterima = total;
-    this.kembali = total-this.totalBelanja;
+    this.kembali = total - this.totalBelanja;
   }
 
-  getEdcType(){
-    this.transactionEdcType.list("?_hash=1").subscribe((response:any)=>{
+  getEdcType() {
+    this.transactionEdcType.list("?_hash=1").subscribe((response: any) => {
       if (response != false) {
         this.edcTipe = response;
       }
     });
   }
-  getCardType(){
-    this.transactionCardType.list("?_hash=1").subscribe((response:any)=>{
+  getCardType() {
+    this.transactionCardType.list("?_hash=1").subscribe((response: any) => {
       if (response != false) {
         this.cardTipe = response;
       }
     });
   }
-  getBank(){
-    this.bankService.list("?_hash=1").subscribe((response:any)=> {
+  getBank() {
+    this.bankService.list("?_hash=1").subscribe((response: any) => {
       if (response != false) {
         this.bank = response;
       }
     });
   }
 
-  getTransactionMethod(){
-    this.transactionMethodService.list("?_hash=1").subscribe((response:any)=>{
+  getTransactionMethod() {
+    this.transactionMethodService.list("?_hash=1").subscribe((response: any) => {
       if (response != false) {
         this.transactionMethod = response;
       }
     });
   }
 
-  getTransactionBankMethod(){
-    this.transactionBankMethodService.list("?_hash=1").subscribe((response:any)=>{
+  getTransactionBankMethod() {
+    this.transactionBankMethodService.list("?_hash=1").subscribe((response: any) => {
       if (response != false) {
         this.transactionBankMethod = response;
       }
     });
   }
 
-//
-  transaction(){
+  //
+  transaction() {
+
     if (!this.formData.valid) {
-      this.toastr.error("form Not Completed","Transaction");
+      this.toastr.error("form Not Completed", "Transaction");
       console.debug(this.formData.getRawValue());
       return;
-    }    
-
+    }
+    if (this.kembali < 0) {
+      this.toastr.error("Nilai Tidak Cukup", "Transaction");
+      return;
+    }
+    console.debug(this.gs, "wew")
     this.validModel = true;
-    
   }
 
-  storeTransaction(){
-    let data = this.formData.getRawValue();  
+  storeTransaction() {
+    let data = this.formData.getRawValue();
+
+    for (let index = 0; index < LM.length; index++) {
+      LM[index].noSeri = data[LM[index].code]
+      delete data[LM[index].code]
+    }
     // 
-    data.product = btoa(JSON.stringify({PERHIASAN,LM,BERLIAN,GS,DINAR})) ;
+    data.product = btoa(JSON.stringify({ PERHIASAN, LM, BERLIAN, GS, DINAR }));
     data.product_encoded = "base64";
+    let nomT = data["nominalTransaksi"]
+    data["nominalTransaksi"] = nomT.replace(/,/g, '')
     delete data["cif"];
-    console.debug(data,"ISI FORMDATA");
+    delete data["namaPemasar"];
+    delete data["nik"];
+    console.debug(data, "ISI FORMDATA");
+
     // data.metodeBayar =
 
-    
-    this.transactionService.add(data).subscribe((response:any)=> {
+    this.productService.batchUpdate(this.transactionFlagService.batchUpdate()).subscribe((response: any) => {
+      if (response == false) {
+        console.debug("product flag update failed", this.transactionFlagService.batchUpdate());
+      }
+
+      console.debug(this.transactionFlagService.batchUpdate(), 'product flaf update success');
+    })
+    this.transactionService.add(data).subscribe((response: any) => {
       if (response != false) {
         this.validModel = false;
         this.toastr.success(this.transactionService.message(), "Transaction Success");
@@ -411,8 +466,9 @@ export class CheckoutComponent implements OnInit {
         GS.splice(0);
         this.cartModal.emit(false);
         this.ChangeContentArea('10003');
-      }else{
+      } else {
         this.toastr.error(this.transactionService.message(), "Transaction");
+        this.idTransaksi()
         return;
       }
     })
@@ -420,27 +476,27 @@ export class CheckoutComponent implements OnInit {
   }
 
   //
-  getClientData(val){
+  getClientData(val) {
     if (val != null) {
       this.isiClientData = val;
+
       this.formData.patchValue({
-      cif: val["cif"],
-      client: btoa(JSON.stringify(val)),
-      name: val["name"]
-     })
-    }else{
+        cif: val["cif"],
+        client: btoa(JSON.stringify(val)),
+        name: val["name"]
+      })
+    } else {
       this.formData.patchValue({
         cif: "",
         client: "",
         name: ""
-       })
+      })
     }
-    
-    console.debug(val,"HASIL EMMMMMMIT")
+
+    console.debug(val, "HASIL EMMMMMMIT")
   }
-  ChangeContentArea(pageId : string)
-  {
-    if(pageId.startsWith("x")) return;
+  ChangeContentArea(pageId: string) {
+    if (pageId.startsWith("x")) return;
     ContentPage.ChangeContent(pageId, true)
   }
 }
