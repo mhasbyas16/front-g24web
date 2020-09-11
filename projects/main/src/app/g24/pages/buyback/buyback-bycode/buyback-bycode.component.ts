@@ -170,6 +170,14 @@ export class BuybackBycodeComponent implements OnInit {
 
       //souvenir
       this.isiSouvenir =this.detailTransaction.product["GS"] 
+      let BBSouvenir : any;
+      for (let isi of this.isiSouvenir) {
+        this.prmJualService.get("?"+this.productCategorySouvenir+"&flag=approved").subscribe((BBresponse: any) => {
+          BBSouvenir = BBresponse
+          this.hargaBB = this.pricingService.buybackPriceSouvenir(BBSouvenir.harga_buyback, isi['detail']['product-denom'].value)
+          isi.hargaBB = this.hargaBB
+        })
+      } 
       this.totalIsiSouvenir=  this.isiSouvenir.length
 
        //dinar
