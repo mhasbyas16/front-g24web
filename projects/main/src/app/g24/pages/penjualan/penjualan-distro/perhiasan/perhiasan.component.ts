@@ -41,8 +41,12 @@ export class PerhiasanComponent implements OnInit {
 
   //params
   params = null;
-  vendorCategory= "product-category.code=c00";
+  perhiasanCategory= "product-category.code=c00";
   category = "?_hash=1&product-category.code=c00&flag=stock";
+  flagApp = "flag=approved";
+
+  channel = "channel.code=ch02";
+  transactionType = "transaction-type.code=t01";
 
   //parameter
   margin = null;
@@ -69,7 +73,7 @@ export class PerhiasanComponent implements OnInit {
     private toastrService: ToastrService,
 
     //count cart
-    private countService: CountCartService,
+    public countService: CountCartService,
     //session
     private sessionService: SessionService,
   ) { }
@@ -81,7 +85,7 @@ export class PerhiasanComponent implements OnInit {
   }
 
   onListVendor(){
-    this.vendorService.list("?_hash=1&"+this.vendorCategory).subscribe((response: any) => {
+    this.vendorService.list("?_hash=1&"+this.perhiasanCategory).subscribe((response: any) => {
       if (response != false) {
         this.vendors = response;
       }      
@@ -151,22 +155,22 @@ export class PerhiasanComponent implements OnInit {
         }  
         this.perhiasans = response;
         // pricing
-        this.prmJualService.list("?"+this.vendorCategory).subscribe((Jualresponse: any) => {
+        this.prmJualService.get("?"+this.perhiasanCategory+"&"+this.flagApp).subscribe((Jualresponse: any) => {
           if (Jualresponse != false) {
-            this.hargaBaku = Jualresponse;
+            this.hargaBaku = Jualresponse.harga_baku;
           }
           this.prmPpnService.list().subscribe((PPNresponse: any) => {
             if (PPNresponse != false) {
-              ppn = PPNresponse['0']['ppn'];
+              ppn = PPNresponse['0']['ppn']; 
             }      
-            this.prmMarginService.list().subscribe((Marginresponse: any) => {
+            this.prmMarginService.get("?"+this.perhiasanCategory+"&"+this.channel+"&"+this.transactionType).subscribe((Marginresponse: any) => {
               if (Marginresponse != false) {
                 this.margin = Marginresponse;
               }      
   
               for (let index = 0, len = this.perhiasans.length; index < len; index++) {
                 
-                this.datalist=this.pricingService.pricePerhiasan(Number(this.perhiasans[index]['berat']),this.hargaBaku['0']['harga-baku'],this.perhiasans[index]['baku-tukar'],this.margin['0']['margin'],ppn);
+                this.datalist=this.pricingService.pricePerhiasan(Number(this.perhiasans[index]['berat']),this.hargaBaku,this.perhiasans[index]['baku_tukar'],this.margin['margin'],ppn);
                 
                 this.perhiasans[index].hargaJual =  Math.ceil(this.datalist/1000)*1000;
               }
@@ -185,7 +189,8 @@ export class PerhiasanComponent implements OnInit {
 
     addCart(code: any,vendor: any, jenis: any, 
       warna: any, berat: any, kadar: any, harga: any, _hash:any){
-      
+        this.perhiasan.emit(null);
+        this.data.emit(null);
       this.cartList.push({
         'code': code, 
         'vendor': vendor, 
@@ -198,7 +203,7 @@ export class PerhiasanComponent implements OnInit {
         'qty': 1});
         console.debug(this.cartList,"ISI HASH CART")
         // harga
-        this.refresh(harga, "p")
+        this.refresh("p")
         //
         this.perhiasan.emit(this.cartList.length);
         this.data.emit(this.countService.countCart());
@@ -206,8 +211,11 @@ export class PerhiasanComponent implements OnInit {
        // this.cekItemArray(code);
     }
 
-    refresh(harga: any, sum: any){
+    refresh(sum: any){
+      this.totalHarga.emit(null);
        // harga
+
+
        if (sum == "p") {
         this.total =0;
         for (const i of this.cartList) {
@@ -220,7 +228,7 @@ export class PerhiasanComponent implements OnInit {
 
     cekItemArray(data: any){
       // const code = this.cartList.map(el => el.code);
-      const code = this.cartList.map(el => el.code);
+      const code = this.cartList.map(el => el.detail._id);
       const ARR = code.includes(data);
       return ARR;
     }

@@ -1,0 +1,147 @@
+<div class="clr-row">
+    <div class="card" style="margin-top: 0em;">
+        <div class="card-header">
+            Terima Buyback {{hargaTotalEmasBatangan}}
+        </div>
+        <div class="card-block">
+            <div class="card-text">
+                <form clrForm [formGroup]="searchTrans" (ngSubmit)="searchTransaction()">
+                    <div class="clr-row">
+                        <div class="clr-col-5" style="width: fit-content;">
+                            <clr-input-container style="margin-top: 0px;">
+                                <label class="clr-col-3">Id Transaksi</label>
+                                <input class="clr-col-3" clrInput type="text" formControlName="text" placeholder="search" autofocus>
+                            </clr-input-container>
+                        </div>
+                        <div class="clr-col-2">
+                            <button type="submit" class="btn btn-icon btn-sm btn-success">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="clr-row">
+    <div class="card" style="margin-top: 0em;">
+        <div class="card-header">
+            Detail Transaksi
+            <div class="cart-style">
+                <app-cart-buyback
+                    [totalCart]="totalJumlahCart()"
+                    [hargaTotalPerhiasan]="hargaTotalPerhiasan"
+                    [hargaTotalEmasBatangan]="hargaTotalEmasBatangan"
+                    [hargaTotalBerlian]="hargaTotalBerlian"
+                    [hargaTotalSouvenir]="hargaTotalSouvenir"
+                    [hargaTotalDinar]="hargaTotalDinar"
+
+                    (clearPerhiasan)="clearPerhiasan($event)"
+                    (clearEmasBatangan)="clearEmasBatangan($event)"
+                    (clearBerlian)="clearBerlian($event)"
+                    (clearSouvenir)="clearSouvenir($event)"
+                    (clearDinar)="clearDinar($event)"
+                >
+                </app-cart-buyback>
+            </div>
+        </div>
+        <div class="card-block">
+            <div class="card-text">
+                <div class="clr-row clr-justify-content-center">
+                    <clr-spinner *ngIf="loadingDg;  " class="spinner spinner-md"></clr-spinner>
+                </div>
+                <ng-container *ngIf="totalDetail > 0; else default">
+                    <div class="clr-row">
+                        <div class="clr-col-12 clr-col-lg-6 clr-col-xl-6" style="margin-top: 0px;">
+                            <table class="table table-vertical table-noborder table-compact" style="margin-top: 0px;">
+                                <tbody>
+                                    <tr>
+                                        <td class="left">Id Transaksi</td>
+                                        <td>: {{detailTransaction.idTransaction}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="left">Nama Unit</td>
+                                        <td>: {{detailTransaction.unit.nama}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="left">Tanggal Pembelian</td>
+                                        <td>: {{tanggalTerbilang}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="left">CIF</td>
+                                        <td>: {{detailTransaction.client.cif}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="clr-col-12 clr-col-lg-6 clr-col-xl-6" >
+                            <table class="table table-vertical table-noborder table-compact" style="margin-top: 0px;">
+                                <tbody>
+                                    <tr>
+                                        <td class="left">Nama Nasabah</td>
+                                        <td>: {{detailTransaction.client.name}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="left">Alamat</td>
+                                        <td>: {{detailTransaction.client.alamatSaatIni.alamat}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="left">No. Hp</td>
+                                        <td>: {{detailTransaction.client.noHP}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <ng-template #default>
+                    <div class="clr-row clr-justify-content-center">
+                        Silahkan Scan Barcode atau Input Id Transaksi
+                    </div>
+                </ng-template>
+            </div>
+            <!-- Perhiasan -->
+            <app-perhiasan-bycode
+                [totalIsiPerhiasan] = "totalIsiPerhiasan"
+                [isiPerhiasan] = "isiPerhiasan" 
+                (totalIsiCartPerhiasan) = "totalIsiCartPerhiasan($event)"
+                (totalHargaPerhiasan)="HTotalPerhiasan($event)"
+            >
+            </app-perhiasan-bycode>
+            <br>
+            <app-mulia-bycode 
+                [totalIsiEmasBatangan] = "totalIsiEmasBatangan"
+                [isiEmasBatangan] = "isiEmasBatangan" 
+                (totalIsiCartEmasBatangan) = "totalIsiCartEmasBatangan($event)"
+                (totalHargaEmasBatangan)="HTotalEmasBatangan($event)"
+            >
+            </app-mulia-bycode>
+            <br>
+            <app-berlian-bycode
+                [totalIsiBerlian] = "totalIsiBerlian"
+                [isiBerlian] = "isiBerlian" 
+                (totalIsiCartBerlian) = "totalIsiCartBerlian($event)"
+                (totalHargaBerlian)="HTotalBerlian($event)"
+            >
+            </app-berlian-bycode>
+            <br>
+            <app-souvenir-bycode
+                [totalIsiSouvenir] = "totalIsiSouvenir"
+                [isiSouvenir] = "isiSouvenir" 
+                (totalIsiCartSouvenir) = "totalIsiCartSouvenir($event)"
+                (totalHargaSouvenir)="HTotalSouvenir($event)">
+            </app-souvenir-bycode>
+            <br>
+            <app-dinar-bycode
+                [totalIsiDinar] = "totalIsiDinar"
+                [isiDinar] = "isiDinar" 
+                (totalIsiCartDinar) = "totalIsiCartDinar($event)"
+                (totalHargaDinar)="HTotalDinar($event)">
+            >
+            </app-dinar-bycode>
+
+        </div>
+    </div>
+</div>
+   

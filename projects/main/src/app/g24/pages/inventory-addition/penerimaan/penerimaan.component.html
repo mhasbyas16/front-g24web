@@ -34,9 +34,9 @@
         <button clrTabLink>Adiratna</button>
         <ng-template [clrIfActive]="input['product-category']?.code?.includes('03')" (clrIfActiveChange)="input['product-category']">
             <clr-tab-content>
-                <-- <detail-penerimaan-adiratna>
+                <detail-penerimaan-adiratna>
 
-                </detail-penerimaan-adiratna --!>
+                </detail-penerimaan-adiratna
             </clr-tab-content>
         </ng-template>
     </clr-tab> -->
@@ -50,7 +50,7 @@
             </clr-tab-content>
         </ng-template>
     </clr-tab>
-    <!-- <clr-tab>
+    <clr-tab>
         <button clrTabLink>Emas Batangan</button>
         <ng-template [clrIfActive]="input['product-category']?.code?.includes('05')" (clrIfActiveChange)="input['product-category']">
             <clr-tab-content>
@@ -59,15 +59,15 @@
                 </detail-penerimaan-emas>
             </clr-tab-content>
         </ng-template>
-    </clr-tab> -->
-    <!-- <clr-tab>
+    </clr-tab>
+    <clr-tab>
         <button clrTabLink>Dinar</button>
         <ng-template [clrIfActive]="input['product-category']?.code?.includes('06')" (clrIfActiveChange)="input['product-category']">
             <clr-tab-content>
-                <-- <detail-penerimaan-dinar>
+                <detail-penerimaan-dinar>
 
-                </detail-penerimaan-dinar> --!>
+                </detail-penerimaan-dinar>
             </clr-tab-content>
         </ng-template>
-    </clr-tab> -->
+    </clr-tab>
 </clr-tabs>

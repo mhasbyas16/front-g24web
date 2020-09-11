@@ -6,7 +6,7 @@ import { ProductCategoryService } from '../../../services/product/product-catego
 @Component({
   selector: 'app-penerimaan',
   templateUrl: './penerimaan.component.html',
-  styleUrls: ['./penerimaan.component.css']
+  styleUrls: ['./penerimaan.component.scss']
 })
 @DContent(PenerimaanComponent.key)
 export class PenerimaanComponent implements OnInit {
@@ -40,11 +40,6 @@ export class PenerimaanComponent implements OnInit {
     for(let i = 0; i < products.length; i++)
     {
       this.products.push(products[i]);
-      if(this.products[i].code.includes('00'))
-      {
-        this.input['product-category'] = this.products[i];
-        console.log(this.input);
-      }
     }
     this.products.sort((a, b) => ('' + a.name).localeCompare(b.name));
   }

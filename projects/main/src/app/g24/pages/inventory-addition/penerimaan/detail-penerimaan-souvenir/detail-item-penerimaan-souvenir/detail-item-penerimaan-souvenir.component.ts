@@ -47,7 +47,7 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
 
   LoadAllParameter()
   {
-    this.LoadJenis();
+    // this.LoadJenis();
   }
 
   async LoadJenis()
@@ -176,9 +176,9 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
   defaultProduct()
   {
     return {
-      _id : "", code : "", sku : "", 
+      _id : "", code : "", sku : "",
       "product-jenis" : null, "product-category" : null, "product-denom" : null, "product-series" : null,
-      berat : 0.00, ongkos_pieces : 0.0,
+      berat : 0.00, ongkos_pieces : 0.0, unit : null,
       tipe_stock : "stock", vendor : null, flag : "stock", location : "",
       no_po : "", no_item_po : 0, no_index_products : 0,
       hpp_inisiasi : 0, hpp : 0
@@ -289,6 +289,7 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
         def.no_index_products = p;
         def.hpp_inisiasi = Number(item.total_harga) / item.pieces;
         def.hpp = def.hpp_inisiasi;
+        def.unit = this.unit;
 
         products.push(def);
       }

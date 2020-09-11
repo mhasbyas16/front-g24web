@@ -179,7 +179,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     return {
       _id : "", code : "", sku : "", 
       "product-jenis" : null, "product-category" : null, "product-purity" : null, "product-gold-color" : null,
-      berat : 0.00, baku_tukar : 0.0, ongkos : 0.0,
+      berat : 0.00, baku_tukar : 0.0, ongkos : 0.0, unit : null,
       tipe_stock : "stock", vendor : null, flag : "stock", location : "",
       no_po : "", no_item_po : 0, no_index_products : 0,
       hpp_inisiasi : 0, hpp : 0
@@ -219,11 +219,19 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
   onBeratChanged(productIndex, itemIndex)
   {
     this.hitungHPP(productIndex, itemIndex);
+    this.hitungGramTukar(productIndex, itemIndex);
   }
 
-  onGramTukarChanged(productIndex, itemIndex)
+  hitungGramTukar(productIndex, itemIndex)
   {
-    this.hitungHPP(productIndex, itemIndex);
+    let item = this.inisiasi.items[itemIndex];
+    let product = item.products[productIndex];
+
+    let baku_tukar = Math.round(Number(product.baku_tukar));
+    let berat = Math.round(Number(product.berat));
+
+    let gram_tukar = Math.round(berat * baku_tukar) / 100;
+    product['gram_tukar'] = gram_tukar;
   }
 
   hitungHPP(productIndex, itemIndex)
@@ -329,6 +337,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
         def.location = LocationProduct.PUSAT.code;
         def.no_item_po = i;
         def.no_index_products = p;
+        def.unit = this.unit;
 
         products.push(def);
       }
@@ -470,10 +479,10 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
         return false;
       }
 
-      if(!this.validateGramTukarItem(item, i))
-      {
-        return false;
-      }
+      // if(!this.validateGramTukarItem(item, i))
+      // {
+      //   return false;
+      // }
 
       if(item.jenis == null || item.jenis == "")
       {

@@ -18,10 +18,10 @@ import { FormsModule } from '@angular/forms';
 
 //barcode
 import { NgxBarcodeModule } from 'ngx-barcode';
-
+import { NgxMaskModule } from 'ngx-mask';
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,
@@ -42,6 +42,7 @@ import { NgxBarcodeModule } from 'ngx-barcode';
 
     //barcode
     NgxBarcodeModule,
+    NgxMaskModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

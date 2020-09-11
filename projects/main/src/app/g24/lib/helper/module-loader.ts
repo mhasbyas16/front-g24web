@@ -43,6 +43,11 @@ export class ModuleLoader
         this._loadedModules.add(id);
     }
 
+    public static ForceLoadModule(id : string)
+    {
+        this._modules.get(id)();
+    }
+
     public static log()
     {
         console.log(ModuleLoader._modules)

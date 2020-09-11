@@ -33,13 +33,13 @@
                     Berat
                 </clr-dg-column>
                 <clr-dg-column>
+                    Gram Tukar
+                </clr-dg-column>
+                <clr-dg-column>
                     Pieces
                 </clr-dg-column>
                 <clr-dg-column>
                     Baku Tukar
-                </clr-dg-column>
-                <clr-dg-column>
-                    Gram Tukar
                 </clr-dg-column>
                 <clr-dg-column>
                     Ongkos
@@ -54,12 +54,12 @@
                     <clr-dg-cell>{{GetDisplayValue(data['product-jenis'])}}</clr-dg-cell>
                     <clr-dg-cell>{{GetDisplayValue(data['product-gold-color'])}}</clr-dg-cell>
                     <clr-dg-cell>{{data?.berat}} <span [ngStyle]="beratStyleValid(data)">({{getTotalBeratOfItem(data)}})</span></clr-dg-cell>
+                    <clr-dg-cell>{{data?.gram_tukar}}</clr-dg-cell>
                     <clr-dg-cell>{{data?.pieces}}</clr-dg-cell>
                     <clr-dg-cell>{{data?.baku_tukar}}</clr-dg-cell>
-                    <clr-dg-cell>{{data?.gram_tukar}} <span [ngStyle]="gramTukarStyleValid(data)">({{getTotalGramTukarOfItem(data)}})</span></clr-dg-cell>
                     <clr-dg-cell>{{data?.ongkos}}</clr-dg-cell>
                     <!-- <clr-dg-cell>{{data.gram_tukar}}</clr-dg-cell><input readonly type="number" class="clr-input" [ngModel]="input.items[i]['pajak'] = 0" [ngModelOptions]="{standalone:true}"> -->
-                    <clr-dg-cell>{{data?.pajak | number : '2.'}} </clr-dg-cell>
+                    <clr-dg-cell>{{data?.pajak}} </clr-dg-cell>
                     
                     <clr-dg-row-detail *clrIfExpanded="false" (clrIfExpandedChange)="onExpand(itemsIndex)">
                         <table class="table table-compact">
@@ -102,7 +102,7 @@
                                             </select>
                                         </td> -->
                                         <td><input [disabled]="mode == EPriviledge.READ ? true : null" [(ngModel)]="product['berat']" (ngModelChange)="onBeratChanged(productIndex, itemsIndex)" type="number" min="0.00" step="0.00" required /></td>
-                                        <td><input [disabled]="mode == EPriviledge.READ ? true : null" [(ngModel)]="product['gram_tukar']" (ngModelChange)="onGramTukarChanged(productIndex, itemsIndex)" type="number" min="0.00" step="0.00" required /></td>
+                                        <td>{{product?.gram_tukar}}</td>
                                         <td>{{product?.ongkos}}</td>
                                         <td>{{product?.baku_tukar}}</td>
                                         <td>{{product?.hpp_inisiasi}}</td>

@@ -95,7 +95,7 @@ export enum EMenuID {
      * Starts from 9900
      */
     SYSTEM_PARAM        = '9900',
-
+    
     PARAM_KATEGORI      = '9901',
     PARAM_CLARITY       = '9902',
     PARAM_DENOM         = '9903',
@@ -104,13 +104,17 @@ export enum EMenuID {
     PARAM_JENIS         = '9906',
     PARAM_PURITY        = '9907',
     PARAM_SERIES        = '9908',
-    TOKO_PENYEDIA       = '9909',
-    VENDOR              = '9910',
 
-
+    // Offline Sale
     DISTRO              = '10001',
     ROLE                = '10002',
     LAPORAN             = '10003',
+
+    // promosi
+    PENGATURAN_PROMO = '10004',
+    DAFTAR_PROMO = '10005',
+    // offline buyback
+    BUYBACK             = '11001',
 
     // LAPORAN KEUANGAN
     LAPORAN_KEUANGAN = '21000',

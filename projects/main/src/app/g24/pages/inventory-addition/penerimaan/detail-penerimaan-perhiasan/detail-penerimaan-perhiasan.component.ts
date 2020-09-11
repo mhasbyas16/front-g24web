@@ -3,7 +3,6 @@ import { NgForm, Form, FormGroup, FormBuilder, FormControl, Validators } from '@
 
 import { isArray } from 'util';
 import { ClarityModule } from '@clr/angular';
-import { EventEmitter } from 'protractor';
 import { ToastrService } from 'ngx-toastr';
 import { BasePersistentFields } from '../../../../lib/base/base-persistent-fields';
 import { InitiationType } from '../../../../lib/enums/initiation-type';
@@ -463,7 +462,15 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
         return;
     }
 
-    let params = "?product-category.code=c00&status_bayar=1" + bayar_p + create_p + order_status_p;
+    if(this.unit == null)
+    {
+      this.toastr.error("Unit Kerja kosong Harap refresh screen, jika error masih terjadi mohon hubungi IT Helpdesk/Support.");
+      return;
+    }
+
+    let unit_p = "&unit=" + this.unit['code'];
+
+    let params = "?product-category.code=c00&status_bayar=1" + bayar_p + create_p + order_status_p + unit_p;
     // params += "&unit="+ this.unit.code;
     
     this.loading = true;
@@ -646,6 +653,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
 
   getBeratFromItems()
   {
+    if(this.input == null) return 0;
     let berat = 0.0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -659,6 +667,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
 
   getPiecesFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -673,6 +682,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
   
   getBakuTukarFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -687,6 +697,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
   
   getGramTukarFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -701,6 +712,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
   
   getOngkosFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -715,6 +727,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
   
   getPajakFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {

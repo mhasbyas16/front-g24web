@@ -4,7 +4,7 @@
             <clr-select-container class="clr-form-control">
                 <label class="clr-control-label">Vendor</label>
                 <select [(ngModel)]="searchModel.vendors" clrSelect name="input_vendor_perhiasan" ngModel>
-                    <option value="all" >All</option>
+                    <option value="all" selected >All</option>
                     <ng-container *ngFor="let vendor of vendors">
                         <option value="{{vendor.code}}">{{vendor.name}}</option>
                     </ng-container>
@@ -72,7 +72,7 @@
         <clr-dg-cell>{{d['product-gold-color'].name}}</clr-dg-cell>
         <clr-dg-cell><span style="float: right;">Rp. {{d.hargaJual|number}}</span></clr-dg-cell>
         <clr-dg-cell><span style="float: left;">
-            <ng-container *ngIf="cekItemArray(d.code); else plus">
+            <ng-container *ngIf="cekItemArray(d._id); else plus">
                 <button type="button" class="btn btn-icon btn-sm btn-danger disabled" aria-label="home" >
                     <clr-icon shape="minus"></clr-icon>
                 </button>                

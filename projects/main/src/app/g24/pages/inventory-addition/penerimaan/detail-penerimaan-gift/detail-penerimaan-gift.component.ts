@@ -386,7 +386,15 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
         return;
     }
 
-    let params = "?product-category.code=c04" + bayar_p + create_p + order_status_p;
+    if(this.unit == null)
+    {
+      this.toastr.error("Unit Kerja kosong Harap refresh screen, jika error masih terjadi mohon hubungi IT Helpdesk/Support.");
+      return;
+    }
+
+    let unit_p = "&unit=" + this.unit['code'];
+
+    let params = "?product-category.code=c04&status_bayar=1" + bayar_p + create_p + order_status_p + unit_p;
     // params += "&unit="+ this.unit.code;
     
     this.loading = true;
@@ -455,6 +463,7 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
 
   getBeratFromItems()
   {
+    if(this.input == null) return 0;
     let berat = 0.0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -468,6 +477,7 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
 
   getPiecesFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -482,6 +492,7 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
   
   getBakuTukarFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -496,6 +507,7 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
   
   getGramTukarFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -510,6 +522,7 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
   
   getOngkosFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -524,6 +537,7 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
   
   getPajakFromItems()
   {
+    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {

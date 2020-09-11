@@ -1,0 +1,111 @@
+<div class="card" style="margin-top: 0em;">
+    <div class="card-header">
+       Gift Dan Souvenir
+    </div>       
+    <div class="card-block">
+        <div class="card-text">
+            <form clrForm class="clr-form-compact" [formGroup]="section2_giftSouvenir">
+                <!-- vendor -->
+                <clr-select-container>
+                    <label class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">Vendor</label>
+                    <select formControlName="vendor" class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrSelect (click)="select2Vendor($event.target.value)" >
+                        <option disabled selected [value]="">-- Select One --</option>
+                        <option [value]="'1'">Semua Vendor</option>
+                        <option [value]="'pv'">Pilih Vendor</option>
+                    </select>
+                </clr-select-container><br>
+                <ng-container *ngIf="selectVendor">
+                    <div class="clr-row">
+                        <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4"></div>
+                        <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
+                            <ng-select2 
+                                formControlName="pickVendor" 
+                                [data]="vendorGiftSouvenir"
+                                [(ngModel)]="valueVendorGS"
+                                [options]="options"></ng-select2>
+                        </div>
+                    </div>                                             
+                </ng-container>
+                
+                <!-- denom -->
+                <clr-select-container>
+                    <label class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">Denom</label>
+                    <select formControlName="denom" class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrSelect (click)="select2Denom($event.target.value)" >
+                        <option disabled selected [value]="">-- Select One --</option>
+                        <option [value]="'1'">Semua Denom</option>
+                        <option [value]="'pd'">Pilih Denom</option>
+                    </select>
+                </clr-select-container><br>
+                <ng-container *ngIf="selectDenom">
+                    <div class="clr-row">
+                        <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4"></div>
+                        <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
+                            <ng-select2 
+                                formControlName="pickDenom" 
+                                [data]="denomGiftSouvenir"
+                                [(ngModel)]="valueDenom"
+                                [options]="options"></ng-select2>
+                        </div>
+                    </div>                                            
+                </ng-container>
+
+                <!-- series -->
+                <clr-select-container>
+                    <label class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">Series</label>
+                    <select formControlName="series" class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrSelect (click)="select2Series($event.target.value)" >
+                        <option disabled selected [value]="">-- Select One --</option>
+                        <option [value]="'1'">Semua Series</option>
+                        <option [value]="'ps'">Pilih Series</option>
+                    </select>
+                </clr-select-container><br>
+                <ng-container *ngIf="selectSeries">
+                    <div class="clr-row">
+                        <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4"></div>
+                        <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
+                            <ng-select2 
+                                formControlName="pickSeries" 
+                                [data]="series"
+                                [(ngModel)]="valueSeries"
+                                [options]="options"></ng-select2>
+                        </div>
+                    </div>                                            
+                </ng-container>
+                
+                <ng-container *ngIf="kuotaProduk">
+                    <clr-input-container>
+                        <label class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">Kuota</label>
+                        <input class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrInput type="text" formControlName="quota" >
+                    </clr-input-container>
+                </ng-container>
+
+                <clr-select-container>
+                    <label class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">Jenis Promo</label>
+                    <select class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrSelect formControlName="typePromotion">
+                        <option disabled selected value="">-- select one --</option>
+                        <ng-container *ngFor="let item of jenisPromosi">
+                            <ng-container *ngIf="promoMargin == true; else JP">
+                                <ng-container *ngIf="item.code == 'pt07'">
+                                    <option [value]="item._hash">{{item.name}}</option>
+                                </ng-container>
+                            </ng-container>
+                            <ng-template #JP>
+                                <ng-container *ngIf="item.code != 'pt07'">
+                                    <option [value]="item._hash">{{item.name}}</option>
+                                </ng-container>
+                            </ng-template>
+                        </ng-container>
+                    </select>
+                </clr-select-container> 
+                <div class="clr-row">
+                    <div class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3"></div>
+                    <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
+                        <clr-input-container>
+                            <label ></label>
+                            <input clrInput formControlName="sizeTypePromotion" type="text">
+                        </clr-input-container>
+                    </div> 
+                </div>                                                  
+            </form>
+        </div>
+    </div>  
+</div>

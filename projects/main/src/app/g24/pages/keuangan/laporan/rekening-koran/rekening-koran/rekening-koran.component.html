@@ -7,7 +7,7 @@
             </div>
             <div class="card-block">
 
-                <form clrForm [formGroup]="search" (ngSubmit)="filterTransaction('id')">
+                <form clrForm>
                     <div class="clr-row clr-align-items-center">
                         <div class="clr-col-3">
                             <clr-input-container>
@@ -70,7 +70,7 @@
                     <div class="clr-col-6">
                         <clr-input-container>
                             <label>Saldo Awal</label>
-                            <input clrInput placeholder="SALDO AWAL" name="unit" [(ngModel)]="name" readonly />
+                            <input clrInput placeholder="SALDO AWAL" name="unit" readonly />
                         </clr-input-container>
                     </div>
                 </div>
@@ -91,7 +91,7 @@
                 <clr-dg-column>Saldo Rekening</clr-dg-column>
                 <clr-dg-column class="right"> Detail</clr-dg-column>
 
-                <clr-dg-row *clrDgItems="let d of perhiasans">
+                <clr-dg-row >
                     <clr-dg-cell></clr-dg-cell>
                     <clr-dg-cell></clr-dg-cell>
                     <clr-dg-cell></clr-dg-cell>

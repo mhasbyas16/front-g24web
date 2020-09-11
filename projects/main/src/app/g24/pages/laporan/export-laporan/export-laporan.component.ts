@@ -22,6 +22,7 @@ export class ExportLaporanComponent implements OnInit {
 
   innerDoc = {};
   transactionList = [];
+  noItem = 0;
 
   constructor(
     private transactionService: TransactionService,
@@ -45,6 +46,9 @@ export class ExportLaporanComponent implements OnInit {
     })
     
   }
+  // function() { return currentPage.toString() + ' of ' + pageCount; },
+  
+  
 
   thisContent(data){
     
@@ -65,12 +69,52 @@ export class ExportLaporanComponent implements OnInit {
     // Content
     delete this.innerDoc;
     let hargaFormat = new Intl.NumberFormat(['ban', 'id']).format(data.jumlahTerima);
-    this.innerDoc ={pageSize: 'A5', pageOrientation: 'landscape',pageMargins: [ 20, 60, 20, 40 ],};
+    this.innerDoc ={pageSize: 'A5', pageOrientation: 'landscape',pageMargins: [ 20, 20, 20, 40 ],};
     this.innerDoc['info'] = {title: data.client.cif+" - "+data.idTransaction }; 
+
+    let namaKasir = data.maker.name
+    let namaDistro = data.maker.unit.nama
+
+    let printAlamat : any;
+    let printnoHp : any;
+    if (data.client.tipeClient.code == 1) {
+      printAlamat = data.client.alamatSaatIni.alamat
+      printnoHp = data.client.noHP
+    } else if(data.client.tipeClient.code == 2) {
+      printAlamat = data.client.alamatSaatIni.alamat
+      printnoHp = data.client.hpPJ1
+    }
+
+    // footer    
+    this.innerDoc['footer'] = function(currentPage, pageCount) {
+      return {
+          margin:[0, 0, 0, 40],
+          columns: [
+          {
+              fontSize: 9,
+              text:[
+              {
+              text: '--------------------------------------------------------------------------' +
+              '\n',
+              margin: [0, 20]
+              },
+              {
+              text: 'Halaman ' + currentPage.toString() + ' dari ' + pageCount,
+              }
+              ],
+              alignment: 'center'
+          }
+          ]
+      };
+
+  },
+      
+   
 
     // Head Content
     this.innerDoc['content'] = [
       {
+        
         style: 'head',
 			  columns: [
 				  {text: 'ID Transaksi : '+data.idTransaction},
@@ -79,6 +123,7 @@ export class ExportLaporanComponent implements OnInit {
       },
       '\n',
       {
+        
         style:'detail',
         columns:[
           {
@@ -103,7 +148,7 @@ export class ExportLaporanComponent implements OnInit {
           },
           {
             columns:[
-              {width:88,bold:true,text:'Alamat'},{width:5,bold:true,text:': '},{width:'*',text:data.client.alamatSaatIni.alamat}
+              {width:88,bold:true,text:'Alamat'},{width:5,bold:true,text:': '},{width:'*',text:printAlamat}
             ]
           }
 			  ]
@@ -118,7 +163,7 @@ export class ExportLaporanComponent implements OnInit {
           },
           {
             columns:[
-              {width:88,bold:true,text:'No. Hp'},{width:5,bold:true,text:': '},{width:'*',text:data.client.noHP}
+              {width:88,bold:true,text:'No. Hp'},{width:5,bold:true,text:': '},{width:'*',text:printnoHp}
             ]
           }
 			  ]
@@ -133,6 +178,7 @@ export class ExportLaporanComponent implements OnInit {
         }
       ]);
       for (let perhiasan of data.product.PERHIASAN) {
+        this.noItem++
         //console.debug(data.product.PERHIASAN.length,product,"list product");  
         this.innerDoc['content'].push([
           {
@@ -141,11 +187,12 @@ export class ExportLaporanComponent implements OnInit {
               {
                 width:"*",
                 columns:[
+                  {width:20,text: "(" +this.noItem+ ")"},
                   {width:85,text:perhiasan.detail.code},
                   {width:42,text:perhiasan.detail.vendor.name},
                   {width:41,text:perhiasan.detail['product-jenis'].name},
                   {width:23,text:perhiasan.kadar},
-                  {width:30,text:perhiasan.berat}
+                  {width:25,text:perhiasan.berat}
                 ]
               },
               {
@@ -169,7 +216,7 @@ export class ExportLaporanComponent implements OnInit {
       this.innerDoc['content'].push([
         {
           style:'detail',
-          fontSize: 5,
+          fontSize: 7,
           columns:[
             {text:'Diskon :'},
             {text:'Voucher :'},
@@ -179,7 +226,7 @@ export class ExportLaporanComponent implements OnInit {
       ]);
     }
     
-
+    // Berlian
     if (data.product.BERLIAN.length != 0) {
       this.innerDoc['content'].push([
         {
@@ -187,6 +234,7 @@ export class ExportLaporanComponent implements OnInit {
         }
       ]);
       for (let berlian of data.product.BERLIAN) {
+        this.noItem++
         //console.debug(data.product.PERHIASAN.length,product,"list product");  
         this.innerDoc['content'].push([
           {
@@ -195,6 +243,7 @@ export class ExportLaporanComponent implements OnInit {
               {
                 width:"*",
                 columns:[
+                  {width:20,text: "(" +this.noItem+ ")"},
                   {width:70,text:berlian.detail.code},
                   {width:25,text:' '+berlian.detail.vendor.name},
                   {width:35,text:' '+berlian.detail['product-diamond-color'].name},
@@ -203,7 +252,7 @@ export class ExportLaporanComponent implements OnInit {
                   // total berlian ,          
                   {width:20,text:' '+berlian.kadar},
                   {width:20,text:' '+berlian.berat},
-                  {width:40,text:'= '+berlian.detail.carat+' CT'},
+                  // {width:40,text:'= '+berlian.detail.carat+' CT'},
                 ]
               },
               {
@@ -227,7 +276,7 @@ export class ExportLaporanComponent implements OnInit {
       this.innerDoc['content'].push([
         {
           style:'detail',
-          fontSize: 5,
+          fontSize: 7,
           columns:[
             {text:'Diskon :'},
             {text:'Voucher :'},
@@ -236,23 +285,236 @@ export class ExportLaporanComponent implements OnInit {
         },'\n'
       ]);
     }
-    
+
+    // Logam Mulia
+
+    if (data.product.LM.length != 0){
+      this.innerDoc['content'].push([
+        {
+          style:'head', alignment:'left',text:'Mulia'
+        }
+      ]);
+      for (let mulia of data.product.LM) {
+        this.noItem++
+        //console.debug(data.product.PERHIASAN.length,product,"list product");  
+        this.innerDoc['content'].push([
+          {
+            style:'detail',
+            columns:[
+              {
+                width:"*",
+                columns:[
+                  {width:20,text: "(" +this.noItem+ ")"},
+                  {width:60,text:mulia.detail.code},
+                  {width:40,text:' '+mulia.detail.vendor.name},
+                  {width:50,text:' '+mulia.detail['product-denom'].name},
+                  {width:80,text:'No: '+mulia.noSeri},
+                  // {width:25,text:' '+mulia.detail['product-cut'].name},
+                  // {width:38,text:' '+mulia.detail['product-clarity'].name},
+                  // total logam mulia ,          
+                  // {width:20,text:' '+mulia.kadar},
+                  // {width:20,text:' '+mulia.berat},
+                  // {width:40,text:'= '+mulia.detail.carat+' CT'},
+                ]
+              },
+              {
+                width:250,
+                columns:[
+                  {text:'Harga : Rp. '+new Intl.NumberFormat(['ban', 'id']).format(mulia.harga)},
+                  {
+                    table:{
+                      widths: [85],
+                      body:[
+                        [{fillColor: '#ede5ce',alignment: 'center',fontSize:1,text:"tanggal buyback"}]
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]);   
+      }
+      this.innerDoc['content'].push([
+        {
+          style:'detail',
+          fontSize: 7,
+          columns:[
+            {text:'Diskon :'},
+            {text:'Voucher :'},
+            {text:'Harga :'}
+          ]
+        },'\n'
+      ]);
+    }
+
+    //GS
+    if (data.product.GS.length != 0){
+      this.innerDoc['content'].push([
+        {
+          style:'head', alignment:'left',text:'Gift dan Souvenir'
+        }
+      ]);
+      for (let gs of data.product.GS) {
+        this.noItem++
+        //console.debug(data.product.PERHIASAN.length,product,"list product");  
+        this.innerDoc['content'].push([
+          {
+            style:'detail',
+            columns:[
+              {
+                width:"*",
+                columns:[
+                  {width:20,text: "(" +this.noItem+ ")"},
+                  {width:70,text:gs.detail.code},
+                  {width:50,text:' '+gs.detail.vendor.name},
+                  {width:50,text:' '+gs.detail['product-denom'].name},
+                  {width:70,text:' '+gs.detail['product-series'].name},
+                  
+                ]
+              },
+              {
+                width:250,
+                columns:[
+                  {text:'Harga : Rp. '+new Intl.NumberFormat(['ban', 'id']).format(gs.harga)},
+                  {
+                    table:{
+                      widths: [85],
+                      body:[
+                        [{fillColor: '#ede5ce',alignment: 'center',fontSize:1,text:"tanggal buyback"}]
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]);   
+      }
+      this.innerDoc['content'].push([
+        {
+          style:'detail',
+          fontSize: 7,
+          columns:[
+            {text:'Diskon :'},
+            {text:'Voucher :'},
+            {text:'Harga :'}
+          ]
+        },'\n'
+      ]);
+    }
+
+    //Dinar
+    if (data.product.DINAR.length != 0){
+      this.innerDoc['content'].push([
+        {
+          style:'head', alignment:'left',text:'DINAR'
+        }
+      ]);
+      for (let dn of data.product.DINAR) {
+        this.noItem++
+        //console.debug(data.product.PERHIASAN.length,product,"list product");  
+        this.innerDoc['content'].push([
+          {
+            style:'detail',
+            columns:[
+              {
+                width:"*",
+                columns:[
+                  {width:20,text: "(" +this.noItem+ ")"},
+                  {width:70,text:dn.detail.code},
+                  {width:50,text:' '+dn.detail.vendor.name},
+                  {width:50,text:' '+dn.detail['product-denom'].name},
+                  // {width:50,text:' '+dn.detail['product-series'].name},
+                  // {width:25,text:' '+mulia.detail['product-cut'].name},
+                  // {width:38,text:' '+mulia.detail['product-clarity'].name},
+                  // total logam mulia ,          
+                  // {width:20,text:' '+mulia.kadar},
+                  // {width:20,text:' '+mulia.berat},
+                  // {width:40,text:'= '+mulia.detail.carat+' CT'},
+                ]
+              },
+              {
+                width:250,
+                columns:[
+                  {text:'Harga : Rp. '+new Intl.NumberFormat(['ban', 'id']).format(dn.harga)},
+                  {
+                    table:{
+                      widths: [85],
+                      body:[
+                        [{fillColor: '#ede5ce',alignment: 'center',fontSize:1,text:"tanggal buyback"}]
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]);   
+      }
+      this.innerDoc['content'].push([
+        {
+          style:'detail',
+          fontSize: 7,
+          columns:[
+            {text:'Diskon :'},
+            {text:'Voucher :'},
+            {text:'Harga :'}
+          ]
+        },  
+      ]);
+    }
 
     // footer content
     this.innerDoc['content'].push([
       '\n',
       {
-        fontSize: 7,
+        unbreakable: true,
+        fontSize: 9,
         columns:[
-          {text:[
-            '* harga Termasuk pajak\n',
-            '* bukti pembelian ini merupakan kuitansi pembelian emas\n',
-            '* harap bukti pembelian ini disimpan jangan sampai hilang/rusak'],style:'footer'},
+          
+          [
+            { 
+              text: [
+                namaKasir+'\n\n\n\n',
+                namaDistro+'\n'
+                ], 
+              style: 'kek' 
+            },
+            { 
+              text:
+              [
+              '\n* harga Termasuk pajak\n',
+              '* bukti pembelian ini merupakan kuitansi pembelian emas\n',
+              '* harap bukti pembelian ini disimpan jangan sampai hilang/rusak'
+              ],
+              style:'footer'
+            },
+          ],
+
           {
             columns:[
-              {width:45,text:'Total Harga\nTerbilang', bold:true},
-              {width:5,text:':\n:',bold:true},
-              {width:'*',text:' Rp. '+hargaFormat+'\n'+this.terbilangService.terbilang(Number(data.jumlahTerima))}
+              {width:80,text:[
+                'Harga\n',
+                'Diskon\n',
+                'Voucher\n',
+                '\n',
+                'Jumlah Bayar \n',
+                'Terbilang'], bold:true},
+              {width:5,text:[
+                ':\n',
+                ':\n',
+                ':\n',
+                '\n',
+                ':\n',
+                ':'],bold:true},
+              {width:'*',text:[
+                ' Rp. '+hargaFormat+'\n',
+                ' Rp. - \n',
+                ' Rp. - \n',
+                '\n',
+                ' Rp. '+hargaFormat+'\n',
+                this.terbilangService.terbilang(Number(data.jumlahTerima))]}
             ]
             // text:[
             // {text:'Total Harga :', bold:true},
@@ -268,18 +530,24 @@ export class ExportLaporanComponent implements OnInit {
     // style
     this.innerDoc['styles']={
       detail: {
-        fontSize: 10,
+        fontSize: 9,
         bold: false,
         alignment: 'left',
       },
       head:{
-        fontSize: 10,
+        fontSize: 9,
         bold: true,
         alignment: 'left',
       },
       footer:{
-        fontSize: 10,
+        fontSize: 6,
         alignment: 'left',
+        italics: true,
+      },
+      kek:{
+        fontSize: 9,
+        alignment: 'center',
+       
       }
 
     };
