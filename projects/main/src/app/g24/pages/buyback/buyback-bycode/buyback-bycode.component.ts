@@ -174,7 +174,7 @@ export class BuybackBycodeComponent implements OnInit {
       for (let isi of this.isiSouvenir) {
         this.prmJualService.get("?"+this.productCategorySouvenir+"&flag=approved").subscribe((BBresponse: any) => {
           BBSouvenir = BBresponse
-          this.hargaBB = this.pricingService.buybackPriceSouvenir(BBSouvenir.harga_buyback, isi['detail']['product-denom'].value)
+          this.hargaBB = this.pricingService.buybackPriceSouvenir(Number(BBSouvenir.harga_buyback),Number(isi['detail']['product-denom'].value))
           isi.hargaBB = this.hargaBB
         })
       } 
@@ -182,7 +182,20 @@ export class BuybackBycodeComponent implements OnInit {
 
        //dinar
        this.isiDinar =this.detailTransaction.product["DINAR"] 
-       this.totalIsiDinar=  this.isiSouvenir.length
+       console.debug(this.isiDinar)
+       let hargaBBDinar : any[];
+      for (let isi of this.isiDinar) {
+        this.prmJualService.get("?"+this.productCategoryDinar+"&flag=approved"+"&vendor.code="+isi.detail['vendor'].code+"&"+this.jenisBarang).subscribe((BBresponse: any) => {
+          hargaBBDinar = BBresponse.harga
+          console.debug(hargaBBDinar)
+          for (let index = 0; index < hargaBBDinar.length; index++) {
+            if (hargaBBDinar[index]["product-denom"].code == isi.detail['product-denom'].code) {
+              isi.hargaBB = hargaBBDinar[index]['harga_baku']
+            }
+        }
+        })
+      } 
+       this.totalIsiDinar=  this.isiDinar.length
 
       //loadingDG
       this.loadingDg = false;

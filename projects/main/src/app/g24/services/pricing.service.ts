@@ -44,7 +44,7 @@ export class PricingService {
     let hargaOngkos = hargaDenom + ongkos
     let hargaMargin = hargaOngkos * (1 + (margin / 100))
     let hargaPPN = hargaMargin * (1 + (ppn_baku / 100))
-    
+
     let hargaSouvenir = hargaPPN
     return hargaSouvenir;
  }
