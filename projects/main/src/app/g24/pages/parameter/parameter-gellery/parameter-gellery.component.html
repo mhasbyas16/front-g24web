@@ -213,35 +213,16 @@
                             <div class="clr-col-6">
                                 <label class="clr-control-label">Product Category</label>
                                 <label>{{inputModel.selectProduct}}</label>
-                                <!-- <select [(ngModel)]="inputModel.selectProduct" name="vendor" clrSelect (change)="onChangeProduct($event.target.value)">
-                                    <ng-container *ngFor="let prod of product">
-                                        <option value="{{prod._id}}">{{prod.name}}</option>
-                                    </ng-container>
-                                </select> -->
                             </div>
                             <div class="clr-col-6">
                                 <label class="clr-control-label">Jenis Harga</label>
                                 <label>{{inputModel.jenis_barang}}</label>
-                                <!-- <clr-select-container class="clr-form-control">
-                                    <select [(ngModel)]="inputModel.jenis_barang" name="jenis_barang" clrSelect ngModel required>
-                                        <ng-container *ngFor="let B of barang">
-                                            <option value="{{B.name}}">{{B.name}}</option>
-                                        </ng-container>
-                                    </select>
-                                </clr-select-container> -->
                             </div>
                             <div class="clr-col-6">
                                 <clr-control-container>
                                     <label class="clr-control-label">Vendor</label>
                                     <label>{{inputModel.selectVendor}}</label>
                                 </clr-control-container>
-                                <!-- <clr-select-container class="clr-form-control">
-                                    <select [(ngModel)]="inputModel.selectVendor" name="vendor" clrSelect required>
-                                        <ng-container *ngFor="let vendor of list_vendors">
-                                            <option value="{{vendor._id}}">{{vendor.name}}</option>
-                                        </ng-container>
-                                    </select>
-                                </clr-select-container> -->
                             </div>
                             <div class="clr-col-6">
                                 <clr-textarea-container>
@@ -327,21 +308,45 @@
                         </div>
                     </div>
                 </div>
+                <div class="card">
+                    <div class="card-block">
+                        <div class="clr-row">
+                            <div class="clr-col-12">
+                                <clr-select-container class="clr-form-control">
+                                    <label class="clr-control-label">Transaction Type</label>
+                                    <select name="transaction" (change)="onChangeTrans($event.target.value)" clrSelect>
+                                        <option value="">Please Select</option>
+                                        <ng-container *ngFor="let data of transactionType">
+                                            <option value="{{data.code}}">{{data.name}}</option>
+                                        </ng-container>
+                                    </select>
+                                </clr-select-container>
+                            </div>
+                            <div class="clr-col-12"><br></div>
+                            <div class="clr-col-6">
+                                <label class="clr-control-label">Margin</label>
+                                <label>{{margin}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="clr-col-12"></div>
                 <h6>Harga Denom</h6>
                 <table class="table">
                     <thead>
                         <tr>
                             <th>Jenis Mulia (Gram)</th>
-                            <th style="text-align: left;">Harga Baku</th>
+                            <th>Harga Baku</th>
+                            <th>Harga Jual</th>
                         </tr>
                     </thead>
                     <tbody>
                         <ng-container *ngFor="let hargaItem of harga">
                             <tr>
                                 <td>{{hargaItem['product-denom'].name}}</td>
-                                <td>{{hargaItem.harga_baku}}</td>
-                            </tr>
+                                <td>Rp. {{hargaItem.harga_baku | number}}</td>
+                                <td>Rp. {{(hargaItem.harga_baku * margin / 100) + hargaItem.harga_baku | number}}</td>
+                                </tr>
                         </ng-container>
                     </tbody>
                 </table>

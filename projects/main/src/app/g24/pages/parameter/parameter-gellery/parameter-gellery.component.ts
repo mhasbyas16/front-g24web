@@ -11,6 +11,8 @@ import { ProductCategoryService } from '../../../services/product/product-catego
 import { JenisBarangService } from '../../../services/product/jenis-barang.service';
 import { ProductDenomService } from '../../../services/product/product-denom.service';
 import { PrmJualService } from '../../../services/parameter/prm-jual.service';
+import { TransactionTypeService } from '../../../services/transaction/transaction-type.service';
+import { PrmMarginService } from '../../../services/parameter/prm-margin.service';
 
 import { EMenuID } from '../../../lib/enums/emenu-id.enum';
 import { DContent } from '../../../decorators/content/pages';
@@ -60,10 +62,13 @@ export class ParameterGelleryComponent implements OnInit {
   product = null;
   list_vendors = null;
   getDataold = null;
+  transactionType = null;
+  margin = null;
+  totaljual = [];
   tempVendor = [];
  
   vendorCategory= "product-category.code=c05,c06";
-  category = "?_ne=flag:expired&_hash=1&product-category.code=c05,c06&_sortby=_id:2";
+  category = "?_ne=flag:expired&product-category.code=c05,c06&_sortby=_id:2";
   produtCategory = null;
   filterProduct = "?code=c05,c06";
   
@@ -83,13 +88,14 @@ export class ParameterGelleryComponent implements OnInit {
     private JenisBarangService: JenisBarangService,
     private ProductDenom: ProductDenomService,
     private productCategoryService: ProductCategoryService,
-
-    private toastrService: ToastrService,
+    private transactionTypeService: TransactionTypeService,
+    private prmJualService : PrmJualService,
+    private prmMargin: PrmMarginService,
     //session
     private sessionService: SessionService,
     private dateServices : DateService,
     //parameter
-    private prmJualService : PrmJualService,
+    private toastrService: ToastrService,
   ) { }
 
   defaultHarga() {
@@ -300,16 +306,40 @@ export class ParameterGelleryComponent implements OnInit {
   mainDetail(data) {
     console.debug("dataDetail", data);
 
+    this.transactionTypeService.list().subscribe((out) => {
+      if (out != false) {
+        this.transactionType = out;
+      }  
+    });
+
     this.inputModel = data;
     this.harga = this.inputModel.harga;
-    // console.log('rego',this.harga);
     this.inputModel.selectProduct = data['product-category'].name;
+    this.inputModel.selectP = data['product-category'].code;
     this.inputModel.selectVendor = data['vendor'].name;
     this.inputModel.jenis_barang = data.jenis_barang;
     this.inputModel.keterangan = data.keterangan;
-    // this.onChange(this.inputModel.selectProduct);
 
     this.modalDetailDialog = true;
+  }
+
+  onChangeTrans(data){
+    let product = this.inputModel.selectP;
+    let prm = "?product-category.code="+product+"&transaction-type.code="+data+"&flag=approved";
+    
+    this.prmMargin.get(prm).subscribe((out) => {
+      if (out == false) {
+        this.toastrService.info("Data margin not found");
+      }
+      this.margin = out.margin;
+      //hitung harga jual
+      // let itung = null;
+      // for(let i of this.harga){
+      //   itung = (i.harga_baku * this.margin/100)+i.harga_baku;
+      //   this.totaljual.push(itung);
+      //   console.log(this.totaljual,'wk');
+      // }
+    })
   }
 
   mainConfirm(data) {
@@ -414,7 +444,7 @@ export class ParameterGelleryComponent implements OnInit {
   }
 
   onListVendor(){
-    this.vendorService.list("?_hash=1&product-category._id="+this.produtCategory).subscribe((response: any) => {
+    this.vendorService.list("?product-category._id="+this.produtCategory).subscribe((response: any) => {
       if (response != false) {
         this.list_vendors = response;
       }      
@@ -422,7 +452,7 @@ export class ParameterGelleryComponent implements OnInit {
   }
 
   onSearchVendor(){
-    this.vendorService.list("?_hash=1&"+this.vendorCategory).subscribe((response: any) => {
+    this.vendorService.list("?"+this.vendorCategory).subscribe((response: any) => {
       if (response != false) {
         this.vendors = response;
       }      

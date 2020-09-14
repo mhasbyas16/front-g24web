@@ -6,6 +6,26 @@
         <div class="card-block">
             <div class="card-text">
                 <button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus"></clr-icon></button>
+                <form #searchLogamMulia="ngForm" id="logam-mulia" clrForm (ngSubmit)="onDataGrid(searchLogamMulia.value)">
+                    <div class="clr-row">
+                        <div class="clr-col-12">
+                            <h6 class="bg-blue1000"> Pencarian </h6>
+                        </div>
+                        <div class="clr-col-sm-12 clr-col-md-12 clr-col-lg-12"><br></div>
+                        <div class="clr-col-3">
+                            <input type="text" placeholder="Enter value here" class="clr-input" name="input_search" [(ngModel)]="searchModel.search"/>
+                        </div>
+                    </div>
+                    <div class="clr-row">
+                        <div class="clr-col-1">
+                            <div class="clr-form-control">
+                                <div class="clr-control-container">
+                                    <button class="btn btn-info-outline btn-sm" (change)="muter()">Cari</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>   
+                </form>
                 <div class="clr-col-sm-12 clr-col-md-12 clr-col-lg-12"></div>
                 <clr-datagrid [clrDgLoading]="loadingDg">
                     <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
@@ -63,7 +83,7 @@
                                     <label for="basic" class="clr-control-label">Value</label>
                                     <div class="clr-control-container">
                                     <div class="clr-input-wrapper">
-                                        <input name="value" type="number" class="clr-input" [(ngModel)]="inputModel.input_value"/>
+                                        <input name="value" class="clr-input" [(ngModel)]="inputModel.input_value"/>
                                         <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                                     </div>
                                     <span class="clr-subtext"></span>
@@ -112,7 +132,7 @@
                                     <label for="basic" class="clr-control-label">Code</label>
                                     <div class="clr-control-container">
                                     <div class="clr-input-wrapper">
-                                        <input name="code" class="clr-input" [(ngModel)]="inputModel.input_code"/>
+                                        <input name="code" class="clr-input" [(ngModel)]="inputModel.input_code" readonly/>
                                         <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                                     </div>
                                     <span class="clr-subtext"></span>
@@ -124,7 +144,7 @@
                                     <label for="basic" class="clr-control-label">Value</label>
                                     <div class="clr-control-container">
                                     <div class="clr-input-wrapper">
-                                        <input name="value" type="number" class="clr-input" [(ngModel)]="inputModel.input_value"/>
+                                        <input name="value" class="clr-input" [(ngModel)]="inputModel.input_value"/>
                                         <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                                     </div>
                                     <span class="clr-subtext"></span>
@@ -163,7 +183,7 @@
     <form>
         <clr-modal [clrModalSize]="'md'" [clrModalOpen]="modalDetailDialog" [clrModalClosable]="false"
             [clrModalStaticBackdrop]="true">
-            <h3 class="modal-title">Edit {{title}}</h3>
+            <h3 class="modal-title">Detail {{title}}</h3>
             <div class="modal-body ">
                 <div class="card">
                     <div class="card-block">

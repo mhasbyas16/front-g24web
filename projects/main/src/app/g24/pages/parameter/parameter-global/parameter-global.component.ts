@@ -3,7 +3,6 @@ import { ToastrService } from "ngx-toastr";
 
 import { EMenuID } from '../../../lib/enums/emenu-id.enum';
 import { DContent } from '../../../decorators/content/pages';
-import { ParameterGelleryComponent } from '../parameter-gellery/parameter-gellery.component';
 
 //Session
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
@@ -32,6 +31,7 @@ export class ParameterGlobalComponent implements OnInit {
   // ClrDatagrid
   loadingDg: boolean = false;
   dataList = null;
+  param = null;
   //datetime
   timezone = "string";
   date_now = "string";
@@ -55,11 +55,12 @@ export class ParameterGlobalComponent implements OnInit {
     //database
     private prmGlobalService : PrmGlobalService
   ) { }
-
+  
+  searchModel : any = {search : null};
   inputModel : any = {items : []};
   defaultInput(): any {
     return{
-      input_keterangan : null, input_value: 0, input_code: null
+      input_keterangan : null, input_value: null, input_code: null
     }
   }
 
@@ -76,15 +77,21 @@ export class ParameterGlobalComponent implements OnInit {
           this.time = tgl[1].split("Z")[0];
       }
     });
-    this.onDataGrid();
   }
 
-  onDataGrid(){
+  onDataGrid(data){
     // CLR Datagrid loading
     this.loadingDg = true;
-   
-    // prmjual
-    this.prmGlobalService.list().subscribe((response: any) => {
+    
+    let sc = data.input_search;
+    if (sc == null) {
+      this.param == '';
+    }else {
+      this.param = "?code_regex=1&code="+sc;
+    }
+
+    // prmGlobal
+    this.prmGlobalService.list(this.param).subscribe((response: any) => {
       if (response == false) {
         this.toastrService.error("Data Not Found", "Parameter Global");
         this.loadingDg = false;
@@ -106,13 +113,17 @@ export class ParameterGlobalComponent implements OnInit {
     {
       let value = this.inputModel[key];
       console.log(value, key, 'key')
-      if(value == null || value == "null" || value == 0 || (typeof value === 'number' && value === 0))
+      if(value == null || value == "null" || value == "null" || (typeof value === 'number' && value === 0))
       {
         this.toastrService.warning("Field belum diisi / sama dengan 0 ");
         return true
       }
     }
     return false
+  }
+
+  muter(){
+    this.loadingDg = true
   }
 
   mainAdd(){
@@ -125,7 +136,6 @@ export class ParameterGlobalComponent implements OnInit {
     let dataInput = {
       "code" : this.inputModel.input_code,
       "value" : this.inputModel.input_value,
-      "value_encoded" : "int",
       "keterangan" : this.inputModel.input_keterangan,
       "create_by" : this.nikUser["_hash"],
       "create_by_encoded" : "base64",
@@ -141,7 +151,7 @@ export class ParameterGlobalComponent implements OnInit {
       }
       this.spinner = false;
       this.modalAddDialog = false;
-      this.onDataGrid();
+      // this.onDataGrid();
       this.toastrService.success('Add Success');
     })
     console.debug(dataInput,"submited data")
@@ -168,9 +178,7 @@ export class ParameterGlobalComponent implements OnInit {
 
     let dataInput = {
       "_id" : this.inputModel._id,
-      "code" : this.inputModel.input_code,
       "value" : this.inputModel.input_value,
-      "value_encoded" : "int",
       "keterangan" : this.inputModel.input_keterangan,
       "update_by" : this.nikUser["_hash"],
       "update_by_encoded" : "base64",
@@ -186,7 +194,7 @@ export class ParameterGlobalComponent implements OnInit {
       }
       this.spinner = false;
       this.modalEditDialog = false;
-      this.onDataGrid();
+      // this.onDataGrid();
       this.toastrService.success('Update Success');
     })
     console.debug(dataInput,"submited data")
