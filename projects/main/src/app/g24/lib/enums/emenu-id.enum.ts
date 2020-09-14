@@ -104,6 +104,8 @@ export enum EMenuID {
     PARAM_JENIS         = '9906',
     PARAM_PURITY        = '9907',
     PARAM_SERIES        = '9908',
+    TOKO_PENYEDIA       = '9909',
+    VENDOR              = '9910',
 
     // Offline Sale
     DISTRO              = '10001',
