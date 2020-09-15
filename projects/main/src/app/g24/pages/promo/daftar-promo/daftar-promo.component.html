@@ -107,7 +107,7 @@
                 </clr-input-container>
 
                 <!-- Type Quota -->
-                <ng-container *ngIf="data.typeQuota == 0">
+                <ng-container *ngIf="data.typeQuota == 'nolimit'">
                     <!-- tidak ada batasan -->
                     <clr-input-container>
                         <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Tipe Kuota</label>
@@ -115,7 +115,7 @@
                         <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">Tidak Ada Batasan</label>
                     </clr-input-container>                    
                 </ng-container>
-                <ng-container *ngIf="data.typeQuota == '1'">
+                <ng-container *ngIf="data.typeQuota == 'allproduct'">
                     <!-- Semua Produk -->
                     <clr-input-container>
                         <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Tipe Kuota</label>
@@ -123,7 +123,7 @@
                         <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">Semua Product</label>
                     </clr-input-container>
                 </ng-container>
-                <ng-container *ngIf="data.typeQuota == 2">
+                <ng-container *ngIf="data.typeQuota == 'perproduct'">
                     <!-- per product -->
                     <clr-input-container>
                         <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Tipe Kuota</label>

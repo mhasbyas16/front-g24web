@@ -193,13 +193,13 @@ export class PengaturanPromoComponent implements OnInit {
   }
 
   selectKuota(val){
-    if (val == '0') {
+    if (val == 'nolimit') {
       this.inputKuota = false;
       this.kuotaProduk = false;
-    }else if (val == '1') {
+    }else if (val == 'allproduct') {
       this.inputKuota = true;
       this.kuotaProduk = false;
-    }else if (val == '2'){
+    }else if (val == 'perproduct'){
       this.inputKuota = false;
       this.kuotaProduk = true;
     }
