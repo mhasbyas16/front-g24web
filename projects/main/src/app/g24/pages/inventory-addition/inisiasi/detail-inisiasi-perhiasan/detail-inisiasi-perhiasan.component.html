@@ -180,10 +180,10 @@
                                 <clr-dg-cell>{{GetDisplayValue(data['product-purity'])}}</clr-dg-cell>
                                 <clr-dg-cell>{{GetDisplayValue(data['product-jenis'])}}</clr-dg-cell>
                                 <clr-dg-cell>{{GetDisplayValue(data['product-gold-color'])}}</clr-dg-cell>
-                                <clr-dg-cell>{{data?.berat | mask : '.2'}}</clr-dg-cell>
+                                <clr-dg-cell>{{data?.berat}}</clr-dg-cell>
                                 <clr-dg-cell>{{data?.pieces}}</clr-dg-cell>
                                 <clr-dg-cell>{{data?.baku_tukar}}</clr-dg-cell>
-                                <clr-dg-cell>{{data?.gram_tukar | mask : '.2'}}</clr-dg-cell>
+                                <clr-dg-cell>{{data?.gram_tukar}}</clr-dg-cell>
                                 <clr-dg-cell>{{data?.ongkos}}</clr-dg-cell>
                                 <!-- <clr-dg-cell>{{data.gram_tukar}}</clr-dg-cell><input readonly type="number" class="clr-input" [ngModel]="input.items[i]['pajak'] = 0" [ngModelOptions]="{standalone:true}"> -->
                                 <clr-dg-cell>{{data?.pajak | mask : 'separator' : ','}} </clr-dg-cell>
@@ -203,13 +203,13 @@
                             <clr-dg-footer>
                                 <div class="clr-row">
                                     <div class="clr-col-1">Total Berat: </div>
-                                    <div class="clr-col-2"><p [ngStyle]="beratStyleValid()">{{getBeratFromItems() | mask : '0*.00'}} gram.</p></div>
+                                    <div class="clr-col-2"><p [ngStyle]="beratStyleValid()">{{getBeratFromItems()}} gram.</p></div>
                                     <div class="clr-col-1">Total Pieces: </div>
                                     <div class="clr-col-2"><p [ngStyle]="piecesStyleValid()">{{getPiecesFromItems() | mask : 'separator' : ','}} piece.</p></div>
                                     <div class="clr-col-1">Total Baku Tukar: </div>
                                     <div class="clr-col-2"><p [ngStyle]="bakuTukarStyleValid()">{{getBakuTukarFromItems() | mask : 'separator' : ','}}.</p></div>
                                     <div class="clr-col-1">Total Gram Tukar: </div>
-                                    <div class="clr-col-2"><p [ngStyle]="gramTukarStyleValid()">{{getGramTukarFromItems() | mask : '0*.00'}} gram.</p></div>
+                                    <div class="clr-col-2"><p [ngStyle]="gramTukarStyleValid()">{{getGramTukarFromItems()}} gram.</p></div>
                                 </div>
                                 <div class="clr-row">
                                     <div class="clr-col-1">Total Pajak: </div>

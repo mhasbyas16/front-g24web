@@ -215,6 +215,16 @@
                                     <div class="clr-col-6"></div>
                                 </div>
                                 <div class="clr-row">
+                                    <div class="clr-col-1">Total DPP : </div>
+                                    <div class="clr-col-2">
+                                        <p><span [ngStyle]="{'float' : 'left'}">Rp.</span>
+                                            <span>
+                                                <span [ngStyle]="totalDPPStyleValid()">{{hitungTotalDPP() | mask : 'separator' : ','}}</span>
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="clr-row">
                                     <div class="clr-col-1">Total Harga : </div>
                                     <div class="clr-col-2">
                                         <p><span [ngStyle]="{'float' : 'left'}">Rp.</span>
