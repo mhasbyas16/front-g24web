@@ -42,17 +42,17 @@
             <button class="action-item" (click)="mainDetail(row)">Detail</button>
         </clr-dg-action-overflow>
         <clr-dg-cell hidden>{{row._id}}</clr-dg-cell>
-        <clr-dg-cell>{{row['product-category'].name}}</clr-dg-cell>
-        <clr-dg-cell>Rp. {{row['harga_buyback'] | number}}</clr-dg-cell>
-        <clr-dg-cell>Rp. {{row['harga_baku'] | number}}</clr-dg-cell>
+        <clr-dg-cell [style.width.px]="100">{{row['product-category'].name}}</clr-dg-cell>
+        <clr-dg-cell [style.width.px]="100">Rp. {{row['harga_buyback'] | number}}</clr-dg-cell>
+        <clr-dg-cell [style.width.px]="100">Rp. {{row['harga_baku'] | number}}</clr-dg-cell>
             <ng-container *ngIf="row.flag == 'approved'">
-                <clr-dg-cell><span class="label label-success">Approved</span></clr-dg-cell>
+                <clr-dg-cell [style.width.px]="100"><span class="label label-success">Approved</span></clr-dg-cell>
             </ng-container>
             <ng-container *ngIf="row.flag == 'submit'">
-                <clr-dg-cell><span class="label label-warning">Waiting</span></clr-dg-cell>
+                <clr-dg-cell [style.width.px]="100"><span class="label label-warning">Waiting</span></clr-dg-cell>
             </ng-container>
             <ng-container *ngIf="row.flag == 'declined'">
-                <clr-dg-cell><span class="label label-danger">Declined</span></clr-dg-cell>
+                <clr-dg-cell [style.width.px]="100"><span class="label label-danger">Declined</span></clr-dg-cell>
             </ng-container>
     </clr-dg-row>
     <clr-dg-footer>
