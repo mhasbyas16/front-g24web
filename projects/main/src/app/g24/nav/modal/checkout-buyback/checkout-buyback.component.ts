@@ -73,7 +73,7 @@ export class CheckoutBuybackComponent implements OnInit {
       kembali: new FormControl (""),
     })
 
-    console.debug(PERHIASAN, "sadsda")
+    console.debug(LM, "sadsda")
     this.jumlahPerhiasan = this.perhiasan.length;
     this.jumlahEmasBatangan = this.emasBatangan.length;
     this.jumlahSouvenir = this.souvenir.length;

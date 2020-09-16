@@ -39,23 +39,16 @@ export class MuliaBycodeComponent implements OnInit {
       "vendor": vendor,
       "denom" : denom,
       "noSeri" : noSeri,
-      "hargaBB" : hargaBB,
+      "hargaBB" : hargaBB
       
     })
     this.totalIsiCartEmasBatangan.emit(this.cartList.length)
     this.refresh("p")
-   
+    
+    console.debug(this.cartList)
   }
   
   hitungHargaBB(){
-      
-        console.debug(this.totalIsiEmasBatangan, "sada")
-      
-    //   this.prmJualService.get("?"+this.productCategory+"&flag=approved"+"&vendor="+codeVendor).subscribe((BBresponse: any) => {
-    //   this.hargaBB = BBresponse
-    //   console.debug(this.hargaBB, "wewe")
-      
-    // })
   }
 
   cekItemArray(data: any){
