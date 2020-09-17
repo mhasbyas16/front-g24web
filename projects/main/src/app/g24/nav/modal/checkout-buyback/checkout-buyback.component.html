@@ -286,6 +286,12 @@
                                 <input clrInput type="text" formControlName="kembali" [value]="kembali | number" readonly>
                             </clr-input-container>
                         </div>
+                        <input type="hidden" formControlName="client">
+                        <input type="hidden" formControlName="client_encoded">
+                        <input type="hidden" formControlName="idAi">
+                        <input type="hidden" formControlName="maker">
+                        <input type="hidden" formControlName="makerDate">
+                        <input type="hidden" formControlName="makerTime">
                     </div>
                     <div class="card-footer">
                         <button type="button" class="btn btn-block btn-primary" (click)="transaction()">Submit</button>

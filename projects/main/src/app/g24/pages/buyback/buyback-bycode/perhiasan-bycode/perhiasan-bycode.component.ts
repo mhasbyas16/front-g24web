@@ -66,13 +66,15 @@ export class PerhiasanBycodeComponent implements OnInit {
    this.loadingDg = false
   }
 
-  addToCart(code, jenis, berat, kadar, hargaTbb ){
+  addToCart(code, jenis, berat, kadar, hargaTbb, detail ){
+    // let detailProduct =  btoa(JSON.stringify(detail));
     this.cartList.push({
       "code" : code,
       "jenis" : jenis,
       "berat" : berat,
       "kadar" : kadar,
       "kondisi" : this.tampilKondisi,
+      'detail': detail,
       "hargaBB" : hargaTbb
     })
     console.debug(this.cartList, "isi cart")
