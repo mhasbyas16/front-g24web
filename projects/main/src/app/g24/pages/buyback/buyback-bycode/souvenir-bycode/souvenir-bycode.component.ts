@@ -65,13 +65,14 @@ export class SouvenirBycodeComponent implements OnInit {
    this.loadingDg = false
   }
 
-  addToCart(code, vendor,denom, series, hargaTbb ){
+  addToCart(code, vendor,denom, series, hargaTbb, detail ){
     this.cartList.push({
       "code" : code,
       "vendor" : vendor,
       "denom" : denom,
       "series" : series,
       "kondisi" : this.tampilKondisi,
+      "detail" : detail,
       "hargaBB" : hargaTbb
     })
     console.debug(this.cartList, "isi cart")

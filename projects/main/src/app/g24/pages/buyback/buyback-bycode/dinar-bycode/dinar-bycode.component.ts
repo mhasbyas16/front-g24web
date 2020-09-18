@@ -65,12 +65,13 @@ export class DinarBycodeComponent implements OnInit {
    this.loadingDg = false
   }
 
-  addToCart(code, vendor,denom, hargaTbb ){
+  addToCart(code, vendor,denom, hargaTbb, detail ){
     this.cartList.push({
       "code" : code,
       "vendor" : vendor,
       "denom" : denom,
       "kondisi" : this.tampilKondisi,
+      'detail': detail,
       "hargaBB" : hargaTbb
     })
     console.debug(this.cartList, "isi cart")

@@ -60,13 +60,14 @@ export class BerlianBycodeComponent implements OnInit {
    this.loadingDg = false
   }
 
-  addToCart(code, jenis, berat, kadar, hargaTbb ){
+  addToCart(code, jenis, berat, kadar, hargaTbb, detail ){
     this.cartList.push({
       "code" : code,
       "jenis" : jenis,
       "berat" : berat,
       "kadar" : kadar,
       "kondisi" : this.tampilKondisi,
+      'detail': detail,
       "hargaBB" : hargaTbb
     })
     console.debug(this.cartList, "isi cart")

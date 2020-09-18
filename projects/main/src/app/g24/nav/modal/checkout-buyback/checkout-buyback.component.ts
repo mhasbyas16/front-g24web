@@ -82,7 +82,12 @@ export class CheckoutBuybackComponent implements OnInit {
       makerDate: new FormControl(this.datePipe.transform(Date.now(), 'MM/dd/yyyy'), Validators.required),
       makerTime: new FormControl(this.datePipe.transform(Date.now(), 'h:mm:ss a'), Validators.required),
       nominalTransaksi: new FormControl (""),
-      kembali: new FormControl ("")
+      kembali: new FormControl (""),
+      unit: new FormControl(""),
+      unit_encoded: new FormControl("base64"),
+      maker: new FormControl(this.nikUser["_hash"], [Validators.required]),
+      maker_encoded: new FormControl("base64"),
+      idAi: new FormControl("", Validators.required),
     })
 
     console.debug(LM, "sadsda")
@@ -198,6 +203,11 @@ export class CheckoutBuybackComponent implements OnInit {
 
   refreshId(){
     this.idTransaksi();
+  }
+
+  getUnit() {
+    const unitString = btoa(JSON.stringify(this.sessionService.getUnit()));
+    this.formData.patchValue({ unit: unitString });
   }
 
   storeTransaction(){
