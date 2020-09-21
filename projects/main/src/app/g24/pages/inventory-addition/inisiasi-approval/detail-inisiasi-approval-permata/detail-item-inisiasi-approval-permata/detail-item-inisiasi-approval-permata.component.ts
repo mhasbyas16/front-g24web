@@ -14,11 +14,11 @@ import { IDetailCallbackListener } from 'projects/main/src/app/g24/lib/base/idet
 import { PaymentType } from 'projects/main/src/app/g24/lib/enums/payment-type';
 
 @Component({
-  selector: 'detail-item-inisiasi-approval-perhiasan',
-  templateUrl: './detail-item-inisiasi-approval-perhiasan.component.html',
-  styleUrls: ['./detail-item-inisiasi-approval-perhiasan.component.scss']
+  selector: 'detail-item-inisiasi-approval-permata',
+  templateUrl: './detail-item-inisiasi-approval-permata.component.html',
+  styleUrls: ['./detail-item-inisiasi-approval-permata.component.scss']
 })
-export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
+export class DetailItemInisiasiApprovalPermataComponent implements OnInit {
 
   constructor
   (
@@ -49,7 +49,7 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
   async LoadJenis()
   {
     this.jeniss = [];
-    let jeniss = await this.jenisService.list("?product-category.code=c00").toPromise();
+    let jeniss = await this.jenisService.list("?product-category.code=c03").toPromise();
     if(jeniss)
     {
       if(jeniss.length <= 0)
@@ -60,7 +60,7 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
         return;
       }
 
-      this.toastr.success("Parameter 'Jenis Perhiasan' loaded...");
+      this.toastr.success("Parameter 'Jenis Permata' loaded...");
       this.jeniss.push(...jeniss);
       this.jeniss.sort((a, b) => ('' + a.name).localeCompare(b.name));
     } else {
@@ -81,7 +81,7 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
     this.isOpened = open
   }
 
-  private title : string = "Detail Approval Perhiasan";
+  private title : string = "Detail Penerimaan Permata";
   public get Title()
   {
     return this.title;
@@ -104,7 +104,7 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
       return;
     }
 
-    this.inisiasiService.list("?_or=product-category.code=c00&no_po="+id).subscribe(output => 
+    this.inisiasiService.list("?_or=product-category.code=c03&no_po="+id).subscribe(output => 
     {
       if(output != false)
       {
@@ -218,7 +218,8 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
       this.toastr.show("PO sudah di Terima Full.", "Terima says");
       return;
     }
-    this.LoadAllParameter();
+    
+    //this.LoadAllParameter();
 
     this.fillItemsWithProducts();
   }
@@ -556,53 +557,54 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
       return;
     }
 
-    this.inisiasi.order_status = OrderStatus.APPROVAL.code;
+    this.inisiasi.order_status = OrderStatus.TERIMA_FULL.code;
     this.inisiasi.update_date = new Date().toISOString().split("T")[0];
     this.inisiasi.update_by = this.user.username;
-    this.inisiasi['tgl_approved'] = this.inisiasi.update_date;
-    this.inisiasi.approved_by = this.user.username;
+    this.inisiasi['tgl_terima'] = this.inisiasi.update_date;
+    this.inisiasi.terima_by = this.user.username;
     let items = this.inisiasi.items;
     let productNoId = [];
     let ids = [];
     console.log(items);
     
+    for(let i = 0; i < items.length; i++)
+    {
+      let products = items[i].products;
+      productNoId.push(...products);
+    }
+
+    let itemProduct : Map<string, number> = new Map<string,number>();
     
+    console.log(productNoId);
 
-    // console.log(productNoId);
-    // console.log(this.inisiasi);
+    let failedIndex : any[] = [];
+    let someFailed : boolean = false;
+    for(let i =0; i < productNoId.length; i++)
+    {
+      let product = productNoId[i];
+      let fail = {itemIndex : product.no_item_po, productIndex: product.no_index_products}
+      delete product._id;
+      DataTypeUtil.Encode(product);
 
-    // let failedIndex : any[] = [];
-    // let someFailed : boolean = false;
+      itemProduct.set(fail.itemIndex + "," + fail.productIndex, product);
 
-    // for(let i =0; i < productNoId.length; i++)
-    // {
-    //   let product = productNoId[i];
-    //   let fail = {itemIndex : product.no_item_po, productIndex: product.no_index_products}
-    //   delete product._id;
-    //   DataTypeUtil.Encode(product);
-
-    //   itemProduct.set(fail.itemIndex + "," + fail.productIndex, product);
-
-    //   let result = await this.productService.add(product).toPromise();
-    //   if(result == false)
-    //   {
-    //     this.toastr.error("Barang nomor: " + fail.productIndex + " dengan nomor Bulk: " + fail.itemIndex + " gagal masuk.");
-    //     continue;
-    //   } else {
-    //     let product = itemProduct.get(fail.itemIndex + "," + fail.productIndex);
-    //     Object.assign(product, result);
-    //     itemProduct.set(fail.itemIndex + "," + fail.productIndex, result);
-    //     console.log(result);
-    //   }
-    // }
+      let result = await this.productService.add(product).toPromise();
+      if(result == false)
+      {
+        this.toastr.error("Barang nomor: " + fail.productIndex + " dengan nomor Bulk: " + fail.itemIndex + " gagal masuk.");
+        continue;
+      } else {
+        let product = itemProduct.get(fail.itemIndex + "," + fail.productIndex);
+        Object.assign(product, result);
+        itemProduct.set(fail.itemIndex + "," + fail.productIndex, result);
+        console.log(result);
+      }
+    }
 
     console.log(this.inisiasi);
     let tempInisiasi = {}
-
-    //              TARGET    - >   SOURCE
     Object.assign(tempInisiasi, this.inisiasi);
     DataTypeUtil.Encode(tempInisiasi);
-    console.log(tempInisiasi);
 
     let inisiasi = await this.inisiasiService.update(tempInisiasi).toPromise();
     if(inisiasi == false)
@@ -647,11 +649,14 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
     let berat = 0.0;
     for(let i = 0; i < this.inisiasi.items.length; i++)
     {
-      if(this.inisiasi.items[i].berat == null || this.inisiasi.items[i].berat == "null")
+      if(this.inisiasi.items[i].total_berat == null || this.inisiasi.items[i].total_berat == "null")
         continue;
-      berat += parseFloat(this.inisiasi.items[i].berat);
+      berat += parseFloat(this.inisiasi.items[i].total_berat);
     }
     this.inisiasi['total_berat'] = Math.round(berat * 100) / 100;
+    if(isNaN(berat)){
+      berat;
+    }
     return berat;
   }
 
@@ -710,9 +715,9 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
     let value = 0;
     for(let i = 0; i < this.inisiasi.items.length; i++)
     {
-      if(this.inisiasi.items[i]?.ongkos == null || this.inisiasi.items[i]?.ongkos == "null")
+      if(this.inisiasi.items[i]?.total_ongkos == null || this.inisiasi.items[i]?.total_ongkos == "null")
         continue;
-        value += parseFloat(this.inisiasi.items[i].ongkos);
+        value += parseFloat(this.inisiasi.items[i].total_ongkos);
     }
 
     this.inisiasi['total_ongkos'] = Math.round(value * 100) / 100;
@@ -745,4 +750,5 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
     this.inisiasi['total_harga'] = Math.round(hbaku * total_gram_tukar * 100) /100;
     return this.inisiasi['total_harga'];
   }
+
 }

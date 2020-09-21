@@ -28,6 +28,16 @@ import { DetailInisiasiPermataComponent } from './inisiasi/detail-inisiasi-perma
 import { DetailInisiasiDinarComponent } from './inisiasi/detail-inisiasi-dinar/detail-inisiasi-dinar.component';
 import { DetailPenerimaanDinarComponent } from './penerimaan/detail-penerimaan-dinar/detail-penerimaan-dinar.component';
 import { DetailItemPenerimaanDinarComponent } from './penerimaan/detail-penerimaan-dinar/detail-item-penerimaan-dinar/detail-item-penerimaan-dinar.component';
+import { DetailInisiasiApprovalSouvenirComponent } from './inisiasi-approval/detail-inisiasi-approval-souvenir/detail-inisiasi-approval-souvenir.component';
+import { DetailItemInisiasiApprovalSouvenirComponent } from './inisiasi-approval/detail-inisiasi-approval-souvenir/detail-item-inisiasi-approval-souvenir/detail-item-inisiasi-approval-souvenir.component';
+import { DetailInisiasiApprovalGiftComponent } from './inisiasi-approval/detail-inisiasi-approval-gift/detail-inisiasi-approval-gift.component';
+import { DetailItemInisiasiApprovalGiftComponent } from './inisiasi-approval/detail-inisiasi-approval-gift/detail-item-inisiasi-approval-gift/detail-item-inisiasi-approval-gift.component';
+import { DetailInisiasiApprovalEmasBatanganComponent } from './inisiasi-approval/detail-inisiasi-approval-emas-batangan/detail-inisiasi-approval-emas-batangan.component';
+import { DetailItemInisiasiApprovalEmasBatanganComponent } from './inisiasi-approval/detail-inisiasi-approval-emas-batangan/detail-item-inisiasi-approval-emas-batangan/detail-item-inisiasi-approval-emas-batangan.component';
+import { DetailInisiasiApprovalDinarComponent } from './inisiasi-approval/detail-inisiasi-approval-dinar/detail-inisiasi-approval-dinar.component';
+import { DetailItemInisiasiApprovalDinarComponent } from './inisiasi-approval/detail-inisiasi-approval-dinar/detail-item-inisiasi-approval-dinar/detail-item-inisiasi-approval-dinar.component';
+import { DetailInisiasiApprovalPermataComponent } from './inisiasi-approval/detail-inisiasi-approval-permata/detail-inisiasi-approval-permata.component';
+import { DetailItemInisiasiApprovalPermataComponent } from './inisiasi-approval/detail-inisiasi-approval-permata/detail-item-inisiasi-approval-permata/detail-item-inisiasi-approval-permata.component';
 
 @NgModule({
   declarations: 
@@ -54,7 +64,17 @@ import { DetailItemPenerimaanDinarComponent } from './penerimaan/detail-penerima
     DetailInisiasiPermataComponent,
     DetailInisiasiDinarComponent,
     DetailPenerimaanDinarComponent,
-    DetailItemPenerimaanDinarComponent
+    DetailItemPenerimaanDinarComponent,
+    DetailInisiasiApprovalSouvenirComponent,
+    DetailItemInisiasiApprovalSouvenirComponent,
+    DetailInisiasiApprovalGiftComponent,
+    DetailItemInisiasiApprovalGiftComponent,
+    DetailInisiasiApprovalEmasBatanganComponent,
+    DetailItemInisiasiApprovalEmasBatanganComponent,
+    DetailInisiasiApprovalDinarComponent,
+    DetailItemInisiasiApprovalDinarComponent,
+    DetailInisiasiApprovalPermataComponent,
+    DetailItemInisiasiApprovalPermataComponent
   ], 
   imports: [
     CommonModule,

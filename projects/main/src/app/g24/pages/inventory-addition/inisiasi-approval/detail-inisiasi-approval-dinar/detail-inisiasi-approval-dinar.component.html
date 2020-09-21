@@ -1,9 +1,8 @@
-
 <div class="clr-row">
     <div class="card" style="margin-top: 0em;">
-        <div class="card-header">
-            <b>Approval Inisiasi Perhiasan</b>
-        </div>
+    <div class="card-header">
+        <b>Approval Inisiasi Dinar</b>
+    </div>
         <div class="card-block">
             <form [formGroup]="searchFG" clrLayout="compact" #penerimaan id="penerimaan" clrForm>
                 <div class="clr-row">
@@ -70,8 +69,7 @@
                         </clr-select-container>
                     </div>
                 </div>
-                <!-- </div> -->
-            </form>
+                </form>
         </div>
         <div class="card-footer">
             <!-- <button class="btn btn-primary align-right">
@@ -86,10 +84,11 @@
         </div>
     </div>
 </div>
+
 <div class="clr-row">
     <div class="card" style="margin-top: 0em;">
         <div class="card-header">
-                List Approval
+                List Penerimaan
         </div>
         <clr-datagrid [clrDgLoading]="loading" [(clrDgSingleSelected)]="selected">
             <clr-dg-action-bar>
@@ -164,17 +163,15 @@
     </div>
 </div>
 
-<detail-item-inisiasi-approval-perhiasan #item_terima>
+<detail-item-inisiasi-approval-dinar #item_terima>
 
-</detail-item-inisiasi-approval-perhiasan>
+</detail-item-inisiasi-approval-dinar>
 
 <clr-modal #modalMsg [(clrModalOpen)]="modalOpen" [clrModalStaticBackdrop]="false">
-<h3 class="modal-title">{{errorTitle}}</h3>
-<div class="modal-body">
-    <p *ngIf="errorType == ErrorType.ERROR" style="color: red">{{errorMessage}}</p>
-    <p *ngIf="errorType == ErrorType.WARN" style="color: yellow">{{errorMessage}}</p>
-    <p *ngIf="errorType == ErrorType.NORMAL">{{errorMessage}}</p>
-</div>
-</clr-modal>
-
-<!-- <div #container></div> -->
+    <h3 class="modal-title">{{errorTitle}}</h3>
+    <div class="modal-body">
+        <p *ngIf="errorType == ErrorType.ERROR" style="color: red">{{errorMessage}}</p>
+        <p *ngIf="errorType == ErrorType.WARN" style="color: yellow">{{errorMessage}}</p>
+        <p *ngIf="errorType == ErrorType.NORMAL">{{errorMessage}}</p>
+    </div>
+    </clr-modal>
