@@ -214,8 +214,8 @@ export class SetupMarginComponent implements OnInit {
     let transaction = data.input_transaction;
     let product = data.input_product;
   
-    const urlTransaction = "transaction-type.code="+transaction;
-    const urlProduct = "product-category.code="+product;
+    const urlTransaction = "_ne=flag:expired&transaction-type.code="+transaction;
+    const urlProduct = "_ne=flag:expired&product-category.code="+product;
 
     if (transaction != 'all') {
       this.params = this.params+urlTransaction;

@@ -1,0 +1,387 @@
+<div class="clr-row">
+    <div class="card" style="margin-top: 0em;">
+        <div class="card-header">
+            Pengajuan Anggaran
+        </div>
+        <div class="card-block">
+            <div class="card-text">
+                <button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus"></clr-icon></button>
+                <form #searchLogamMulia="ngForm" id="logam-mulia" clrForm (ngSubmit)="onCari(searchLogamMulia.value)">
+                    <div class="clr-row">
+                        <div class="clr-col-12">
+                            <h6 class="bg-blue1000"> Pencarian </h6>
+                        </div>
+                        <div class="clr-col-6">
+                            <clr-select-container class="clr-form-control">
+                                <label class="clr-control-label">Mata Anggaran</label>
+                                <select [(ngModel)]="searchModel.mata_anggaran" clrSelect name="input_mataAnggaran">
+                                    <option value="all" >All</option>
+                                    <ng-container *ngFor="let ma of listMataAnggaran">
+                                        <option value="{{ma.code}}">{{ma.name}}</option>
+                                    </ng-container>
+                                </select>
+                            </clr-select-container>
+                        </div>
+                    </div>
+                    <div class="clr-row">
+                        <div class="clr-col-1">
+                            <div class="clr-form-control">
+                                <div class="clr-control-container">
+                                    <button class="btn btn-info-outline btn-sm" (change)="muter()">Cari</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>   
+                </form>
+                <div class="clr-col-sm-12 clr-col-md-12 clr-col-lg-12"></div>
+                <clr-datagrid [clrDgLoading]="loadingDg">
+                    <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
+                    <clr-dg-column [style.width.px]="190">ID Pengajuan</clr-dg-column>
+                    <clr-dg-column [style.width.px]="360">Mata Anggaran</clr-dg-column>
+                    <clr-dg-column [style.width.px]="250">Budget</clr-dg-column>
+                    <clr-dg-column>Status</clr-dg-column>
+
+                    <clr-dg-row *clrDgItems="let data of dataList">
+                        <clr-dg-action-overflow>
+                            <button class="action-item" *ngIf="data.flag == 'submit'&& myRole == 'Management';" (click)="mainApprove(data)">Confirm</button>
+                            <button class="action-item" (click)="mainDetail(data)">Detail</button>
+                        </clr-dg-action-overflow>
+                        <clr-dg-cell hidden>{{data._id}}</clr-dg-cell>
+                        <clr-dg-cell [style.width.px]="30">{{data.id_pengajuan}}</clr-dg-cell>
+                        <clr-dg-cell [style.width.px]="200">{{data.mata_anggaran.name}}</clr-dg-cell>
+                        <clr-dg-cell [style.width.px]="80">Rp. {{data.budget | number}}</clr-dg-cell>
+                        <ng-container *ngIf="data.flag == 'approved'">
+                            <clr-dg-cell [style.width.px]="30"><span class="label label-success">Approved</span></clr-dg-cell>
+                        </ng-container>
+                        <ng-container *ngIf="data.flag == 'submit'">
+                            <clr-dg-cell [style.width.px]="30"><span class="label label-warning">Waiting</span></clr-dg-cell>
+                        </ng-container>
+                        <ng-container *ngIf="data.flag == 'declined'">
+                            <clr-dg-cell [style.width.px]="30"><span class="label label-danger">Declined</span></clr-dg-cell>
+                        </ng-container>
+                    </clr-dg-row>
+                    <clr-dg-footer>
+                        <clr-dg-pagination #pagination [clrDgPageSize]="5">
+                            <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Data per page</clr-dg-page-size>
+                            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                            of {{pagination.totalItems}} Data
+                        </clr-dg-pagination>
+                    </clr-dg-footer>
+                </clr-datagrid>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modalAdd -->
+<ng-container *ngIf="modalAddDialog">
+    <form (ngSubmit)="mainAddSubmit();">
+        <clr-modal [clrModalSize]="'md'" [clrModalOpen]="modalAddDialog" [clrModalClosable]="false"
+            [clrModalStaticBackdrop]="true">
+            <h3 class="modal-title">Add {{title}}</h3>
+            <div class="modal-body ">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="clr-row">
+                            <div class="clr-col-6">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">ID Pengajuan</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input name="id_pengajuan" class="clr-input" [(ngModel)]="inputModel.id_pengajuan" readonly/>
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-6">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Nama</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input name="nama" class="clr-input" [(ngModel)]="inputModel.nama" readonly/>
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-6">
+                                <div class="clr-form-control">
+                                    <label class="clr-control-label">Mata Anggaran</label>
+                                    <ng-select2 name="mata_anggaran"
+                                        [data]="listMataAnggaran1"
+                                        [width]="200"
+                                        [(ngModel)]="inputModel.mata_anggaran">
+                                    </ng-select2>
+                                </div> 
+                                <!-- <clr-select-container class="clr-form-control">
+                                    <label class="clr-control-label">Mata Anggaran</label>
+                                    <select [(ngModel)]="inputModel.mata_anggaran" name="mata_anggaran" clrSelect required>
+                                        <ng-container *ngFor="let mt of listMataAnggaran">
+                                            <option value="{{mt._id}}">{{mt.name}}</option>
+                                        </ng-container>
+                                    </select>
+                                </clr-select-container> -->
+                            </div>
+                            <div class="clr-col-6">
+                                <clr-select-container class="clr-form-control">
+                                    <label class="clr-control-label">Pemegang Anggaran</label>
+                                    <select [(ngModel)]="inputModel.pemegang_anggaran" name="pemegang_anggaran" clrSelect required>
+                                        <ng-container *ngFor="let pm of listPemegang">
+                                            <option value="{{pm._id}}">{{pm.name}}</option>
+                                        </ng-container>
+                                    </select>
+                                </clr-select-container>
+                            </div>
+                            <div class="clr-col-6">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Budget</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input name="budget" type="number" class="clr-input" [(ngModel)]="inputModel.budget" (keyup)="hitungBudget($event.target.value)"/>
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <clr-control-helper>{{rupiahBudget}}</clr-control-helper>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-6">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Alokasi Budget Perbulan</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input name="alokasi_budget" type="number" class="clr-input" [(ngModel)]="inputModel.alokasi_budget" readonly hidden/>
+                                        <input name="alokasi_budget" class="clr-input" [(ngModel)]="tempBudgetBulan" readonly/>
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-6">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Penyerapan Bulan ini</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input name="penyerapan_bulanini" type="number" class="clr-input" [(ngModel)]="inputModel.peyerapan_blnini" readonly/>
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-6">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Penyerapan s.d Bulan ini</label>
+                                    <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input name="penyerapan_sdbulanini" type="number" class="clr-input" [(ngModel)]="inputModel.penyerapan_sdbulanini" readonly/>
+                                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                    </div>
+                                    <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- hidden field put here-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" (click)="modalAddDialog = false">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    <span *ngIf="spinner==true" class="spinner spinner-inline">
+                        Saving
+                    </span>
+                    <ng-container *ngIf="spinner==false">
+                        Save
+                    </ng-container>
+                </button>
+            </div>
+        </clr-modal>
+    </form>
+</ng-container>
+
+<!-- modalConfirm -->
+<ng-container *ngIf="modalConfirmDialog">
+    <form>
+        <clr-modal [clrModalSize]="'md'" [clrModalOpen]="modalConfirmDialog" [clrModalClosable]="false"
+            [clrModalStaticBackdrop]="true">
+            <h3 class="modal-title">Confirm {{title}}</h3>
+            <div class="modal-body ">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="clr-row">
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">ID Surat</label>
+                                </div>
+                            </div>
+                            <div class="clr-col-8">
+                                <div class="clr-form-control">
+                                    <label>{{inputModel.id_pengajuan}}</label>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Tanggal</label>
+                                </div>
+                            </div>
+                            <div class="clr-col-8">
+                                <div class="clr-form-control">
+                                    <label>{{date_now | date:'dd-MM-yyyy'}}</label>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label class="clr-control-label">Mata Anggaran</label>
+                                </div> 
+                            </div>
+                            <div class="clr-col-8">
+                                <div class="clr-form-control">
+                                    <label>{{inputModel.code_anggaran}}</label>
+                                </div> 
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label class="clr-control-label">Nominal Pengajuan</label>
+                                </div>
+                            </div>
+                            <div class="clr-col-8">
+                                <div class="clr-form-control">
+                                    <label>Rp. {{inputModel.budget | number}}</label>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label class="clr-control-label">Ket. Mata Anggaran</label>
+                                </div>
+                            </div>
+                            <div class="clr-col-8">
+                                <div class="clr-form-control">
+                                    <label>{{inputModel.ket_anggaran}}</label>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label class="clr-control-label">Keterangan</label>
+                                </div>
+                            </div>
+                            <div class="clr-col-8">
+                                <clr-textarea-container>
+                                    <textarea clrTextarea [(ngModel)]="inputModel.keterangan" name="keterangan" required></textarea>
+                                    <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                </clr-textarea-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- hidden field put here-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" (click)="modalConfirmDialog = false">Cancel</button>
+                <button type="submit" class="btn btn-danger" (click)="mainDeclineSubmit()">
+                    <span *ngIf="spinner==true" class="spinner spinner-inline">
+                        Declined
+                    </span>
+                    <ng-container *ngIf="spinner==false">
+                        Decline
+                    </ng-container>
+                </button>
+                <button type="submit" class="btn btn-primary"  (click)="mainApproveSubmit()">
+                    <span *ngIf="spinner==true" class="spinner spinner-inline">
+                        Approved
+                    </span>
+                    <ng-container *ngIf="spinner==false">
+                        Approve
+                    </ng-container>
+                </button>
+            </div>
+        </clr-modal>
+    </form>
+</ng-container>
+
+<!-- modalDetail -->
+<ng-container *ngIf="modalDetailDialog">
+    <form>
+        <clr-modal [clrModalSize]="'md'" [clrModalOpen]="modalDetailDialog" [clrModalClosable]="false"
+            [clrModalStaticBackdrop]="true">
+            <h3 class="modal-title">Detail {{title}}</h3>
+            <div class="modal-body ">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="clr-row">
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">ID Surat</label>
+                                </div>
+                            </div>
+                            <div class="clr-col-8">
+                                <div class="clr-form-control">
+                                    <label>{{inputModel.id_pengajuan}}</label>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Tanggal</label>
+                                </div>
+                            </div>
+                            <div class="clr-col-8">
+                                <div class="clr-form-control">
+                                    <label>{{date_now | date:'dd-MM-yyyy'}}</label>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label class="clr-control-label">Mata Anggaran</label>
+                                </div> 
+                            </div>
+                            <div class="clr-col-8">
+                                <div class="clr-form-control">
+                                    <label>{{inputModel.code_anggaran}}</label>
+                                </div> 
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label class="clr-control-label">Nominal Pengajuan</label>
+                                </div>
+                            </div>
+                            <div class="clr-col-8">
+                                <div class="clr-form-control">
+                                    <label>Rp. {{inputModel.budget | number}}</label>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label class="clr-control-label">Ket. Mata Anggaran</label>
+                                </div>
+                            </div>
+                            <div class="clr-col-8">
+                                <div class="clr-form-control">
+                                    <label>{{inputModel.ket_anggaran}}</label>
+                                </div>
+                            </div>
+                            <div class="clr-col-4">
+                                <div class="clr-form-control">
+                                    <label class="clr-control-label">Keterangan</label>
+                                </div>
+                            </div>
+                            <div class="clr-col-8">
+                                <div class="clr-form-control">
+                                    <label>{{inputModel.keterangan}}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- hidden field put here-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" (click)="modalDetailDialog = false">Cancel</button>
+            </div>
+        </clr-modal>
+    </form>
+</ng-container>

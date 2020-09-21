@@ -2,10 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 //layout
-import { ParameterGelleryComponent } from './parameter-gellery/parameter-gellery.component';
-import { SetupHargaComponent } from "./parameter-gellery/setup-harga/setup-harga.component";
-import { SetupMarginComponent } from "./parameter-gellery/setup-margin/setup-margin.component";
-import { ParameterGlobalComponent } from './parameter-global/parameter-global.component';
+import { PengajuanAnggaranComponent } from './pengajuan-anggaran/pengajuan-anggaran.component';
+import { PergeseranAnggaranComponent } from './pergeseran-anggaran/pergeseran-anggaran.component';
 
 //add ons
 import { ClarityModule } from '@clr/angular';
@@ -15,7 +13,7 @@ import { DatePipe } from '@angular/common';
 import { NgSelect2Module } from "ng-select2";
 
 @NgModule({
-  declarations: [ParameterGelleryComponent, SetupHargaComponent, SetupMarginComponent, ParameterGlobalComponent],
+  declarations: [PengajuanAnggaranComponent, PergeseranAnggaranComponent],
   imports: [
     CommonModule,
     ClarityModule,
@@ -29,4 +27,4 @@ import { NgSelect2Module } from "ng-select2";
     DatePipe
   ]
 })
-export class ParameterModule { }
+export class AnggaranModule { }

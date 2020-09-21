@@ -520,8 +520,8 @@ export class ParameterGelleryComponent implements OnInit {
     let vendor = data.input_vendor_perhiasan;
     let barang = data.input_jenis_barang;
   
-    const urlVendor = "_hash=1&vendor.code="+vendor+"&_sortby=_id:2";
-    const urlBarang = "jenis_barang="+barang+"&_sortby=_id:2";
+    const urlVendor = "_ne=flag:expired&_hash=1&vendor.code="+vendor+"&_sortby=_id:2";
+    const urlBarang = "_ne=flag:expired&jenis_barang="+barang+"&_sortby=_id:2";
     
     this.params = this.category;
     

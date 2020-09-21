@@ -158,7 +158,7 @@ export class SetupHargaComponent implements OnInit {
     this.params = "?_ne=flag:expired&_hash=1&product-category.code=c00,c01,c02,c03,c04&_sortby=_id:2";
     let prod = data.inputProduct;
   
-    const urlProduct = "?_sortby=_id:2&_hash=1&product-category.code="+prod;
+    const urlProduct = "?_ne=flag:expired&_sortby=_id:2&_hash=1&product-category.code="+prod;
 
     if (prod != 'all') {
       this.params = urlProduct;

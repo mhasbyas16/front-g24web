@@ -63,6 +63,6 @@ export class AppRoutingModule
     ModuleLoader.register('lp', () => import('./pages/laporan/laporan.module').then(m => m.LaporanModule))  
     ModuleLoader.register('rl', () => import('./pages/security/security.module').then(m => m.SecurityModule))
     ModuleLoader.register('pr', () => import('./pages/parameter/parameter.module').then(m => m.ParameterModule))
-    
+    ModuleLoader.register('ag', () => import('./pages/anggaran/anggaran.module').then(m => m.AnggaranModule))
   }
 }
