@@ -608,7 +608,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
       if(output == false)
       {
         let msg = this.jurnalInisiasi.message();
-        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg);
+        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg, "Error!", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
         // console.log()
         return;
       } else {
@@ -668,6 +668,12 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
       }
 
       if(key == 'bank' && this.input.tipe_bayar == PaymentType.MAKLON.code) continue;
+
+      if(key == 'bank' && this.input.asal_uang == 'kas') continue;
+
+      if(key == 'asal_uang' && this.input.tipe_bayar == PaymentType.MAKLON.code) continue;
+
+      if(key == 'asal_uang' && this.input.tipe_bayar == PaymentType.MAKLON.code) continue;
 
       let value = this.input[key];
       console.log(value, key, 'key')
@@ -821,10 +827,11 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     {
       if(this.input.items[i]?.gram_tukar == null || this.input.items[i]?.gram_tukar == "null")
         continue;
-        value += parseFloat(this.input.items[i].gram_tukar);
+      
+      value += parseFloat(this.input.items[i].gram_tukar);
     }
 
-    this.input['total_gram_tukar'] = Math.round(value*10) / 10;
+    this.input['total_gram_tukar'] = Math.round(value*100) / 100;
     return value;
   }
   
@@ -1030,7 +1037,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     let baku_tukar = Number(item.baku_tukar);
 
     item.gram_tukar = baku_tukar * berat / 1000;
-    item.gram_tukar = Math.round(Number(item.gram_tukar.toFixed(2) * 10)) / 10;
+    item.gram_tukar = Math.round(Number(item.gram_tukar.toFixed(2) * 100)) / 100;
     console.log(item.gram_tukar);
   }
 

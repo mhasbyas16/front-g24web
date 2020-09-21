@@ -171,7 +171,10 @@
                                 Total Harga
                             </clr-dg-column>
                             <clr-dg-column>
-                                Pajak
+                                Pajak per Piece
+                            </clr-dg-column>
+                            <clr-dg-column>
+                                Total Pajak
                             </clr-dg-column>
                 
                             <clr-dg-row *clrDgItems="let data of input.items; let i = index;" [clrDgItem]="data">
@@ -180,12 +183,13 @@
                                 <clr-dg-cell>{{GetDisplayValue(data['product-denom'])}}</clr-dg-cell>
                                 <clr-dg-cell>{{GetDisplayValue(data['product-series'])}}</clr-dg-cell>
                                 <clr-dg-cell>{{data?.pieces}}</clr-dg-cell>
-                                <clr-dg-cell>{{data?.total_berat | mask : 'separator.2' : ','}}</clr-dg-cell>
+                                <clr-dg-cell>{{data?.total_berat | mask : 'separator' : ','}}</clr-dg-cell>
                                 <clr-dg-cell>{{data?.ongkos_pieces | mask : 'separator' : ','}}</clr-dg-cell>
                                 <clr-dg-cell>{{data?.total_ongkos | mask : 'separator' : ','}}</clr-dg-cell>
                                 <clr-dg-cell>{{data?.harga_piece | mask : 'separator' : ','}}</clr-dg-cell>
                                 <clr-dg-cell>{{data?.total_harga | mask : 'separator' : ','}}</clr-dg-cell>
                                 <!-- <clr-dg-cell>{{data.gram_tukar}}</clr-dg-cell><input readonly type="number" class="clr-input" [ngModel]="input.items[i]['pajak'] = 0" [ngModelOptions]="{standalone:true}"> -->
+                                <clr-dg-cell>{{data?.pajak_pieces | mask : 'separator' : ','}} </clr-dg-cell>
                                 <clr-dg-cell>{{data?.pajak | mask : 'separator' : ','}} </clr-dg-cell>
                                 <!-- <clr-dg-cell>
                                     <clr-select-container class="clr-form-control">
@@ -203,15 +207,15 @@
                             <clr-dg-footer>
                                 <div class="clr-row">
                                     <div class="clr-col-1">Total Berat: </div>
-                                    <div class="clr-col-2"><p [ngStyle]="beratStyleValid()">{{getBeratFromItems() | mask : 'separator.2' : ','}} gram.</p></div>
+                                    <div class="clr-col-2"><p [ngStyle]="beratStyleValid()">{{getBeratFromItems() | mask : 'separator' : ','}} gram.</p></div>
                                     <div class="clr-col-1">Total Pieces: </div>
                                     <div class="clr-col-2"><p [ngStyle]="piecesStyleValid()">{{getPiecesFromItems()}} piece.</p></div>
                                 </div>
                                 <div class="clr-row">
                                     <div class="clr-col-1">Total Pajak: </div>
-                                    <div class="clr-col-2"><p><span [ngStyle]="{'float' : 'left'}">Rp.</span><span [ngStyle]="pajakStyleValid()">{{getPajakFromItems() | mask : 'separator.2' : ','}}.</span></p></div>
+                                    <div class="clr-col-2"><p><span [ngStyle]="{'float' : 'left'}">Rp.</span><span [ngStyle]="pajakStyleValid()">{{getPajakFromItems() | mask : 'separator' : ','}}.</span></p></div>
                                     <div class="clr-col-1">Total Ongkos: </div>
-                                    <div class="clr-col-2"><p><span [ngStyle]="{'float' : 'left'}">Rp.</span><span [ngStyle]="ongkosStyleValid()">{{getOngkosFromItems() | mask : 'separator.2' : ','}}.</span></p></div>
+                                    <div class="clr-col-2"><p><span [ngStyle]="{'float' : 'left'}">Rp.</span><span [ngStyle]="ongkosStyleValid()">{{getOngkosFromItems() | mask : 'separator' : ','}}.</span></p></div>
                                     <div class="clr-col-6"></div>
                                 </div>
                                 <div class="clr-row">
@@ -356,9 +360,17 @@
             </div>
         </div>
         <div class="clr-row">
-            <div class="clr-col-6 clr-offset-sm-6">
+            <div class="clr-col-6">
                 <div class="clr-form-control">
-                    <label class="clr-control-label" style="padding-left: 10px">Pajak</label>
+                    <label class="clr-control-label" style="padding-left: 10px">Pajak/Pieces (Rp.)</label>
+                    <div class="clr-control-container">
+                        <input mask="separator" thousandSeparator="," readonly [ngModel]="Selected['pajak_pieces']" min="0" class="clr-input" type="text" name="pajak_pieces" placeholder="Rp. 5000.00" />
+                    </div>
+                </div>
+            </div>
+            <div class="clr-col-6">
+                <div class="clr-form-control">
+                    <label class="clr-control-label" style="padding-left: 10px">Total Pajak</label>
                     <div class="clr-control-container">
                         <input mask="separator" thousandSeparator="," readonly [ngModel]="Selected['pajak']" min="0" class="clr-input" type="text" name="pajak" placeholder="Rp. 5000.00" />
                     </div>

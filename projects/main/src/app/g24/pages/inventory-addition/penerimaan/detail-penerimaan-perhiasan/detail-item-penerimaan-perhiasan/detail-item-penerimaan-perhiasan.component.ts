@@ -14,6 +14,7 @@ import { SessionService } from 'projects/platform/src/app/core-services/session.
 import { IDetailCallbackListener } from 'projects/main/src/app/g24/lib/base/idetail-callback-listener';
 import { OrdersModule } from '../../../../orders/orders.module';
 import { DetailPenerimaanPerhiasanComponent } from '../detail-penerimaan-perhiasan.component';
+import { JurnalInisiasiService } from 'projects/main/src/app/g24/services/keuangan/jurnal/stock/jurnal-inisiasi.service';
 
 /**
  * Penerimaan perhiasan baru isi ke stock/product
@@ -29,6 +30,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
   (
     private toastr : ToastrService,
     private session : SessionService,
+    private jurnalInisiasi : JurnalInisiasiService,
 
     private inisiasiService : InisiasiService,
     private kadarService : ProductPurityService,
@@ -582,6 +584,8 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
       }
     }
 
+    
+
     console.log(this.inisiasi);
     let tempInisiasi = {}
     Object.assign(tempInisiasi, this.inisiasi);
@@ -594,6 +598,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
       return;
     } else {
       Object.assign(this.inisiasi, tempInisiasi);
+      this.doAccounting(inisiasi._id);
       console.log(this.inisiasi);
       this.parentListener.onAfterUpdate(this.inisiasi._id);
       this.toastr.success("PO berhasil diterima.");
@@ -622,4 +627,20 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
       
     // }
   }
+
+  doAccounting(idInisiasi :string)
+    {
+    this.jurnalInisiasi.bayar(idInisiasi).subscribe(output => {
+      if(output == false)
+      {
+        let msg = this.jurnalInisiasi.message();
+        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg);
+        // console.log()
+        return;
+      } else {
+        this.toastr.success("Jurnal berhasil.")
+        return;
+      }
+    });
+    }
 }

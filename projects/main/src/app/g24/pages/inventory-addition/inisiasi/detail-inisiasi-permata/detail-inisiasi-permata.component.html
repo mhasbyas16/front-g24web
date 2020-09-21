@@ -49,36 +49,13 @@
                             </select>
                         </clr-select-container>
                     </div>
-                    <!-- <div class="clr-col-6">
+                    <div class="clr-col-6">
                         <clr-select-container class="clr-form-control">
                             <label class="clr-control-label">Vendor</label>
-                            <select  [disabled]="input.items?.length != 0" [(ngModel)]="input['vendor']" #vendor clrSelect name="vendor">
+                            <select [(ngModel)]="input['vendor']" #vendor clrSelect name="vendor">
                                 <option value=null></option>
                                 <ng-container *ngFor="let vendor of vendors">
                                     <option [ngValue]="vendor">{{vendor.name}}</option>
-                                </ng-container>
-                            </select>
-                        </clr-select-container>
-                    </div> -->
-                </div>
-    
-                <div class="clr-row">
-                    <div class="clr-col-6">
-                        <clr-select-container class="clr-form-control">
-                            <label class="clr-control-label">Kadar</label>
-                            <select [(ngModel)]="input['product-purity']" #kadar clrSelect name="kadar">
-                                <ng-container *ngFor="let kadar of kadars">
-                                    <option [ngValue]="kadar">{{kadar.name}}</option>
-                                </ng-container>
-                            </select>
-                        </clr-select-container>
-                    </div>
-                    <div class="clr-col-6">
-                        <clr-select-container class="clr-form-control">
-                            <label class="clr-control-label">Jenis Perhiasan</label>
-                            <select [(ngModel)]="input['product-jenis']" #jenis clrSelect name="jenis">
-                                <ng-container *ngFor="let jenis of jeniss">
-                                    <option [ngValue]="jenis">{{jenis.name}}</option>
                                 </ng-container>
                             </select>
                         </clr-select-container>
@@ -86,63 +63,263 @@
                 </div>
                 
                 <div class="clr-row">
-                    <div class="clr-col-6">
-                        <div class="clr-form-control">
-                            <label class="clr-control-label">Berat Emas</label>
-                            <div class="clr-control-container">
-                                <input [(ngModel)]="input.berat_emas" min=0 step=0.01 class="clr-input" type="number" name="berat_emas" required placeholder="1.21" (change)="onBeratChanged()" />
-                                <span class="clr-subtext">Harap gunakan titik (.). Contoh: 1.22</span>
+                    <div class="card">
+                        <div class="card-header">
+                            <b>Emas</b>
+                        </div>
+                        <div class="card-block">
+                            <div class="clr-row">
+                                <div class="clr-col-6">
+                                    <clr-select-container class="clr-form-control">
+                                        <label class="clr-control-label">Kadar</label>
+                                        <select [(ngModel)]="input['product-purity']" #kadar clrSelect name="kadar">
+                                            <ng-container *ngFor="let kadar of kadars">
+                                                <option [ngValue]="kadar">{{kadar.name}}</option>
+                                            </ng-container>
+                                        </select>
+                                    </clr-select-container>
+                                </div>
+                                <div class="clr-col-6">
+                                    <clr-select-container class="clr-form-control">
+                                        <label class="clr-control-label">Jenis Perhiasan</label>
+                                        <select [(ngModel)]="input['product-jenis']" #jenis clrSelect name="jenis">
+                                            <ng-container *ngFor="let jenis of jeniss">
+                                                <option [ngValue]="jenis">{{jenis.name}}</option>
+                                            </ng-container>
+                                        </select>
+                                    </clr-select-container>
+                                </div>
+                            </div>
+                            
+                            <div class="clr-row">
+                                <div class="clr-col-6">
+                                    <div class="clr-form-control">
+                                        <label class="clr-control-label">Berat Emas</label>
+                                        <div class="clr-control-container">
+                                            <input [(ngModel)]="input.berat_emas" min=0 step=0.01 class="clr-input" type="number" name="berat_emas" required placeholder="1.21" (change)="onBeratChanged()" />
+                                            <span class="clr-subtext">Harap gunakan titik (.). Contoh: 1.22</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clr-col-6">
+                                    <clr-select-container class="clr-form-control">
+                                        <label class="clr-control-label">Warna Emas</label>
+                                        <select [(ngModel)]="input['product-gold-color']" #warna clrSelect name="warna">
+                                            <ng-container *ngFor="let warna of warnas">
+                                                <option [ngValue]="warna">{{warna.name}}</option>
+                                            </ng-container>
+                                        </select>
+                                    </clr-select-container>
+                                </div>
+                            </div>
+            
+                            <div class="clr-row">
+                                <div class="clr-col-6">
+                                    <div class="clr-form-control">
+                                        <label class="clr-control-label">HPP Emas</label>
+                                        <div class="clr-control-container">
+                                            <input mask="separator" thousandSeparator="," readonly [ngModel]="input.hpp_emas" class="clr-input" min=0 step=1 type="text" name="hpp_emas" />
+                                            <span class="clr-subtext">Rp. 1.920.000</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="clr-col-6">
-                        <clr-select-container class="clr-form-control">
-                            <label class="clr-control-label">Warna Emas</label>
-                            <select [(ngModel)]="input['product-gold-color']" #warna clrSelect name="warna">
-                                <ng-container *ngFor="let warna of warnas">
-                                    <option [ngValue]="warna">{{warna.name}}</option>
-                                </ng-container>
-                            </select>
-                        </clr-select-container>
                     </div>
                 </div>
 
                 <div class="clr-row">
-                    <div class="clr-col-6">
-                        <div class="clr-form-control">
-                            <label class="clr-control-label">HPP Emas</label>
-                            <div class="clr-control-container">
-                                <input readonly [ngModel]="input.hpp_emas" class="clr-input" min=0 step=1 type="number" name="hpp_emas" />
-                                <span class="clr-subtext">Rp. 1.920.000</span>
-                            </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <b>Batu</b>
                         </div>
-                    </div>
-                    <div class="clr-col-6">
-                        <div class="clr-form-control">
-                            <label class="clr-control-label">Jenis Batu</label>
-                            <div class="clr-control-container">
-                                <input [(ngModel)]="input.jenis_batu" class="clr-input" type="text" name="berat" required />
-                                <span class="clr-subtext">Harap gunakan huruf kecil.</span>
+                        <div class="card-block">
+                            <div class="clr-row">
+                                <div class="clr-col-6">
+                                    <div class="clr-form-control">
+                                        <label class="clr-control-label">Jenis Batu</label>
+                                        <div class="clr-control-container">
+                                            <input [(ngModel)]="input.jenis_batu" (change)="input.jenis_batu.toLowerCase()" class="clr-input" type="text" name="berat" required />
+                                            <span class="clr-subtext">Harap gunakan huruf kecil.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clr-col-6">
+                                    <div class="clr-form-control">
+                                        <label class="clr-control-label">Warna Batu</label>
+                                        <div class="clr-control-container">
+                                            <input [(ngModel)]="input.warna_batu" (change)="input.jenis_batu.toLowerCase()" class="clr-input" type="text" name="warna_batu" />
+                                            <span class="clr-subtext">Harap gunakan huruf kecil.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-row">
+                                <div class="clr-col-6">
+                                    <div class="clr-form-control">
+                                        <label class="clr-control-label">Carat Batu</label>
+                                        <div class="clr-control-container">
+                                            <input [(ngModel)]="input.carat_batu" min=0 step=0.01 class="clr-input" type="number" name="carat_batu" required />
+                                            <span class="clr-subtext">Harap gunakan huruf kecil.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-row">
+                                <div class="clr-col-12">
+                                    <div class="clr-form-control">
+                                        <label class="clr-control-label">Dimensi Batu</label>
+                                        <div class="clr-control-container">
+                                            <input readonly [ngModel]="input.dimensi_batu" class="clr-input" type="text" name="dimensi_batu" />
+                                            <!-- <span class="clr-subtext">Harap gunakan huruf kecil.</span> -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clr-col-2">
+                                    <div class="clr-form-control">
+                                        <!-- <label class="clr-control-label">Dimensi Batu</label> -->
+                                        <div class="clr-control-container">
+                                            <input [(ngModel)]="panjang" (change)="onPanjangChanged()" min=0 step=1  class="clr-input" type="text" name="panjang" />
+                                            <!-- <span class="clr-subtext">Harap gunakan huruf kecil.</span> -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clr-col-2">
+                                    <div class="clr-form-control">
+                                        <!-- <label class="clr-control-label">Dimensi Batu</label> -->
+                                        <div class="clr-control-container">
+                                            <input [(ngModel)]="lebar" (change)="onLebarChanged()" min=0 step=1 class="clr-input" type="text" name="lebar" />
+                                            <!-- <span class="clr-subtext">Harap gunakan huruf kecil.</span> -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clr-col-2">
+                                    <div class="clr-form-control">
+                                        <!-- <label class="clr-control-label">Dimensi Batu</label> -->
+                                        <div class="clr-control-container">
+                                            <input [(ngModel)]="tinggi" (change)="onTinggiChanged()" min=0 step=1 class="clr-input" type="text" name="tinggi" />
+                                            <!-- <span class="clr-subtext">Harap gunakan huruf kecil.</span> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-row">
+                                <div class="clr-col-6">
+                                    <div class="clr-form-control">
+                                        <label class="clr-control-label">HPP Batu</label>
+                                        <div class="clr-control-container">
+                                            <input mask="separator" thousandSeparator="," [(ngModel)]="input.hpp_batu" min=0 class="clr-input" type="text" name="hpp_batu" />
+                                            <span class="clr-subtext">Rp. 1.000.000</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clr-col-6">
+                                    <div class="clr-form-control">
+                                        <label class="clr-control-label">Margin Batu</label>
+                                        <div class="clr-control-container">
+                                            <input mask="separator" thousandSeparator="," readonly [ngModel]="input.margin_batu" min=0 class="clr-input" type="text" name="margin_batu" required />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="clr-row">
+                    <div class="card">
+                        <div class="card-header">
+                            <b>Berlian</b>
+                        </div>
+                        <div class="card-block">
+                            <div class="clr-row">
+                                <div class="clr-col-6">
+                                    <div class="clr-form-control">
+                                        <label class="clr-control-label">Warna Berlian</label>
+                                        <div class="clr-control-container">
+                                            <input [(ngModel)]="input.warna_batu" min=0 class="clr-input" type="text" name="warna_batu" />
+                                            <span class="clr-subtext">Harap gunakan huruf kecil.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clr-col-6">
+                                    <div class="clr-form-control">
+                                        <label class="clr-control-label">Clarity Berlian</label>
+                                        <div class="clr-control-container">
+                                            <input readonly [ngModel]="input.clarity_berlian" min=0 class="clr-input" type="text" name="clarity_berlian" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-row">
+                                <div class="clr-col-6">
+                                    <div class="clr-form-control">
+                                        <label class="clr-control-label">Cutting Berlian</label>
+                                        <div class="clr-control-container">
+                                            <input [(ngModel)]="input.cutting_batu" class="clr-input" type="text" name="cutting_batu" />
+                                            <span class="clr-subtext">Harap gunakan huruf kecil.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-row">
+                                <div class="clr-col-6">
+                                    <div class="clr-form-control">
+                                        <label class="clr-control-label">Total Jumlah Butir Berlian</label>
+                                        <div class="clr-control-container">
+                                            <input [(ngModel)]="input.total_butir_berlian" min=0 class="clr-input" type="text" name="total_butir_berlian" />
+                                            <span class="clr-subtext">Harap gunakan titik (.)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clr-col-6">
+                                    <div class="clr-form-control">
+                                        <label class="clr-control-label">Total Jumlah Carat Berlian</label>
+                                        <div class="clr-control-container">
+                                            <input [(ngModel)]="input.total_carat_berlian" min=0 class="clr-input" type="text" name="total_carat_berlian" />
+                                            <span class="clr-subtext">Harap gunakan titik (.)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-row">
+                                <div class="clr-col-6">
+                                    <div class="clr-form-control">
+                                        <label class="clr-control-label">HPP Berlian</label>
+                                        <div class="clr-control-container">
+                                            <input mask="separator" thousandSeparator="," [(ngModel)]="input.hpp_berlian" min=0 class="clr-input" type="text" name="hpp_berlian" />
+                                            <span class="clr-subtext">Rp. 1.000.000</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clr-col-6">
+                                    <div class="clr-form-control">
+                                        <label class="clr-control-label">Margin Berlian</label>
+                                        <div class="clr-control-container">
+                                            <input mask="separator" thousandSeparator="," readonly [ngModel]="input.margin_berlian" min=0 class="clr-input" type="text" name="margin_berlian" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="clr-row">
                     <div class="clr-col-6">
                         <div class="clr-form-control">
-                            <label class="clr-control-label">Warna Batu</label>
+                            <label class="clr-control-label">Ongkos Pembuatan</label>
                             <div class="clr-control-container">
-                                <input readonly [ngModel]="input.warna_batu" class="clr-input" type="text" name="warna_batu" />
-                                <span class="clr-subtext">Harap gunakan huruf kecil.</span>
+                                <input mask="separator" thousandSeparator="," [(ngModel)]="input.ongkos" min=0 class="clr-input" type="text" name="ongkos" />
+                                <span class="clr-subtext">Rp. 1.000.000</span>
                             </div>
                         </div>
                     </div>
                     <div class="clr-col-6">
                         <div class="clr-form-control">
-                            <label class="clr-control-label">Carat Batu</label>
+                            <label class="clr-control-label">Berat Total</label>
                             <div class="clr-control-container">
-                                <input [(ngModel)]="input.carat_batu" min=0 step=0.01 class="clr-input" type="number" name="carat_batu" required />
-                                <span class="clr-subtext">Harap gunakan huruf kecil.</span>
+                                <input [(ngModel)]="input.berat" min=0 step=0.01 class="clr-input" type="number" name="berat" required />
                             </div>
                         </div>
                     </div>
