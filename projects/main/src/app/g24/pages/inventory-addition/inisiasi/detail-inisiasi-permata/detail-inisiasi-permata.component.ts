@@ -8,6 +8,7 @@ import { PrmMarginService } from '../../../../services/parameter/prm-margin.serv
 import { ToastrService } from 'ngx-toastr';
 import { NgForm } from '@angular/forms';
 import { PrmJualService } from '../../../../services/parameter/prm-jual.service';
+import { VendorService } from '../../../../services/vendor.service';
 
 @Component({
   selector: 'detail-inisiasi-permata',
@@ -16,12 +17,15 @@ import { PrmJualService } from '../../../../services/parameter/prm-jual.service'
 })
 export class DetailInisiasiPermataComponent implements OnInit {
 
+  
+
   constructor
   (
     private dateService : ServerDateTimeService,
     private toastr : ToastrService,
 
     private productCategoryService : ProductCategoryService,
+    private vendorService : VendorService,
     private jenisService : ProductJenisService,
     private gColorService : ProductGoldColorService,
     private kadarService : ProductPurityService,
@@ -30,23 +34,26 @@ export class DetailInisiasiPermataComponent implements OnInit {
   ) { }
 
   date : string = "";
+  time : string = "";
 
   input : any = this.defaultInput();
 
   defaultInput() {
     return {
-      nomor_nota : null, tgl_inisiasi : new Date().toISOString().split("T")[0],  harga_baku : 0, pajak : 0, 
-      create_date : new Date().toISOString().split("T")[0],
-      'product-category' : null,
+      nomor_nota : null, tgl_inisiasi : this.date,  id_harga : "", id_margin : "",
+      create_date : this.date,
+      'product-category' : null, vendor : null,
+      'product-purity' : null, 'product-jenis' : null,
+      'product-gold-color' : null,
       berat_emas : 0, hpp_emas : 0,
-      jenis_batu : "", warna_batu : "",
-      carat_batu : 0, dimensi_batu : "",
-      hpp_batu : 0, margin_batu : 0,
-      warna_berlian : "", clarity_berlian : "",
-      cutting_berlian : "",
-      total_butir_berlian : 0, total_carat_berlian : 0,
-      hpp_berlian : 0, margin_berlian : 0,
-      ongkos : 0, berat_ikat : 0
+      // jenis_batu : "", warna_batu : "",
+      // carat_batu : 0, dimensi_batu : "0x0x0",
+      // hpp_batu : 0, margin_batu : 0,
+      // warna_berlian : "", clarity_berlian : "",
+      // cutting_berlian : "",
+      // total_butir_berlian : 0, total_carat_berlian : 0,
+      // hpp_berlian : 0, margin_berlian : 0,
+      // ongkos : 0, berat : 0
     };
   }
 
@@ -54,6 +61,7 @@ export class DetailInisiasiPermataComponent implements OnInit {
   jeniss : any[] = [];
   kadars : any[] = [];
   warnas : any[] = [];
+  vendors : any[] = [];
   latestMargin : any[] = [];
   margin : number = 0;
   hbeli : number = 0;
@@ -63,20 +71,47 @@ export class DetailInisiasiPermataComponent implements OnInit {
 
   async ngOnInit() {
     await this.LoadAllParameter();
+
+    await this.LoadDate();
+    this.input = this.defaultInput();
   }
   
   async LoadAllParameter()
   {
     this.LoadProductCategory();
+    this.LoadVendor();
     this.LoadJenis();
     this.LoadKadar();
     this.LoadGWarna();
-    this.LoadDate();
     this.LoadParameterJual();
     this.LoadMargin();
     // this.LoadShape();
     
     // this.onProductChanged();
+  }
+
+  async LoadVendor()
+  {
+    while(this.products.length > 0)
+    {
+      this.vendors.pop();
+    }
+    let vendors = await this.vendorService.list("?product-category.code=c03").toPromise();
+    if(vendors == false)
+    {
+      this.errorHappened = true;
+      let msg = this.vendorService.message();
+      this.toastr.error("Gagal Loading 'Vendor'. Harap Refresh halaman, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
+      return;
+    }
+
+    console.log(vendors);
+
+    for(let i = 0; i < vendors.length; i++)
+    {
+      this.vendors.push(vendors[i]);
+    }
+    this.vendors.sort((a, b) => ('' + a.name).localeCompare(b.name));
   }
   
   async LoadParameterJual()
@@ -135,7 +170,9 @@ export class DetailInisiasiPermataComponent implements OnInit {
       return;
     }
 
-    this.date = dt;
+    let dtarr = dt.split("T");
+    this.date = dtarr[0];
+    this.time = dtarr[1].split("Z")[0];
   }
 
   async LoadProductCategory()
@@ -164,7 +201,7 @@ export class DetailInisiasiPermataComponent implements OnInit {
 
   async LoadJenis()
   {
-    let jeniss = await this.jenisService.list("?product-category.code=c03").toPromise();
+    let jeniss = await this.jenisService.list("?").toPromise();
     if(jeniss == false)
     {
       this.errorHappened = true;
@@ -217,22 +254,20 @@ export class DetailInisiasiPermataComponent implements OnInit {
     this.warnas.sort((a,b) => ('' + a.name).localeCompare(b.name))
   }
 
-
-  // ON EVENTS
-  
+  // ON EVENTS  
   onProductChanged()
   {
-    this.input['create_date'] = this.date.split("T")[0];
+    // this.input['create_date'] = this.date.split("T")[0];
 
-    for(let i = 0; i < this.products.length; i++)
-    {
-      let perhiasan = this.products[i];
-      if(perhiasan.code == "c03")
-      {
-        this.input['product-category'] = perhiasan;
-        break;
-      }
-    }
+    // for(let i = 0; i < this.products.length; i++)
+    // {
+    //   let perhiasan = this.products[i];
+    //   if(perhiasan.code == "c03")
+    //   {
+    //     this.input['product-category'] = perhiasan;
+    //     break;
+    //   }
+    // }
   }
 
   onBeratChanged()
@@ -243,19 +278,73 @@ export class DetailInisiasiPermataComponent implements OnInit {
   // validation
   validateInput()
   {
-    for(let key in this.input)
+    let input = this.input;
+    if(input.nomor_nota == "" || input.nomor_nota == null)
     {
-      let value = this.input[key];
-      console.log(value, key, 'key')
-      if(value == null || value == "null" || value == 0 || (typeof value === 'number' && value === 0))
-      {
-        this.toastr.warning(this.GetDisplayName(key) + " belum diisi / sama dengan 0 ");
-        return true
-      }
+      this.toastr.warning("Nomor Nota belum diisi");
+      return true;
     }
+
+    if(input.vendor == null)
+    {
+      this.toastr.warning("Vendor belum diisi");
+      return true;
+    }
+
+    if(input['product-category'] == null)
+    {
+      this.toastr.warning("Jenis Produk belum diisi");
+      return true;
+    }
+
+    if(input['id_harga'] == 0 || input['id_harga'] == "")
+    {
+      this.toastr.warning("Harga belum diunduh. Harap Refresh!");
+      return true;
+    }
+
+    if(input['id_margin'] == "")
+    {
+      this.toastr.warning("Margin belum diunduh. Harap Refresh!");
+      return true;
+    }
+
+    if(input.ongkos == 0)
+    {
+      this.toastr.warning("Ongkos masih 0");
+      return true;
+    }
+
+    if(input.berat)
+    {
+      this.toastr.warning("Berat masih 0");
+      return true;
+    }
+    // for(let key in this.input)
+    // {
+    //   let value = this.input[key];
+    //   console.log(value, key, 'key')
+    //   if(value == null || value == "null" || value == 0 || (typeof value === 'number' && value === 0))
+    //   {
+    //     this.toastr.warning(this.GetDisplayName(key) + " belum diisi / sama dengan 0 ");
+    //     return true
+    //   }
+    // }
 
     return false
   }
+  // nomor_nota : null, tgl_inisiasi : new Date().toISOString().split("T")[0],  harga_baku : 0, pajak : 0, 
+  //     create_date : new Date().toISOString().split("T")[0],
+  //     'product-category' : null,
+  //     berat_emas : 0, hpp_emas : 0,
+  //     jenis_batu : "", warna_batu : "",
+  //     carat_batu : 0, dimensi_batu : "0x0x0",
+  //     hpp_batu : 0, margin_batu : 0,
+  //     warna_berlian : "", clarity_berlian : "",
+  //     cutting_berlian : "",
+  //     total_butir_berlian : 0, total_carat_berlian : 0,
+  //     hpp_berlian : 0, margin_berlian : 0,
+  //     ongkos : 0, berat : 0
   
   GetDisplayName(key : string) : string
   {
@@ -381,8 +470,37 @@ export class DetailInisiasiPermataComponent implements OnInit {
     // }
   }
 
-  ResetAll(form2reset : NgForm)
+  async ResetAll(form2reset : NgForm)
   {
+    await this.LoadAllParameter();
+    await this.LoadDate();
     this.input = this.defaultInput();
+  }
+
+  onPanjangChanged()
+  {
+    this.setDimensi();
+  }
+
+  onLebarChanged()
+  {
+    this.setDimensi();
+  }
+
+  onTinggiChanged()
+  {
+    this.setDimensi();
+  }
+
+  panjang : number = 0;
+  lebar : number = 0;
+  tinggi : number = 0;
+  setDimensi()
+  {
+    let p = this.panjang;
+    let l = this.lebar;
+    let t = this.tinggi;
+
+    this.input["dimensi_batu"] = p + "x" + l + "x" + t;
   }
 }
