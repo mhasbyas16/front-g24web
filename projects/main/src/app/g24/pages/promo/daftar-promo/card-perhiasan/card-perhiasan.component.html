@@ -105,7 +105,8 @@
         <clr-input-container>
             <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Range Parameter Promosi</label>
             <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
-            <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{li.minPrmPromotion}} - {{li.maxPrmPromotion}}</label>
+            <label *ngIf="li.prmPromotion == rb; else prmRH" class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">Rp. {{li.minPrmPromotion | number}} - Rp. {{li.maxPrmPromotion | number}}</label>
+            <label #prmRH class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">1 Gr Rp. {{li.perGram | number}} Max Rp. {{li.maxPrmPromotion | number}}</label>
         </clr-input-container>
 
         <clr-input-container>
@@ -117,7 +118,7 @@
         <clr-input-container>
             <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Besar Tipe Promosi</label>
             <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
-            <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{li.sizeTypePromotion}}</label>
+            <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">Rp. {{li.sizeTypePromotion | number}}</label>
         </clr-input-container>
  
     </form>

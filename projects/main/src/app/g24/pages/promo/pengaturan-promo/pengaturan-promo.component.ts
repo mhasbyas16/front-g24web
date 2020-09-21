@@ -10,6 +10,7 @@ import { ContentPage } from '../../../lib/helper/content-page';
 import { DatePipe } from "@angular/common";
 
 // services
+import { SplitDateServiceService } from '../../../services/split-date-service.service';
 import { PromoService } from '../promo.service';
 import { UnitService } from '../../../services/system/unit.service';
 import { ProductCategoryService } from '../../../services/product/product-category.service';
@@ -40,6 +41,8 @@ export class PengaturanPromoComponent implements OnInit {
   mulia:boolean = false;
   giftSouvenir:boolean = false;
   dinar:boolean = false;
+
+  idpromosi:any;
 
   manualWizard: boolean = false;
   penjualanWizard: boolean = false;
@@ -98,7 +101,8 @@ export class PengaturanPromoComponent implements OnInit {
     private toastrService: ToastrService,
     private datePipe: DatePipe,
     private promoService:PromoService,
-    private budgetCostService:BudgetCostService
+    private budgetCostService:BudgetCostService,
+    private splitDateServiceService: SplitDateServiceService
   ) { }
 
   ngOnInit(): void {
@@ -279,8 +283,11 @@ export class PengaturanPromoComponent implements OnInit {
       approvalDate: new FormControl(""),
       approvalTime: new FormControl(""),
       'budget-cost': new FormControl ("", Validators.required),
-      'budget-cost_encoded': new FormControl ("base64")
+      'budget-cost_encoded': new FormControl ("base64"),
+      id : new FormControl ("", Validators.required),
+      idAi : new FormControl ("", Validators.required)
     });
+    this.idPromosi();
   }
 
   openWizard(val){
@@ -362,15 +369,85 @@ export class PengaturanPromoComponent implements OnInit {
       delete section1["pickProduct-category"];
       // section1.units_encoded = "base64array";
     }
+
+    let tgl :any;
+    let tglSplit :any;
+    let bulan :any;
+    let hari:any;
+    let tahun:any;
+    let fixDate:any;
+    // tanggal maker
+    fixDate = this.splitDateServiceService.split(section1.makerDate);
+    section1.makerDate = fixDate;
+
+    // tanggal start date
+    fixDate = this.splitDateServiceService.split(section1.startDate);
+    section1.startDate = fixDate;
+
+    // tanggal end date
+    fixDate = this.splitDateServiceService.split(section1.endDate);
+    section1.endDate = fixDate;
+
     // end section1
         
     let data = Object.assign(section1,{
       'product' : btoa(JSON.stringify(this.promoService.product)),
       'product_encoded':'base64array',
-      'flag':'0'});
+      'flag':'0',
+      'voucher':'notgenerated'});
     console.debug (data,"isi data");
     // return;
     this.storePromotion(data);
+  }
+
+  idPromosi() {
+    this.idpromosi = null;
+    let inc = null;
+    let d1 = this.datePipe.transform(Date.now(), '01/01/yyyy');
+    let d2 = this.datePipe.transform(Date.now(), '12/31/yyyy');
+    let d3 = this.datePipe.transform(Date.now(), 'yy');
+    let unit = this.sessionService.getUnit();
+
+    let params = "?_between=makerDate&_start=" + d1 + "&_end=" + d2;
+
+    this.promotionSetiingService.list(params + '&_sortby=idAi:0&_rows=1').subscribe((response: any) => {
+      let count = null;
+      let re = response;
+      if (re.length == 0) {
+        count = JSON.stringify(1);
+      }else{
+        count = JSON.stringify(Number(re["0"]["idAi"]) + 1);
+      }
+      console.debug(unit.code);       
+      switch (count.length) {
+        case 1:
+          inc = "000000" + count;
+          break;
+        case 2:
+          inc = "00000" + count;
+          break;
+        case 3:
+          inc = "0000" + count;
+          break;
+        case 4:
+          inc = "000" + count;
+          break;
+        case 5:
+          inc = "00" + count;
+          break;
+        case 6:
+          inc = "0" + count;
+          break;
+        case 7:
+          inc = count;
+          break;
+        default:
+          break;
+      }
+      this.idpromosi = unit.code + d3 + inc;
+      this.section1_penjualan.patchValue({ id: this.idpromosi, idAi: count });
+    });
+
   }
 
   storePromotion(data){   
