@@ -98,6 +98,7 @@ export class CheckoutBuybackComponent implements OnInit {
     this.jumlahDinar = this.dinar.length;
 
     this.idTransaksi();
+    this.getUnit();
 
    }
 

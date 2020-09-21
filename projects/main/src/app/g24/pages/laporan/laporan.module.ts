@@ -10,11 +10,12 @@ import { NavModule } from '../../nav/nav.module';
 import { DatePipe } from '@angular/common';
 import { ExportLaporanComponent } from './export-laporan/export-laporan.component';
 import { LaporanBuybackComponent } from './laporan-buyback/laporan-buyback.component';
+import { ExportLaporanBuybackBycodeComponent } from './export-laporan-buyback-bycode/export-laporan-buyback-bycode.component';
 
 
 
 @NgModule({
-  declarations: [LaporanPenjualanComponent, ExportLaporanComponent, LaporanBuybackComponent],
+  declarations: [LaporanPenjualanComponent, ExportLaporanComponent, LaporanBuybackComponent, ExportLaporanBuybackBycodeComponent],
   imports: [
     CommonModule,
     FormsModule,

@@ -45,9 +45,10 @@
                         <clr-dg-cell>{{isi.client.cif}}</clr-dg-cell>
                         <clr-dg-cell>Rp. {{isi.nominalTransaksi | number}}</clr-dg-cell>
                         <clr-dg-cell>
-                                <!-- <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home"  (click)="exportPDF.PDFData(isi.idTransaction)">
+                                                                                                            <!-- (click)="exportPDF.PDFData(isi.idTransaction)"> -->
+                                <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home"  (click)="exportPDF.PDFData(isi.idTransactionBB)">
                                     PDF
-                                </button> -->
+                                </button>
                         </clr-dg-cell>
                     </clr-dg-row>
                     <clr-dg-detail *clrIfDetail="let detail">
@@ -202,6 +203,8 @@
     </div>
 
 </div>
-<!-- <app-export-laporan #exportPDF></app-export-laporan> -->
+
+
+<app-export-laporan-buyback-bycode #exportPDF></app-export-laporan-buyback-bycode>
 <!-- 
 -->
