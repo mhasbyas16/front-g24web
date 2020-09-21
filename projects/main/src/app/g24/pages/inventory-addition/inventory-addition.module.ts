@@ -83,7 +83,7 @@ import { DetailItemInisiasiApprovalPermataComponent } from './inisiasi-approval/
     ReactiveFormsModule,
     FormsModule,
     ToastrModule,
-    NgxMaskModule
+    NgxMaskModule.forChild()
   ],
   exports: [InisiasiComponent, PemesananComponent],
   entryComponents: [InisiasiComponent, PemesananComponent],

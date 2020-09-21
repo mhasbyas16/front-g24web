@@ -8,6 +8,7 @@ import { ClarityModule } from '@clr/angular';
 
 //SELECT2
 import { NgSelect2Module } from 'ng-select2';
+import { NgxMaskModule } from 'ngx-mask';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,7 @@ import { NgSelect2Module } from 'ng-select2';
     AppRoutingModule,
     ClarityModule,
     NgSelect2Module,
-    
+    NgxMaskModule.forRoot(),
     LayoutsModule,
   ],
   providers: [],
