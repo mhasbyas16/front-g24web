@@ -25,6 +25,15 @@ export class SplitDateServiceService {
     this.fixDate = this.tahun+"-"+this.bulan+"-"+this.hari;
     return this.fixDate;
   }
+  splitBack(date){
+    this.tgl = date;
+    this.tglSplit = this.tgl.split("-");
+    this.bulan = this.tglSplit["1"];
+    this.hari = this.tglSplit["2"];
+    this.tahun = this.tglSplit["0"];
+    this.fixDate = this.bulan+"/"+this.hari+"/"+this.tahun;
+    return this.fixDate;
+  }
 
   splitBulanTerbilang(date){
     this.tgl =date;

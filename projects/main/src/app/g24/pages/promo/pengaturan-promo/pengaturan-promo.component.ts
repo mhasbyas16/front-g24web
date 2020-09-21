@@ -370,11 +370,6 @@ export class PengaturanPromoComponent implements OnInit {
       // section1.units_encoded = "base64array";
     }
 
-    let tgl :any;
-    let tglSplit :any;
-    let bulan :any;
-    let hari:any;
-    let tahun:any;
     let fixDate:any;
     // tanggal maker
     fixDate = this.splitDateServiceService.split(section1.makerDate);

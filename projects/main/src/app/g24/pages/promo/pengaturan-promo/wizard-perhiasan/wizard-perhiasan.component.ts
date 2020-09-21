@@ -131,6 +131,7 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
       this.section2_perhiasan.patchValue({prmPromotion : get.prmPromotion})   
       this.section2_perhiasan.patchValue({minPrmPromotion : get.minPrmPromotion})
       this.section2_perhiasan.patchValue({maxPrmPromotion : get.maxPrmPromotion})
+      this.section2_perhiasan.patchValue({perGram : get.perGram})
       this.section2_perhiasan.patchValue({sizeTypePromotion : get.sizeTypePromotion})
       this.section2_perhiasan.patchValue({pickVendor: get.pickVendor})    
       this.section2_perhiasan.patchValue({pickPurity: get.pickPurity})
@@ -142,7 +143,8 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
 
       // age
       this.pickUmur(get.age);
-      
+      // prm Promotion
+      this.selectPrmPromo(get.prmPromotion);
       // typePromotion
       let tp=[];
       let tpVal = [];
