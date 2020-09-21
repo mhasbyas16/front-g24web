@@ -254,7 +254,7 @@ export class ExportLaporanBuybackBycodeComponent implements OnInit {
       {
         style:'head',
         alignment:'left',
-        text:'Hari ini Tanggal '+ hari+' '+bulanTerbilang+' '+tahun +''
+        text:'Hari ini Tanggal '+ hari+' '+bulanTerbilang+' '+tahun +'' 
       }
     ]);
   
