@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { CommonService } from "../../../../../../platform/src/app/core-services/common.service";
+import { CommonService } from "../../../../../platform/src/app/core-services/common.service";
 
 @Injectable({
   providedIn: 'root'
 })
-export class TransactionTypeService {
+export class UserService {
 
-  key = "master-api/transaction-type";
+  key = "master-api/admin";
 
   constructor(private commonService:CommonService) { }
 
