@@ -58,14 +58,11 @@ export class RekeningKoranComponent implements OnInit {
     this.datepick();
     this.head();
     
-<<<<<<< HEAD
   }
 
   startDate(data){
     this.maxDate = new Date(data.getFullYear(), data.getMonth() + 3, data.getDate()) ;
     this.minDate = data;
-=======
->>>>>>> 53549f4... update rek koran
   }
 
   // modal detail 
