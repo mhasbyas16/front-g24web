@@ -6,6 +6,7 @@ import { DContent } from '../../../decorators/content/pages';
 import { ToastrService } from "ngx-toastr";
 //select2
 import { Select2OptionData  } from "ng-select2";
+import { Options } from "select2";
 import * as jquery from 'jquery';
 //Session
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
@@ -74,6 +75,8 @@ export class PengajuanAnggaranComponent implements OnInit {
 
   searchModel : any = {mata_anggaran : "all"};
   inputModel : any = {items : []};
+  public options:Options;
+
   defaultInput(): any {
     return{
       mata_anggaran : null, pemegang_anggaran: null, budget: 0,
@@ -111,6 +114,14 @@ export class PengajuanAnggaranComponent implements OnInit {
     this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser)),"nik":this.nikUser["username"]};
     this.onListMataAnggaran();
     this.onListUser();
+
+    this.options = {
+      multiple: true,
+      maximumSelectionLength: 1,
+      width: '200',
+      searchable: true,
+      placeholder: 'Please select'
+    };
   }
 
   validateInput(){
