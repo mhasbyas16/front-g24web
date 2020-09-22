@@ -13,6 +13,7 @@ import { InitiationType } from '../../../../lib/enums/initiation-type';
 import { PaymentType } from '../../../../lib/enums/payment-type';
 import { BankService } from '../../../../services/transaction/bank.service';
 import {MaskDirective} from 'ngx-mask';
+import { environment } from 'projects/main/src/environments/environment';
 
 @Component({
   selector: 'detail-inisiasi-permata',
@@ -37,13 +38,15 @@ export class DetailInisiasiPermataComponent implements OnInit {
     private marginService : PrmMarginService,
     private bankService : BankService,
   ) { }
+  
+  isDev = !environment.production;
 
   InitiationType = Object.values(InitiationType);
   PaymentTypeValues = Object.values(PaymentType);
   PaymentType = PaymentType;
-
-  OnlyAlphabetsPattern : any = {'oa' : {pattern : new RegExp('\[a-z\]')}};
-  AlphaNumericPattern : any = { 'an' : {pattern : new RegExp('[a-z0-9\]')}};
+  
+  OnlyUpperAlphabetsPattern  = new RegExp('[^A-Z]+', 'g');
+  AlphaNumericPattern = new RegExp('[^A-Z0-9]+', 'g');
 
   date : string = "";
   time : string = "";
@@ -345,8 +348,17 @@ console.log(this.hbeli);
     this.hitungHPPEmas();
   }
 
+  onKadarEmasChanged()
+  {
+    this.hitungHPPEmas();
+  }
+
   hitungHPPEmas()
   {
+    if(this.input == null) return;
+    if(this.input['product-purity'] == null) return;
+    if(this.hbeli == null) return;
+
     let kadar = Number(this.input['product-purity'].name);
     let berat_emas = Number(this.input.berat_emas);
     let hbuy = Number(this.hbeli.harga_buyback);
@@ -669,7 +681,7 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
     // }
   }
 
-  async ResetAll(form2reset : NgForm)
+  async ResetAll()
   {
     await this.LoadAllParameter();
     await this.LoadDate();
@@ -706,6 +718,9 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
 
   hitungHPPBerlian()
   {
+    if(this.input == null) return;
+    if(this.hbeli == null) return;
+
     let hpp_berlian = Number(this.input.hpp_berlian);
     let persen_margin_berlian = Number(this.input.persen_margin_berlian);
 
@@ -718,11 +733,16 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
 
   hitungHPPBatu()
   {
+    // if(this.input == null) return;
+    // if(this.hbeli == null) return;
+console.log(this.input.margin_batu)
     let hpp_batu = Number(this.input.hpp_batu);
     let persen_margin_batu = Number(this.input.persen_margin_batu);
 
     let margin_batu = hpp_batu * persen_margin_batu / 100;
     margin_batu = Math.round(margin_batu);
+    
+    if(!environment.production) console.log(margin_batu);
 
     this.input.margin_batu = margin_batu;
     return this.input.margin_batu;
@@ -765,9 +785,11 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
     input.margin_batu = 0;
   }
 
-  LowersCase(key)
+  RestrictInputOnModel(value : string, pattern : RegExp)
   {
-
+    let nVal = value.replace(pattern, '');
+    if(!environment.production)console.log(nVal)
+    return nVal;
   }
 
   debug()

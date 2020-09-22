@@ -1,7 +1,7 @@
 <div class="clr-row">
     <div class="card" style="margin-top: 0em;">
         <div class="card-header">
-            Inisiasi Permata
+            <span><b>Inisiasi Permata</b></span> &nbsp;&nbsp; <a *ngIf="errorHappened" class="label label-danger" style="cursor: pointer;" (click)="ResetAll()"><strong>Terjadi Error! Klik label ini untuk refresh</strong></a>
         </div>
         <div class="card-block">
             <form #inisiasi id="inisiasi" clrForm>
@@ -152,7 +152,7 @@
                                 <div class="clr-col-6">
                                     <clr-select-container class="clr-form-control">
                                         <label class="clr-control-label">Kadar</label>
-                                        <select [(ngModel)]="input['product-purity']" #kadar clrSelect name="kadar">
+                                        <select [(ngModel)]="input['product-purity']" #kadar clrSelect name="kadar" (change)="onKadarEmasChanged()">
                                             <ng-container *ngFor="let kadar of kadars">
                                                 <option [ngValue]="kadar">{{kadar.name}}</option>
                                             </ng-container>
@@ -219,8 +219,8 @@
                                     <div class="clr-form-control">
                                         <label class="clr-control-label">Jenis Batu</label>
                                         <div class="clr-control-container">
-                                            <input [(ngModel)]="input.jenis_batu" (change)="input.jenis_batu = input.jenis_batu.toLowerCase()" patterns="OnlyAlphabetsPattern" class="clr-input" type="text" name="jenis_batu" />
-                                            <span class="clr-subtext">Harap gunakan huruf kecil.</span>
+                                            <input [(ngModel)]="input.jenis_batu" (keyup)="input.jenis_batu = RestrictInputOnModel(input.jenis_batu, OnlyUpperAlphabetsPattern)" class="clr-input" type="text" name="jenis_batu" />
+                                            <span class="clr-subtext">Harap gunakan huruf Kapital.</span>
                                         </div>
                                     </div>
                                 </div>
@@ -228,8 +228,8 @@
                                     <div class="clr-form-control">
                                         <label class="clr-control-label">Warna Batu</label>
                                         <div class="clr-control-container">
-                                            <input [(ngModel)]="input.warna_batu" (change)="input.warna_batu = input.jenis_batu.toLowerCase()" class="clr-input" type="text" name="warna_batu" />
-                                            <span class="clr-subtext">Harap gunakan huruf kecil.</span>
+                                            <input [(ngModel)]="input.warna_batu" (keyup)="input.warna_batu = RestrictInputOnModel(input.warna_batu, OnlyUpperAlphabetsPattern)" class="clr-input" type="text" name="warna_batu" />
+                                            <span class="clr-subtext">Harap gunakan huruf Kapital.</span>
                                         </div>
                                     </div>
                                 </div>
@@ -240,7 +240,7 @@
                                         <label class="clr-control-label">Carat Batu</label>
                                         <div class="clr-control-container">
                                             <input [(ngModel)]="input.carat_batu" min=0 step=0.01 class="clr-input" type="number" name="carat_batu" />
-                                            <span class="clr-subtext">Harap gunakan huruf kecil.</span>
+                                            <span class="clr-subtext">Harap gunakan titik (.)</span>
                                         </div>
                                     </div>
                                 </div>
@@ -288,7 +288,7 @@
                                     <div class="clr-form-control">
                                         <label class="clr-control-label">HPP Batu</label>
                                         <div class="clr-control-container">
-                                            <input mask="separator" thousandSeparator="," [(ngModel)]="input.hpp_batu" min=0 class="clr-input" type="text" name="hpp_batu" (changed)="onHPPBatuChanged()" />
+                                            <input mask="separator" thousandSeparator="," [(ngModel)]="input.hpp_batu" min=0 class="clr-input" type="text" name="hpp_batu" (ngModelChange)="onHPPBatuChanged()" />
                                             <span class="clr-subtext">Rp. 1.000.000</span>
                                         </div>
                                     </div>
@@ -322,7 +322,7 @@
                                     <div class="clr-form-control">
                                         <label class="clr-control-label">Warna Berlian</label>
                                         <div class="clr-control-container">
-                                            <input [(ngModel)]="input.warna_berlian" (keyup)="input.warna_berlian = input.warna_berlian.toLowerCase()" min=0 class="clr-input" type="text" name="warna_berlian" />
+                                            <input [(ngModel)]="input.warna_berlian" (keyup)="input.warna_berlian = RestrictInputOnModel(input.warna_berlian, OnlyUpperAlphabetsPattern)" min=0 class="clr-input" type="text" name="warna_berlian" />
                                             <span class="clr-subtext">Harap gunakan huruf kecil.</span>
                                         </div>
                                     </div>
@@ -342,7 +342,7 @@
                                     <div class="clr-form-control">
                                         <label class="clr-control-label">Cutting Berlian</label>
                                         <div class="clr-control-container">
-                                            <input [(ngModel)]="input.cutting_berlian" class="clr-input" type="text" name="cutting_berlian" />
+                                            <input [(ngModel)]="input.cutting_berlian" (keyup)="input.cutting_berlian = RestrictInputOnModel(input.cutting_berlian, AlphaNumericPattern)" class="clr-input" type="text" name="cutting_berlian" />
                                             <span class="clr-subtext">Harap gunakan huruf kecil.</span>
                                         </div>
                                     </div>
@@ -373,7 +373,7 @@
                                     <div class="clr-form-control">
                                         <label class="clr-control-label">HPP Berlian</label>
                                         <div class="clr-control-container">
-                                            <input mask="separator" thousandSeparator="," [ngModel]="input.hpp_berlian" min=0 class="clr-input" type="text" name="hpp_berlian" (changed)="onHPPBerlianChanged()" />
+                                            <input mask="separator" thousandSeparator="," [ngModel]="input.hpp_berlian" min=0 class="clr-input" type="text" name="hpp_berlian" (ngModelChange)="onHPPBerlianChanged()" />
                                             <span class="clr-subtext">Rp. 1.000.000</span>
                                         </div>
                                     </div>
@@ -421,10 +421,10 @@
             <button class="btn btn-primary align-right" (click)="doSave()">
                 Simpan
             </button>
-            <button form="inisiasi" class="btn btn-secondary" (click)="ResetAll(inisiasi)">
+            <button form="inisiasi" class="btn btn-secondary" (click)="ResetAll()">
                 Reset
             </button>
-            <button form="inisiasi" class="btn btn-secondary" (click)="debug()">
+            <button *ngIf="isDev" form="inisiasi" class="btn btn-secondary" (click)="debug()">
                 Debug
             </button>
         </div>
