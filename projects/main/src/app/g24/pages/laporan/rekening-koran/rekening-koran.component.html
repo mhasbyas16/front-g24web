@@ -104,6 +104,85 @@
                     <clr-dg-detail-header>Detail Jurnal</clr-dg-detail-header>
                     <clr-dg-detail-body>
                         <ng-container>
+                            <div class="clr-row">
+                                <div class="clr-col-6">
+                                    <clr-input-container>
+                                        <label for="basic" class="clr-control-label">Kode Transaksi</label>
+                                        <input type="text" [value]="content.trxCode" clrInput />
+                                        <input type="text" [value]="content.keterangan" clrInput />
+                                    </clr-input-container>
+                                </div>
+                            </div>
+            
+                             <div class="clr-row">
+                                <div class="clr-col-6">
+                                    <clr-input-container>
+                                        <label for="basic" class="clr-control-label">Tanggal Jurnal</label>
+                                        <input type="text" [value]="content.postDate" clrInput />
+                                    </clr-input-container>
+                                </div>
+                                <div class="clr-col-6">
+                                    <clr-input-container>
+                                        <label for="basic" class="clr-control-label">Tanggal Transaksi</label>
+                                        <input type="text" [value]="content.trxDate" clrInput />
+                                    </clr-input-container>
+                                </div>
+                            </div>
+            
+                            <div class="clr-row">
+                                <div class="clr-col-6">
+                                    <clr-input-container>
+                                        <label for="noRek" class="clr-control-label">Nomor Rekening</label>
+                                        <input type="text" [value]="content.noRek" clrInput />
+                                    </clr-input-container>
+                                </div>
+                                <div class="clr-col-6">
+                                    <clr-input-container>
+                                        <label for="noCoa" class="clr-control-label">Mata Anggaran</label>
+                                        <input type="text" [value]="content.noCoa" clrInput />
+                                    </clr-input-container>
+                                </div>
+                            </div>
+            
+                            <div class="clr-row">
+                                <div class="clr-col-6">
+                                    <clr-input-container>
+                                        <label for="noRek" class="clr-control-label">Dibuat Oleh</label>
+                                        <input type="text" [value]="content.createBy" clrInput />
+                                    </clr-input-container>
+                                </div>
+                                <div class="clr-col-6">
+                                    <clr-input-container>
+                                        <label for="noCoa" class="clr-control-label">Tanggal Dibuat</label>
+                                        <input type="text" [value]="content.createDate" clrInput />
+                                    </clr-input-container>
+                                </div>
+                            </div>
+            
+                            <div class="clr-row">
+                                <div class="clr-col-6">
+                                    <clr-input-container>
+                                        <label for="noRek" class="clr-control-label">Diotorisasi Oleh</label>
+                                        <input type="text" [value]="content.authorizedBy" clrInput />
+                                    </clr-input-container>
+                                </div>
+                                <div class="clr-col-6">
+                                    <clr-input-container>
+                                        <label for="noCoa" class="clr-control-label">Tanggal Otorisasi</label>
+                                        <input type="text" [value]="content.authorizedDate" clrInput />
+                                    </clr-input-container>
+                                </div>
+                            </div>
+            
+                            <div class="clr-row">
+                                <div class="clr-col-6">
+                                    <clr-input-container>
+                                        <label for="noRek" class="clr-control-label">Kode Cabang</label>
+                                        <input type="text" [value]="content.unit" clrInput />
+                                    </clr-input-container>
+                                </div>                           
+                                    
+                            </div> 
                             <table class="table table-compact table-noborder"> 
                                 <thead>
                                     <tr>
