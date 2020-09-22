@@ -6,7 +6,7 @@ import { DContent } from '../../../decorators/content/pages';
 
 //Session
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
-import { DateService } from "../../../services/system/date.service";
+import { ServerDateTimeService } from "../../../services/system/server-date-time.service";
 
 //database
 import { PrmGlobalService } from '../../../services/parameter/prm-global.service';
@@ -51,7 +51,7 @@ export class ParameterGlobalComponent implements OnInit {
     private toastrService: ToastrService,
     //session
     private sessionService: SessionService,
-    private dateServices : DateService,
+    private dateServices : ServerDateTimeService,
     //database
     private prmGlobalService : PrmGlobalService
   ) { }
