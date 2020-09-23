@@ -128,6 +128,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" [disabled]="mode == EPriviledge.READ" (click)="doSave()">Simpan</button>
+        <button class="btn btn-primary" [disabled]="mode == EPriviledge.READ" (click)="doTerima()">Terima</button>
+        <button class="btn btn-danger" [disabled]="mode == EPriviledge.READ" (click)="doTolak()">Tolak</button>
     </div>
 </clr-modal>

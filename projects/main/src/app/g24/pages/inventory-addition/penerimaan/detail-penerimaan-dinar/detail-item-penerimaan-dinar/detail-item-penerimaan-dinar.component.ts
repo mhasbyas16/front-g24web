@@ -52,7 +52,7 @@ export class DetailItemPenerimaanDinarComponent implements OnInit {
     this.isOpened = open
   }
 
-  private title : string = "Detail Penerimaan Gift";
+  private title : string = "Detail Penerimaan Dinar";
   public get Title()
   {
     return this.title;
@@ -393,7 +393,7 @@ export class DetailItemPenerimaanDinarComponent implements OnInit {
     return true;
   }
 
-  async doSave()
+  async doTerima()
   {
     if(this.mode == EPriviledge.READ)
     {
@@ -492,6 +492,47 @@ export class DetailItemPenerimaanDinarComponent implements OnInit {
     //   let product = result[i];
       
     // }
+  }
+
+  async doTolak(){
+    if(this.mode == EPriviledge.READ)
+    {
+      this.toastr.info("Mode 'READ' only.");
+      return;
+    }
+
+    if(!this.validateItems())
+    {
+      return;
+    }
+
+    if(!this.validateInisiasi())
+    {
+      return;
+    }
+
+    this.inisiasi.update_date = new Date().toISOString().split("T")[0];
+    this.inisiasi.update_by = this.user.username;
+    this.inisiasi['tgl_tolak'] = this.inisiasi.update_date;
+    this.inisiasi.tolak_by = this.user.username;
+
+    let tempInisiasi = {}
+    Object.assign(tempInisiasi, this.inisiasi);
+    DataTypeUtil.Encode(tempInisiasi);
+
+    let inisiasi = await this.inisiasiService.update(tempInisiasi).toPromise();
+    if(inisiasi == false)
+    {
+      this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk.");
+      return;
+    } else {
+      Object.assign(this.inisiasi, tempInisiasi);
+      console.log(this.inisiasi);
+      this.parentListener.onAfterUpdate(this.inisiasi._id);
+      this.toastr.success("PO berhasil ditolak");
+      this.doReset();
+      this.Close();
+    }
   }
 
   checkNumber : number = 0;

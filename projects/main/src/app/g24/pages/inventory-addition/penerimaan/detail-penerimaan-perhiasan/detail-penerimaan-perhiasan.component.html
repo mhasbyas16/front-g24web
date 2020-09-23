@@ -123,7 +123,7 @@
         <clr-datagrid [clrDgLoading]="loading" [(clrDgSingleSelected)]="selected">
             <clr-dg-action-bar>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-secondary" (click)="onTerima()" *ngIf="Selected?.order_status!= 'terima_full' && Selected?.order_status != null"><clr-icon shape="pencil"></clr-icon>Terima</button>
+                    <button type="button" class="btn btn-sm btn-secondary" (click)="onSimpan()" *ngIf="Selected?.order_status!= 'terima_full' && Selected?.order_status != 'terima_partial' && Selected?.order_status != null"><clr-icon shape="pencil"></clr-icon>Update Penerimaan</button>
                     <button type="button" class="btn btn-sm btn-secondary" (click)="onLihat()" *ngIf="Selected?._id != ''"><clr-icon shape="view-list"></clr-icon>Lihat</button>
                     <button type="button" class="btn btn-sm btn-secondary" (click)="Debug()"><clr-icon shape="bug"></clr-icon>Debug</button>
                 </div>

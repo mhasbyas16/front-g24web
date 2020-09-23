@@ -12,6 +12,7 @@ import { DataTypeUtil } from 'projects/main/src/app/g24/lib/helper/data-type-uti
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { IDetailCallbackListener } from 'projects/main/src/app/g24/lib/base/idetail-callback-listener';
 import { PaymentType } from 'projects/main/src/app/g24/lib/enums/payment-type';
+import { JurnalInisiasiService } from 'projects/main/src/app/g24/services/keuangan/jurnal/stock/jurnal-inisiasi.service';
 
 @Component({
   selector: 'detail-item-inisiasi-approval-souvenir',
@@ -27,6 +28,7 @@ export class DetailItemInisiasiApprovalSouvenirComponent implements OnInit {
     private inisiasiService : InisiasiService,
     private kadarService : ProductPurityService,
     private jenisService : ProductJenisService,
+    private jurnalInisiasi : JurnalInisiasiService,
     private goldColorService : ProductGoldColorService,
     private productService : ProductService) { }
 
@@ -79,7 +81,7 @@ export class DetailItemInisiasiApprovalSouvenirComponent implements OnInit {
       this.isOpened = open
     }
   
-    private title : string = "Detail Penerimaan Souvenir";
+    private title : string = "Detail Approval Souvenir";
     public get Title()
     {
       return this.title;
@@ -554,49 +556,37 @@ export class DetailItemInisiasiApprovalSouvenirComponent implements OnInit {
         return;
       }
   
-      this.inisiasi.order_status = OrderStatus.TERIMA_FULL.code;
+      this.inisiasi.order_status = OrderStatus.APPROVAL.code;
       this.inisiasi.update_date = new Date().toISOString().split("T")[0];
       this.inisiasi.update_by = this.user.username;
-      this.inisiasi['tgl_terima'] = this.inisiasi.update_date;
-      this.inisiasi.terima_by = this.user.username;
+      this.inisiasi['tgl_approved'] = this.inisiasi.update_date;
+      this.inisiasi.approved_by = this.user.username;
       let items = this.inisiasi.items;
       let productNoId = [];
       let ids = [];
       console.log(items);
       
-      for(let i = 0; i < items.length; i++)
-      {
-        let products = items[i].products;
-        productNoId.push(...products);
-      }
+      // for(let i =0; i < productNoId.length; i++)
+      // {
+      //   let product = productNoId[i];
+      //   let fail = {itemIndex : product.no_item_po, productIndex: product.no_index_products}
+      //   delete product._id;
+      //   DataTypeUtil.Encode(product);
   
-      let itemProduct : Map<string, number> = new Map<string,number>();
-      
-      console.log(productNoId);
+      //   itemProduct.set(fail.itemIndex + "," + fail.productIndex, product);
   
-      let failedIndex : any[] = [];
-      let someFailed : boolean = false;
-      for(let i =0; i < productNoId.length; i++)
-      {
-        let product = productNoId[i];
-        let fail = {itemIndex : product.no_item_po, productIndex: product.no_index_products}
-        delete product._id;
-        DataTypeUtil.Encode(product);
-  
-        itemProduct.set(fail.itemIndex + "," + fail.productIndex, product);
-  
-        let result = await this.productService.add(product).toPromise();
-        if(result == false)
-        {
-          this.toastr.error("Barang nomor: " + fail.productIndex + " dengan nomor Bulk: " + fail.itemIndex + " gagal masuk.");
-          continue;
-        } else {
-          let product = itemProduct.get(fail.itemIndex + "," + fail.productIndex);
-          Object.assign(product, result);
-          itemProduct.set(fail.itemIndex + "," + fail.productIndex, result);
-          console.log(result);
-        }
-      }
+      //   let result = await this.productService.add(product).toPromise();
+      //   if(result == false)
+      //   {
+      //     this.toastr.error("Barang nomor: " + fail.productIndex + " dengan nomor Bulk: " + fail.itemIndex + " gagal masuk.");
+      //     continue;
+      //   } else {
+      //     let product = itemProduct.get(fail.itemIndex + "," + fail.productIndex);
+      //     Object.assign(product, result);
+      //     itemProduct.set(fail.itemIndex + "," + fail.productIndex, result);
+      //     console.log(result);
+      //   }
+      // }
   
       console.log(this.inisiasi);
       let tempInisiasi = {}
@@ -612,6 +602,7 @@ export class DetailItemInisiasiApprovalSouvenirComponent implements OnInit {
         Object.assign(this.inisiasi, tempInisiasi);
         console.log(this.inisiasi);
         this.parentListener.onAfterUpdate(this.inisiasi._id);
+        this.doAccounting(this.inisiasi._id);
         this.toastr.success("PO berhasil diterima.");
         this.doReset();
         this.Close();
@@ -638,6 +629,22 @@ export class DetailItemInisiasiApprovalSouvenirComponent implements OnInit {
         
       // }
     }
+
+  doAccounting(idInisiasi :string)
+  {
+    this.jurnalInisiasi.bayar(idInisiasi).subscribe(output => {
+      if(output == false)
+      {
+        let msg = this.jurnalInisiasi.message();
+        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg, "Error!", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
+        // console.log()
+        return;
+      } else {
+        this.toastr.success("Jurnal berhasil.")
+        return;
+      }
+    });
+  }
   
     getBeratFromItems()
     {
@@ -744,5 +751,27 @@ export class DetailItemInisiasiApprovalSouvenirComponent implements OnInit {
       this.inisiasi['total_harga'] = Math.round(hbaku * total_gram_tukar * 100) /100;
       return this.inisiasi['total_harga'];
     }
+
+    
+  hitungTotalDPP()
+  {
+    if(this.inisiasi == null)
+    {
+      return 0;
+    }
+
+    let total_harga = Math.round(Number(this.inisiasi['total_harga']));
+    if(total_harga == 0)
+    {
+      return 0;
+    }
+
+    let total_pajak = Math.round(this.inisiasi['total_pajak']);
+
+    total_harga -= total_pajak;
+
+    this.inisiasi['total_dpp'] = total_harga;
+    return this.inisiasi['total_dpp'];
+  }
 
 }

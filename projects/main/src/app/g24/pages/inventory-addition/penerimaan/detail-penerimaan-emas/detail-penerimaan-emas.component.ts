@@ -370,7 +370,7 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
     switch(order_status)
     {
       case '0':
-        order_status_p = "&order_status="+ OrderStatus.SUBMIT.code;
+        order_status_p = "&order_status="+ OrderStatus.APPROVAL.code;
         break;
 
       case '1':
@@ -637,7 +637,7 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
     return true;
   }
 
-  onTerima()
+  onSimpan()
   {
     if(this.selected.order_status == 'terima_full')
     {

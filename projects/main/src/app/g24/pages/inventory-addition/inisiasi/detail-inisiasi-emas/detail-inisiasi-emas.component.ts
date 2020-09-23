@@ -554,27 +554,27 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
       } else {
         this.toastr.success("Inisiasi Berhasil. Harap hubungi Kepala Departemen untuk melakukan Approval. No. PO : " + output.no_po, "Info", {disableTimeOut : true, closeButton : true, tapToDismiss : false});
         this.ResetAll();
-        this.doAccounting(output._id);
+        // this.doAccounting(output._id);
       }
     });
     // console.log(output);
   }
 
-  doAccounting(idInisiasi :string)
-  {
-    this.jurnalInisiasi.bayar(idInisiasi).subscribe(output => {
-      if(output == false)
-      {
-        let msg = this.jurnalInisiasi.message();
-        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg, "Error!", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
-        // console.log()
-        return;
-      } else {
-        this.toastr.success("Jurnal berhasil.")
-        return;
-      }
-    });
-  }
+  // doAccounting(idInisiasi :string)
+  // {
+  //   this.jurnalInisiasi.bayar(idInisiasi).subscribe(output => {
+  //     if(output == false)
+  //     {
+  //       let msg = this.jurnalInisiasi.message();
+  //       this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg, "Error!", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
+  //       // console.log()
+  //       return;
+  //     } else {
+  //       this.toastr.success("Jurnal berhasil.")
+  //       return;
+  //     }
+  //   });
+  // }
   Debug()
   {
     console.log(this.input, "model", this.selected);

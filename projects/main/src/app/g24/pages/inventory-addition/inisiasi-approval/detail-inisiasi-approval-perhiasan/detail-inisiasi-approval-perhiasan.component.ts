@@ -422,7 +422,7 @@ export class DetailInisiasiApprovalPerhiasanComponent extends BasePersistentFiel
         break;
 
       case OrderStatus.APPROVAL.code:
-        order_status_p = "";
+        order_status_p = "&order_status="+ OrderStatus.APPROVAL.code;
         break;
 
       default:

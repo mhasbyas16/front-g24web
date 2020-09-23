@@ -370,7 +370,7 @@ export class DetailPenerimaanDinarComponent extends BasePersistentFields impleme
     switch(order_status)
     {
       case '0':
-        order_status_p = "&order_status="+ OrderStatus.SUBMIT.code;
+        order_status_p = "&order_status="+ OrderStatus.APPROVAL.code;
         break;
 
       case '1':
@@ -394,7 +394,7 @@ export class DetailPenerimaanDinarComponent extends BasePersistentFields impleme
 
     let unit_p = "&unit=" + this.unit['code'];
 
-    let params = "?product-category.code=c05&status_bayar=1" + bayar_p + create_p + order_status_p + unit_p;
+    let params = "?product-category.code=c06&status_bayar=1" + bayar_p + create_p + order_status_p + unit_p;
     // params += "&unit="+ this.unit.code;
     
     this.loading = true;
@@ -637,7 +637,7 @@ export class DetailPenerimaanDinarComponent extends BasePersistentFields impleme
     return true;
   }
 
-  onTerima()
+  onSimpan()
   {
     if(this.selected.order_status == 'terima_full')
     {
