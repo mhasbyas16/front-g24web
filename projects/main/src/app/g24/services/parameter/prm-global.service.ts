@@ -4,11 +4,11 @@ import { CommonService } from "../../../../../../platform/src/app/core-services/
 @Injectable({
   providedIn: 'root'
 })
-export class TransactionTypeService {
+export class PrmGlobalService {
 
-  key = "master-api/transaction-type";
+  key = "master-api/prm-global";
 
-  constructor(private commonService:CommonService) { }
+  constructor(private commonService : CommonService) { }
 
   list(params?) {
     return this.commonService.list(this.key, params);

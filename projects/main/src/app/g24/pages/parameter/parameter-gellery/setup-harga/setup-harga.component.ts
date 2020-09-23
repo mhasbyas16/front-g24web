@@ -1,23 +1,38 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from "ngx-toastr";
-import {FormGroup, Validators, FormControl } from '@angular/forms';
+import { trigger, transition, animate, style } from '@angular/animations'
+import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 //Session
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 //Database
 import { VendorService } from '../../../../services/vendor.service';
 import { ProductCategoryService } from '../../../../services/product/product-category.service';
-
 import { PrmJualService } from '../../../../services/parameter/prm-jual.service';
 import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
+import { ServerDateTimeService } from "../../../../services/system/server-date-time.service";
 
 
 
 @Component({
   selector: 'app-setup-harga',
   templateUrl: './setup-harga.component.html',
-  styleUrls: ['./setup-harga.component.scss']
+  styleUrls: ['./setup-harga.component.scss'],
+
+  animations: [
+    trigger('slideInOut', [
+      transition(':enter', [
+        style({transform: 'translateY(-100%)'}),
+        animate('500ms ease-in', style({transform: 'translateY(0%)'}))
+      ]),
+      transition(':leave', [
+        animate('500ms ease-in', style({transform: 'translateY(-100%)'}))
+      ])
+    ])
+  ]
+
 })
+
 export class SetupHargaComponent implements OnInit {
 
   //title
@@ -37,16 +52,26 @@ export class SetupHargaComponent implements OnInit {
   nikUser= null;
   productSelect = null;
   tempProduct = null;
+  findProduct = null;
+  myRole = null;
+  getDataold = null;
+  getProduct = null;
+  show = false;
   //params
   params = null;
   vendorCategory= "product-category.code=c00";
-  productFilter= "code=c00,c01";
+  productFilter= "code=c00,c01,c02,c03,c04&_sortby=name:1";
 
+  //datetime
+  timezone = "string";
+  date_now = "string";
+  time = "string";
   // dialog
   modalAddDialog: boolean = false;
   modalEditDialog: boolean = false;
   modalDeleteDialog: boolean = false;
   modalConfirmDialog: boolean = false;
+  modalDetailDialog: boolean = false;
   // dialog  form
   form: FormGroup = null;
   constructor(
@@ -55,11 +80,14 @@ export class SetupHargaComponent implements OnInit {
     private ProductCategorySerevice: ProductCategoryService,
     private toastrService: ToastrService,
     private datePipe: DatePipe,
+    private dateServices: ServerDateTimeService,
     //session
     private sessionService: SessionService,
     //parameter
     private prmJualService : PrmJualService,
   ) { }
+
+  searchModel : any = {product:"all"};
 
   inputModel : any = {items : []};
   defaultInput(): any {
@@ -69,16 +97,27 @@ export class SetupHargaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.onListVendor();
     this.onListCategory();
-    this.onDataGrid();
     this.inputModel = this.defaultInput();
     this.nikUser = this.sessionService.getUser();
     this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser)),"nik":this.nikUser["username"]};
+    this.myRole = this.sessionService.getRole().name;
+    let params = "?";
+    this.dateServices.task(params).subscribe(output=>{
+      if(output!=false){
+        this.timezone = output;
+        let tgl = this.timezone.split("T");
+          this.date_now = tgl[0];
+          this.time = tgl[1].split("Z")[0];
+      }
+    })
   }
 
-  validateInput()
-  {
+  muter(){
+    this.loadingDg = true;
+  }
+
+  validateInput(){
     for(let key in this.inputModel)
     {
       let value = this.inputModel[key];
@@ -89,33 +128,41 @@ export class SetupHargaComponent implements OnInit {
         return true
       }
     }
-
     return false
   }
-  //list jenis vendor 
-  onListVendor(){
-    this.vendorService.list("?_hash=1&"+this.vendorCategory).subscribe((response: any) => {
-      if (response != false) {
-        this.vendors = response;
-      }      
-    });
-  }
+
+  
+
   //list product category 
   onListCategory(){
-    this.ProductCategorySerevice.list("?_hash=1&"+this.productFilter).subscribe((response : any) => {
+    this.ProductCategorySerevice.list("?"+this.productFilter).subscribe((response : any) => {
       if (response != false) {
         this.product = response;
       }
     });
   }
 
-  onDataGrid(){
+  onChangeProduct(data){
+    this.getProduct = data;
+    if (this.getProduct == '5ebba05bb980bd24b9201769') {
+      this.show = true;
+    }else{
+      this.show = false;
+    }
+  }
+
+  onDataGrid(data){
     // CLR Datagrid loading
     this.loadingDg = true;
 
-    this.params = null;
+    this.params = "?_ne=flag:expired&_hash=1&product-category.code=c00,c01,c02,c03,c04&_sortby=_id:2";
+    let prod = data.inputProduct;
   
-    this.params = "?_hash=1&product-category.code=c01,c00";
+    const urlProduct = "?_ne=flag:expired&_sortby=_id:2&_hash=1&product-category.code="+prod;
+
+    if (prod != 'all') {
+      this.params = urlProduct;
+    }
    
     // prmjual
     this.prmJualService.list(this.params).subscribe((response: any) => {
@@ -145,37 +192,66 @@ export class SetupHargaComponent implements OnInit {
 
   mainAddSubmit(){
     if(this.validateInput()) return;
+    //mencari product berdasarkan id
+    for (let i of this.product){
+      if(this.inputModel.productSelect == i._id){
+        this.findProduct = btoa(JSON.stringify(i));
+      }
+    }
 
-    let now : Date = new Date;
-    let sNow = now.toISOString().split("T");
-    let time = sNow[1].split(".")[0];
-      
     let setup = {
-      "product-category": this.inputModel.productSelect,
+      "product-category": this.findProduct,
       "product-category_encoded": "base64",
-      "harga_buyback": this.inputModel.harga_buyback,
-      "harga_baku": this.inputModel.harga_baku,
+      "harga_buyback": parseInt(this.inputModel.harga_buyback),
+      "harga_buyback_encoded": "int",
+      "harga_baku": parseInt(this.inputModel.harga_baku),
+      "harga_baku_encoded": "int",
       "keterangan": this.inputModel.keterangan,
       "create_by" : this.nikUser["_hash"],
       "create_by_encoded" : "base64",
-      "create_date" : new Date().toISOString().split("T")[0],
-      "create_time" : time,
+      "create_date" : this.date_now,
+      "create_time" : this.time,
       "flag": "submit",
     }
 
+    let setup1 = {
+      "product-category": this.findProduct,
+      "product-category_encoded": "base64",
+      "harga_buyback": parseInt(this.inputModel.harga_buyback),
+      "harga_buyback_encoded": "int",
+      "harga_baku": parseInt(this.inputModel.harga_baku),
+      "harga_baku_encoded": "int",
+      "potongan_bb_batu": parseInt(this.inputModel.potongan_batu),
+      "potongan_bb_batu_encoded": "int",
+      "potongan_bb_berlian": parseInt(this.inputModel.potongan_berlian),
+      "potongan_bb_berlian_encoded": "int",
+      "keterangan": this.inputModel.keterangan,
+      "create_by" : this.nikUser["_hash"],
+      "create_by_encoded" : "base64",
+      "create_date" : this.date_now,
+      "create_time" : this.time,
+      "flag": "submit",
+    }
+
+    let tempSetup = null;
+    console.debug(this.inputModel.productSelect,"cuk")
+    if (this.inputModel.productSelect == '5ebba05bb980bd24b9201769'){
+      tempSetup = setup1;
+    }else{
+      tempSetup = setup;
+    }
+
     this.spinner = true;
-    this.prmJualService.add(setup).subscribe((response) => {
+    this.prmJualService.add(tempSetup).subscribe((response) => {
       this.spinner = false;
       this.modalAddDialog = false;
       if (response == false) {
         this.toastrService.error('Add Failed')
         return
       }
-      this.setupHarga = response;
       this.toastrService.success('Add Success')
-      this.onDataGrid();
     })
-    console.debug('submitted data',  setup)
+    console.debug('submitted data',  tempSetup)
   }
 
   mainEdit(data) {
@@ -188,8 +264,7 @@ export class SetupHargaComponent implements OnInit {
     });
 
     this.inputModel = data;
-    this.tempProduct = data['product-category'];
-    this.inputModel.productSelect = btoa(JSON.stringify(this.tempProduct)) ;
+    this.inputModel.productSelect = data['product-category']._id;
     this.modalEditDialog = true;
   }
 
@@ -200,12 +275,21 @@ export class SetupHargaComponent implements OnInit {
     let sNow = now.toISOString().split("T");
     let time = sNow[1].split(".")[0];
 
+    // this.dateServices.task().subcribe(output => {
+      
+    // });
+    // console.log('jam',this.dateServices.task());
+
+
+
     let setup = {
       "_id" : this.inputModel._id,
       "product-category": this.inputModel.productSelect,
       "product-category_encoded": "base64",
       "harga_buyback": parseInt(this.inputModel.harga_buyback),
+      "harga_buyback_encoded": "int",
       "harga_baku": parseInt(this.inputModel.harga_baku),
+      "harga_baku_encoded": "int",
       "keterangan": this.inputModel.keterangan,
       "update_by" : this.nikUser["_hash"],
       "update_by_encoded" : "base64",
@@ -215,7 +299,7 @@ export class SetupHargaComponent implements OnInit {
     }
 
     // let endcodeSetup = DataTypeUtil.Encode(setup);
-
+    return;
     this.spinner = true;
     this.prmJualService.update(setup).subscribe((response) => {
       this.spinner = false;
@@ -224,9 +308,7 @@ export class SetupHargaComponent implements OnInit {
         this.toastrService.error('Edit Failed')
         return
       }
-      this.setupHarga = response;
       this.toastrService.success('Edit Success')
-      this.onDataGrid();
     })
     console.debug('submitted data',  setup)
   }
@@ -252,14 +334,13 @@ export class SetupHargaComponent implements OnInit {
       }
       this.spinner = false;
       this.modalDeleteDialog = false;
-      this.onDataGrid();
       this.toastrService.success('Delete Success');
     })
     console.debug('submitted data',  setup)
   }
 
-  mainConfirm(data) {
-    console.debug("dataEdit", data);
+  mainDetail(data) {
+    console.debug("dataConfirm", data);
 
     this.prmJualService.get("?_id="+data._id).subscribe((response) => {
       if (response == false) {
@@ -268,57 +349,138 @@ export class SetupHargaComponent implements OnInit {
     });
 
     this.inputModel = data;
-    this.tempProduct = data['product-category'];
-    this.inputModel.productSelect = btoa(JSON.stringify(this.tempProduct)) ;
+    this.inputModel.productSelect = data['product-category'].name;
+    this.inputModel.productS = data['product-category']._id;
+    this.onChangeProduct(this.inputModel.productS);
+    this.inputModel.potongan_batu = data.potongan_bb_batu;
+    this.inputModel.potongan_berlian = data.potongan_bb_berlian;
+    this.inputModel.harga_buyback = data.harga_buyback;
+    this.inputModel.harga_baku = data.harga_baku;
+    this.inputModel.keterangnan = data.keterangan;
+    this.modalDetailDialog = true;
+  }
+
+  mainConfirm(data) {
+    console.debug("dataConfirm", data);
+
+    this.prmJualService.get("?_id="+data._id).subscribe((response) => {
+      if (response == false) {
+        this.toastrService.error(this.prmJualService.message());
+      }
+    });
+
+    this.inputModel = data;
+    this.inputModel.productSelect = data['product-category'].name;
+    this.inputModel.productS = data['product-category']._id;
+    this.onChangeProduct(this.inputModel.productS);
+    this.inputModel.potongan_batu = data.potongan_bb_batu;
+    this.inputModel.potongan_berlian = data.potongan_bb_berlian;
     this.modalConfirmDialog = true;
   }
 
   mainApproveSubmit(){
     if(this.validateInput()) return;
 
-    let now : Date = new Date;
-    let sNow = now.toISOString().split("T");
-    let time = sNow[1].split(".")[0];
-
     let setup = {
       "_id" : this.inputModel._id,
+      "harga_buyback": parseInt(this.inputModel.harga_buyback),
+      "harga_buyback_encoded": "int",
+      "harga_baku": parseInt(this.inputModel.harga_baku),
+      "harga_baku_encoded": "int",
+      "keterangan": this.inputModel.keterangan,
       "approve_by" : this.nikUser["_hash"],
       "approve_by_encoded" : "base64",
-      "approve_date" : new Date().toISOString().split("T")[0],
-      "approve_time" : time,
+      "approve_date" : this.date_now,
+      "approve_time" : this.time,
       "flag": "approved",
     }
 
-    // let endcodeSetup = DataTypeUtil.Encode(setup);
+    let setup1 = {
+      "_id" : this.inputModel._id,
+      "harga_buyback": parseInt(this.inputModel.harga_buyback),
+      "harga_buyback_encoded": "int",
+      "harga_baku": parseInt(this.inputModel.harga_baku),
+      "harga_baku_encoded": "int",
+      "potongan_bb_batu": parseInt(this.inputModel.potongan_batu),
+      "potongan_bb_batu_encoded": "int",
+      "potongan_bb_berlian": parseInt(this.inputModel.potongan_berlian),
+      "potongan_bb_berlian_encoded": "int",
+      "keterangan": this.inputModel.keterangan,
+      "approve_by" : this.nikUser["_hash"],
+      "approve_by_encoded" : "base64",
+      "approve_date" : this.date_now,
+      "approve_time" : this.time,
+      "flag": "approved",
+    }
 
+    let tempSetup = null;
+    console.debug(this.inputModel.productSelect,"cuk")
+    if (this.inputModel.productSelect == '5ebba05bb980bd24b9201769'){
+      tempSetup = setup1;
+    }else{
+      tempSetup = setup;
+    }
+
+    //get data approve lama
     this.spinner = true;
-    this.prmJualService.update(setup).subscribe((response) => {
-      this.spinner = false;
-      this.modalConfirmDialog = false;
-      if (response == false) {
-        this.toastrService.error('Edit Failed')
-        return
+    this.prmJualService.get("?flag=approved&product-category._id="+this.inputModel.productSelect).subscribe((out) => {
+      this.getDataold = out._id;
+
+      if (out == false){
+        this.prmJualService.update(tempSetup).subscribe((response1) => {
+          if (response1 == false) {
+            this.toastrService.error('Approved Failed')
+            return
+          }
+          this.spinner = false;
+          this.modalConfirmDialog = false;
+          this.toastrService.success('Approved Success')
+          return
+        })
+      }else{
+        let histori = {
+          "_id" : this.getDataold,
+          "expired_date" : this.date_now,
+          "expired_time" : this.time,
+          "flag" : "expired",
+        }
+  
+        //ubah data lama menjadi histori
+        this.prmJualService.update(histori).subscribe((response) => {
+          if (response == false) {
+            this.toastrService.error('Update Existing Failed')
+            return
+          }
+          this.prmJualService.update(tempSetup).subscribe((response1) => {
+            if (response1 == false) {
+              this.toastrService.error('Approved Failed')
+              return
+            }
+            this.spinner = false;
+            this.modalConfirmDialog = false;
+            this.toastrService.success('Approved Success')
+          })
+        })
+        console.debug('submitted data',  setup)
+        console.debug('submitted data',  histori)
       }
-      this.setupHarga = response;
-      this.toastrService.success('Edit Success')
-      this.onDataGrid();
     })
-    console.debug('submitted data',  setup)
   }
 
   mainDeclineSubmit() {
     if(this.validateInput()) return;
 
-    let now : Date = new Date;
-    let sNow = now.toISOString().split("T");
-    let time = sNow[1].split(".")[0];
-
     let setup = {
       "_id" : this.inputModel._id,
+      "harga_buyback": parseInt(this.inputModel.harga_buyback),
+      "harga_buyback_encoded": "int",
+      "harga_baku": parseInt(this.inputModel.harga_baku),
+      "harga_baku_encoded": "int",
+      "keterangan": this.inputModel.keterangan,
       "decline_by" : this.nikUser["_hash"],
       "decline_by_encoded" : "base64",
-      "decline_date" : new Date().toISOString().split("T")[0],
-      "decline_time" : time,
+      "decline_date" : this.date_now,
+      "decline_time" : this.time,
       "flag" : "declined",
     }
     
@@ -331,7 +493,6 @@ export class SetupHargaComponent implements OnInit {
       this.spinner = false;
       this.modalConfirmDialog = false;
       this.toastrService.success('Decline Success');
-      this.onDataGrid();
     })
     console.debug('submitted data',  setup)
   }

@@ -7,12 +7,12 @@
             <div class="card-text">
                 <clr-tabs>
                     <clr-tab>
-                        <button clrTabLink>Logam Mulia </button>
+                        <button clrTabLink>Logam Mulia dan Dinar </button>
                         <clr-tab-content >
-                            <div  class="clr-col-12"><br></div>
-                            <!-- <ng-container *ngIf="myRole.name == 'Management'">
-                            </ng-container> -->
-                            <button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus"></clr-icon></button>
+                            <ng-container *ngIf="myRole == 'Keuangan'">
+                                <div  class="clr-col-12"><br></div>
+                                <button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus"></clr-icon></button>
+                            </ng-container>
                             <form #searchLogamMulia="ngForm" id="logam-mulia" clrForm (ngSubmit)="onCariLogamMulia(searchLogamMulia.value)">
                                 <div class="clr-row">
                                     <div class="clr-col-12">
@@ -45,27 +45,28 @@
                                     <div class="clr-col-1">
                                         <div class="clr-form-control">
                                             <div class="clr-control-container">
-                                                <button class="btn btn-info-outline btn-sm">Cari</button>
+                                                <button class="btn btn-info-outline btn-sm" (change)="muter()">Cari</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>   
                             </form>
-                            <clr-datagrid>
+                            <clr-datagrid [clrDgLoading]="loadingDg">
                                 <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
+                                <clr-dg-column>Product Category</clr-dg-column>
                                 <clr-dg-column>Jenis Harga</clr-dg-column>
                                 <clr-dg-column>Vendor</clr-dg-column>
                                 <clr-dg-column>Status</clr-dg-column>
                             
-                                <clr-dg-row *clrDgItems="let data of logamMulia" [clrDgItem]="data">
+                                <clr-dg-row *clrDgItems="let data of logamMulia">
                                     <clr-dg-action-overflow>
-                                        <button class="action-item" (click)="mainEdit(data)">Edit</button>
-                                        <button class="action-item" (click)="mainDelete(data)">Delete</button>
-                                        <button class="action-item" (click)="mainConfirm(data)">Confirm</button>
+                                        <button *ngIf="data.flag == 'submit' && myRole == 'Management';" class="action-item" (click)="mainConfirm(data)">Confirm</button>
+                                        <button class="action-item" (click)="mainDetail(data)">Detail</button>
                                     </clr-dg-action-overflow>
                                     <clr-dg-cell hidden>{{data._id}}</clr-dg-cell>
-                                    <clr-dg-cell>{{data.jenis_barang}}</clr-dg-cell>
-                                    <clr-dg-cell>{{data.vendor.name}}</clr-dg-cell>
+                                    <clr-dg-cell [style.width.px]="100">{{data['product-category'].name}}</clr-dg-cell>
+                                    <clr-dg-cell [style.width.px]="100">{{data.jenis_barang}}</clr-dg-cell>
+                                    <clr-dg-cell [style.width.px]="100">{{data.vendor.name}}</clr-dg-cell>
                                         <ng-container *ngIf="data.flag == 'approved'">
                                             <clr-dg-cell><span class="label label-success">Approved</span></clr-dg-cell>
                                         </ng-container>
@@ -78,9 +79,9 @@
                                 </clr-dg-row>
                                 <clr-dg-footer>
                                     <clr-dg-pagination #pagination [clrDgPageSize]="5">
-                                      <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Users per page</clr-dg-page-size>
+                                      <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Data per page</clr-dg-page-size>
                                       {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
-                                      of {{pagination.totalItems}} Produk
+                                      of {{pagination.totalItems}} Data
                                     </clr-dg-pagination>
                                 </clr-dg-footer>
                             </clr-datagrid>
@@ -123,7 +124,17 @@
                 <div class="card">
                     <div class="card-block">
                         <div class="clr-row">
-                            <div class="clr-col-3">
+                            <div class="clr-col-6">
+                                <clr-select-container class="clr-form-control">
+                                    <label class="clr-control-label">Product Category</label>
+                                    <select [(ngModel)]="inputModel.selectProduct" name="vendor" clrSelect (change)="onChangeProduct($event.target.value)">
+                                        <ng-container *ngFor="let prod of product">
+                                            <option value="{{prod._id}}">{{prod.name}}</option>
+                                        </ng-container>
+                                    </select>
+                                </clr-select-container>
+                            </div>
+                            <div class="clr-col-6">
                                 <clr-select-container class="clr-form-control">
                                     <label class="clr-control-label">Jenis Harga</label>
                                     <select [(ngModel)]="inputModel.jenis_barang" name="jenis_barang" clrSelect ngModel required>
@@ -133,17 +144,17 @@
                                     </select>
                                 </clr-select-container>
                             </div>
-                            <div class="clr-col-3">
+                            <div class="clr-col-6">
                                 <clr-select-container class="clr-form-control">
                                     <label class="clr-control-label">Vendor</label>
-                                    <select [(ngModel)]="inputModel.selectVendor" name="vendor" clrSelect ngModel required>
-                                        <ng-container *ngFor="let vendor of vendors">
-                                            <option value="{{vendor._hash}}">{{vendor.name}}</option>
+                                    <select [(ngModel)]="inputModel.selectVendor" name="vendor" clrSelect required>
+                                        <ng-container *ngFor="let vendor of list_vendors">
+                                            <option value="{{vendor._id}}">{{vendor.name}}</option>
                                         </ng-container>
                                     </select>
                                 </clr-select-container>
                             </div>
-                            <div class="clr-col-3">
+                            <div class="clr-col-6">
                                 <clr-textarea-container>
                                     <label>Keterangan</label>
                                     <textarea clrTextarea required name="keterangan" [(ngModel)]="inputModel.keterangan"></textarea>
@@ -159,14 +170,14 @@
                     <thead>
                         <tr>
                             <th>Jenis Mulia (Gram)</th>
-                            <th style="text-align: left;">Harga Buyback</th>
+                            <th style="text-align: left;">Harga Baku</th>
                         </tr>
                     </thead>
                     <tbody>
                         <ng-container *ngFor="let hargaItem of harga">
                             <tr>
                                 <td>{{hargaItem['product-denom'].name}}</td>
-                                <td><clr-input-container><input clrInput name="harga_buyback" type="number" [(ngModel)]="hargaItem.harga_buyback"/></clr-input-container></td>
+                                <td><clr-input-container><input clrInput name="harga_baku" type="number" [(ngModel)]="hargaItem.harga_baku"/></clr-input-container></td>
                             </tr>
                         </ng-container>
                     </tbody>
@@ -177,10 +188,18 @@
                 <button type="button" class="btn btn-outline" (click)="modalAddDialog = false">Cancel</button>
                 <button type="submit" class="btn btn-primary">
                     <span *ngIf="spinner==true" class="spinner spinner-inline">
-                        Saving
+                        Declined
                     </span>
                     <ng-container *ngIf="spinner==false">
-                        Save
+                        Decline
+                    </ng-container>
+                </button>
+                <button type="submit" class="btn btn-primary"  (click)="mainApproveSubmit()">
+                    <span *ngIf="spinner==true" class="spinner spinner-inline">
+                        Approved
+                    </span>
+                    <ng-container *ngIf="spinner==false">
+                        Approve
                     </ng-container>
                 </button>
             </div>
@@ -188,36 +207,32 @@
     </form>
 </ng-container>
 
-<!-- modalAdd -->
-<ng-container *ngIf="modalEditDialog">
-    <form (ngSubmit)="mainEditSubmit();">
-        <clr-modal [clrModalSize]="'md'" [clrModalOpen]="modalEditDialog" [clrModalClosable]="false"
+<!-- modalConfirm-->
+<ng-container *ngIf="modalConfirmDialog">
+    <form>
+        <clr-modal [clrModalSize]="'md'" [clrModalOpen]="modalConfirmDialog" [clrModalClosable]="false"
             [clrModalStaticBackdrop]="true">
-            <h3 class="modal-title">Edit {{title}}</h3>
+            <h3 class="modal-title">Confirm {{title}}</h3>
             <div class="modal-body ">
                 <h6>Detail</h6>
                 <div class="card">
                     <div class="card-block">
                         <div class="clr-row">
-                            <div class="clr-col-3">
-                                <clr-select-container class="clr-form-control">
-                                    <label class="clr-control-label">Jenis Harga</label>
-                                    <select [(ngModel)]="inputModel.jenis_barang" name="jenis_barang" clrSelect ngModel>
-                                        <ng-container *ngFor="let B of barang">
-                                            <option value="{{B.name}}">{{B.name}}</option>
-                                        </ng-container>
-                                    </select>
-                                </clr-select-container>
+                            <div class="clr-col-6">
+                                <label class="clr-control-label">Product Category</label>
+                                <label>{{inputModel.selectProduct}}</label>
                             </div>
-                            <div class="clr-col-3">
-                                <clr-select-container class="clr-form-control">
+                            <div class="clr-col-6">
+                                <label class="clr-control-label">Jenis Harga</label>
+                                <label>{{inputModel.jenis_barang}}</label>
+                            </div>
+                            <div class="clr-col-6">
+                                <clr-control-container>
                                     <label class="clr-control-label">Vendor</label>
-                                    <select [(ngModel)]="inputModel.selectVendor" name="vendor" clrSelect>
-                                        <option selected *ngFor="let vendor of vendors" value="{{vendor._hash}}">{{vendor.name}}</option>
-                                    </select>
-                                </clr-select-container>
+                                    <label>{{inputModel.selectVendor}}</label>
+                                </clr-control-container>
                             </div>
-                            <div class="clr-col-3">
+                            <div class="clr-col-6">
                                 <clr-textarea-container>
                                     <label>Keterangan</label>
                                     <textarea clrTextarea required name="keterangan" [(ngModel)]="inputModel.keterangan"></textarea>
@@ -233,116 +248,14 @@
                     <thead>
                         <tr>
                             <th>Jenis Mulia (Gram)</th>
-                            <th style="text-align: left;">Harga Buyback</th>
+                            <th style="text-align: left;">Harga Baku</th>
                         </tr>
                     </thead>
                     <tbody>
                         <ng-container *ngFor="let hargaItem of harga">
                             <tr>
                                 <td>{{hargaItem['product-denom'].name}}</td>
-                                <td><clr-input-container><input clrInput name="harga_buyback" type="number" [(ngModel)]="hargaItem.harga_buyback"/></clr-input-container></td>
-                            </tr>
-                        </ng-container>
-                    </tbody>
-                </table>
-            </div>
-            <!-- hidden field put here-->
-            <input type="hidden" formaControlName="name_validation">
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline" (click)="modalEditDialog = false">Cancel</button>
-                <button type="submit" class="btn btn-primary">
-                    <span *ngIf="spinner==true" class="spinner spinner-inline">
-                        Saving
-                    </span>
-                    <ng-container *ngIf="spinner==false">
-                        Save
-                    </ng-container>
-                </button>
-            </div>
-        </clr-modal>
-    </form>
-</ng-container>
-
-<ng-container *ngIf="modalDeleteDialog">
-    <form (ngSubmit)="mainDeleteSubmit();">
-        <clr-modal [clrModalSize]="'md'" [clrModalOpen]="modalDeleteDialog" [clrModalClosable]="false"
-            [clrModalStaticBackdrop]="false">
-
-            <h3 class="modal-title">Delete {{title}}</h3>
-
-            <div class="modal-body">
-                <p>Are you sure you want to permanently remove this item?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline" (click)="modalDeleteDialog = false">Cancel</button>
-                <button type="submit" class="btn btn-danger">
-                    <span *ngIf="spinner==true" class="spinner spinner-inline">
-                        Deleting
-                    </span>
-                    <ng-container *ngIf="spinner==false">
-                        Delete
-                    </ng-container>
-                </button>
-            </div>
-        </clr-modal>
-    </form>
-</ng-container>
-
-<!-- modalAdd -->
-<ng-container *ngIf="modalConfirmDialog">
-    <form>
-        <clr-modal [clrModalSize]="'md'" [clrModalOpen]="modalConfirmDialog" [clrModalClosable]="false"
-            [clrModalStaticBackdrop]="true">
-            <h3 class="modal-title">Confirm {{title}}</h3>
-            <div class="modal-body ">
-                <h6>Detail</h6>
-                <div class="card">
-                    <div class="card-block">
-                        <div class="clr-row">
-                            <div class="clr-col-3">
-                                <clr-select-container class="clr-form-control">
-                                    <label class="clr-control-label">Jenis Harga</label>
-                                    <select [(ngModel)]="inputModel.jenis_barang" name="jenis_barang" clrSelect ngModel disabled>
-                                        <ng-container *ngFor="let B of barang">
-                                            <option value="{{B.name}}">{{B.name}}</option>
-                                        </ng-container>
-                                    </select>
-                                </clr-select-container>
-                            </div>
-                            <div class="clr-col-3">
-                                <clr-select-container class="clr-form-control">
-                                    <label class="clr-control-label">Vendor</label>
-                                    <select [(ngModel)]="inputModel.selectVendor" name="vendor" clrSelect disabled>
-                                        <ng-container *ngFor="let vendor of vendors">
-                                            <option value="{{vendor._hash}}">{{vendor.name}}</option>
-                                        </ng-container>
-                                    </select>
-                                </clr-select-container>
-                            </div>
-                            <div class="clr-col-3">
-                                <clr-textarea-container>
-                                    <label>Keterangan</label>
-                                    <textarea clrTextarea required name="keterangan" [(ngModel)]="inputModel.keterangan" disabled></textarea>
-                                    <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
-                                </clr-textarea-container>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="clr-col-12"></div>
-                <h6>Harga Denom</h6>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Jenis Mulia (Gram)</th>
-                            <th style="text-align: left;">Harga Buyback</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <ng-container *ngFor="let hargaItem of harga">
-                            <tr>
-                                <td>{{hargaItem['product-denom'].name}}</td>
-                                <td><clr-input-container><input clrInput name="harga_buyback" type="number" [(ngModel)]="hargaItem.harga_buyback" disabled/></clr-input-container></td>
+                                <td><clr-input-container><input clrInput name="{{hargaItem['product-denom'].name}}" type="number" [(ngModel)]="hargaItem.harga_baku"/></clr-input-container></td>
                             </tr>
                         </ng-container>
                     </tbody>
@@ -368,6 +281,88 @@
                         Approve
                     </ng-container>
                 </button>
+            </div>
+        </clr-modal>
+    </form>
+</ng-container>
+
+<!-- modalDetail-->
+<ng-container *ngIf="modalDetailDialog">
+    <form>
+        <clr-modal [clrModalSize]="'md'" [clrModalOpen]="modalDetailDialog" [clrModalClosable]="false"
+            [clrModalStaticBackdrop]="true">
+            <h3 class="modal-title">Detail {{title}}</h3>
+            <div class="modal-body ">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="clr-row">
+                            <div class="clr-col-6">
+                                <label class="clr-control-label">Product Category</label>
+                                <label>{{inputModel.selectProduct}}</label>
+                            </div>
+                            <div class="clr-col-6">
+                                <label class="clr-control-label">Jenis Harga</label>
+                                <label>{{inputModel.jenis_barang}}</label>
+                            </div>
+                            <div class="clr-col-12"><br></div>
+                            <div class="clr-col-6">
+                                <label class="clr-control-label">Vendor</label>
+                                <label>{{inputModel.selectVendor}}</label>
+                            </div>
+                            <div class="clr-col-6">
+                                <label class="clr-control-label">Keterangan</label>
+                                <label>{{inputModel.keterangan}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-block">
+                        <div class="clr-row">
+                            <div class="clr-col-12">
+                                <clr-select-container class="clr-form-control">
+                                    <label class="clr-control-label">Transaction Type</label>
+                                    <select name="transaction" (change)="onChangeTrans($event.target.value)" clrSelect>
+                                        <option value="">Please Select</option>
+                                        <ng-container *ngFor="let data of transactionType">
+                                            <option value="{{data.code}}">{{data.name}}</option>
+                                        </ng-container>
+                                    </select>
+                                </clr-select-container>
+                            </div>
+                            <div class="clr-col-12"><br></div>
+                            <div class="clr-col-6">
+                                <label class="clr-control-label">Margin</label>
+                                <label>{{margin}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clr-col-12"></div>
+                <h6>Harga Denom</h6>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Jenis Mulia (Gram)</th>
+                            <th>Harga Baku</th>
+                            <th>Harga Jual</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let hargaItem of harga">
+                            <tr>
+                                <td>{{hargaItem['product-denom'].name}}</td>
+                                <td>Rp. {{hargaItem.harga_baku | number}}</td>
+                                <td>Rp. {{(hargaItem.harga_baku * margin / 100) + hargaItem.harga_baku | number}}</td>
+                                </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+            <!-- hidden field put here-->
+            <input type="hidden" formaControlName="name_validation">
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" (click)="modalDetailDialog = false">Cancel</button>
             </div>
         </clr-modal>
     </form>
