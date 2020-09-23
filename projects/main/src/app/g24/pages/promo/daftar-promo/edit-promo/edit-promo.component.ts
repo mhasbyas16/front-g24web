@@ -123,7 +123,9 @@ export class EditPromoComponent implements OnInit {
   }
 
   getDataPromosi(){
-    let productCAT = [];    
+    let productCAT = [];  
+    let productCAT2 = [];
+    let gabung:any;  
     let PUnits = [];
     // section1
     let section1 = this.section1_edit.getRawValue();
@@ -146,6 +148,14 @@ export class EditPromoComponent implements OnInit {
       for (let data of section1["pickProduct-category"]) {
         productCAT.push(JSON.parse(atob(data)))      
       }
+      productCAT.forEach((value, index) => {
+        this.promoService.product.forEach((val, ind) => {
+          if (value.code == val.code) {
+            gabung = Object.assign(value,val);
+            productCAT2.push(gabung);
+          }
+        });
+      });
       section1["product-category"] = btoa(JSON.stringify(productCAT));
       section1["product-category_encoded"] = "base64array";
       delete section1["pickProduct-category"];
@@ -165,8 +175,8 @@ export class EditPromoComponent implements OnInit {
     
     // end section1
     let data = Object.assign(section1,{
-      'product' : btoa(JSON.stringify(this.promoService.product)),
-      'product_encoded':'base64array',
+      // 'product' : btoa(JSON.stringify(this.promoService.product)),
+      // 'product_encoded':'base64array',
       'flag':'0'});
     console.debug (data,"isi data");
     // return;

@@ -20,7 +20,7 @@ import { ProductJenisService } from '../../../services/product/product-jenis.ser
 import { PromotionSettingService } from '../../../services/promotion/promotion-setting.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { BudgetCostService } from '../../../services/promotion/budget-cost.service';
-
+import { TanggalService } from '../../../lib/helper/tanggal.service';
 
 @Component({
   selector: 'app-pengaturan-promo',
@@ -102,7 +102,8 @@ export class PengaturanPromoComponent implements OnInit {
     private datePipe: DatePipe,
     private promoService:PromoService,
     private budgetCostService:BudgetCostService,
-    private splitDateServiceService: SplitDateServiceService
+    private splitDateServiceService: SplitDateServiceService,
+    private tanggalService:TanggalService
   ) { }
 
   ngOnInit(): void {
@@ -306,8 +307,8 @@ export class PengaturanPromoComponent implements OnInit {
 
   // get data
   getPerhiasan(data){
-      this.passingPerhiasan = data;
-      this.passingData();
+    this.passingPerhiasan = data;
+    this.passingData();
   }
   getMulia(data){
     this.passingMulia = data;
@@ -340,6 +341,8 @@ export class PengaturanPromoComponent implements OnInit {
 
   getDataPromosi(){
     let productCAT = [];    
+    let productCAT2 = [];
+    let gabung:any;
     let PUnits = [];
     // section1
     let section1 = this.section1_penjualan.getRawValue();
@@ -362,13 +365,24 @@ export class PengaturanPromoComponent implements OnInit {
       for (let data of section1["pickProduct-category"]) {
         productCAT.push(JSON.parse(atob(data)))      
       }
-      section1["product-category"] = btoa(JSON.stringify(productCAT));
+
+      productCAT.forEach((value, index) => {
+        this.promoService.product.forEach((val, ind) => {
+          if (value.code == val.code) {
+            gabung = Object.assign(value,val);
+            productCAT2.push(gabung);
+          }
+        });
+      });
+      section1["product-category"] = btoa(JSON.stringify(productCAT2));
       section1["product-category_encoded"] = "base64array";
       delete section1["pickProduct-category"];
     }else{
       delete section1["pickProduct-category"];
       // section1.units_encoded = "base64array";
     }
+
+    
 
     let fixDate:any;
     // tanggal maker
@@ -384,10 +398,9 @@ export class PengaturanPromoComponent implements OnInit {
     section1.endDate = fixDate;
 
     // end section1
-        
     let data = Object.assign(section1,{
-      'product' : btoa(JSON.stringify(this.promoService.product)),
-      'product_encoded':'base64array',
+      // 'product' : btoa(JSON.stringify(this.promoService.product)),
+      // 'product_encoded':'base64array',
       'flag':'0',
       'voucher':'notgenerated'});
     console.debug (data,"isi data");
@@ -398,8 +411,8 @@ export class PengaturanPromoComponent implements OnInit {
   idPromosi() {
     this.idpromosi = null;
     let inc = null;
-    let d1 = this.datePipe.transform(Date.now(), '01/01/yyyy');
-    let d2 = this.datePipe.transform(Date.now(), '12/31/yyyy');
+    let d1 = this.datePipe.transform(Date.now(), 'yyyy-01-01');
+    let d2 = this.datePipe.transform(Date.now(), 'yyyy-12-31');
     let d3 = this.datePipe.transform(Date.now(), 'yy');
     let unit = this.sessionService.getUnit();
 
