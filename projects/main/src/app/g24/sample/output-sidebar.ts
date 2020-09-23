@@ -1,3 +1,5 @@
+import { EMenuID } from '../lib/enums/emenu-id.enum';
+
 export const management = [
     // ANGGARAN
     {_id: "0007", type: "menu", name : "Anggaran", icons: "dollar-bill", color : "warna-warni", componentId : "S30000", parentId: "", module: "ag"},
@@ -6,6 +8,8 @@ export const management = [
     // INVENTORY
     {_id: "0001", type: "menu", name : "Inventory Addition", icons: "yang bagus", color : "warna-warni", componentId : "x1001", parentId: "", module: "x1"},
     {_id: "0002",type: "sub-menu", name : "Inisiasi", icons: "yang bagus", color : "warna-warni", componentId : "1001", parentId: "x1001", module: "x1", menu : {_id: "0001"}},
+    {_id: "0002",type: "sub-menu", name : "Approval Inisiasi", icons: "yang bagus", color : "warna-warni", componentId : EMenuID.APP_INISIASI, parentId: "x1001", module: "x1", menu : {_id: "0001"}},
+    {_id: "0002",type: "sub-menu", name : "Penerimaan", icons: "yang bagus", color : "warna-warni", componentId : EMenuID.PENERIMAAN, parentId: "x1001", module: "x1", menu : {_id: "0001"}},
     // LAPORAN
     {_id: "0004", type: "menu", name : "Laporan", icons: "list", color : "warna-warni", componentId : "S10002", parentId: "", module: "lp"},
     {_id: "0004", type: "sub-menu", name : "Laporan Penjualan", icons: "yang bagus", color : "warna-warni", componentId : "10003", parentId: "S10002", module: "lp",menu : {_id: "0004"}},

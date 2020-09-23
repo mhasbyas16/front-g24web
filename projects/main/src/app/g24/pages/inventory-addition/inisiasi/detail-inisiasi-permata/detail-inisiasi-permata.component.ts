@@ -14,6 +14,11 @@ import { PaymentType } from '../../../../lib/enums/payment-type';
 import { BankService } from '../../../../services/transaction/bank.service';
 import {MaskDirective} from 'ngx-mask';
 import { environment } from 'projects/main/src/environments/environment';
+import { InisiasiService } from '../../../../services/stock/inisiasi.service';
+import { SessionService } from '../../../../lib/common/session.service';
+import { DocumentStatus } from '../../../../lib/enums/document-status.enum';
+import { OrderStatus } from '../../../../lib/enum/order-status';
+import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
 
 @Component({
   selector: 'detail-inisiasi-permata',
@@ -28,6 +33,9 @@ export class DetailInisiasiPermataComponent implements OnInit {
   (
     private dateService : ServerDateTimeService,
     private toastr : ToastrService,
+    private session : SessionService,
+
+    private inisiasiService : InisiasiService,
 
     private productCategoryService : ProductCategoryService,
     private vendorService : VendorService,
@@ -48,6 +56,7 @@ export class DetailInisiasiPermataComponent implements OnInit {
   OnlyUpperAlphabetsPattern  = new RegExp('[^A-Z]+', 'g');
   AlphaNumericPattern = new RegExp('[^A-Z0-9]+', 'g');
 
+  user : any = this.session.getUser();
   date : string = "";
   time : string = "";
 
@@ -436,6 +445,7 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
 
 
     // BATU
+    let batu_empty : boolean = false;
     if( // jika param batu ada yang keisi, semua param batu kena validasi
       (input['jenis_batu'] != "" ) ||
       input['warna_batu'] != "" ||
@@ -457,24 +467,27 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
         this.toastr.warning("Atribut Batu belum semua terisi");
         return true;
       }
+    } else {
+      batu_empty = false;
     }
     // BATU
 
     // BERLIAN
+    let berlian_empty : boolean = false; // salah satu harus true
     if( // jika param batu ada yang keisi, semua param batu kena validasi
-      (input['jenis_berlian'] != "" ) ||
       input['warna_berlian'] != "" ||
-      ((input['carat_berlian'] != 0)) ||
+      input['clarity_berlian'] != "" ||
+      input['cutting_berlian'] != "" ||
       (input['total_butir_berlian'] != 0) ||
       (input['total_carat_berlian'] != 0)
     )
     {
-      console.log((input['carat_berlian'] != 0),
-      input['warna_berlian'] != "", input['jenis_berlian'] != "");
+      console.log((input['carat_berlian'] != 0),input['carat_berlian'] ,
+      input['warna_berlian'] != "", input['warna_berlian'], input['jenis_berlian'] != "", input['jenis_berlian']);
       if(
-        input['jenis_berlian'] == "" || input['jenis_berlian'] == null ||
         input['warna_berlian'] == "" || input['warna_berlian'] == null ||
-        input['carat_berlian'] == 0 || input['carat_berlian'] == null ||
+        input['cutting_berlian'] == "" || input['cutting_berlian'] == null ||
+        input['clarity_berlian'] == "" || input['clarity_berlian'] == null ||
         input['hpp_berlian'] == 0 || input['hpp_berlian'] == "" || input['hpp_berlian'] == null ||
         input['margin_berlian'] == 0 || input['margin_berlian'] == null ||
         input['total_butir_berlian'] == 0 || input['total_butir_berlian'] == null ||
@@ -484,8 +497,16 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
         this.toastr.warning("Atribut Berlian belum semua terisi");
         return true;
       }
+    } else {
+      berlian_empty = false;
     }
     // BERLIAN
+
+    if(berlian_empty && batu_empty)
+    {
+      this.toastr.warning("Kedua Atribut Berlian dan Batu kosong.");
+      return true;
+    }
 
     if(input.nomor_nota == "" || input.nomor_nota == null)
     {
@@ -660,7 +681,7 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
   }
 
   // 'DO' EVENTS
-  doSave()
+  async doSave()
   {
     if(this.errorHappened)
     {
@@ -670,8 +691,49 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
 
     if(this.validateInput()) return;
 
-    this.input.id_harga = this.hbeli._id;
-    this.input.harga_beli = this.hbeli.harga_buyback;
+    if(this.user?.unit == null)
+    {
+      this.toastr.warning("Unit dari User belum di-Assign. Harap hubungi IT Support/Helpdesk.", "Error!");
+      return;
+    }
+
+    // let sDate : string[] = this.date.split("T");
+    let sDate = this.date.split("-");
+    let date = this.date;
+    let time = this.time;
+    let PO = "PO" + this.user.unit.code + sDate[0] + sDate[1] + "[0,5]";
+
+    let def = {
+      no_po : PO,
+      __format : "no_po:inc",
+      create_by : this.user,
+      create_date : date,
+      create_time : time,
+      unit : this.user.unit.code,
+      status_bayar : '1',
+      order_status : OrderStatus.SUBMIT.code,
+      __version : new Date().getMilliseconds(),
+      __version_d : "0",
+      _log : 1
+    }
+
+    Object.assign(this.input, def);
+    let init = DataTypeUtil.Encode(this.input);
+
+    // this.input.id_harga = this.hbeli._id;
+    // this.input.harga_beli = this.hbeli.harga_buyback;
+
+    let result = await this.inisiasiService.add(init).toPromise();
+    if(result == false)
+      {
+        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + this.inisiasiService.message());
+        return;
+      } else {
+        this.toastr.success("Inisiasi Berhasil. Harap hubungi Kepala Departemen untuk melakukan Approval. No. PO : " + result.no_po, "Info", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
+        if(!environment.production)console.log(result,'ts');
+        this.ResetAll();
+      }
+
 
     console.log(this.input, "in");
 
