@@ -13,7 +13,7 @@ import { ContentPage } from '../../../../lib/helper/content-page';
 // Services
 import { PromoService } from '../../promo.service';
 import { PromotionSettingService } from '../../../../services/promotion/promotion-setting.service';
-
+import { SplitDateServiceService } from '../../../../services/split-date-service.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { UnitService } from '../../../../services/system/unit.service';
 import { ProductCategoryService } from '../../../../services/product/product-category.service';
@@ -79,7 +79,8 @@ export class EditPromoComponent implements OnInit {
     private toastrService: ToastrService,
     private promoService:PromoService,
     private promotionSetiingService : PromotionSettingService,
-    private budgetCostService:BudgetCostService
+    private budgetCostService:BudgetCostService,
+    private splitDateServiceService:SplitDateServiceService
 
   ) { }
 
@@ -122,7 +123,9 @@ export class EditPromoComponent implements OnInit {
   }
 
   getDataPromosi(){
-    let productCAT = [];    
+    let productCAT = [];  
+    let productCAT2 = [];
+    let gabung:any;  
     let PUnits = [];
     // section1
     let section1 = this.section1_edit.getRawValue();
@@ -145,6 +148,14 @@ export class EditPromoComponent implements OnInit {
       for (let data of section1["pickProduct-category"]) {
         productCAT.push(JSON.parse(atob(data)))      
       }
+      productCAT.forEach((value, index) => {
+        this.promoService.product.forEach((val, ind) => {
+          if (value.code == val.code) {
+            gabung = Object.assign(value,val);
+            productCAT2.push(gabung);
+          }
+        });
+      });
       section1["product-category"] = btoa(JSON.stringify(productCAT));
       section1["product-category_encoded"] = "base64array";
       delete section1["pickProduct-category"];
@@ -152,10 +163,20 @@ export class EditPromoComponent implements OnInit {
       delete section1["pickProduct-category"];
       // section1.units_encoded = "base64array";
     }
+
+    let fixDate:any;
+    // tanggal start date
+    fixDate = this.splitDateServiceService.split(section1.startDate);
+    section1.startDate = fixDate;
+
+    // tanggal end date
+    fixDate = this.splitDateServiceService.split(section1.endDate);
+    section1.endDate = fixDate;
+    
     // end section1
     let data = Object.assign(section1,{
-      'product' : btoa(JSON.stringify(this.promoService.product)),
-      'product_encoded':'base64array',
+      // 'product' : btoa(JSON.stringify(this.promoService.product)),
+      // 'product_encoded':'base64array',
       'flag':'0'});
     console.debug (data,"isi data");
     // return;
@@ -273,20 +294,27 @@ export class EditPromoComponent implements OnInit {
     this.section1_edit.patchValue({
       _id: data._id,
       name: data.name,
-      startDate : data.startDate,
-      endDate : data.endDate,
+      startDate : this.splitDateServiceService.splitBack(data.startDate),
+      endDate : this.splitDateServiceService.splitBack(data.endDate),
       typeQuota: data.typeQuota,
       quota : data.quota
     });
+
     this.selectKuota(data.typeQuota);
 
+    let bcs=[];
     this.budgetCostService.list('?_hash=1').subscribe((response:any)=>{
       if (response == false) {
         this.toastrService.error("Get Budget Cost Failed");
         return;
       }
-      this.budgetCost = response;
-      this.section1_edit.patchValue({'budget-cost':data['budget-cost'].code});
+      for (let isi of response ) {
+        bcs.push(isi)
+        if (isi.code == data['budget-cost'].code) {
+          this.section1_edit.patchValue({'budget-cost':isi._hash});
+        }
+      }
+      this.budgetCost = bcs;
       this.select2BudgetCost(data['budget-cost'].code);
     })
 
@@ -391,13 +419,13 @@ export class EditPromoComponent implements OnInit {
     // this.section1_edit.patchValue({typeQuota:""})
   }
   selectKuota(val){
-    if (val == '0') {
+    if (val == 'nolimit') {
       this.inputKuota = false;
       this.kuotaProduk = false;
-    }else if (val == '1') {
+    }else if (val == 'allproduct') {
       this.inputKuota = true;
       this.kuotaProduk = false;
-    }else if (val == '2'){
+    }else if (val == 'perproduct'){
       this.inputKuota = false;
       this.kuotaProduk = true;
     }
@@ -418,13 +446,6 @@ export class EditPromoComponent implements OnInit {
       quota : new FormControl (""),
       'budget-cost': new FormControl ("", Validators.required),
       'budget-cost_encoded': new FormControl ("base64")
-      // maker : new FormControl (this.nikUser._hash, Validators.required),
-      // maker_encoded : new FormControl ("base64"),
-      // makerDate: new FormControl(this.datePipe.transform(Date.now(),'MM/dd/yyyy'), Validators.required),
-      // makerTime: new FormControl(this.datePipe.transform(Date.now(),'h:mm:ss a'), Validators.required),
-      // approval : new FormControl (""),
-      // approvalDate: new FormControl(""),
-      // approvalTime: new FormControl(""),
     });
   }
 

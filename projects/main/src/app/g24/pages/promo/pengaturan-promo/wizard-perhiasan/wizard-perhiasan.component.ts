@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges,SimpleChanges } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { ClrWizard } from '@clr/angular';
 import { Select2OptionData } from 'ng-select2';
 import { Options } from 'select2';
@@ -31,6 +31,8 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
   selectVendor:boolean = false;
   selectPurity:boolean = false;
   selectTypePerhiasan:boolean = false;
+  prmPromo:boolean = false;
+  prmPromoView:boolean = false;
 
   section2_perhiasan: FormGroup = null;
 
@@ -90,7 +92,17 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
     };
   }
 
+  selectPrmPromo(val){
+    this.prmPromoView =true;
+    if (val == "rh") {
+      this.prmPromo = true;
+    }else{
+      this.prmPromo = false;
+    }
+  }
+
   editData(data:any){
+    this.prmPromoView = false;
     console.debug(data,"data edit hash");
     if (data == null) {
       return;
@@ -119,6 +131,7 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
       this.section2_perhiasan.patchValue({prmPromotion : get.prmPromotion})   
       this.section2_perhiasan.patchValue({minPrmPromotion : get.minPrmPromotion})
       this.section2_perhiasan.patchValue({maxPrmPromotion : get.maxPrmPromotion})
+      this.section2_perhiasan.patchValue({perGram : get.perGram})
       this.section2_perhiasan.patchValue({sizeTypePromotion : get.sizeTypePromotion})
       this.section2_perhiasan.patchValue({pickVendor: get.pickVendor})    
       this.section2_perhiasan.patchValue({pickPurity: get.pickPurity})
@@ -130,7 +143,8 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
 
       // age
       this.pickUmur(get.age);
-      
+      // prm Promotion
+      this.selectPrmPromo(get.prmPromotion);
       // typePromotion
       let tp=[];
       let tpVal = [];
@@ -300,6 +314,7 @@ export class WizardPerhiasanComponent implements OnInit, OnChanges {
       minAge : new FormControl (""),
       maxAge : new FormControl (""),
       quota : new FormControl (""),
+      perGram: new FormControl ("")
     })
   }
 
