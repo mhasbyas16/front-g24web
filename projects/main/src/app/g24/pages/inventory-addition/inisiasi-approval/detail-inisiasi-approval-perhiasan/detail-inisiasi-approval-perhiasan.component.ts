@@ -97,7 +97,7 @@ export class DetailInisiasiApprovalPerhiasanComponent extends BasePersistentFiel
   {
     return {
       sku : null, 'product-purity' : null, 'product-jenis' : null, 'product-gold-color' : null, 
-      berat : 0, baku_tukar : 0, gram_tukar : 0, ongkos : 0, pajak : 0 }
+      berat : 0, baku_tukar : 0, gram_tukar : 0, ongkos : 0, pajak : 0, total_dpp : 0 }
   }
 
   InitiationType = Object.values(InitiationType);

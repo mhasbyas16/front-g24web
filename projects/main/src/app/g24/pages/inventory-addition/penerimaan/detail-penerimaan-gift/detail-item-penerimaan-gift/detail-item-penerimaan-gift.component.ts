@@ -13,6 +13,7 @@ import { DataTypeUtil } from 'projects/main/src/app/g24/lib/helper/data-type-uti
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { IDetailCallbackListener } from 'projects/main/src/app/g24/lib/base/idetail-callback-listener';
 import { OrdersModule } from '../../../../orders/orders.module';
+import { PaymentType } from 'projects/main/src/app/g24/lib/enums/payment-type';
 import { ProductSeriesService } from 'projects/main/src/app/g24/services/product/product-series.service';
 
 /**
@@ -65,6 +66,25 @@ export class DetailItemPenerimaanGiftComponent implements OnInit {
   public get Title()
   {
     return this.title;
+  }
+
+  GetDisplayName(key : string) : string
+  {
+    let name = "";
+    switch(key)
+    {
+      case PaymentType.UANG.code:
+        name = PaymentType.UANG.name;
+        break;
+
+      case PaymentType.MAKLON.code:
+        name = PaymentType.MAKLON.name;
+        break;
+
+        default:
+
+    }
+    return name;
   }
 
   // input

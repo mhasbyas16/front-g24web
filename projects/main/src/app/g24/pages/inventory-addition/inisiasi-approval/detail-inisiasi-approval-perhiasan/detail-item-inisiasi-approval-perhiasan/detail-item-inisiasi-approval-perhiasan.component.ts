@@ -91,6 +91,7 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
 
   // input
   inisiasi : any = null;
+
   public getItemsOfInisiasi() : any[]
   {
     return this.inisiasi == null ? [] : this.inisiasi.items;
@@ -159,6 +160,7 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    
   }
   
   GetDisplayValue(object : any) : string
@@ -558,11 +560,6 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
       return;
     }
 
-    if(this.inisiasi["total_dpp"]==""){
-      this.inisiasi["total_dpp"] = 0;
-      return;
-    }
-
     this.inisiasi.order_status = OrderStatus.APPROVAL.code;
     this.inisiasi.update_date = new Date().toISOString().split("T")[0];
     this.inisiasi.update_by = this.user.username;
@@ -748,6 +745,13 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
     total_harga -= total_pajak;
 
     this.inisiasi['total_dpp'] = total_harga;
+    return this.inisiasi['total_dpp'];
+  }
+
+  totalDPP(){
+    if(!this.inisiasi.total_dpp){
+      return this.inisiasi['total_dpp']=0;
+    }
     return this.inisiasi['total_dpp'];
   }
 

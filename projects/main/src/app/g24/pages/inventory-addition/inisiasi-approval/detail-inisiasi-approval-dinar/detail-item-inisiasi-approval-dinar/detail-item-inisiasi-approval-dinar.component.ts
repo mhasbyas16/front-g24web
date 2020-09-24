@@ -633,6 +633,13 @@ export class DetailItemInisiasiApprovalDinarComponent implements OnInit {
     // }
   }
 
+  totalDPP(){
+    if(!this.inisiasi.total_dpp){
+      return this.inisiasi['total_dpp']=0;
+    }
+    return this.inisiasi['total_dpp'];
+  }
+
   doAccounting(idInisiasi :string)
   {
     this.jurnalInisiasi.bayar(idInisiasi).subscribe(output => {

@@ -6,6 +6,135 @@
             <div class="card-header">
                     List Item pada Inisiasi/PO: {{inisiasi?.no_po}}
             </div>
+            <div class="card-block">
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span><label>Nomor PO &#58; </label></span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b> 
+                            <span><u>{{inisiasi?.no_po}}</u></span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Nomor Nota &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b> 
+                            <u><span>{{inisiasi?.nomor_nota}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Tanggal Inisiasi &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b> 
+                            <u><span><input readonly value="{{inisiasi?.tgl_inisiasi}}" type="date" class="clr-input" ></span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Jenis Produk &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b> 
+                            <u><span>{{inisiasi ? GetDisplayValue(inisiasi["product-category"]) : ""}}</span></u>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Vendor &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b> 
+                            <u><span>{{ inisiasi ? GetDisplayValue(inisiasi['vendor']) : ""}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    &nbsp;
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Tipe Bayar &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{GetDisplayName(inisiasi?.tipe_bayar)}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Harga Baku &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{inisiasi?.harga_baku | mask : 'separator' : ','}}</span></u>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Harga Pajak &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{inisiasi?.total_pajak}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Total Berat &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{inisiasi?.total_berat}}</span></u>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Total Pieces &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{inisiasi?.total_piece}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Ongkos Pembuatan &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{inisiasi?.total_ongkos | mask : 'separator' : ','}}</span></u>
+                        </b>
+                    </div>
+                </div>
+            </div>
             <!-- <div class="card-body">
                 <p>Jumlah Ceklist</p>
                 <input type="number" min=0 [(ngModel)]="checkNumber">

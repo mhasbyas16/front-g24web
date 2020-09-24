@@ -633,6 +633,20 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
     // }
   }
 
+  totalDPP(){
+    if(!this.inisiasi.total_dpp){
+      return this.inisiasi['total_dpp']=0;
+    }
+    return this.inisiasi['total_dpp'];
+  }
+
+  hargaBaku(){
+    if(!this.inisiasi.harga_baku){
+      return this.inisiasi["harga_baku"]=0;
+    }
+    return this.inisiasi["harga_baku"];
+  }
+
   doAccounting(idInisiasi :string)
   {
     this.jurnalInisiasi.bayar(idInisiasi).subscribe(output => {

@@ -14,6 +14,7 @@ import { SessionService } from 'projects/platform/src/app/core-services/session.
 import { IDetailCallbackListener } from 'projects/main/src/app/g24/lib/base/idetail-callback-listener';
 import { OrdersModule } from '../../../../orders/orders.module';
 import { DetailPenerimaanPerhiasanComponent } from '../detail-penerimaan-perhiasan.component';
+import { PaymentType } from 'projects/main/src/app/g24/lib/enums/payment-type';
 import { JurnalInisiasiService } from 'projects/main/src/app/g24/services/keuangan/jurnal/stock/jurnal-inisiasi.service';
 
 /**
@@ -92,6 +93,25 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
   public get Title()
   {
     return this.title;
+  }
+
+  GetDisplayName(key : string) : string
+  {
+    let name = "";
+    switch(key)
+    {
+      case PaymentType.UANG.code:
+        name = PaymentType.UANG.name;
+        break;
+
+      case PaymentType.MAKLON.code:
+        name = PaymentType.MAKLON.name;
+        break;
+
+        default:
+
+    }
+    return name;
   }
 
   // input
