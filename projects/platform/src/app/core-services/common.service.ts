@@ -103,6 +103,7 @@ export class CommonService {
       });
     });
   }
+  
 
   public list(key: string, params?: string): Observable<any> {
     return new Observable(observer => {
@@ -130,6 +131,31 @@ export class CommonService {
         observer.next(respond.data);
         observer.complete();
         return (observer).unsubscribe();;
+      });
+    });
+  }
+
+  public generate(key: string, params: string): Observable<any> {
+    return Observable.create(observer => {
+
+      const url = `${this.sessionService.server}/${key}/generate${params}`;
+      console.debug(key, url);
+
+      let request = this.http.get(url, { headers: this.sessionService.getHeader() });
+      request.subscribe((respond: any) => {
+        console.debug("generate voucher", url, respond);
+        if (respond.status == "failed") {
+
+          this.message = respond.message;
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();
+        }
+
+        console.debug(respond.data);
+        observer.next(respond.data);
+        observer.complete();
+        return (observer).unsubscribe();
       });
     });
   }

@@ -33,10 +33,15 @@
                                     <clr-wizard-button [type]="'next'" (click)="productSelect()">Next</clr-wizard-button>
                                     <clr-wizard-button [type]="'finish'" (click)="childView()">Finish</clr-wizard-button>
                                     <!-- section 1 -->
-                                    <clr-wizard-page [clrWizardPageNextDisabled]="!section1_penjualan.valid"> <!---->
+                                    <clr-wizard-page > <!--[clrWizardPageNextDisabled]="!section1_penjualan.valid"-->
                                         <ng-template clrPageTitle>Inisiasi</ng-template>
 
                                         <form clrForm class="clr-form-compact" [formGroup]="section1_penjualan">
+                                            <clr-input-container>        
+                                                <label class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2">Id Promosi</label>                                      
+                                                <input class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrInput required formControlName="id" readonly />
+                                                <clr-control-error>This field is required!</clr-control-error>
+                                            </clr-input-container>
                                             <clr-input-container>        
                                                 <label class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2">Nama Program</label>                                      
                                                 <input class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrInput required formControlName="name" />
@@ -116,9 +121,9 @@
                                                 <label class="clr-col-sm-2 clr-col-md-2 clr-col-lg-2">Kuota Promo</label>
                                                 <select class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" formControlName="typeQuota" [value]="" clrSelect (click)="selectKuota($event.target.value)" >
                                                     <option disabled selected [value]="">-- Select One --</option>
-                                                    <option [value]="'0'">Tidak Ada Batasan</option>
-                                                    <option [value]="'1'">Semua Produk</option>
-                                                    <option [value]="'2'">Per Produk</option>
+                                                    <option [value]="'nolimit'">Tidak Ada Batasan</option>
+                                                    <option [value]="'allproduct'">Semua Produk</option>
+                                                    <option [value]="'perproduct'">Per Produk</option>
                                                 </select>
                                             </clr-select-container>
                                              
@@ -129,6 +134,7 @@
                                             </ng-container>
 
                                             <input type="hidden" formControlName="maker">
+                                            <input type="hidden" formControlName="idAi">
                                             <input type="hidden" formControlName="maker_encoded">
                                             <input type="hidden" formControlName="makerDate">
                                             <input type="hidden" formControlName="makerTime">

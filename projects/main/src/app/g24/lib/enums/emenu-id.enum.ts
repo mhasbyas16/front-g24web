@@ -115,6 +115,7 @@ export enum EMenuID {
     DAFTAR_PROMO = '10005',
     // offline buyback
     BUYBACK             = '11001',
+    PARAMETER_BUYBACK   = '11002',
 
     // LAPORAN KEUANGAN
     LAPORAN_KEUANGAN = '21000',
