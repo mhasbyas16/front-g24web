@@ -40,15 +40,15 @@ export class BuybackBycodeComponent implements OnInit {
   totalIsiEmasBatangan: any;
 
   //berlian
-  isiBerlian : any[];
+  isiBerlian : any;
   totalIsiBerlian : any;
   
   //souvenir
-  isiSouvenir : any[];
+  isiSouvenir : any;
   totalIsiSouvenir : any;
 
   //dinar
-  isiDinar : any[];
+  isiDinar : any;
   totalIsiDinar : any;
 
   //global
@@ -141,9 +141,9 @@ export class BuybackBycodeComponent implements OnInit {
       this.totalIsiPerhiasan =  this.isiPerhiasan.data.length
       
       //mulia
-      this.isiEmasBatangan =this.detailTransaction.product["LM"]
+      this.isiEmasBatangan ={data:this.detailTransaction.product["LM"], id:this.detailTransaction._id}
       let hargaBBEmas : any[];
-      for (let isi of this.isiEmasBatangan) {
+      for (let isi of this.isiEmasBatangan.data) {
         this.prmJualService.get("?"+this.productCategoryMulia+"&flag=approved"+"&vendor.code="+isi.detail['vendor'].code+"&"+this.jenisBarang).subscribe((BBresponse: any) => {
           hargaBBEmas = BBresponse.harga
           let totalHargaBBEmas = hargaBBEmas.length
@@ -154,38 +154,39 @@ export class BuybackBycodeComponent implements OnInit {
         }
         })
       } 
-      this.totalIsiEmasBatangan=  this.isiEmasBatangan.length
+      this.totalIsiEmasBatangan=  this.isiEmasBatangan.data.length
 
       //berlian
-      this.isiBerlian =this.detailTransaction.product["BERLIAN"] 
+       
+      this.isiBerlian = {data:this.detailTransaction.product["BERLIAN"], id:this.detailTransaction._id}
       let BBBerlian : any;
-      for (let isi of this.isiBerlian) {
+      for (let isi of this.isiBerlian.data) {
         this.prmJualService.get("?"+this.productCategoryBerlian+"&flag=approved").subscribe((BBresponse: any) => {
           BBBerlian = BBresponse
           this.hargaBB = this.pricingService.buybackPriceBerlian(BBBerlian.harga_buyback, isi['detail'].berat, isi['detail']['product-purity'].name, BBBerlian.potongan_bb_batu, BBBerlian.potongan_bb_berlian, isi['detail'].hppBatu, isi['detail'].hppBerlian   )
           isi.hargaBB = this.hargaBB
         })
       } 
-      this.totalIsiBerlian=  this.isiBerlian.length
+      this.totalIsiBerlian=  this.isiBerlian.data.length
       
 
       //souvenir
-      this.isiSouvenir =this.detailTransaction.product["GS"] 
+      this.isiSouvenir = {data: this.detailTransaction.product["GS"] , id:this.detailTransaction._id}
       let BBSouvenir : any;
-      for (let isi of this.isiSouvenir) {
+      for (let isi of this.isiSouvenir.data) {
         this.prmJualService.get("?"+this.productCategorySouvenir+"&flag=approved").subscribe((BBresponse: any) => {
           BBSouvenir = BBresponse
           this.hargaBB = this.pricingService.buybackPriceSouvenir(Number(BBSouvenir.harga_buyback),Number(isi['detail']['product-denom'].value))
           isi.hargaBB = this.hargaBB
         })
       } 
-      this.totalIsiSouvenir=  this.isiSouvenir.length
+      this.totalIsiSouvenir=  this.isiSouvenir.data.length
 
        //dinar
-       this.isiDinar =this.detailTransaction.product["DINAR"] 
+       this.isiDinar =  {data: this.detailTransaction.product["DINAR"] , id:this.detailTransaction._id}
        console.debug(this.isiDinar)
        let hargaBBDinar : any[];
-      for (let isi of this.isiDinar) {
+      for (let isi of this.isiDinar.data) {
         this.prmJualService.get("?"+this.productCategoryDinar+"&flag=approved"+"&vendor.code="+isi.detail['vendor'].code+"&"+this.jenisBarang).subscribe((BBresponse: any) => {
           hargaBBDinar = BBresponse.harga
           console.debug(hargaBBDinar)
@@ -196,7 +197,7 @@ export class BuybackBycodeComponent implements OnInit {
         }
         })
       } 
-       this.totalIsiDinar=  this.isiDinar.length
+       this.totalIsiDinar=  this.isiDinar.data.length
 
       //loadingDG
       this.loadingDg = false;
