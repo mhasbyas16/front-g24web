@@ -170,13 +170,8 @@ export class SouvenirComponent implements OnInit {
 
           this.souvenirs = response;
 
-<<<<<<< HEAD
-          console.debug(this.souvenirs[0] , "ongkos")
-          this.productService.count(this.params).subscribe((response: any) => {
-=======
           console.debug(this.souvenirs[0].ongkos_pieces , "ongkos")
           this.productService.count(this.params+'&'+this.flagBarang).subscribe((response: any) => {
->>>>>>> hasby
             this.qty = response.count;
             this.prmJualService.get("?"+this.souvenirCategory+"&"+this.flagApp).subscribe((Jualresponse: any) => {
               let prmJual = Jualresponse;
@@ -188,11 +183,7 @@ export class SouvenirComponent implements OnInit {
                 this.prmPpnService.list().subscribe((PPNresponse: any) => {
                   let ppn = PPNresponse
                   
-<<<<<<< HEAD
-                  let hargaSouvenir = this.pricingService.priceSouvenir((prmJual['harga_baku']), Number(prmMargin.margin), Number(this.souvenirs[0]['product-denom'].value), Number(ppn[0].ppn), Number(this.souvenirs[0].ongkos));
-=======
                   let hargaSouvenir = this.pricingService.priceSouvenir((prmJual['harga_baku']), Number(prmMargin.margin), Number(this.souvenirs[0]['product-denom'].value), Number(ppn[0].ppn), Number(this.souvenirs[0].ongkos_pieces));
->>>>>>> hasby
                   hargaSouvenir =  Math.ceil(hargaSouvenir/1000)*1000;
                   console.debug( hargaSouvenir,'hargaSouvenir')
                   cariSouvenir.push({

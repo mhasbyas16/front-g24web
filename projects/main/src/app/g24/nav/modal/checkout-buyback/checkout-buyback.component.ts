@@ -5,6 +5,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { BuybackTransactionService } from '../../../services/buyback/buyback-transaction.service';
+import { BuybackParameterService } from '../../../services/buyback/buyback-parameter.service';
 import { TransactionMethodService } from '../../../services/transaction/transaction-method.service';
 import { ToastrService } from 'ngx-toastr';
 
@@ -30,6 +31,7 @@ export class CheckoutBuybackComponent implements OnInit {
 
   formData: any;
   isiClientData: any;
+  tf:boolean = false;
   
   //cart
   perhiasan = PERHIASAN;
@@ -61,6 +63,7 @@ export class CheckoutBuybackComponent implements OnInit {
   constructor(
     private sessionService: SessionService,
     private buybackService: BuybackTransactionService,
+    private buybackParameterService: BuybackParameterService,
     private datePipe: DatePipe,
     private transactionMethodService : TransactionMethodService,
     private toastr: ToastrService,
@@ -78,7 +81,7 @@ export class CheckoutBuybackComponent implements OnInit {
 
   openModal(totalHarga: any){
     this.checkoutModal = true;
-    this.totalBelanja = totalHarga
+    this.totalBelanja = totalHarga;
     this.formData = new FormGroup({
       cif: new FormControl ("", [Validators.required, Validators.pattern(/^[0-9]*$/)]),
       client: new FormControl("", Validators.required),
@@ -106,6 +109,7 @@ export class CheckoutBuybackComponent implements OnInit {
     this.jumlahDinar = this.dinar.length;
 
     this.idTransaksi();
+    this.getTransactionMethod(this.totalBelanja);
     this.getUnit();
 
    }
@@ -130,12 +134,22 @@ export class CheckoutBuybackComponent implements OnInit {
     console.debug(val,"HASIL EMMMMMMIT")
   }
 
-  getTransactionMethod(){
-    this.transactionMethodService.list("?_hash=1&transaction-type.code=b01").subscribe((response:any)=>{
-      if (response != false) {
-        this.transactionMethod = response;
+  getTransactionMethod(total){
+    let params = "?_hash=1&transaction-type.code=b01";
+    this.buybackParameterService.get("?flag=active").subscribe((response:any)=>{
+      let bbPrm = response;
+
+      if (Number(total) < bbPrm.minPrm ) {
+        params= params + "&code=01"
       }
-    });
+
+      this.transactionMethodService.list(params).subscribe((response:any)=>{
+        if (response != false) {
+          this.transactionMethod = response;
+        }
+      });
+    })
+    
   }
 
   idTransaksi(){
@@ -189,8 +203,6 @@ export class CheckoutBuybackComponent implements OnInit {
       this.idtransaksiBB = unit.code+"09"+d3+inc;
       this.formData.patchValue({idTransactionBB:this.idtransaksiBB,idAi:Number(this.incId)+1});
     });
-
-    this.getTransactionMethod();
   }
 
   bankValid(val){}
