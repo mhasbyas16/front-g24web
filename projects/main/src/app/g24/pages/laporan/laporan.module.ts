@@ -9,13 +9,21 @@ import { LaporanRoutingModule } from './laporan-routing.module';
 import { NavModule } from '../../nav/nav.module';
 import { DatePipe } from '@angular/common';
 import { ExportLaporanComponent } from './export-laporan/export-laporan.component';
+<<<<<<< HEAD
 import { LaporanBuybackComponent } from './laporan-buyback/laporan-buyback.component';
 import { ExportLaporanBuybackBycodeComponent } from './export-laporan-buyback-bycode/export-laporan-buyback-bycode.component';
+=======
+import { RekeningKoranComponent } from './rekening-koran/rekening-koran.component';
+>>>>>>> hasby
 
 
 
 @NgModule({
+<<<<<<< HEAD
   declarations: [LaporanPenjualanComponent, ExportLaporanComponent, LaporanBuybackComponent, ExportLaporanBuybackBycodeComponent],
+=======
+  declarations: [LaporanPenjualanComponent, ExportLaporanComponent, RekeningKoranComponent],
+>>>>>>> hasby
   imports: [
     CommonModule,
     FormsModule,

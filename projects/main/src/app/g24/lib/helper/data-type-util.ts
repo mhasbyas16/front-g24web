@@ -43,8 +43,16 @@ export class DataTypeUtil {
         let toAppend = {};
         for(let key in source)
         {
+            let tipe_data = typeof source[key];
+
+            if(tipe_data == 'boolean') continue;
 
             if(source.hasOwnProperty(key+"_encoded")) // mencegah duplikat *_encoded
+            {
+                continue;
+            }
+
+            if(key === "__format") // untuk format tidak perlu di encode
             {
                 continue;
             }
@@ -58,11 +66,12 @@ export class DataTypeUtil {
 
             if(key.endsWith("_encoded")) continue;
             
-            toAppend[key+"_encoded"] = this.ToEncoding(source[key]);
-            toAppend[key] = btoa(JSON.stringify(source[key]))
+            toAppend[key+"_encoded"] = this.GetEncoding(source[key]);
+            toAppend[key] = btoa(JSON.stringify(source[key]));
         }
 
-        return Object.assign(source, toAppend);
+        Object.assign(source, toAppend);
+        return source;
     }
 
     public static Object2Url(source : any)
@@ -79,7 +88,7 @@ export class DataTypeUtil {
         return ret;
     }
 
-    private static ToEncoding(value : any) : string
+    private static GetEncoding(value : any) : string
     {
         let ret = null;
 

@@ -4,7 +4,7 @@ import { CommonService } from 'projects/platform/src/app/core-services/common.se
 @Injectable({
   providedIn: 'root'
 })
-export class DateService {
+export class ServerDateTimeService {
 
   key = "date";
   
