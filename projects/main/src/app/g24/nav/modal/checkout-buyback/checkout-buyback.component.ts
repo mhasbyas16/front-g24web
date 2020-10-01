@@ -10,8 +10,13 @@ import { ToastrService } from 'ngx-toastr';
 
 import { DatePipe } from '@angular/common';
 
+import { ProductService } from '../../../services/product/product.service';
+import { TransactionFlagBuybackService } from '../../../services/transaction/transaction-flag-buyback.service';
+import { TransactionService } from "../../../services/transaction/transaction.service";
+
 import { UserService } from 'projects/platform/src/app/services/security/user.service';
 import { ContentPage } from '../../../lib/helper/content-page';
+import { promises } from 'fs';
 
 @Component({
   selector: 'app-checkout-buyback',
@@ -59,6 +64,9 @@ export class CheckoutBuybackComponent implements OnInit {
     private datePipe: DatePipe,
     private transactionMethodService : TransactionMethodService,
     private toastr: ToastrService,
+    private productService: ProductService,
+    private transactionFlagBuybackService:TransactionFlagBuybackService,
+    private transactionService : TransactionService
   ) { }
 
   ngOnInit(): void {
@@ -145,9 +153,14 @@ export class CheckoutBuybackComponent implements OnInit {
       // if (response == false) {
       //   this.incId = 0
       // }else{
-        this.incId = Number(response["0"]["idAi"])
+        this.incId = Number(response["0"]["idAi"])+1;
       // }
-      let count = JSON.stringify(Number(this.incId)+1);
+      let count = null;
+      if (response["0"]["idAi"] == null) {
+        count = JSON.stringify(1);
+      }else{
+        count = JSON.stringify(Number(response["0"]["idAi"]) + 1);
+      }
       switch (count.length) {
         case 1:
           inc = "000000"+count;
@@ -200,6 +213,7 @@ export class CheckoutBuybackComponent implements OnInit {
     }
      console.debug(this.formData.getRawValue(), "we" )
     this.validModel = true;
+    console.debug(this.incId, " this.incId")
   }
 
   refreshId(){
@@ -214,7 +228,7 @@ export class CheckoutBuybackComponent implements OnInit {
   storeTransaction(){
     let data = this.formData.getRawValue();
     data["kembali"] = this.kembali
-    data["idAi"] =  this.incId + 1
+    data["idAi"] =  this.incId
     
     console.debug(this.kembali, "kembali")
 
@@ -226,6 +240,17 @@ export class CheckoutBuybackComponent implements OnInit {
     delete data["namaPemasar"];
     delete data["nik"];
     
+    this.productService.batchUpdate(this.transactionFlagBuybackService.batchUpdate(btoa(JSON.stringify(this.sessionService.getUnit())))).subscribe((response: any) => {
+      if (response == false) {
+        console.debug("product flag update failed", this.transactionFlagBuybackService.batchUpdate(btoa(JSON.stringify(this.sessionService.getUnit()))));
+      } 
+    })
+
+  
+    let tesdata = this.transactionFlagBuybackService.batchUpdateTransaction(this.perhiasan, "perhiasan")
+    console.debug(tesdata)
+
+
     this.buybackService.add(data).subscribe((response: any) => {
       if (response != false) {
         this.validModel = false;

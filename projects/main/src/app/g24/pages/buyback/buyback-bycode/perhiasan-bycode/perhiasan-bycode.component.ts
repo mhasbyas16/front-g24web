@@ -58,15 +58,15 @@ export class PerhiasanBycodeComponent implements OnInit {
     }
     this.hargaBB = this.pricingService.buybackPricePerhiasan(kondisi, kadar, berat,this.hargaDasarBuyback )
     
-   for (let index = 0; index < this.isiPerhiasan.length; index++) {
-    if (this.isiPerhiasan[index]["code"] == code) {
-      this.isiPerhiasan[index]['hargaBB'] =  this.hargaBB
+   for (let index = 0; index < this.isiPerhiasan.data.length; index++) {
+    if (this.isiPerhiasan.data[index]["code"] == code) {
+      this.isiPerhiasan.data[index]['hargaBB'] =  this.hargaBB
     }
    }
    this.loadingDg = false
   }
 
-  addToCart(code, jenis, berat, kadar, hargaTbb, detail ){
+  addToCart(code, jenis, berat, kadar, hargaTbb, detail, idTransaction ){
     // let detailProduct =  btoa(JSON.stringify(detail));
     this.cartList.push({
       "code" : code,
@@ -75,7 +75,8 @@ export class PerhiasanBycodeComponent implements OnInit {
       "kadar" : kadar,
       "kondisi" : this.tampilKondisi,
       'detail': detail,
-      "hargaBB" : hargaTbb
+      "hargaBB" : hargaTbb,
+      "idTransaction" : idTransaction
     })
     console.debug(this.cartList, "isi cart")
     this.totalIsiCartPerhiasan.emit(this.cartList.length)

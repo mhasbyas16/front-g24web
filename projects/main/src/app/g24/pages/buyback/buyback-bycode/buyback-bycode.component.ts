@@ -31,7 +31,7 @@ export class BuybackBycodeComponent implements OnInit {
   
 
   //perhiasan
-  isiPerhiasan : any[];
+  isiPerhiasan : any;
   totalIsiPerhiasan : any;
   
 
@@ -137,8 +137,8 @@ export class BuybackBycodeComponent implements OnInit {
       this.tanggalTerbilang = hari+" "+bulanTerbilang+" "+tahun
     
       //perhiasan
-      this.isiPerhiasan =this.detailTransaction.product["PERHIASAN"] 
-      this.totalIsiPerhiasan =  this.isiPerhiasan.length
+      this.isiPerhiasan ={data:this.detailTransaction.product["PERHIASAN"], id:this.detailTransaction._id} 
+      this.totalIsiPerhiasan =  this.isiPerhiasan.data.length
       
       //mulia
       this.isiEmasBatangan =this.detailTransaction.product["LM"]
@@ -146,7 +146,8 @@ export class BuybackBycodeComponent implements OnInit {
       for (let isi of this.isiEmasBatangan) {
         this.prmJualService.get("?"+this.productCategoryMulia+"&flag=approved"+"&vendor.code="+isi.detail['vendor'].code+"&"+this.jenisBarang).subscribe((BBresponse: any) => {
           hargaBBEmas = BBresponse.harga
-          for (let index = 0; index < hargaBBEmas.length; index++) {
+          let totalHargaBBEmas = hargaBBEmas.length
+          for (let index = 0; index < totalHargaBBEmas; index++) {
             if (hargaBBEmas[index]["product-denom"].code == isi.detail['product-denom'].code) {
               isi.hargaBB = hargaBBEmas[index]['harga_baku']
             }
