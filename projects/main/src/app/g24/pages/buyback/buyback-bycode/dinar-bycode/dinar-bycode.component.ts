@@ -65,14 +65,15 @@ export class DinarBycodeComponent implements OnInit {
    this.loadingDg = false
   }
 
-  addToCart(code, vendor,denom, hargaTbb, detail ){
+  addToCart(code, vendor,denom, hargaTbb, detail, idTransaction ){
     this.cartList.push({
       "code" : code,
       "vendor" : vendor,
       "denom" : denom,
       "kondisi" : this.tampilKondisi,
       'detail': detail,
-      "hargaBB" : hargaTbb
+      "hargaBB" : hargaTbb,
+      "idTransaction" : idTransaction
     })
     console.debug(this.cartList, "isi cart")
     this.totalIsiCartDinar.emit(this.cartList.length)

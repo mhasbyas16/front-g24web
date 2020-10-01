@@ -33,14 +33,15 @@ export class MuliaBycodeComponent implements OnInit {
   ngOnInit(): void {
   }
   
-  addToCart(code, vendor, denom, noSeri,hargaBB,detail ){
+  addToCart(code, vendor, denom, noSeri,hargaBB,detail, idTransaction ){
     this.cartList.push({
       "code" : code,
       "vendor": vendor,
       "denom" : denom,
       "noSeri" : noSeri,
       'detail': detail,
-      "hargaBB" : hargaBB
+      "hargaBB" : hargaBB,
+      "idTransaction" : idTransaction
       
     })
     this.totalIsiCartEmasBatangan.emit(this.cartList.length)

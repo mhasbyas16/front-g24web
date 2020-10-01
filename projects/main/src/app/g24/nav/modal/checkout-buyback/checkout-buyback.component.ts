@@ -214,6 +214,8 @@ export class CheckoutBuybackComponent implements OnInit {
      console.debug(this.formData.getRawValue(), "we" )
     this.validModel = true;
     console.debug(this.incId, " this.incId")
+    console.debug(this.emasBatangan,"pteantan")
+    console.debug(this.perhiasan,"pteantan")
   }
 
   refreshId(){
@@ -246,9 +248,15 @@ export class CheckoutBuybackComponent implements OnInit {
       } 
     })
 
-  
-    let tesdata = this.transactionFlagBuybackService.batchUpdateTransaction(this.perhiasan, "perhiasan")
-    console.debug(tesdata)
+    if (this.perhiasan != null) {
+      let dataPerhiasan = this.transactionFlagBuybackService.batchUpdateTransaction(this.perhiasan, "perhiasan")
+    } 
+    if(this.emasBatangan != null) {
+      let dataLM = this.transactionFlagBuybackService.batchUpdateTransaction(this.emasBatangan, "lm")
+    }
+    
+    
+    
 
 
     this.buybackService.add(data).subscribe((response: any) => {

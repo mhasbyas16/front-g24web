@@ -3,6 +3,7 @@ import { PERHIASAN, LM, GS, BERLIAN, DINAR } from "../../sample/cart-buyback";
 
 // service
 import { TransactionService } from "./transaction.service";
+import { VendorService } from "../vendor.service";
 // import { ProductService } from "../product/product.service";
 @Injectable({
   providedIn: "root",
@@ -10,7 +11,7 @@ import { TransactionService } from "./transaction.service";
 export class TransactionFlagBuybackService {
   constructor(
     private transactionService: TransactionService,
-    // private productService: ProductService
+    private vendorService: VendorService
   ) {}
 
   batchUpdate(_unit) {
@@ -20,6 +21,7 @@ export class TransactionFlagBuybackService {
     let gs = {};
     let berlian = {};
     let dinar = {};
+    let cekLM = LM;
     let batch = {
       batch_counter:
         PERHIASAN.length +
@@ -29,6 +31,7 @@ export class TransactionFlagBuybackService {
         DINAR.length,
     };
     if (PERHIASAN.length != 0) {
+      console.debug(PERHIASAN," perhiasan")
       for (let p of PERHIASAN) {
         no++;
         perhiasan[no] = btoa(
@@ -39,10 +42,27 @@ export class TransactionFlagBuybackService {
     }
 
     if (LM.length != 0) {
+      console.debug(cekLM," LMLMLM")
       for (let Lm of LM) {
+        console.debug(Lm.detail._id, "tatang")
         no++;
-        lm[no] = btoa(JSON.stringify({ _id: Lm.detail._id, flag: "stock", tipe_stock: "buyback"  }));
-        lm[no + "_encoded"] = "base64";
+        // if (Lm.detail.vendor.code == "antam") {
+
+        //   console.debug("adsasdasd")
+        //   this.vendorService.get("?_hash=1&code=antamrtr").subscribe((response:any)=>{
+        //     let hashVendor = response
+
+        //     lm[no] = btoa(JSON.stringify({ _id: Lm.detail._id, flag: "stock", tipe_stock: "buyback", vendor: hashVendor._hash, vendor_encoded: 'base64'  }));
+        //     lm[no + "_encoded"] = "base64";
+        //   })
+        //   console.debug(lm, "tatasdds")
+        // } else {
+          lm[no] = btoa(JSON.stringify({ _id: Lm.detail._id, flag: "stock", tipe_stock: "buyback", unit: _unit, unit_encoded: 'base64' }));
+          lm[no + "_encoded"] = "base64";
+        // }
+
+        
+        
       }
     }
     if (GS.length != 0) {
@@ -76,7 +96,7 @@ export class TransactionFlagBuybackService {
     let data :any
     let dataProduct : string;
     let idTransaction : any;
-    let getPerhiasan : any;
+    let getProduct : any;
     let kamu : any;
 
     switch (key) {
@@ -84,23 +104,37 @@ export class TransactionFlagBuybackService {
         data = val
         dataProduct = "PERHIASAN"
         break;
-    
+      
+      case "lm":
+        data = val
+        dataProduct = "LM"
+        break;
+        
+
+
       default:
         break;
     }
     for (let isiData of data) {
       idTransaction = isiData.idTransaction
+      console.debug(idTransaction,"idtransaksi")
       this.transactionService.get("?_id="+idTransaction).subscribe((response:any)=>{
-        getPerhiasan = response
+        getProduct = response
         if ( dataProduct == "PERHIASAN") {
-          for (let isi of getPerhiasan.product.PERHIASAN) {
+          for (let isi of getProduct.product.PERHIASAN) {
             if (isi.detail._id == isiData.detail._id) {
               isi.buyback = "yes"
             }
           }
         }
-        
-        let updateData = {_id: idTransaction, product:btoa(JSON.stringify(getPerhiasan.product)), product_encoded: "base64"}
+        if ( dataProduct == "LM") {
+          for (let isi of getProduct.product.LM) {
+            if (isi.detail._id == isiData.detail._id) {
+              isi.buyback = "yes"
+            }
+          }
+        }
+        let updateData = {_id: idTransaction, product:btoa(JSON.stringify(getProduct.product)), product_encoded: "base64"}
         console.debug(updateData, "weawdasdas")
           this.transactionService.update(updateData).subscribe((response:any)=>{
          return;

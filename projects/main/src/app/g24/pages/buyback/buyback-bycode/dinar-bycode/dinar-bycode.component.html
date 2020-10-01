@@ -12,7 +12,7 @@
                
                 <clr-dg-column>Harga</clr-dg-column>
                 <clr-dg-column class="right"></clr-dg-column>
-                <clr-dg-row *clrDgItems="let d of isiDinar">
+                <clr-dg-row *clrDgItems="let d of isiDinar.data">
                     <clr-dg-cell>{{d.detail.code}}</clr-dg-cell>
                     <clr-dg-cell>{{d.detail.vendor.name}}</clr-dg-cell>
                     <clr-dg-cell>{{d.detail['product-denom'].name}}</clr-dg-cell>
@@ -27,7 +27,7 @@
                             </button>                
                         </ng-container>
                         <ng-template #plus >
-                            <button type="button" class="btn btn-icon btn-sm btn-success" (click)="addToCart(d.detail.code, d.detail['vendor'].name , d.detail['product-denom'].name , d.hargaBB, d.detail)" aria-label="home" >
+                            <button type="button" class="btn btn-icon btn-sm btn-success" (click)="addToCart(d.detail.code, d.detail['vendor'].name , d.detail['product-denom'].name , d.hargaBB, d.detail, isiDinar.id)" aria-label="home" >
                                 <clr-icon shape="plus"></clr-icon>
                             </button>       
                         </ng-template>
