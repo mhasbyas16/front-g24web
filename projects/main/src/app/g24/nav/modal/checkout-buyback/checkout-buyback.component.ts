@@ -17,7 +17,7 @@ import { TransactionService } from "../../../services/transaction/transaction.se
 
 import { UserService } from 'projects/platform/src/app/services/security/user.service';
 import { ContentPage } from '../../../lib/helper/content-page';
-import { promises } from 'fs';
+// import { promises } from 'fs';
 
 @Component({
   selector: 'app-checkout-buyback',
@@ -254,17 +254,17 @@ export class CheckoutBuybackComponent implements OnInit {
     delete data["namaPemasar"];
     delete data["nik"];
     
-    this.productService.batchUpdate(this.transactionFlagBuybackService.batchUpdate(btoa(JSON.stringify(this.sessionService.getUnit())))).subscribe((response: any) => {
-      if (response == false) {
-        console.debug("product flag update failed", this.transactionFlagBuybackService.batchUpdate(btoa(JSON.stringify(this.sessionService.getUnit()))));
-      } 
-    })
+    // this.productService.batchUpdate(this.transactionFlagBuybackService.batchUpdate(btoa(JSON.stringify(this.sessionService.getUnit())))).subscribe((response: any) => {
+    //   if (response == false) {
+    //     console.debug("product flag update failed", this.transactionFlagBuybackService.batchUpdate(btoa(JSON.stringify(this.sessionService.getUnit()))));
+    //   } 
+    // })
 
     if (this.perhiasan != null) {
-      let dataPerhiasan = this.transactionFlagBuybackService.batchUpdateTransaction(this.perhiasan, "perhiasan")
+      let dataPerhiasan = this.transactionFlagBuybackService.batchUpdateTransaction(this.perhiasan, "perhiasan",btoa(JSON.stringify(this.sessionService.getUnit())))
     } 
     if(this.emasBatangan != null) {
-      let dataLM = this.transactionFlagBuybackService.batchUpdateTransaction(this.emasBatangan, "lm")
+      let dataLM = this.transactionFlagBuybackService.batchUpdateTransaction(this.emasBatangan, "lm", btoa(JSON.stringify(this.sessionService.getUnit())))
     }
     
     
