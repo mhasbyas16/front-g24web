@@ -1,0 +1,270 @@
+<div class="clr-row">
+    <div class="card" style="margin-top: 0em;">
+        <div class="card-header">
+            Accept Mutasi
+        </div>
+        <div class="card-block">
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Unit Asal</label>
+                            <div class="clr-control-container">
+                                <select [(ngModel)]="input.unit_asal" #unit_asal clrSelect name="unit_asal">
+                                <option [ngValue]=""></option>
+                                <ng-container *ngFor="let data of unitsal">
+                                    <option [ngValue]="data">{{data.nama}}</option>
+                                </ng-container>
+                            </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Tanggal Approve</label>
+                            <div class="clr-control-container">
+                                <input  [(ngModel)]="input.approve_date" class="clr-input" type="date" name="tgl_approve" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Tanggal Terima</label>
+                            <div class="clr-control-container">
+                                <input  [(ngModel)]="input.tgl_terima" class="clr-input" type="date" name="tgl_terima" required />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Tanggal Kirim</label>
+                            <div class="clr-control-container">
+                                <input  [(ngModel)]="input.created_date" class="clr-input" type="date" name="created_date" required />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary align-right" (click)="doSearch()">
+                Cari
+            </button>
+            <button form="mutasi" (click)="reset()" class="btn btn-secondary">
+                Reset
+            </button>
+        </div>
+    </div>
+</div>
+</div>
+
+<div class="clr-row">
+    <div class="card" style="margin-top: 0em;">
+        <div class="card-header">
+                Hasil Pencarian
+        </div>
+        <clr-datagrid [(clrDgSingleSelected)]="data_view">  
+            <clr-dg-action-bar>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-secondary" (click)="onAccept()" ><clr-icon shape="plus"></clr-icon>Accept</button>
+                    <button type="button" class="btn btn-sm btn-secondary" (click)="onView()"><clr-icon shape="eye"></clr-icon> Lihat Data</button>
+                </div>
+                <div class="btn-group">
+                    <clr-dropdown>
+                        <button type="button" class="btn btn-sm btn-secondary" clrDropdownTrigger>
+                            Export
+                            <clr-icon shape="caret down"></clr-icon>
+                        </button>
+                        <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
+                            <button type="button"  clrDropdownItem>Export All</button>
+                            <button type="button"  clrDrItems></button>
+                        </clr-dropdown-menu>
+                    </clr-dropdown>
+                </div>
+            </clr-dg-action-bar>
+            
+            
+            <clr-dg-column>
+                Unit Asal
+            </clr-dg-column>
+            <clr-dg-column>
+                Unit Tujuan
+            </clr-dg-column>
+            <clr-dg-column>
+                Tanggal Kirim
+            </clr-dg-column>
+            <clr-dg-column>
+                Tanggal Approve
+            </clr-dg-column>
+            <clr-dg-column>
+                Tanggal Terima
+            </clr-dg-column>
+            <clr-dg-column>
+                Keterangan
+            </clr-dg-column>
+            <clr-dg-column>
+                Tipe Flag
+            </clr-dg-column>
+    
+            <clr-dg-row *clrDgItems="let data of listdt" [clrDgItem]="data">
+                <clr-dg-cell>{{data.unit_asal.nama}}</clr-dg-cell>
+                <clr-dg-cell>{{data.unit_tujuan.nama}}</clr-dg-cell>
+                <clr-dg-cell>{{data.created_date}}</clr-dg-cell>
+                <clr-dg-cell>{{data.approve_date}}</clr-dg-cell>
+                <clr-dg-cell>{{data.tgl_terima}}</clr-dg-cell>
+                <clr-dg-cell>{{data.keterangan}}</clr-dg-cell>
+                <clr-dg-cell>{{data.flag}}</clr-dg-cell>
+            </clr-dg-row>
+    
+            <clr-dg-footer>
+                
+            </clr-dg-footer>
+        </clr-datagrid>
+    </div>
+</div>
+
+<!--MODAL SHOW ACCEPT DATA-->
+<clr-modal [(clrModalOpen)]="modalaccept" [clrModalClosable]="false" [clrModalSize]="'lg'">
+    <h3 class="modal-title">Data Accept Mutasi</h3>
+    <div class="modal-body">
+        <div class="clr-row">
+            <div class="clr-col-12">
+                <div class="clr-form-control">
+                    <label>Id Mutasi</label>
+					<input clrInput name="id" [(ngModel)]="add._id" value="{{DataFlowModal._id}}" style="width: 400px" readonly/>
+                </div>
+            </div>
+        </div>
+          <div class="clr-row">
+            <div class="clr-col-6">
+                <div class="clr-form-control">
+                    <label>Unit Asal</label>
+					<input clrInput name="unit_asal" [(ngModel)]="add.unit_asal" value="{{DataFlowModal?.unit_asal?.nama}}" style="width: 400px" readonly/>
+                </div>
+            </div>
+            <div class="clr-col-6">
+                <div class="clr-form-control">
+                    <label>Unit Tujuan</label>
+                    <input clrInput name="unit_tujuan" [(ngModel)]="add.unit_tujuan" value="{{DataFlowModal?.unit_tujuan?.nama}}" style="width: 400px" readonly/>
+                </div>
+            </div>
+        </div>
+    <clr-datagrid>
+
+            <clr-dg-column>KODE</clr-dg-column>
+            <clr-dg-column>SKU</clr-dg-column>
+            <clr-dg-column>VENDOR</clr-dg-column>
+            <clr-dg-column>BRANCH</clr-dg-column>
+    
+            <clr-dg-row *clrDgItems="let data of items" [clrDgItem]="data">
+                <clr-dg-cell>{{data.code}}</clr-dg-cell>
+                <clr-dg-cell>{{data.sku}}</clr-dg-cell>
+                <clr-dg-cell>{{data.vendor == undefined ? "-" : data.vendor.name}}</clr-dg-cell>
+                <clr-dg-cell>{{data.branch == undefined ? "-" : data.branch.name}}</clr-dg-cell>
+            </clr-dg-row>
+    
+            <clr-dg-detail *clrIfDetail="let data">
+                <clr-dg-detail-header>Detail data</clr-dg-detail-header>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Attribut</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let oj of Object.keys(data)">
+                        <tr *ngIf="except(oj)">
+                            <td>{{DisplayName(oj)}}</td>
+                            <td>{{GetDisplayValue(data[oj])}}</td>
+                        </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </clr-dg-detail>
+    </clr-datagrid>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="accept()">Terima</button>
+    <button type="button" class="btn btn-light" (click)="modalaccept = false">Tutup</button>
+</div>
+</clr-modal>
+
+
+<clr-modal [(clrModalOpen)]="modalview" [clrModalClosable]="false" [clrModalSize]="'lg'">
+    <h3 class="modal-title">Data Accept Mutasi</h3>
+    <div class="modal-body">
+		<div class="clr-row">
+            <div class="clr-col-12">
+                <div class="clr-form-control">
+                    <label>Id Mutasi</label>
+					<input clrInput name="id" [(ngModel)]="add._id" value="{{DataFlowModal._id}}" style="width: 400px" readonly/>
+                </div>
+            </div>
+        </div>
+          <div class="clr-row">
+            <div class="clr-col-6">
+                <div class="clr-form-control">
+                    <label>Unit Asal</label>
+					<input clrInput name="unit_asal" [(ngModel)]="add.unit_asal" value="{{DataFlowModal?.unit_asal?.nama}}" style="width: 400px" readonly/>
+                </div>
+            </div>
+            <div class="clr-col-6">
+                <div class="clr-form-control">
+                    <label>Unit Tujuan</label>
+                    <input clrInput name="unit_tujuan" [(ngModel)]="add.unit_tujuan" value="{{DataFlowModal?.unit_tujuan?.nama}}" style="width: 400px" readonly/>
+                </div>
+            </div>
+		</div>
+
+        <clr-datagrid>
+            <clr-dg-column>KODE</clr-dg-column>
+            <clr-dg-column>SKU</clr-dg-column>
+            <clr-dg-column>VENDOR</clr-dg-column>
+            <clr-dg-column>BRANCH</clr-dg-column>
+
+            <clr-dg-row *ngFor="let data of itemsview" [clrDgItem]="data">
+                <clr-dg-cell>{{data.code}}</clr-dg-cell>
+                <clr-dg-cell>{{data.sku}}</clr-dg-cell>
+                <clr-dg-cell>{{data.vendor == undefined ? "-" : data.vendor.name}}</clr-dg-cell>
+                <clr-dg-cell>{{data.branch == undefined ? "-" : data.branch.name}}</clr-dg-cell>
+            </clr-dg-row>
+
+            <clr-dg-detail *clrIfDetail="let data">
+                <clr-dg-detail-header>Detail Items</clr-dg-detail-header>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Attribut</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let dataitem of Object.keys(data)">
+                            <tr *ngIf="except(dataitem)">
+                                <td>{{DisplayName(dataitem)}}</td>
+                                <td>{{GetDisplayValue(data[dataitem])}}</td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </clr-dg-detail>
+        </clr-datagrid>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-light" (click)="modalview = false">Tutup</button>
+    </div>
+</clr-modal>
+
+<!--MODAL SHOW DATA NOT FOUND-->
+<clr-modal *ngIf="modal" [(clrModalOpen)]="modal">
+    <h3 class="modal-title">Data Tidak Ditemukan</h3>
+    <div class="modal-body">
+        <p>Silahkan cari kembali</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modal = false">Ok</button>
+    </div>
+</clr-modal>

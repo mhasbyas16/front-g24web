@@ -5,10 +5,12 @@ import { InventoryManagementRoutingModule } from './inventory-management-routing
 import { MutasiComponent } from './mutasi/mutasi.component';
 import { FormsModule } from '@angular/forms';
 import { ClarityModule } from '@clr/angular';
+import { ApprovalMutasiComponent } from './approval-mutasi/approval-mutasi.component';
+import { AcceptMutasiComponent } from './accept-mutasi/accept-mutasi.component';
 
 
 @NgModule({
-  declarations: [MutasiComponent],
+  declarations: [MutasiComponent, ApprovalMutasiComponent, AcceptMutasiComponent],
   imports: [
     CommonModule,
     FormsModule,

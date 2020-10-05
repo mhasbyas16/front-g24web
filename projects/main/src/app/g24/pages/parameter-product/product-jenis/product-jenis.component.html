@@ -1,0 +1,356 @@
+<div class="clr-row">
+	<div class="card">
+            <div class="card-header">
+                Param Jenis
+            </div>
+            <div class="card-block">
+            	<div class="clr-row">
+            		<div class="clr-col-6">
+            			<div class="clr-form-control">
+            				<label class="clr-control-label">Kode</label>
+            				<div class="clr-control-container">
+            				<select [(ngModel)]="search.code" #code clrSelect name="code">
+            					<option [ngValue]=""></option>
+            					<ng-container *ngFor="let data of datajenis">
+            						<option [ngValue]="data">{{data.code}}</option>
+            					</ng-container>
+            				</select>
+            				</div>
+            			</div>
+            		</div>
+            		<div class="clr-col-6">
+            			<div class="clr-form-control">
+            				<label class="clr-control-label">Nama Kategori</label>
+            				<div class="clr-control-container">
+            				<select [(ngModel)]="search.kategori" #kategori clrSelect name="kategori">
+            					<option [ngValue]=""></option>
+            					<ng-container *ngFor="let data of datakategori">
+            						<option [ngValue]="data">{{data.name}}</option>
+            					</ng-container>
+            				</select>
+            				</div>
+            			</div>
+            		</div>
+            	</div>
+            </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-icon" aria-label="search" (click)="SearchData()">
+				    Cari<clr-icon shape="search"></clr-icon>
+				</button>
+            </div>
+        </div>
+</div>
+
+
+<!--DATAGRID-->
+<div class="clr-row">
+        <div class="card">
+            <div class="card-header">
+                Hasil Pencarian
+            </div>
+            <div class="card-block">
+            	<clr-datagrid [(clrDgSingleSelected)]="data_view">  
+        <clr-dg-action-bar>
+            <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-secondary" (click)="Tambah()" ><clr-icon shape="plus"></clr-icon>Tambah</button>
+                <button type="button" class="btn btn-sm btn-secondary" (click)="Ubah()" ><clr-icon shape="sync"></clr-icon>Ubah</button>
+                <button type="button" class="btn btn-sm btn-secondary" (click)="Detail()" ><clr-icon shape="eye"></clr-icon>Lihat Detail</button>
+            </div>
+        </clr-dg-action-bar>
+        
+
+        <clr-dg-column>
+            Kode
+        </clr-dg-column>
+        <clr-dg-column>
+            Nama Jenis
+        </clr-dg-column>
+
+        <clr-dg-row *clrDgItems="let data of listjenis" [clrDgItem]="data">
+            <clr-dg-cell>{{data.code}}</clr-dg-cell>
+            <clr-dg-cell>{{data.name}}</clr-dg-cell>
+        </clr-dg-row>
+
+        <clr-dg-footer>
+            {{listjenis.length}} data
+        </clr-dg-footer>
+    </clr-datagrid>
+            </div>
+            <div class="card-footer">
+
+            </div>
+        </div>
+</div>
+
+
+<!--MODAL TAMBAH DATA-->
+<clr-modal [(clrModalOpen)]="modaltambah">
+    <h3 class="modal-title">Tambah Param Jenis</h3>
+    <div class="modal-body">
+    	<div class="clr-row">
+    		<div class="clr-col-6">
+    			<div class="clr-form-control">
+    				<clr-input-container>
+				    <label>Kode</label>
+				    <input clrInput [(ngModel)]="input.code" name="code" maxlength="2" pattern="[a-zA-Z ]*" required />
+				    <clr-control-error>Wajib di isi dan input harus huruf</clr-control-error>
+				  </clr-input-container>
+    			</div>
+    		</div>
+    		<div class="clr-col-6">
+    			<div class="clr-form-control">
+    				<clr-input-container>
+				    <label>Nama Jenis</label>
+				    <input clrInput [(ngModel)]="input.name" name="name" required />
+				    <clr-control-error>Wajib di isi</clr-control-error>
+				  </clr-input-container>
+    			</div>
+    		</div>
+    	</div>
+		
+		<!--GRID KATEGORI-->
+		<div class="clr-row">
+			<div class="card">
+				<div class="card-block">
+					<clr-datagrid [(clrDgSingleSelected)]="select_kategori">  
+			<clr-dg-action-bar>
+				<div class="btn-group">
+					<button type="button" class="btn btn-sm btn-secondary" (click)="TambahKategori()" ><clr-icon shape="plus"></clr-icon>Tambah</button>
+					</div>
+			</clr-dg-action-bar>
+			
+
+				<clr-dg-column>
+					Kode
+				</clr-dg-column>
+				<clr-dg-column>
+					Nama Kategori
+				</clr-dg-column>
+
+				<clr-dg-row *clrDgItems="let data of datakategori" [clrDgItem]="data">
+					<clr-dg-cell>{{data.code}}</clr-dg-cell>
+					<clr-dg-cell>{{data.name}}</clr-dg-cell>
+				</clr-dg-row>
+
+				<clr-dg-footer>
+					{{datakategori.length}} data
+				</clr-dg-footer>
+		</clr-datagrid>
+				</div>
+				<div class="card-footer">
+
+				</div>
+			</div>
+	</div>
+
+	<!--GRID ADD KATEGORI-->
+	<div class="clr-row">
+		<div class="card">
+			<div class="card-block">
+				<clr-datagrid [(clrDgSingleSelected)]="select_kategori_add">  
+		<clr-dg-action-bar>
+			<div class="btn-group">
+				<button type="button" class="btn btn-sm btn-secondary" (click)="HapusKategori()" ><clr-icon shape="trash"></clr-icon>Hapus</button>
+			</div>
+		</clr-dg-action-bar>
+		
+
+			<clr-dg-column>
+				Kode
+			</clr-dg-column>
+			<clr-dg-column>
+				Nama Kategori
+			</clr-dg-column>
+
+			<clr-dg-placeholder>Tambahkan produk kategori dengan pilihan diatas</clr-dg-placeholder>
+			<clr-dg-row *clrDgItems="let data of addkategori" [clrDgItem]="data">
+				<clr-dg-cell>{{data.code}}</clr-dg-cell>
+				<clr-dg-cell>{{data.name}}</clr-dg-cell>
+			</clr-dg-row>
+
+			<clr-dg-footer>
+				{{addkategori.length}} data
+			</clr-dg-footer>
+	</clr-datagrid>
+			</div>
+			<div class="card-footer">
+
+			</div>
+		</div>
+</div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="modaltambah = false">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="Simpan()">Simpan</button>
+    </div>
+</clr-modal>
+
+
+<!--MODAL UPDATE DATA-->
+<clr-modal [(clrModalOpen)]="modalupdate">
+    <h3 class="modal-title">Update Param Jenis</h3>
+    <div class="modal-body">
+    	<div class="clr-row">
+    		<div class="clr-col-6">
+    			<div class="clr-form-control">
+    				<clr-input-container>
+    					<label>Id</label>
+    					<input clrInput [(ngModel)]="dataupdate.id" name="id" value="{{dataupdate._id}}" style="width: 400px" readonly>
+    				</clr-input-container>
+    			</div>
+    		</div>
+    	</div>
+    	<div class="clr-row">
+    		<div class="clr-col-6">
+    			<div class="clr-form-control">
+    				<clr-input-container>
+				    <label>Kode</label>
+				    <input clrInput [(ngModel)]="dataupdate.code" name="code" value="{{dataupdate.code}}" readonly />
+				    <clr-control-error>Wajib di isi</clr-control-error>
+				  </clr-input-container>
+    			</div>
+    		</div>
+    		<div class="clr-col-6">
+    			<div class="clr-form-control">
+    				<clr-input-container>
+				    <label>Nama Jenis</label>
+				    <input clrInput [(ngModel)]="dataupdate.name" name="name" value="{{dataupdate.name}}" required />
+				    <clr-control-error>Wajib di isi</clr-control-error>
+				  </clr-input-container>
+    			</div>
+    		</div>
+		</div>
+		
+		<div class="clr-row">
+			<div class="card">
+				<div class="card-block">
+					<clr-datagrid [(clrDgSingleSelected)]="select_kategori_upd">  
+			<clr-dg-action-bar>
+				<div class="btn-group">
+					<button type="button" class="btn btn-sm btn-secondary" (click)="TambahKategoriUpdate()" ><clr-icon shape="plus"></clr-icon>Tambah</button>
+					</div>
+			</clr-dg-action-bar>
+			
+
+				<clr-dg-column>
+					Kode
+				</clr-dg-column>
+				<clr-dg-column>
+					Nama Kategori
+				</clr-dg-column>
+
+				<clr-dg-row *clrDgItems="let data of data_kategori" [clrDgItem]="data">
+					<clr-dg-cell>{{data.code}}</clr-dg-cell>
+					<clr-dg-cell>{{data.name}}</clr-dg-cell>
+				</clr-dg-row>
+
+				<clr-dg-footer>
+					{{data_kategori.length}} data
+				</clr-dg-footer>
+		</clr-datagrid>
+				</div>
+				<div class="card-footer">
+
+				</div>
+			</div>
+	</div>
+
+	<div class="clr-row">
+		<div class="card">
+			<div class="card-block">
+				<clr-datagrid [(clrDgSingleSelected)]="select_kategori_add_upd">  
+		<clr-dg-action-bar>
+			<div class="btn-group">
+				<button type="button" class="btn btn-sm btn-secondary" (click)="HapusKategoriUpdate()" ><clr-icon shape="trash"></clr-icon>Hapus</button>
+			</div>
+		</clr-dg-action-bar>
+		
+
+			<clr-dg-column>
+				Kode
+			</clr-dg-column>
+			<clr-dg-column>
+				Nama Kategori
+			</clr-dg-column>
+
+			<clr-dg-placeholder>Tambahkan produk kategori dengan pilihan diatas atau kurangi dengan menghapus</clr-dg-placeholder>
+			<clr-dg-row *clrDgItems="let data of dataupdatekategori" [clrDgItem]="data">
+				<clr-dg-cell>{{data.code}}</clr-dg-cell>
+				<clr-dg-cell>{{data.name}}</clr-dg-cell>
+			</clr-dg-row>
+
+			<clr-dg-footer>
+				{{dataupdatekategori.length}} data
+			</clr-dg-footer>
+	</clr-datagrid>
+			</div>
+			<div class="card-footer">
+
+			</div>
+		</div>
+</div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="modalupdate = false">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="Update()">Update</button>
+    </div>
+</clr-modal>
+
+<!--MODAL LIHAT DATA-->
+<clr-modal [(clrModalOpen)]="modalview">
+    <h3 class="modal-title">Detail Jenis</h3>
+    <div class="modal-body">
+    	<div class="clr-row">
+			<div class="card">
+				<div class="card-block">
+    		<clr-datagrid>  
+				
+					<clr-dg-column>
+						Kode
+					</clr-dg-column>
+					<clr-dg-column>
+						Name
+					</clr-dg-column>
+	
+					<clr-dg-row *clrDgItems="let data of listviewjenis" [clrDgItem]="data">
+						<clr-dg-cell>{{data.code}}</clr-dg-cell>
+						<clr-dg-cell>{{data.name}}</clr-dg-cell>
+					</clr-dg-row>
+	
+					<clr-dg-footer>
+						{{listviewjenis.length}} data
+					</clr-dg-footer>
+			</clr-datagrid>
+
+			<!--PRODUK KATEGORI DENOM-->
+			<div class="card-header">
+				Produk Kategori
+			</div>
+			<clr-datagrid>  
+				
+				<clr-dg-column>
+					Kode
+				</clr-dg-column>
+				<clr-dg-column>
+					Name
+				</clr-dg-column>
+
+				<clr-dg-row *clrDgItems="let data of listviewkat" [clrDgItem]="data">
+					<clr-dg-cell>{{data.code}}</clr-dg-cell>
+					<clr-dg-cell>{{data.name}}</clr-dg-cell>
+				</clr-dg-row>
+
+				<clr-dg-footer>
+					{{listviewkat.length}} data
+				</clr-dg-footer>
+		</clr-datagrid>
+			</div>
+			</div>
+    	</div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="modalview = false">Tutup</button>
+    </div>
+</clr-modal>

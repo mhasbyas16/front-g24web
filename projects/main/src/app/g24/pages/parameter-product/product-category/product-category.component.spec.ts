@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ParameterBerlianComponent } from './parameter-berlian.component';
+import { ProductCategoryComponent } from './product-category.component';
 
-describe('ParameterBerlianComponent', () => {
-  let component: ParameterBerlianComponent;
-  let fixture: ComponentFixture<ParameterBerlianComponent>;
+describe('ProductCategoryComponent', () => {
+  let component: ProductCategoryComponent;
+  let fixture: ComponentFixture<ProductCategoryComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ParameterBerlianComponent ]
+      declarations: [ ProductCategoryComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ParameterBerlianComponent);
+    fixture = TestBed.createComponent(ProductCategoryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

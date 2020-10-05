@@ -8,6 +8,34 @@
                 <button [clrLoading]="false" type="submit" class="btn btn-success" (click)="openModalAdd()">Add New</button>
             </div>
             <div class="card-text">
+                <form clrForm [formGroup]="search" (ngSubmit)="filterTransaction()">
+                    <div class="clr-row clr-align-items-center">
+                        <div class="clr-col-3">
+                            <clr-date-container>
+                                <input clrDate type="date" formControlName="from">
+                            </clr-date-container>
+                        </div> 
+                        <div class="clr-col-3">
+                            <clr-date-container>
+                                <input clrDate type="date" formControlName="to">
+                            </clr-date-container>
+                        </div>
+                        <clr-select-container>
+                            <select clrSelect [(ngModel)]="vertical" placeholder="Select" formControlName="options">
+                                <option [value]="'active'">Active</option>
+                                <option [value]="'notactive'">Not Active</option>
+                                <option [value]="'rejected'">Rejected</option>
+                                <option [value]="'submitted'">Submitted</option>
+                                <option selected [value]="'all'">All</option>
+                            </select>    
+                            <clr-control-error>This form required</clr-control-error>
+
+                        </clr-select-container>
+                        <div class="clr-col-2">
+                            <button type="submit" class="btn btn-icon btn-sm btn-success">Search</button>
+                        </div>
+                    </div>                   
+                </form>
                 <clr-datagrid [clrDgLoading]="false">
                     <!-- <clr-dg-column>Name</clr-dg-column> -->
                     <clr-dg-column>Minimal Jumlah</clr-dg-column>

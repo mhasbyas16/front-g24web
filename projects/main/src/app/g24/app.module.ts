@@ -6,15 +6,18 @@ import { ClarityModule } from '@clr/angular';
 import { HttpClientModule } from '@angular/common/http';
 import { NavModule } from './nav/nav.module';
 
-import { RekeningKoranComponent } from './pages/keuangan/laporan/rekening-koran/rekening-koran/rekening-koran.component';
+import {NgxBarcodeModule} from 'ngx-barcode';
+import { CommonModule, DatePipe } from '@angular/common';
 
 @NgModule({
-  declarations: [RekeningKoranComponent],
+  declarations: [],
   imports: [
     AppRoutingModule,
     ClarityModule,
     HttpClientModule,
-    NavModule
+    NavModule,
+    NgxBarcodeModule,
+    CommonModule,
   ],
 })
 export class AppModule{} 

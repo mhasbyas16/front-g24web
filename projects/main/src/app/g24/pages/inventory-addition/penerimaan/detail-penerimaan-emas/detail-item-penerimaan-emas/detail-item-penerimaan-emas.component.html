@@ -1,0 +1,107 @@
+
+<clr-modal #modalMsg [(clrModalOpen)]="isOpened" [clrModalSize]="'xl'" [clrModalStaticBackdrop]="true">
+    <h3 class="modal-title">{{Title}}</h3>
+    <div class="modal-body">
+        <div class="card" style="margin-top: 0em;">
+            <div class="card-header">
+                    List Item pada Inisiasi/PO: {{inisiasi?.no_po}}
+            </div>
+            <!-- <div class="card-body">
+                <p>Jumlah Ceklist</p>
+                <input type="number" min=0 [(ngModel)]="checkNumber">
+            </div> -->
+            <clr-datagrid>
+                <clr-dg-action-bar>
+                    <!-- <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-secondary" (click)="onTerima()" *ngIf="Selected?.flag != 'terima_full' && Selected?.flag != null"><clr-icon shape="pencil"></clr-icon>Terima</button>
+                        <button type="button" class="btn btn-sm btn-secondary" (click)="onLihat()" *ngIf="Selected?._id != ''"><clr-icon shape="view-list"></clr-icon>Lihat</button>
+                        <button type="button" class="btn btn-sm btn-secondary" (click)="Debug()"><clr-icon shape="bug"></clr-icon>Debug</button>
+                    </div> -->
+                </clr-dg-action-bar>
+                
+                <!-- 10 Kolom -->
+                
+                <clr-dg-column>
+                    SKU
+                </clr-dg-column>
+                <clr-dg-column>
+                    Denom
+                </clr-dg-column>
+                <!-- <clr-dg-column>
+                    Series
+                </clr-dg-column> -->
+                <clr-dg-column>
+                    Pieces
+                </clr-dg-column>
+                <!-- <clr-dg-column>
+                    Ongkos
+                </clr-dg-column> -->
+                <clr-dg-column>
+                    Pajak
+                </clr-dg-column>
+    
+                <clr-dg-row *clrDgItems="let data of (getItemsOfInisiasi() || []); let itemsIndex = index;" [clrDgItem]="data">
+                    <clr-dg-cell>{{data?.sku}} </clr-dg-cell>
+                    <clr-dg-cell>{{GetDisplayValue(data['product-denom'])}}</clr-dg-cell>
+                    <!-- <clr-dg-cell>{{GetDisplayValue(data['product-series'])}}</clr-dg-cell> -->
+                    <clr-dg-cell>{{data?.pieces}}</clr-dg-cell>
+                    <!-- <clr-dg-cell>{{data?.ongkos_pieces}}</clr-dg-cell> -->
+                    <!-- <clr-dg-cell>{{data.gram_tukar}}</clr-dg-cell><input readonly type="number" class="clr-input" [ngModel]="input.items[i]['pajak'] = 0" [ngModelOptions]="{standalone:true}"> -->
+                    <clr-dg-cell>{{data?.pajak | number : '2.'}} </clr-dg-cell>
+                    
+                    <clr-dg-row-detail *clrIfExpanded="false" (clrIfExpandedChange)="onExpand(itemsIndex)">
+                        <table class="table table-compact">
+                            <thead>
+                                <tr>
+                                    <!-- <th><button [disabled]="mode == EPriviledge.READ ? true : null" class="btn btn-primary btn-icon btn-sm" (click)="onAddProduct(itemsIndex)" type="button" ><clr-icon shape="plus"></clr-icon></button></th> -->
+                                    <!-- <th><input type="checkbox" [(ngModel)]="data.checked" (change)="onCheckAll(data)" /></th> -->
+                                    <th>No.</th>
+                                    <th>_id</th>
+                                    <th>SKU</th>
+                                    <th>Barcode</th>
+                                    <th>Vendor</th>
+                                    <th>Denom</th>
+                                    <!-- <th>Series</th>
+                                    <th>Ongkos (Rp.)</th> -->
+                                    <th>HPP Inisiasi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor="let product of data?.products; let productIndex = index">
+                                    <tr>
+                                        <!-- <td><button [disabled]="mode == EPriviledge.READ ? true : null" class="btn btn-danger btn-icon btn-sm" (click)="onDeleteProduct(itemsIndex, productIndex)" type="button"><clr-icon shape="minus"></clr-icon></button></td> -->
+                                        <!-- <td><input [disabled]="isAlreadyTerima(product)" type="checkbox" [(ngModel)]="product.isTerima" /></td> -->
+                                        <td>{{productIndex + 1}}</td>
+                                        <td>{{product?._id}}</td>
+                                        <td>{{product?.sku}}</td>
+                                        <td>{{product?.code}}</td>
+                                        <td>{{GetDisplayValue(product.vendor)}}</td>
+                                        <td>{{GetDisplayValue(product['product-denom'])}}</td>
+                                        <!-- <td>{{GetDisplayValue(product['product-series'])}}</td> -->
+                                        <!-- <td>{{product?.ongkos_pieces}}</td> -->
+                                        <td>{{product?.hpp_inisiasi}}</td>
+                                    </tr>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                        
+                    </clr-dg-row-detail>
+                </clr-dg-row>
+    
+                <clr-dg-footer>
+                    <div>
+                        <clr-dg-pagination #pagination [clrDgPageSize]="10">
+                            <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Items per page</clr-dg-page-size>
+                            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                            of {{pagination.totalItems}} items
+                        </clr-dg-pagination>
+                    </div>
+                      {{ inisiasi?.items?.length || 0}} items.
+                </clr-dg-footer>
+            </clr-datagrid>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" [disabled]="mode == EPriviledge.READ" (click)="doSave()">Simpan</button>
+    </div>
+</clr-modal>

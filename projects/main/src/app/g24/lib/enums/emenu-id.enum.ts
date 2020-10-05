@@ -24,7 +24,8 @@ export enum EMenuID {
     MUTASI              = '2001',
     MUTASI_TE           = '2002', // need to Confirm
     MUTASI_BAKU         = '2003', // need to Confirm
-    TERIMA              = '2004',
+    TERIMA_MUTASI       = '2004',
+    APP_MUTASI          = '2005',
     
     /**
      * PROCESSING
@@ -95,6 +96,15 @@ export enum EMenuID {
      */
     SYSTEM_PARAM        = '9900',
     
+    PARAM_KATEGORI      = '9901',
+    PARAM_CLARITY       = '9902',
+    PARAM_DENOM         = '9903',
+    PARAM_DIAMOND_COLOR  = '9904',
+    PARAM_GOLD_COLOR    = '9905',
+    PARAM_JENIS         = '9906',
+    PARAM_PURITY        = '9907',
+    PARAM_SERIES        = '9908',
+
     // Offline Sale
     DISTRO              = '10001',
     ROLE                = '10002',

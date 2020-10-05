@@ -1,0 +1,147 @@
+<div class="clr-row">
+        <div class="card">
+            <div class="card-header">
+                Param Kategori
+            </div>
+            <div class="card-block">
+            	<div class="clr-row">
+            		<div class="clr-col-6">
+            			<div class="clr-form-control">
+            				<label class="clr-control-label">Kode</label>
+            				<div class="clr-control-container">
+            				<select [(ngModel)]="search.code" #code clrSelect name="code">
+            					<option [ngValue]=""></option>
+            					<ng-container *ngFor="let data of datakategori">
+            						<option [ngValue]="data">{{data.code}}</option>
+            					</ng-container>
+            				</select>
+            				</div>
+            			</div>
+            		</div>
+            		<div class="clr-col-6">
+            			<div class="clr-form-control">
+            				<label class="clr-control-label">Nama Kategori</label>
+            				<div class="clr-control-container">
+            				<select [(ngModel)]="search.name" #name clrSelect name="name">
+            					<option [ngValue]=""></option>
+            					<ng-container *ngFor="let data of datakategori">
+            						<option [ngValue]="data">{{data.name}}</option>
+            					</ng-container>
+            				</select>
+            				</div>
+            			</div>
+            		</div>
+            	</div>
+            </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-icon" aria-label="search" (click)="SearchData()">
+				    Cari<clr-icon shape="search"></clr-icon>
+				</button>
+            </div>
+        </div>
+</div>
+
+
+<!--DATAGRID-->
+<div class="clr-row">
+        <div class="card">
+            <div class="card-header">
+                Hasil Pencarian
+            </div>
+            <div class="card-block">
+            	<clr-datagrid [(clrDgSingleSelected)]="data_view">  
+        <clr-dg-action-bar>
+            <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-secondary" (click)="Tambah()" ><clr-icon shape="plus"></clr-icon>Tambah</button>
+                <button type="button" class="btn btn-sm btn-secondary" (click)="Ubah()" ><clr-icon shape="sync"></clr-icon>Ubah</button>
+                <button type="button" class="btn btn-sm btn-secondary" (click)="Hapus()" ><clr-icon shape="trash"></clr-icon>Hapus</button>
+            </div>
+        </clr-dg-action-bar>
+        
+
+        <clr-dg-column>
+            Kode
+        </clr-dg-column>
+        <clr-dg-column>
+            Nama Kategori
+        </clr-dg-column>
+
+        <clr-dg-row *clrDgItems="let data of listkategori" [clrDgItem]="data">
+            <clr-dg-cell>{{data.code}}</clr-dg-cell>
+            <clr-dg-cell>{{data.name}}</clr-dg-cell>
+        </clr-dg-row>
+
+        <clr-dg-footer>
+            {{listkategori.length}} data
+        </clr-dg-footer>
+    </clr-datagrid>
+            </div>
+            <div class="card-footer">
+
+            </div>
+        </div>
+</div>
+
+
+<!--MODAL TAMBAH DATA-->
+<clr-modal [(clrModalOpen)]="modaltambah">
+    <h3 class="modal-title">Tambah Param Kategori</h3>
+    <div class="modal-body">
+    	<div class="clr-row">
+    		<div class="clr-col-6">
+    			<div class="clr-form-control">
+    				<clr-input-container>
+				    <label>Nama Kategori</label>
+				    <input clrInput [(ngModel)]="input.name" name="name" required />
+				    <clr-control-error>Wajib di isi</clr-control-error>
+				  </clr-input-container>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="modaltambah = false">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="Simpan()">Simpan</button>
+    </div>
+</clr-modal>
+
+
+<!--MODAL UPDATE DATA-->
+<clr-modal [(clrModalOpen)]="modalupdate">
+    <h3 class="modal-title">Update Param Kategori</h3>
+    <div class="modal-body">
+    	<div class="clr-row">
+    		<div class="clr-col-6">
+    			<div class="clr-form-control">
+    				<clr-input-container>
+    					<label>Id</label>
+    					<input clrInput [(ngModel)]="dataupdate.id" name="id" value="{{dataupdate._id}}" style="width: 400px" readonly>
+    				</clr-input-container>
+    			</div>
+    		</div>
+    	</div>
+    	<div class="clr-row">
+    		<div class="clr-col-6">
+    			<div class="clr-form-control">
+    				<clr-input-container>
+				    <label>Kode</label>
+				    <input clrInput [(ngModel)]="dataupdate.code" name="code" value="{{dataupdate.code}}" readonly />
+				  </clr-input-container>
+    			</div>
+    		</div>
+    		<div class="clr-col-6">
+    			<div class="clr-form-control">
+    				<clr-input-container>
+				    <label>Nama Kategori</label>
+				    <input clrInput [(ngModel)]="dataupdate.name" name="name" value="{{dataupdate.name}}" required />
+				    <clr-control-error>Wajib di isi</clr-control-error>
+				  </clr-input-container>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="modalupdate = false">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="Update()">Update</button>
+    </div>
+</clr-modal>

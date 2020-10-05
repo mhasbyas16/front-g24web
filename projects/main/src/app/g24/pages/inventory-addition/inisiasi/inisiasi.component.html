@@ -10,7 +10,7 @@
             </clr-tab-content>
         </ng-template>
     </clr-tab>
-    <clr-tab>
+    <!-- <clr-tab>
         <button clrTabLink>Permata</button>
         <ng-template [clrIfActive]="input['product-category']?.code?.includes('01')" (clrIfActiveChange)="input['product-category']">
             <clr-tab-content>
@@ -19,7 +19,7 @@
                 </detail-inisiasi-berlian>
             </clr-tab-content>
         </ng-template>
-    </clr-tab>
+    </clr-tab> -->
     <clr-tab>
         <button clrTabLink>Souvenir</button>
         <ng-template [clrIfActive]="input['product-category']?.code?.includes('02')" (clrIfActiveChange)="input['product-category']">
@@ -44,9 +44,9 @@
         <button clrTabLink>Gift</button>
         <ng-template [clrIfActive]="input['product-category']?.code?.includes('04')" (clrIfActiveChange)="input['product-category']">
             <clr-tab-content>
-                <!-- <detail-inisiasi-gift>
+                <detail-inisiasi-gift>
 
-                </detail-inisiasi-gift> -->
+                </detail-inisiasi-gift>
             </clr-tab-content>
         </ng-template>
     </clr-tab>
@@ -60,14 +60,14 @@
             </clr-tab-content>
         </ng-template>
     </clr-tab>
-    <clr-tab>
+    <!-- <clr-tab>
         <button clrTabLink>Dinar</button>
         <ng-template [clrIfActive]="input['product-category']?.code?.includes('06')" (clrIfActiveChange)="input['product-category']">
             <clr-tab-content>
-                <!-- <detail-inisiasi-dinar>
+                <-- <detail-inisiasi-dinar>
 
-                </detail-inisiasi-dinar> -->
+                </detail-inisiasi-dinar> --!>
             </clr-tab-content>
         </ng-template>
-    </clr-tab>
+    </clr-tab> -->
 </clr-tabs>

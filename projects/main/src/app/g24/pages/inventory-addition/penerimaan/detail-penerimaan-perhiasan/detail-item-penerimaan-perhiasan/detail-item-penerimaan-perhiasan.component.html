@@ -1,0 +1,133 @@
+
+<clr-modal #modalMsg [(clrModalOpen)]="isOpened" [clrModalSize]="'xl'" [clrModalStaticBackdrop]="true">
+    <h3 class="modal-title">{{Title}}</h3>
+    <div class="modal-body">
+        <div class="card" style="margin-top: 0em;">
+            <div class="card-header">
+                    List Item pada Inisiasi/PO: {{inisiasi?.no_po}}
+            </div>
+            <clr-datagrid>
+                <clr-dg-action-bar>
+                    <!-- <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-secondary" (click)="onTerima()" *ngIf="Selected?.flag != 'terima_full' && Selected?.flag != null"><clr-icon shape="pencil"></clr-icon>Terima</button>
+                        <button type="button" class="btn btn-sm btn-secondary" (click)="onLihat()" *ngIf="Selected?._id != ''"><clr-icon shape="view-list"></clr-icon>Lihat</button>
+                        <button type="button" class="btn btn-sm btn-secondary" (click)="Debug()"><clr-icon shape="bug"></clr-icon>Debug</button>
+                    </div> -->
+                </clr-dg-action-bar>
+                
+                <!-- 10 Kolom -->
+                
+                <clr-dg-column>
+                    SKU
+                </clr-dg-column>
+                <clr-dg-column>
+                    Kadar
+                </clr-dg-column>
+                <clr-dg-column>
+                    Jenis
+                </clr-dg-column>
+                <clr-dg-column>
+                    Warna
+                </clr-dg-column>
+                <clr-dg-column>
+                    Berat
+                </clr-dg-column>
+                <clr-dg-column>
+                    Pieces
+                </clr-dg-column>
+                <clr-dg-column>
+                    Baku Tukar
+                </clr-dg-column>
+                <clr-dg-column>
+                    Gram Tukar
+                </clr-dg-column>
+                <clr-dg-column>
+                    Ongkos
+                </clr-dg-column>
+                <clr-dg-column>
+                    Pajak
+                </clr-dg-column>
+    
+                <clr-dg-row *clrDgItems="let data of (getItemsOfInisiasi() || []); let itemsIndex = index;" [clrDgItem]="data">
+                    <clr-dg-cell>{{data?.sku}} </clr-dg-cell>
+                    <clr-dg-cell>{{GetDisplayValue(data['product-purity'])}}</clr-dg-cell>
+                    <clr-dg-cell>{{GetDisplayValue(data['product-jenis'])}}</clr-dg-cell>
+                    <clr-dg-cell>{{GetDisplayValue(data['product-gold-color'])}}</clr-dg-cell>
+                    <clr-dg-cell>{{data?.berat}} <span [ngStyle]="beratStyleValid(data)">({{getTotalBeratOfItem(data)}})</span></clr-dg-cell>
+                    <clr-dg-cell>{{data?.pieces}}</clr-dg-cell>
+                    <clr-dg-cell>{{data?.baku_tukar}}</clr-dg-cell>
+                    <clr-dg-cell>{{data?.gram_tukar}} <span [ngStyle]="gramTukarStyleValid(data)">({{getTotalGramTukarOfItem(data)}})</span></clr-dg-cell>
+                    <clr-dg-cell>{{data?.ongkos}}</clr-dg-cell>
+                    <!-- <clr-dg-cell>{{data.gram_tukar}}</clr-dg-cell><input readonly type="number" class="clr-input" [ngModel]="input.items[i]['pajak'] = 0" [ngModelOptions]="{standalone:true}"> -->
+                    <clr-dg-cell>{{data?.pajak | number : '2.'}} </clr-dg-cell>
+                    
+                    <clr-dg-row-detail *clrIfExpanded="false" (clrIfExpandedChange)="onExpand(itemsIndex)">
+                        <table class="table table-compact">
+                            <thead>
+                                <tr>
+                                    <!-- <th><button [disabled]="mode == EPriviledge.READ ? true : null" class="btn btn-primary btn-icon btn-sm" (click)="onAddProduct(itemsIndex)" type="button" ><clr-icon shape="plus"></clr-icon></button></th> -->
+                                    <th>No.</th>
+                                    <th>_id</th>
+                                    <th>SKU</th>
+                                    <th>Barcode</th>
+                                    <th>Vendor</th>
+                                    <th>Kadar (per 1000)</th>
+                                    <th>Warna</th>
+                                    <th>Jenis</th>
+                                    <th>Berat</th>
+                                    <th>Gram Tukar</th>
+                                    <th>Ongkos (per 1000)</th>
+                                    <th>Baku Tukar (%)</th>
+                                    <th>HPP Inisiasi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor="let product of data?.products; let productIndex = index">
+                                    <tr>
+                                        <!-- <td><button [disabled]="mode == EPriviledge.READ ? true : null" class="btn btn-danger btn-icon btn-sm" (click)="onDeleteProduct(itemsIndex, productIndex)" type="button"><clr-icon shape="minus"></clr-icon></button></td> -->
+                                        <td>{{productIndex + 1}}</td>
+                                        <td>{{product?._id}}</td>
+                                        <td>{{product?.sku}}</td>
+                                        <td>{{product?.code}}</td>
+                                        <td>{{GetDisplayValue(product.vendor)}}</td>
+                                        <td>{{GetDisplayValue(product['product-purity'])}}</td>
+                                        <td>{{GetDisplayValue(product['product-gold-color'])}}</td>
+                                        <td>{{GetDisplayValue(product['product-jenis'])}}</td>
+                                        <!-- <td>
+                                            <select [disabled]="mode == EPriviledge.READ ? true : null" [(ngModel)]="product['product-jenis']" [ngModelOptions]="{standalone:true}" #vendor class="clr-select" name="vendor">
+                                                <option value=null></option>
+                                                <ng-container *ngFor="let jenis of jeniss">
+                                                    <option [ngValue]="jenis">{{jenis.name}}</option>
+                                                </ng-container>
+                                            </select>
+                                        </td> -->
+                                        <td><input [disabled]="mode == EPriviledge.READ ? true : null" [(ngModel)]="product['berat']" (ngModelChange)="onBeratChanged(productIndex, itemsIndex)" type="number" min="0.00" step="0.00" required /></td>
+                                        <td><input [disabled]="mode == EPriviledge.READ ? true : null" [(ngModel)]="product['gram_tukar']" (ngModelChange)="onGramTukarChanged(productIndex, itemsIndex)" type="number" min="0.00" step="0.00" required /></td>
+                                        <td>{{product?.ongkos}}</td>
+                                        <td>{{product?.baku_tukar}}</td>
+                                        <td>{{product?.hpp_inisiasi}}</td>
+                                    </tr>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                        
+                    </clr-dg-row-detail>
+                </clr-dg-row>
+    
+                <clr-dg-footer>
+                    <div>
+                        <clr-dg-pagination #pagination [clrDgPageSize]="10">
+                            <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Items per page</clr-dg-page-size>
+                            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                            of {{pagination.totalItems}} items
+                        </clr-dg-pagination>
+                    </div>
+                      {{ inisiasi?.items?.length || 0}} items.
+                </clr-dg-footer>
+            </clr-datagrid>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" [disabled]="mode == EPriviledge.READ" (click)="doSave()">Simpan</button>
+    </div>
+</clr-modal>
