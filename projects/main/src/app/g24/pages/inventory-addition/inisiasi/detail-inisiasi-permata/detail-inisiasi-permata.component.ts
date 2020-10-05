@@ -745,12 +745,12 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
 
   async ResetAll()
   {
+    this.errorHappened = false;
     await this.LoadAllParameter();
     await this.LoadDate();
     await this.LoadParameterJual();
     await this.LoadMargin();
     this.input = this.defaultInput();
-    this.errorHappened = false;
   }
 
   onPanjangChanged()
@@ -780,8 +780,8 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
 
   hitungHPPBerlian()
   {
-    if(this.input == null) return;
-    if(this.hbeli == null) return;
+    // if(this.input == null) return;
+    // if(this.hbeli == null) return;
 
     let hpp_berlian = Number(this.input.hpp_berlian);
     let persen_margin_berlian = Number(this.input.persen_margin_berlian);
@@ -789,6 +789,7 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
     let margin_berlian = hpp_berlian * persen_margin_berlian / 100;
     margin_berlian = Math.round(margin_berlian);
 
+    console.log(this.hbeli, this.input, this.hbeli, margin_berlian, hpp_berlian, persen_margin_berlian);
     this.input.margin_berlian = margin_berlian;
     return this.input.margin_berlian;
   }

@@ -14,10 +14,11 @@ import { SearchNasabahComponent } from './modal/search-nasabah/search-nasabah.co
 import { ModalOutletComponent } from './modal-outlet/modal-outlet.component';
 import { CartBuybackComponent } from './modal/cart-buyback/cart-buyback.component';
 import { CheckoutBuybackComponent } from './modal/checkout-buyback/checkout-buyback.component';
+import { LoadingSpinnerComponent } from './modal/loading-spinner/loading-spinner.component';
 
 
 @NgModule({
-  declarations: [HeaderComponent, SidebarComponent, ContentComponent, FooterComponent, CartComponent, CheckoutComponent, AddNasabahComponent, SearchNasabahComponent, ModalOutletComponent, CartBuybackComponent, CheckoutBuybackComponent],
+  declarations: [HeaderComponent, SidebarComponent, ContentComponent, FooterComponent, CartComponent, CheckoutComponent, AddNasabahComponent, SearchNasabahComponent, ModalOutletComponent, CartBuybackComponent, CheckoutBuybackComponent, LoadingSpinnerComponent],
   imports: [
     CommonModule,
     RouterModule,
@@ -32,7 +33,8 @@ import { CheckoutBuybackComponent } from './modal/checkout-buyback/checkout-buyb
     FooterComponent,
     ContentComponent,
     CartComponent,
-    CartBuybackComponent
+    CartBuybackComponent,
+    LoadingSpinnerComponent
   ],
 })
 export class NavModule { }

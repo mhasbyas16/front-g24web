@@ -18,6 +18,8 @@ import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
 import { BasePersistentFields } from '../../../../lib/base/base-persistent-fields';
 import { ServerDateTimeService } from '../../../../services/system/server-date-time.service';
 import { JurnalInisiasiService } from '../../../../services/keuangan/jurnal/stock/jurnal-inisiasi.service';
+import { BankService } from '../../../../services/transaction/bank.service';
+import { OrderStatus } from '../../../../lib/enum/order-status';
  
 @Component({
   selector: 'detail-inisiasi-emas',
@@ -95,6 +97,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
   {
     return {
       sku : null, 'product-denom' : null, 
+      total_terima : 0, detail_terima : 0,
       total_berat : 0,
       pieces : 0, pajak : 0,
       harga_piece : 0, total_harga : 0
@@ -258,6 +261,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
     private inisiasiService : InisiasiService,
     private productCatService : ProductCategoryService,
     private dateService : ServerDateTimeService,
+    private bankService : BankService,
     // private logService : LogService,
 
     private toastr : ToastrService,
@@ -283,6 +287,21 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
 
     // ModalOutlet.AddModal('inisiasi-detail');
   }
+  
+  async LoadBanks()
+  {
+    while(this.banks.length > 0)
+    {
+      this.banks.pop();
+    }
+
+    let banks = await this.bankService.list("?").toPromise();
+    for(let i = 0; i < banks.length; i++)
+    {
+      this.banks.push(banks[i]);
+    }
+    this.banks.sort((a,b) => ('' + a.name).localeCompare(b.name))
+  }
 
   async LoadProductCategory()
   {
@@ -303,6 +322,11 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
 
   async LoadVendor()
   {
+    while(this.vendors.length > 0)
+    {
+      this.vendors.pop();
+    }
+
     let vendors = await this.vendorService.list("?product-category.code=c05").toPromise();
     for(let i = 0; i < vendors.length; i++)
     {
@@ -313,6 +337,11 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
 
   async LoadDenom()
   {
+    while(this.denoms.length > 0)
+    {
+      this.denoms.pop();
+    }
+
     let denoms = await this.denomService.list("?product-category.code=c05").toPromise();
     for(let i = 0; i < denoms.length; i++)
     {
@@ -323,6 +352,11 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
   
   async LoadSeries()
   {
+    while(this.series.length > 0)
+    {
+      this.series.pop();
+    }
+
     let series = await this.seriesService.list("?").toPromise();
     for(let i = 0; i < series.length; i++)
     {
@@ -350,7 +384,8 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
     this.LoadProductCategory();
     this.LoadVendor();
     this.LoadDenom();
-    this.LoadSeries();
+    // this.LoadSeries();
+    this.LoadBanks();
     
     this.onProductChanged();
   }
@@ -362,6 +397,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
 
   async ResetAll()
   {
+    await this.LoadAllParameter();
     await this.LoadDate();
     this.input = this.defaultInput();
     console.log(this.input);
@@ -534,7 +570,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
       create_time : time,
       create_by : this.user.username,
       unit : this.user.unit.code,
-      order_status : "submit",
+      order_status : OrderStatus.SUBMIT.code,
       status_bayar : '1',
       __version : new Date().getMilliseconds(),
       __version_d : "0",
@@ -549,7 +585,8 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
     this.inisiasiService.add(init).subscribe(output => {
       if(output == false)
       {
-        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + this.inisiasiService.message);
+        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + this.inisiasiService.message());
+        this.ResetAll();
         return;
       } else {
         this.toastr.success("Inisiasi Berhasil. Harap hubungi Kepala Departemen untuk melakukan Approval. No. PO : " + output.no_po, "Info", {disableTimeOut : true, closeButton : true, tapToDismiss : false});
@@ -619,7 +656,16 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
   {
     for(let key in this.input)
     {
+
       if(key == 'total_pajak' && this.input.tipe_bayar == PaymentType.UANG.code) continue;
+      
+      if(key == 'bank' && this.input.tipe_bayar == PaymentType.MAKLON.code) continue;
+
+      if(key == 'bank' && this.input.asal_uang == 'kas') continue;
+
+      if(key == 'asal_uang' && this.input.tipe_bayar == PaymentType.MAKLON.code) continue;
+
+      if(key == 'asal_uang' && this.input.tipe_bayar == PaymentType.MAKLON.code) continue;
 
       let value = this.input[key];
       console.log(value, key, 'key')
@@ -635,6 +681,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
 
   validateAdd(item : any)
   {
+
     if(this.input['tipe_bayar'] == PaymentType.UANG.code && this.input['asal_uang'] == "")
     {
       this.toastr.warning("Asal Uang belum diisi", "Peringatan!");
@@ -673,6 +720,10 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
 
     for(let key in item)
     {
+      if(key == 'total_terima') continue;
+      
+      if(key == 'detail_terima') continue;
+      
       if(item[key] == null || item[key] == "null")
       {
         this.toastr.warning(this.GetDisplayName(key) + ' belum diisi.', "Peringatan!");

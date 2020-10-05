@@ -201,7 +201,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     return {
       _id : "", code : "", sku : "", 
       "product-jenis" : null, "product-category" : null, "product-purity" : null, "product-gold-color" : null,
-      berat : 0.00, baku_tukar : 0.0, ongkos : 0.0, unit : null,
+      berat : 0.00, baku_tukar : 0.0, gram_tukar : 0, ongkos : 0.0, unit : null,
       tipe_stock : "stock", vendor : null, flag : "stock", location : "",
       no_po : "", no_item_po : 0, no_index_products : 0,
       hpp_inisiasi : 0, hpp : 0

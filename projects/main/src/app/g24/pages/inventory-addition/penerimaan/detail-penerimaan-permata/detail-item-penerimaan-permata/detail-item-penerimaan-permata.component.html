@@ -66,6 +66,7 @@
                 <div class="clr-row">
                     &nbsp;
                 </div>
+                &nbsp;
                 <div class="clr-row">
                     <div class="clr-col-3">
                         <b>
@@ -78,6 +79,19 @@
                         </b>
                     </div>
                 </div>
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Asal Uang &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{GetDisplayName(inisiasi?.tipe_bayar)}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                &nbsp;
                 <div class="clr-row">
                     <div class="clr-col-3">
                         <b>
@@ -126,7 +140,7 @@
                         </b>
                     </div>
                 </div>
-                &nbsp;
+                <br>
                 <div class="clr-row">
                     <div class="clr-col-3">
                         <b>
@@ -230,22 +244,18 @@
                                     <clr-stack-content>{{inisiasi?.warna_berlian}}</clr-stack-content>
                                 </clr-stack-block>
                                 <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="4">
-                                    <clr-stack-label>Carat Batu</clr-stack-label>
-                                    <clr-stack-content>{{inisiasi?.carat_batu}}</clr-stack-content>
-                                </clr-stack-block>
-                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="5">
                                     <clr-stack-label>Total Jumlah Butir Berlian</clr-stack-label>
                                     <clr-stack-content>{{inisiasi?.total_butir_berlian}}</clr-stack-content>
                                 </clr-stack-block>
-                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="6">
+                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="5">
                                     <clr-stack-label>Total Jumlah Carat Berlian</clr-stack-label>
                                     <clr-stack-content>{{inisiasi?.total_carat_berlian}}</clr-stack-content>
                                 </clr-stack-block>
-                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="7">
+                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="6">
                                     <clr-stack-label>HPP Berlian</clr-stack-label>
                                     <clr-stack-content>{{inisiasi?.hpp_berlian | mask : 'separator' : ','}}</clr-stack-content>
                                 </clr-stack-block>
-                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="8">
+                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="7">
                                     <clr-stack-label>Margin Berlian</clr-stack-label>
                                     <clr-stack-content>{{inisiasi?.margin_berlian | mask : 'separator' : ','}}</clr-stack-content>
                                 </clr-stack-block>
