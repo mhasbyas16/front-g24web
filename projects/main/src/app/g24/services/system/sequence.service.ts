@@ -17,4 +17,9 @@ export class SequenceService {
   peek(data?) {
     return this.commonService.customPost("peek", this.key, data);
   }
+
+  message()
+  {
+    return this.commonService.message;
+  }
 }

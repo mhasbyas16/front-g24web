@@ -2,7 +2,7 @@
 <div class="clr-row">
     <div class="card" style="margin-top: 0em;">
         <div class="card-header">
-            Inisiasi Emas Batangan
+            <span><b>Inisiasi Emas Batangan</b></span> &nbsp;&nbsp; <a *ngIf="errorHappened" class="label label-danger" style="cursor: pointer;" (click)="ResetAll()"><strong>Terjadi Error! Klik label ini untuk refresh</strong></a>
         </div>
         <div class="card-block">
             <form #inisiasi id="inisiasi" clrForm>
@@ -387,3 +387,8 @@
     </div>
 </div>
 </ng-template>
+
+
+<loading-spinner #spinner>
+
+</loading-spinner>

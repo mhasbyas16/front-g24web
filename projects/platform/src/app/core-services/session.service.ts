@@ -6,10 +6,10 @@ import * as CryptoJS from 'crypto-js';
 })
 export class SessionService {
 
-  // server: string = "http://localhost:8000";
+  server: string = "http://localhost:8000";
   // server: string = "http://34.87.141.184:8000";
   // server: string = "http://192.168.0.21:8000";
-  server: string = "https://dev.g24sys.com";
+  // server: string = "https://dev.g24sys.com";
   pasphrase = "";
 
   constructor() {
@@ -90,8 +90,15 @@ export class SessionService {
     sessionStorage.clear();
   }
 
-  public postHeader() {
-    if (this.getLoginId() != null) {
+  public postHeader(isJSON? : boolean) {
+    if(this.getLoginId() != null && isJSON)
+    {
+      return {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + this.getBearer()
+      };
+    } else if (this.getLoginId() != null) {
       return {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Accept': 'application/json',
