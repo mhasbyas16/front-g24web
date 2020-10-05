@@ -228,6 +228,7 @@ export class CheckoutBuybackComponent implements OnInit {
     console.debug(this.incId, " this.incId")
     console.debug(this.emasBatangan,"pteantan")
     console.debug(this.perhiasan,"pteantan")
+    console.debug(this.berlian,"pteantan")
   }
 
   refreshId(){
@@ -259,12 +260,16 @@ export class CheckoutBuybackComponent implements OnInit {
     //     console.debug("product flag update failed", this.transactionFlagBuybackService.batchUpdate(btoa(JSON.stringify(this.sessionService.getUnit()))));
     //   } 
     // })
-
+    console.debug(this.berlian, "pantek")
     if (this.perhiasan != null) {
       let dataPerhiasan = this.transactionFlagBuybackService.batchUpdateTransaction(this.perhiasan, "perhiasan",btoa(JSON.stringify(this.sessionService.getUnit())))
     } 
     if(this.emasBatangan != null) {
       let dataLM = this.transactionFlagBuybackService.batchUpdateTransaction(this.emasBatangan, "lm", btoa(JSON.stringify(this.sessionService.getUnit())))
+    }
+    if(this.berlian != null) {
+      
+      let dataBerlian = this.transactionFlagBuybackService.batchUpdateTransaction(this.berlian, "berlian", btoa(JSON.stringify(this.sessionService.getUnit())))
     }
     
     

@@ -4,6 +4,7 @@ import { ClarityModule } from '@clr/angular';
 import { ToastrModule } from 'ngx-toastr';
 
 import { LaporanPenjualanComponent } from './laporan-penjualan/laporan-penjualan.component';
+import { LaporanBuybackComponent } from './laporan-buyback/laporan-buyback.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LaporanRoutingModule } from './laporan-routing.module';
 import { NavModule } from '../../nav/nav.module';
@@ -14,7 +15,7 @@ import { RekeningKoranComponent } from './rekening-koran/rekening-koran.componen
 
 
 @NgModule({
-  declarations: [LaporanPenjualanComponent, ExportLaporanComponent, RekeningKoranComponent],
+  declarations: [LaporanPenjualanComponent, ExportLaporanComponent, RekeningKoranComponent, LaporanBuybackComponent],
   imports: [
     CommonModule,
     FormsModule,
