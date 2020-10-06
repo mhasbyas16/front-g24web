@@ -110,12 +110,21 @@ export class TransactionFlagBuybackService {
         data = val
         dataProduct = "LM"
         break;
-
+        
       case "berlian":
         data = val
         dataProduct = "BERLIAN"
         break;
+      
+      case "souvenir":
+        data = val
+        dataProduct = "GS"
+        break;
 
+      case "dinar":
+          data = val
+          dataProduct = "DINAR"
+          break;
       default:
         break;
     }
@@ -170,15 +179,37 @@ export class TransactionFlagBuybackService {
 
         //berlian
         if ( dataProduct == "BERLIAN") {
-         
           for (let isi of getProduct.product.BERLIAN) {
-            console.debug(isi.detail._id, "id1")
-            console.debug(isiData.detail._id, "id2")
             if (isi.detail._id == isiData.detail._id) {
-              
               isi.buyback = "yes"
               let updateB = {_id:isi.detail._id , flag: "stock",unit: _unit, unit_encoded: 'base64'};
               this.productService.update(updateB).subscribe((response:any)=>{
+                console.debug(response);
+              })
+            }
+          }
+        }
+
+        //souvenir
+        if ( dataProduct == "GS") {
+          for (let isi of getProduct.product.GS) {
+            if (isi.detail._id == isiData.detail._id) {
+              isi.buyback = "yes"
+              let updateGS = {_id:isi.detail._id , flag: "stock",unit: _unit, unit_encoded: 'base64'};
+              this.productService.update(updateGS).subscribe((response:any)=>{
+                console.debug(response);
+              })
+            }
+          }
+        }
+
+         //dinar
+         if ( dataProduct == "DINAR") {
+          for (let isi of getProduct.product.DINAR) {
+            if (isi.detail._id == isiData.detail._id) {
+              isi.buyback = "yes"
+              let updateGS = {_id:isi.detail._id , flag: "stock",unit: _unit, unit_encoded: 'base64'};
+              this.productService.update(updateGS).subscribe((response:any)=>{
                 console.debug(response);
               })
             }

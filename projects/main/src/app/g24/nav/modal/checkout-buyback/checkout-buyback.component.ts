@@ -225,10 +225,7 @@ export class CheckoutBuybackComponent implements OnInit {
     }
      console.debug(this.formData.getRawValue(), "we" )
     this.validModel = true;
-    console.debug(this.incId, " this.incId")
-    console.debug(this.emasBatangan,"pteantan")
-    console.debug(this.perhiasan,"pteantan")
-    console.debug(this.berlian,"pteantan")
+    
   }
 
   refreshId(){
@@ -268,8 +265,13 @@ export class CheckoutBuybackComponent implements OnInit {
       let dataLM = this.transactionFlagBuybackService.batchUpdateTransaction(this.emasBatangan, "lm", btoa(JSON.stringify(this.sessionService.getUnit())))
     }
     if(this.berlian != null) {
-      
       let dataBerlian = this.transactionFlagBuybackService.batchUpdateTransaction(this.berlian, "berlian", btoa(JSON.stringify(this.sessionService.getUnit())))
+    }
+    if(this.souvenir != null) {
+      let dataSouvenir = this.transactionFlagBuybackService.batchUpdateTransaction(this.souvenir, "souvenir", btoa(JSON.stringify(this.sessionService.getUnit())))
+    }
+    if(this.dinar != null) {
+      let dataSouvenir = this.transactionFlagBuybackService.batchUpdateTransaction(this.dinar, "dinar", btoa(JSON.stringify(this.sessionService.getUnit())))
     }
 
     this.buybackService.add(data).subscribe((response: any) => {
@@ -284,12 +286,17 @@ export class CheckoutBuybackComponent implements OnInit {
         DINAR.splice(0);
         GS.splice(0);
         this.cartModal.emit(false);
-        // this.ChangeContentArea('10003');
+        this.ChangeContentArea('10009');
       } else {
         this.toastr.error(this.buybackService.message(), "Transaction");
         this.idTransaksi()
         return;
       }
     })
+  }
+
+  ChangeContentArea(pageId: string) {
+    if (pageId.startsWith("x")) return;
+    ContentPage.ChangeContent(pageId, true)
   }
 }

@@ -13,25 +13,36 @@
                 <clr-dg-column>Harga</clr-dg-column>
                 <clr-dg-column class="right"></clr-dg-column>
                 <clr-dg-row *clrDgItems="let d of isiSouvenir.data">
-                    <clr-dg-cell>{{d.detail.code}}</clr-dg-cell>
-                    <clr-dg-cell>{{d.detail.vendor.name}}</clr-dg-cell>
-                    <clr-dg-cell>{{d.detail['product-denom'].name}}</clr-dg-cell>
-                    <clr-dg-cell>{{d.detail['product-series'].name}}</clr-dg-cell>
+                    <clr-dg-cell [class.buyback-yes]="d.buyback === 'yes'">{{d.detail.code}}</clr-dg-cell>
+                    <clr-dg-cell [class.buyback-yes]="d.buyback === 'yes'">{{d.detail.vendor.name}}</clr-dg-cell>
+                    <clr-dg-cell [class.buyback-yes]="d.buyback === 'yes'">{{d.detail['product-denom'].name}}</clr-dg-cell>
+                    <clr-dg-cell [class.buyback-yes]="d.buyback === 'yes'">{{d.detail['product-series'].name}}</clr-dg-cell>
                     <clr-dg-cell>
-                        Rp. {{d.hargaBB | number}}
-                    </clr-dg-cell>
-                    <clr-dg-cell><span style="float: right;">
-                        <ng-container *ngIf="cekHitungHarga(d.hargaBB) == 0 || cekItemArray(d.detail.code) == true; else plus">
-                            <button type="button" class="btn btn-icon btn-sm  disabled" aria-label="home" >
-                                <clr-icon shape="minus"></clr-icon>
-                            </button>                
+                        <ng-container *ngIf="d.buyback == 'yes'; else defaultHarga">
+                            <span class="label label-danger">Buyback</span>
                         </ng-container>
-                        <ng-template #plus >
-                            <button type="button" class="btn btn-icon btn-sm btn-success" (click)="addToCart(d.detail.code, d.detail['vendor'].name , d.detail['product-denom'].name, d.detail['product-series'].name , d.hargaBB, d.detail, isiSouvenir.id)" aria-label="home" >
-                                <clr-icon shape="plus"></clr-icon>
-                            </button>       
+                        <ng-template #defaultHarga>
+                            Rp. {{d.hargaBB | number}}
                         </ng-template>
-                    </span>
+                    </clr-dg-cell>
+                    <clr-dg-cell>
+                        <ng-container *ngIf="d.buyback == 'yes'; else defaultPlus">
+                            <span class="label label-danger" >Buyback</span>
+                        </ng-container>
+                        <ng-template #defaultPlus>
+                            <span style="float: right;">
+                                <ng-container *ngIf="cekHitungHarga(d.hargaBB) == 0 || cekItemArray(d.detail._id) == true; else plus">
+                                    <button type="button" class="btn btn-icon btn-sm  disabled" aria-label="home" >
+                                        <clr-icon shape="minus"></clr-icon>
+                                    </button>                
+                                </ng-container>
+                                <ng-template #plus >
+                                    <button type="button" class="btn btn-icon btn-sm btn-success" (click)="addToCart(d.detail.code, d.detail['vendor'].name , d.detail['product-denom'].name, d.detail['product-series'].name , d.hargaBB, d.detail, isiSouvenir.id, d.detail._id)" aria-label="home" >
+                                        <clr-icon shape="plus"></clr-icon>
+                                    </button>       
+                                </ng-template>
+                            </span>
+                        </ng-template>
                     </clr-dg-cell>
                 </clr-dg-row>
             </clr-datagrid>
