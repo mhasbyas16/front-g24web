@@ -170,14 +170,22 @@ export class TransactionFlagBuybackService {
 
         //berlian
         if ( dataProduct == "BERLIAN") {
+         
           for (let isi of getProduct.product.BERLIAN) {
+            console.debug(isi.detail._id, "id1")
+            console.debug(isiData.detail._id, "id2")
             if (isi.detail._id == isiData.detail._id) {
+              
               isi.buyback = "yes"
+              let updateB = {_id:isi.detail._id , flag: "stock",unit: _unit, unit_encoded: 'base64'};
+              this.productService.update(updateB).subscribe((response:any)=>{
+                console.debug(response);
+              })
             }
           }
         }
 
-        let updateData = {_id: idTransaction, product:btoa(JSON.stringify(getProduct.product)), product_encoded: "base64",unit: _unit, unit_encoded: 'base64', buyback: "yes" }
+        let updateData = {_id: idTransaction, product:btoa(JSON.stringify(getProduct.product)), product_encoded: "base64" }
         console.debug(updateData, "weawdasdas")
           this.transactionService.update(updateData).subscribe((response:any)=>{
          return;

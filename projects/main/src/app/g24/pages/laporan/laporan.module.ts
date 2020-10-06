@@ -10,12 +10,13 @@ import { LaporanRoutingModule } from './laporan-routing.module';
 import { NavModule } from '../../nav/nav.module';
 import { DatePipe } from '@angular/common';
 import { ExportLaporanComponent } from './export-laporan/export-laporan.component';
+import { ExportLaporanBuybackBycodeComponent } from './export-laporan-buyback-bycode/export-laporan-buyback-bycode.component';
 import { RekeningKoranComponent } from './rekening-koran/rekening-koran.component';
 
 
 
 @NgModule({
-  declarations: [LaporanPenjualanComponent, ExportLaporanComponent, RekeningKoranComponent, LaporanBuybackComponent],
+  declarations: [LaporanPenjualanComponent, ExportLaporanComponent, RekeningKoranComponent, LaporanBuybackComponent,ExportLaporanBuybackBycodeComponent ],
   imports: [
     CommonModule,
     FormsModule,

@@ -271,10 +271,6 @@ export class CheckoutBuybackComponent implements OnInit {
       
       let dataBerlian = this.transactionFlagBuybackService.batchUpdateTransaction(this.berlian, "berlian", btoa(JSON.stringify(this.sessionService.getUnit())))
     }
-    
-    
-    
-
 
     this.buybackService.add(data).subscribe((response: any) => {
       if (response != false) {
