@@ -52,13 +52,22 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
   
   async LoadDate()
   {
-    let resp = await this.dateService.task("").toPromise();
+    let resp;
+    let msg = "";
+    try{
+      resp = await this.dateService.task("").toPromise();
+    } catch (err) {
+      resp = false;
+      msg = err.message;
+    }
+
     if(resp == false)
     {
       this.errorHappened = true;
+      if(msg == "") msg = this.dateService.message();
       this.doReset();
       this.Close();
-      this.toastr.info("Gagal mengambil tanggal server.");
+      this.toastr.info("Gagal mengambil tanggal server. Error: " + msg);
       return;
     }
 
@@ -239,6 +248,7 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
   {
     this.inisiasi = content;
     this.LoadDate();
+    this.resetDetailTerima(this.inisiasi.items);
 
     if(this.inisiasi.order_status == OrderStatus.TERIMA_FULL.code && this.mode == EPriviledge.UPDATE)
     {
@@ -251,6 +261,16 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
 
     this.fillItemsWithProducts();
     this.fillItemTerima();
+  }
+
+  resetDetailTerima(items : [])
+  {
+    for(let i = 0; i < items.length; i++)
+    {
+      let item : any = items[i];
+      item['last_terima'] = item['detail_terima'];
+      item['detail_terima'] = 0;
+    }
   }
 
   fillItemTerima()
@@ -631,21 +651,11 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
     console.log(this.inisiasi);
     let tempInisiasi = {}
     Object.assign(tempInisiasi, this.inisiasi);
-    // let items = tempInisiasi['items'];
-
-    // //total terima dijumlah dengan detail_terima
-    // for(let i = 0; i < items.length; i++)
-    // {
-    //   let item = items[i];
-
-    //   let terima : number = Number(item['total_terima']);
-    // }
-    console.log(tempInisiasi);
-    // DataTypeUtil.Encode(tempInisiasi);
-    return;
+    
+    DataTypeUtil.Encode(tempInisiasi);
 
     let inisiasi;
-    let msg;
+    let msg = "";
     try {
       inisiasi = await this.inisiasiService.TerimaEmas(tempInisiasi).toPromise();
     } catch (e) {
@@ -654,7 +664,7 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
     }
       if(inisiasi == false)
       {
-        msg = this.inisiasiService.message();
+        if(msg == "") msg = this.inisiasiService.message();
         this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk. Error:  " + msg);
         this.doReset();
         this.Close();
