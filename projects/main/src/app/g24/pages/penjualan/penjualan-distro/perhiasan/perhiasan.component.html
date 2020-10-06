@@ -70,20 +70,33 @@
         <clr-dg-cell>{{d.berat}}</clr-dg-cell>
         <clr-dg-cell>{{d['product-purity'].name}}</clr-dg-cell>
         <clr-dg-cell>{{d['product-gold-color'].name}}</clr-dg-cell>
-        <clr-dg-cell><span style="float: right;">Rp. {{d.hargaJual|number}}</span></clr-dg-cell>
-        <clr-dg-cell><span style="float: left;">
-            <ng-container *ngIf="cekItemArray(d._id); else plus">
-                <button type="button" class="btn btn-icon btn-sm btn-danger disabled" aria-label="home" >
-                    <clr-icon shape="minus"></clr-icon>
-                </button>                
+        <clr-dg-cell>
+            <ng-container *ngIf="d.kondisi == 'Rusak'; else plusDef">
+                <span class="label label-danger" style="float: right;" >Rusak</span>
             </ng-container>
-            <ng-template #plus>
-                <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.code,d.vendor.name,d['product-jenis'].name,d['product-gold-color'].name, d.berat, d['product-purity'].name, d.hargaJual, d._hash)">
-                    <clr-icon shape="plus"></clr-icon>
-                </button>  
+            <ng-template #plusDef>
+                <span style="float: right;">Rp. {{d.hargaJual|number}}
+                </span>
             </ng-template>
-            
-        </span>
+        </clr-dg-cell>
+        <clr-dg-cell>
+            <ng-container *ngIf="d.kondisi == 'Rusak'; else plusDefault">
+                <span class="label label-danger" >Rusak</span>
+            </ng-container>
+            <ng-template #plusDefault>
+                <span style="float: left;">
+                    <ng-container *ngIf="cekItemArray(d._id); else plus">
+                        <button type="button" class="btn btn-icon btn-sm btn-danger disabled" aria-label="home" >
+                            <clr-icon shape="minus"></clr-icon>
+                        </button>                
+                    </ng-container>
+                    <ng-template #plus>
+                        <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.code,d.vendor.name,d['product-jenis'].name,d['product-gold-color'].name, d.berat, d['product-purity'].name, d.hargaJual, d._hash)">
+                            <clr-icon shape="plus"></clr-icon>
+                        </button>  
+                    </ng-template>
+                </span>
+            </ng-template>
         </clr-dg-cell>
     </clr-dg-row>
     <clr-dg-footer>

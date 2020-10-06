@@ -111,7 +111,7 @@ export class CheckoutComponent implements OnInit {
 
     let params = "?_between=makerDate&_start=" + d1 + "&_end=" + d2;
     // this.transactionService.list().subscribe((response: any) => {
-    this.transactionService.list(params + '&_sortby=idAi:0&_rows=1').subscribe((response: any) => {
+    this.transactionService.list(params + '&_sortby=_id:0&_rows=1').subscribe((response: any) => {
       let count = null;
       if (response["0"]["idAi"] == null) {
         count = JSON.stringify(1);

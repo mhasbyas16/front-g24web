@@ -162,7 +162,7 @@ export class CheckoutBuybackComponent implements OnInit {
     
     let params="?_between=makerDate&_start="+d1+"&_end="+d2;
   
-    this.buybackService.list(params+'&_sortby=idAi:0&_rows=1').subscribe((response:any)=>{  
+    this.buybackService.list(params+'&_sortby=_id:0&_rows=1').subscribe((response:any)=>{  
       console.debug(response, "idAI")
       // if (response == false) {
       //   this.incId = 0
