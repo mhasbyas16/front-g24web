@@ -15,11 +15,14 @@ import { GiftBycodeComponent } from './buyback-bycode/gift-bycode/gift-bycode.co
 import { SouvenirBycodeComponent } from './buyback-bycode/souvenir-bycode/souvenir-bycode.component';
 import { DinarBycodeComponent } from './buyback-bycode/dinar-bycode/dinar-bycode.component';
 import { ParameterBuybackComponent } from './parameter-buyback/parameter-buyback.component';
+import { BuybackManualComponent } from './buyback-manual/buyback-manual.component';
+
+import { MuliaManualComponent } from './buyback-manual/mulia-manual/mulia-manual.component';
 
 
 
 @NgModule({
-  declarations: [BuybackBycodeComponent, PerhiasanBycodeComponent, MuliaBycodeComponent, BerlianBycodeComponent, GiftBycodeComponent, SouvenirBycodeComponent, DinarBycodeComponent, ParameterBuybackComponent],
+  declarations: [BuybackBycodeComponent, PerhiasanBycodeComponent, MuliaBycodeComponent, BerlianBycodeComponent, GiftBycodeComponent, SouvenirBycodeComponent, DinarBycodeComponent, ParameterBuybackComponent, BuybackManualComponent, MuliaManualComponent],
   imports: [
     CommonModule,
     BuybackRoutingModule,
