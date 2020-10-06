@@ -12,16 +12,18 @@ import { BerlianComponent } from './penjualan-distro/berlian/berlian.component';
 import { DatePipe } from '@angular/common';
 import { SouvenirComponent } from './penjualan-distro/souvenir/souvenir.component';
 import { DinarComponent } from './penjualan-distro/dinar/dinar.component';
+import { PenjualanKorporasiComponent } from './penjualan-korporasi/penjualan-korporasi.component';
 
 
 
 @NgModule({
-  declarations: [PenjualanDistroComponent, PerhiasanComponent, BerlianComponent, MuliaComponent, SouvenirComponent, DinarComponent],
+  declarations: [PenjualanDistroComponent, PerhiasanComponent, BerlianComponent, MuliaComponent, SouvenirComponent, DinarComponent, PenjualanKorporasiComponent],
   imports: [
     CommonModule,
     PenjualanRoutingModule,
     ClarityModule,
     FormsModule,
+    ReactiveFormsModule,
     NavModule,
   ],
   exports : [

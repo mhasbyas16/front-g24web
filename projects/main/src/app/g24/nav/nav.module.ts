@@ -32,7 +32,9 @@ import { CheckoutBuybackComponent } from './modal/checkout-buyback/checkout-buyb
     FooterComponent,
     ContentComponent,
     CartComponent,
-    CartBuybackComponent
+    CartBuybackComponent,
+    SearchNasabahComponent,
+    AddNasabahComponent
   ],
 })
 export class NavModule { }
