@@ -179,8 +179,8 @@ modalview : boolean = false;
 
   TambahKategori(){
 	  
-	if(Object.keys(this.select_kategori).length==0){
-		this.toastr.warning("Produk kategori belum dipilih","Peringatan");
+	if(!this.select_kategori){
+		this.toastr.error("Produk kategori belum dipilih","Gagal");
 		return;
 	}
 

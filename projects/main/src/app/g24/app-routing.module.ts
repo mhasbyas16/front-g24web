@@ -61,11 +61,13 @@ export class AppRoutingModule
 
     ModuleLoader.register('x1', () => import('./pages/inventory-addition/inventory-addition.module').then(m => m.InventoryAdditionModule))
     ModuleLoader.register('x2', () => import('./pages/inventory-management/inventory-management.module').then(m => m.InventoryManagementModule))
+    ModuleLoader.register('bb', () => import('./pages/bahan-baku/bahan-baku.module').then(m => m.BahanBakuModule))
     ModuleLoader.register('pj', () => import('./pages/penjualan/penjualan.module').then(m => m.PenjualanModule))
     ModuleLoader.register('lp', () => import('./pages/laporan/laporan.module').then(m => m.LaporanModule))  
     ModuleLoader.register('rl', () => import('./pages/security/security.module').then(m => m.SecurityModule))
     ModuleLoader.register('pr', () => import('./pages/parameter/parameter.module').then(m => m.ParameterModule))
     ModuleLoader.register('prp', () => import('./pages/parameter-product/parameter-product.module').then(m => m.ParameterProductModule))
+    ModuleLoader.register('ip', () => import('./pages/inquery-product/inquery-product.module').then(m => m.InqueryProductModule))
     ModuleLoader.register('ag', () => import('./pages/anggaran/anggaran.module').then(m => m.AnggaranModule))
   }
 }

@@ -1,0 +1,114 @@
+<div class="clr-row">
+    <div class="clr-col-lg-12 clr-col-12">
+        <div class="card">
+            <div class="card-header">
+                Inisiasi Bahan Baku
+            </div>
+            <div class="card-block">
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Tanggal Inisiasi</label>
+                            <div class="clr-control-container">
+                            <clr-input-container>
+                                <input type="date" clrInput [(ngModel)]="bahan_baku.tgl_inisiasi" name="tgl_inisiasi" readonly required value="bahan_baku.tgl_inisiasi"/>
+                                <clr-control-error>Wajib di isi</clr-control-error>
+                            </clr-input-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--ROW 2-->
+                <div class="clr-row" style="margin-top: 20px">
+                    <div class="clr-col-6">
+                        <div class="clr-from-control">
+                            <label class="clr-control-label">Jenis Product</label>
+                            <div class="clr-control-container">
+                            <clr-select-container>
+                                <select clrSelect [(ngModel)]="bahan_baku.jenis_product" name="jenis_product" required>
+                                    <ng-container *ngFor="let data of jenis">
+                                        <option [ngValue]="data">{{data.name}}</option>
+                                    </ng-container>
+                                </select>
+                                <clr-control-error>Wajib di pilih</clr-control-error>
+                            </clr-select-container>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Jumlah Gram</label>
+                            <div class="clr-control-container">
+                            <clr-input-container>
+                                <input type="number" clrInput [(ngModel)]="bahan_baku.jumlah_gram" name="jumlah_gram" required>
+                                <clr-control-helper>{{bahan_baku.jumlah_gram|number}}</clr-control-helper>
+                                <clr-control-error>Wajib di isi</clr-control-error>
+                            </clr-input-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--ROW 3-->
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Toko Penyedia</label>
+                            <div class="clr-control-container">
+                            <clr-select-container>
+                                <select clrSelect [(ngModel)]="bahan_baku.toko_penyedia" name="toko_penyedia" required>
+                                    <ng-container *ngFor="let data of tokped">
+                                        <option [ngValue]="data">{{data.name}}</option>
+                                    </ng-container>
+                                </select>
+                            </clr-select-container>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Total Harga Gram</label>
+                            <div class="clr-control-container">
+                                <clr-input-container>
+                                <input type="number" clrInput [(ngModel)]="bahan_baku.total_harga_gram" name="total_harga_gram" required>
+                                <clr-control-helper>Harap gunakan titik (.)</clr-control-helper>
+                                <clr-control-error>Wajib di isi</clr-control-error>
+                                </clr-input-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--ROW 4-->
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Rekening MA Bank</label>
+                            <div class="clr-control-container">
+                            <clr-input-container>
+                            <input clrInput [(ngModel)]="bahan_baku.ma_bank" name="ma_bank" (keydown.enter)="cekCodeMABank()" required>
+                            <clr-control-helper style="color: dodgerblue;"><clr-icon shape="info-standard"></clr-icon> Harap tekan Enter, jika suda mengisi kode MA bank</clr-control-helper>
+                            <clr-control-error>Wajib di isi</clr-control-error>
+                            </clr-input-container>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clr-col-6" *ngIf="codeBankFound true">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Nama MA Bank</label>
+                            <div class="clr-control-container">
+                            <clr-input-container>
+                                <input clrInput [(ngModel)]="bahan_baku.name_bank" name="name_bank" value="{{bahan_baku.name_bank}}" style="width: 400px;" readonly>
+                            </clr-input-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-icon btn-primary" (click)="doSave()"><clr-icon shape="floppy"></clr-icon> Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
