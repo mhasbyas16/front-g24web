@@ -13,11 +13,12 @@ import { DatePipe } from '@angular/common';
 import { SouvenirComponent } from './penjualan-distro/souvenir/souvenir.component';
 import { DinarComponent } from './penjualan-distro/dinar/dinar.component';
 import { PenjualanKorporasiComponent } from './penjualan-korporasi/penjualan-korporasi.component';
+import { MuliaKorporasiComponent } from './penjualan-korporasi/mulia/mulia-korporasi.component';
 
 
 
 @NgModule({
-  declarations: [PenjualanDistroComponent, PerhiasanComponent, BerlianComponent, MuliaComponent, SouvenirComponent, DinarComponent, PenjualanKorporasiComponent],
+  declarations: [PenjualanDistroComponent, PerhiasanComponent, BerlianComponent, MuliaComponent, SouvenirComponent, DinarComponent, PenjualanKorporasiComponent, MuliaKorporasiComponent],
   imports: [
     CommonModule,
     PenjualanRoutingModule,
