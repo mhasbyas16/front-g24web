@@ -270,12 +270,13 @@
                             </div>
                             <clr-radio-container clrInline>
                                 <label>Metode Bayar</label>
-                                <clr-radio-wrapper *ngFor="let i of transactionMethod" >
+                                <clr-radio-wrapper *ngFor="let i of transactionMethod">
                                     <input type="radio" clrRadio formControlName="metodeBayar" [attr.checked]="'01'==i.code" name="metodeBayar" [value]="i._hash" (click)="bankValid(i._hash)"/>
                                     <label>
                                         <img class="img-responsive2" [attr.src]="'assets/images/metode/'+i.icon" alt="">
                                         {{i.name}}</label>
                                 </clr-radio-wrapper>
+                                
                             </clr-radio-container>
                             <clr-input-container>
                                 <label>Nominal Transaksi</label>
@@ -286,6 +287,15 @@
                                 <input clrInput type="text" formControlName="kembali" [value]="kembali | number" readonly>
                             </clr-input-container>
                         </div>
+                        <input type="hidden" formControlName="client">
+                        <input type="hidden" formControlName="client_encoded">
+                        <input type="hidden" formControlName="idAi">
+                        <input type="hidden" formControlName="maker">
+                        <input type="hidden" formControlName="makerDate">
+                        <input type="hidden" formControlName="makerTime">
+                        <input type="hidden" formControlName="maker_encoded"> 
+                        <input type="hidden" formControlName="unit">
+                        <input type="hidden" formControlName="unit_encoded">
                     </div>
                     <div class="card-footer">
                         <button type="button" class="btn btn-block btn-primary" (click)="transaction()">Submit</button>

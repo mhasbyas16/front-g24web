@@ -33,29 +33,24 @@ export class MuliaBycodeComponent implements OnInit {
   ngOnInit(): void {
   }
   
-  addToCart(code, vendor, denom, noSeri,hargaBB ){
+  addToCart(code, vendor, denom, noSeri,hargaBB,detail, idTransaction ){
     this.cartList.push({
       "code" : code,
       "vendor": vendor,
       "denom" : denom,
       "noSeri" : noSeri,
+      'detail': detail,
       "hargaBB" : hargaBB,
+      "idTransaction" : idTransaction
       
     })
     this.totalIsiCartEmasBatangan.emit(this.cartList.length)
     this.refresh("p")
-   
+    
+    console.debug(this.cartList)
   }
   
   hitungHargaBB(){
-      
-        console.debug(this.totalIsiEmasBatangan, "sada")
-      
-    //   this.prmJualService.get("?"+this.productCategory+"&flag=approved"+"&vendor="+codeVendor).subscribe((BBresponse: any) => {
-    //   this.hargaBB = BBresponse
-    //   console.debug(this.hargaBB, "wewe")
-      
-    // })
   }
 
   cekItemArray(data: any){

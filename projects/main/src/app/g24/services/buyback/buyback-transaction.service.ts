@@ -4,9 +4,9 @@ import { CommonService } from 'projects/platform/src/app/core-services/common.se
 @Injectable({
   providedIn: 'root'
 })
-export class TransactionService {
+export class BuybackTransactionService {
 
-  key = "master-api/transaction";
+  key = "master-api/buyback";
 
   constructor(private commonService:CommonService) { }
 
@@ -35,13 +35,5 @@ export class TransactionService {
 
   delete(data) {
     return this.commonService.delete(this.key, data);
-  }
-
-  batchUpdate(data){
-    return this.commonService.batchUpdate(this.key, data);
-  }
-
-  batchAdd(data){
-    return this.commonService.batchUpdate(this.key, data);
   }
 }
