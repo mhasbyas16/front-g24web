@@ -6,7 +6,7 @@ import { CommonService } from '../../../../../../platform/src/app/core-services/
 })
 export class BuybackAcceptParameterService {
 
-  key = "master-api/buyback-parameter";
+  key = "master-api/buyback-accept-parameter";
 
   constructor(private commonService:CommonService) { }
 
