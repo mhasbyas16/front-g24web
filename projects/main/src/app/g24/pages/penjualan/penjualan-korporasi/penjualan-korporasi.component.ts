@@ -29,6 +29,8 @@ export class PenjualanKorporasiComponent implements OnInit {
   productData:any;
   prmMargin:any;
   dataMulia:any;
+  placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
+  loadingDg: boolean;
 
   muliaCategory = "?_hash=1&product-category.code=c05";
   channel = "channel.code=ch02";
