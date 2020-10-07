@@ -16,30 +16,57 @@
                         
                         <div class="card-text">
                             <div class="clr-row">
-                                <div class="clr-col-4">
+                                <div class="clr-col-5">
                                     <clr-input-container class="margin-top-remove">
                                         <label>CIF</label>
                                         <input clrInput type="text" formControlName="cif" readonly style="background-color: #fbffc9;">
-                                        <clr-control-error *clrIfError="'required'">This is a required field
-                                        </clr-control-error>
-                                        <clr-control-error *clrIfError="'pattern'">This is a required field 0 - 9
-                                        </clr-control-error>
+                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                        <clr-control-error *clrIfError="'pattern'">This is a required field 0 - 9</clr-control-error>
                                     </clr-input-container>
                                 </div>
-                                <div class="clr-col-3" style="margin-left: 30px;">
-                                    <div class="btn-group btn-outline-primary btn-sm">
-                                        <button type="button" class="btn" (click)="searchNasabah.openModal()"
-                                            style="align-content: center;">Cari</button>
-                                        <button type="button" class="btn btn-outline-success"
-                                            (click)="addNasabah.openModal()">Tambah</button>
-                                    </div>
+                                <div class="clr-col-6" style="margin-left: 30px;">
+                                    <clr-input-container>
+                                        <label>Tgl Pengajuan</label>
+                                        <input clrInput type="text" formControlName="tglPengajuan" style="background-color: #fbffc9;" readonly>
+                                    </clr-input-container>
                                 </div>
                             </div>
-                            <clr-input-container class="margin-top-remove">
-                                <label>Nama Nasabah</label>
-                                <input clrInput type="text" formControlName="name" readonly style="background-color: #fbffc9;">
-                                <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
-                            </clr-input-container>
+                            <div class="clr-row">
+                                <div class="clr-col-5"> 
+                                    <clr-input-container class="margin-top-remove">
+                                        <label>Nama Nasabah</label>
+                                        <input clrInput type="text" formControlName="name" readonly style="background-color: #fbffc9;">
+                                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                    </clr-input-container>
+                                </div>
+                                <div class="clr-col-6" style="margin-left: 30px;">
+                                    <clr-select-container>
+                                        <label>Periode Waktu</label>
+                                        <select clrSelect formControlName="periode" id="" (click)="getAkhirPeriode($event.target.value)">
+                                            <option *ngFor="let item of periodeData" [value]="item._hash">{{item.periode}} hari</option>
+                                        </select>
+                                    </clr-select-container>
+                                </div>
+                            </div>
+                            
+                            <div class="clr-row">
+                                <div class="clr-col-5"> 
+                                    
+                                </div>
+                                <div class="clr-col-6" style="margin-left: 30px;">
+                                    <clr-input-container>
+                                        <label>Akhir Periode</label>
+                                        <input clrInput type="text" formControlName="lastPeriode" id="" readonly style="background-color: #fbffc9;">
+                                    </clr-input-container>
+                                </div>
+                            </div><br>
+
+                            <div class="btn-group btn-outline-primary btn-sm">
+                                <button type="button" class="btn" (click)="searchNasabah.openModal()"
+                                    style="align-content: center;">Cari</button>
+                                <button type="button" class="btn btn-outline-success"
+                                    (click)="addNasabah.openModal()">Tambah</button>
+                            </div>
                         </div>
                         <!-- hidden field put here-->
                         <input type="hidden" formControlName="client">
@@ -49,20 +76,21 @@
                 <!-- data Penerima -->
                 <div class="card" style="margin-top: 0;">
                     <div class="card-header">
-                        Data Penerima
+                        Data Penanggung Jawab
                     </div>
                     <div class="card-block">
                         
                         <div class="card-text">
                             <clr-input-container>
-                                <label>Nama Penerima</label>
-                                <input clrInput type="text" formControlName="recipientName" id="">
+                                <label>Nama Penanggung Jawab</label>
+                                <input clrInput type="text" formControlName="namePIC" id="">
                             </clr-input-container>
                             <clr-select-container>
                                 <label>Tipe Identitas</label>
                                 <select clrSelect formControlName="typeId" id="">
-                                    <option [value]="'ktp'">KTP</option>
+                                    <option selected [value]="'ktp'">KTP</option>
                                     <option [value]="'sim'">SIM</option>
+                                    <option [value]="'lainnya'">Lainnya</option>
                                 </select>
                             </clr-select-container>
                             <clr-input-container>
@@ -79,76 +107,55 @@
                     </div>
                     <div class="card-block">
                         <div class="card-text">
-                            <clr-datagrid>
-                                <clr-dg-column>User ID</clr-dg-column>
-                                <clr-dg-column>Name</clr-dg-column>
-                                <clr-dg-column>Creation date</clr-dg-column>
-                                <clr-dg-column>Favorite color</clr-dg-column>
-                            
-                                <clr-dg-row>
-                                    <clr-dg-cell></clr-dg-cell>
-                                    <clr-dg-cell></clr-dg-cell>
-                                    <clr-dg-cell></clr-dg-cell>
-                                    <clr-dg-cell></clr-dg-cell>
-                                </clr-dg-row>
-                            
-                                <clr-dg-footer></clr-dg-footer>
-                            </clr-datagrid>
+                            <app-mulia-korporasi
+                            (data)="cartData($event)" 
+                           (logamMulia)="totallogamMulia($event)" 
+                           (totalHarga)="HMulia($event)"
+                           (dataProduct)="dataProduct($event)"
+                           [prmMarginResiko]="prmMargin"
+                           [datamulias]="dataMulia">
+                           </app-mulia-korporasi>  
                         </div>
                     </div>
                 </div>
-                <!-- <clr-tabs>
-                    <clr-tab>
-                        <button clrTabLink>Logam Mulia </button>
-                        <clr-tab-content >     
-                           <app-mulia 
-                           (data)="cartData($event)" 
-                           (logamMulia)="totallogamMulia($event)" 
-                           (totalHarga)="HMulia($event)">
-                           </app-mulia>  
-                        </clr-tab-content>
-                    </clr-tab>
-                    <clr-tab>
-                        <button clrTabLink>Perhiasan</button>
-                        <clr-tab-content >     
-                            <app-perhiasan 
-                            (data)="cartData($event)" 
-                            (perhiasan)="totalPerhiasan($event)" 
-                            (totalHarga)="HPerhiasan($event)"
-                            ></app-perhiasan>  
-                        </clr-tab-content>
-                    </clr-tab>
-                    <clr-tab>
-                        <button clrTabLink>Berlian</button>
-                        <clr-tab-content >
-                            <app-berlian
-                            (data)="cartData($event)" 
-                            (berlian)="totalBerlian($event)" 
-                            (totalHarga)="HBatuMulia($event)"
-                            ></app-berlian>
-                        </clr-tab-content>
-                    </clr-tab>
-                    <clr-tab>
-                        <button clrTabLink>Gift dan Souvenir</button>
-                        <clr-tab-content >
-                            <app-souvenir
-                            (data)="cartData($event)" 
-                            (souvenir)="totalSouvenir($event)" 
-                            (totalHarga)="HSouvenir($event)"
-                            ></app-souvenir>
-                        </clr-tab-content>
-                    </clr-tab>
-                    <clr-tab>
-                        <button clrTabLink>Dinar</button>
-                        <clr-tab-content >
-                           <app-dinar
-                           (data)="cartData($event)" 
-                           (dinar)="totalDinar($event)" 
-                           (totalHarga)="HDinar($event)">
-                           </app-dinar>
-                        </clr-tab-content>
-                    </clr-tab>
-                </clr-tabs> -->
+                <!-- List Product -->
+                <div class="card" style="margin-top: 0;">
+                    <div class="card-header">
+                        List Pembelian Produk
+                    </div>
+                    <div class="card-block">
+                        
+                        <div class="card-text">
+                            <clr-datagrid  [clrDgLoading]="loadingDg">
+                                <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
+                                <!-- <clr-dg-column>Product Id</clr-dg-column> -->
+                                
+                                <clr-dg-column>Vendor</clr-dg-column>
+                                <clr-dg-column>Denom</clr-dg-column>
+                                <clr-dg-column>Tipe Barang</clr-dg-column>
+                                <clr-dg-column>Harga</clr-dg-column>
+                                
+                                <clr-dg-row *clrDgItems="let d of productData" [clrDgItem]="d">
+                                    <!-- <clr-dg-cell>{{d.id}}</clr-dg-cell> -->
+                                    <clr-dg-cell>{{d.vendor}}</clr-dg-cell>
+                                    <clr-dg-cell>{{d.denom}}</clr-dg-cell>
+                                    <clr-dg-cell>{{d.flag | titlecase }} </clr-dg-cell>
+                                    <clr-dg-cell >{{d.harga | number}} </clr-dg-cell>
+                                </clr-dg-row>
+                                <clr-dg-footer>
+                                    <clr-dg-pagination #pagination [clrDgPageSize]="5">
+                                      <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Users per page</clr-dg-page-size>
+                                      {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                                      of {{pagination.totalItems}} Produk
+                                    </clr-dg-pagination>
+                                </clr-dg-footer>
+                            </clr-datagrid>
+
+                            <h3>Total Rp. {{hargaLogamMulia}}</h3>
+                        </div>
+                    </div>
+                </div>
+                
             </div>
             </form>
         </div>

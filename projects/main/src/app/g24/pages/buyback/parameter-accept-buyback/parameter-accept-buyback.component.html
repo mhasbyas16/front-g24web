@@ -1,0 +1,130 @@
+<div class="clr-row">
+    <div class="card" style="margin-top: 0em;">
+        <div class="card-header">
+            Setting Parameter Buyback
+        </div>
+        <div class="card-block">
+            <div class="card-title">
+                <button [clrLoading]="false" type="submit" class="btn btn-success" (click)="openModalAdd()">Add New</button>
+            </div>
+            <div class="card-text">
+                <form clrForm [formGroup]="search" (ngSubmit)="filterTransaction()">
+                    <div class="clr-row clr-align-items-center">
+                        <div class="clr-col-3">
+                            <clr-date-container>
+                                <input clrDate type="date" formControlName="from">
+                            </clr-date-container>
+                        </div> 
+                        <div class="clr-col-3">
+                            <clr-date-container>
+                                <input clrDate type="date" formControlName="to">
+                            </clr-date-container>
+                        </div>
+                        <clr-select-container>
+                            <select clrSelect [(ngModel)]="vertical" placeholder="Select" formControlName="options">
+                                <option [value]="'active'">Active</option>
+                                <option [value]="'notactive'">Not Active</option>
+                                <option [value]="'rejected'">Rejected</option>
+                                <option [value]="'submitted'">Submitted</option>
+                                <option selected [value]="'all'">All</option>
+                            </select>    
+                            <clr-control-error>This form required</clr-control-error>
+
+                        </clr-select-container>
+                        <div class="clr-col-2">
+                            <button type="submit" class="btn btn-icon btn-sm btn-success">Search</button>
+                        </div>
+                    </div>                   
+                </form>
+                <clr-datagrid [clrDgLoading]="false">
+                    <!-- <clr-dg-column>Name</clr-dg-column> -->
+                    <clr-dg-column>Maximal Berat</clr-dg-column>
+                    <clr-dg-column>Maker</clr-dg-column>
+                    <clr-dg-column>Maker Date</clr-dg-column>
+                    <clr-dg-column>Approval</clr-dg-column>
+                    <clr-dg-column>Approval Date</clr-dg-column>
+                    <clr-dg-column>Status</clr-dg-column>
+
+                    <clr-dg-row *ngFor="let data of dataSearch" > 
+                        <clr-dg-action-overflow>
+                            <ng-container *ngIf="data.flag == 'submitted' && nikUser.role == 'kadetRetail'" >                                
+                                <button class="action-item" (click)="modalConfirmation(data._id,'approve')">Approve</button>
+                                <button class="action-item" (click)="modalConfirmation(data._id,'reject')">Reject</button>
+                            </ng-container>
+                            <ng-container *ngIf="data.flag == 0 && nikUser.role == 'staffRetail'">
+                                <!-- <button class="action-item" (click)="deletePromo(data._id)">Delete</button> -->
+                            </ng-container>
+                        </clr-dg-action-overflow>
+                        <clr-dg-cell>{{data.maxPrm|number}} Gr</clr-dg-cell>
+                        <clr-dg-cell>{{data.maker.name}} - {{data.maker.unit.nama}}</clr-dg-cell>
+                        <clr-dg-cell>{{data.makerDate}}</clr-dg-cell>
+
+                        <clr-dg-cell *ngIf="data.approval == ''"></clr-dg-cell>
+                        <clr-dg-cell *ngIf="data.approval != ''">{{data.approval.name}} - {{data.approval.unit.nama}}</clr-dg-cell>
+
+                        <clr-dg-cell>{{data.approvalDate}}</clr-dg-cell>
+                        <!-- submitted -->
+                        <clr-dg-cell *ngIf="data.flag == 'submitted'"><span class="badge badge-info">Submitted</span></clr-dg-cell>
+                        <!-- active -->
+                        <clr-dg-cell *ngIf="data.flag == 'active'"><span class="badge badge-success">Active</span></clr-dg-cell>
+                        <!-- notActive -->
+                        <clr-dg-cell *ngIf="data.flag == 'notactive'"><span class="badge badge-danger">Not Active</span></clr-dg-cell> 
+                        <!-- rejected -->
+                        <clr-dg-cell *ngIf="data.flag == 'reject'"><span class="badge badge-danger">Rejected</span></clr-dg-cell>                
+                    </clr-dg-row>
+                    <clr-dg-footer>
+                        <clr-dg-pagination #pagination [clrDgPageSize]="10">
+                            <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Data per page</clr-dg-page-size>
+                            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                            of {{pagination.totalItems}} Data
+                        </clr-dg-pagination>
+                    </clr-dg-footer>
+                </clr-datagrid>
+
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<clr-modal [(clrModalOpen)]="modalAdd" [clrModalSize]="'lg'">
+    <h3 class="modal-title">Add New Parameter Buyback</h3>
+    <div class="modal-body">
+        <form clrForm [formGroup]="formAdd" (ngSubmit)="storeParameter()">
+            <div class="clr-row">
+                <div class="clr-col-5" style="width: fit-content;">
+                    <clr-input-container style="margin-top: 0px;">
+                        <label class="clr-col-sm-5 clr-col-md-5 clr-col-lg-5">Maximal Berat  Gr</label>
+                        <input class="clr-col-sm-6 clr-col-md-6 clr-col-lg-6" clrInput type="text" formControlName="maxPrm" placeholder="max parameter" autofocus>
+                        <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                        <clr-control-error *clrIfError="'pattern'; error as err">Must be at least {{ err.requiredPattern}} characters</clr-control-error>
+                    </clr-input-container>
+                </div>
+                <input type="hidden" formControlName="maker_encoded">
+                <input type="hidden" formControlName="maker">
+                <input type="hidden" formControlName="makerDate">
+                <input type="hidden" formControlName="approval">
+                <input type="hidden" formControlName="approvalDate">
+                <input type="hidden" formControlName="flag">
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="modalAdd = false">Cancel</button>
+        <button type="button" class="btn btn-success" (click)="modalConfirmation(0,'add')">Ok</button>
+    </div>
+</clr-modal>
+
+<ng-container *ngIf="confirmation">
+    <clr-modal [(clrModalOpen)]="confirmation" [clrModalSize]="'sm'">
+        <div class="modal-body">
+            <p class="text-center">
+                <b>Are You Sure Want To {{modalTitle}} This Parameter ?</b>
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline" (click)="confirmation = false">No</button>
+            <button type="button" class="btn btn-primary" (click)="confirmationPromotion(modalTitle)">Yes</button>
+        </div>
+    </clr-modal>
+</ng-container>

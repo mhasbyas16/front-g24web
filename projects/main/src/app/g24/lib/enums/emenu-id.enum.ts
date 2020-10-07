@@ -117,6 +117,7 @@ export enum EMenuID {
     // offline buyback
     BUYBACK             = '11001',
     PARAMETER_BUYBACK   = '11002',
+    PARAMETER_ACCEPT_BUYBACK = '11003',
 
     // LAPORAN KEUANGAN
     LAPORAN_KEUANGAN = '21000',
