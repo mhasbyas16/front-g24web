@@ -166,7 +166,7 @@ export class ParameterBuybackComponent implements OnInit {
 
     this.buybackParameterService.get(params).subscribe((response:any)=>{
       if (response == false) {
-        this.toastrService.error("Approve get data Failed");
+        this.activeUpdate(data);       
         return;
       }
       getData = response;
@@ -181,26 +181,30 @@ export class ParameterBuybackComponent implements OnInit {
         }
 
         // update data new active flag
-        data._id = this._id;
-        data.flag = "active";
-        data["flag_validation"] = "unique:flag";
-        data["approval"] = this.nikUser._hash;
-        data["approval_encoded"] = "base64";
-        data["approvalDate"] = this.datePipe.transform(Date.now(),'yyyy-MM-dd');
-
-        this.buybackParameterService.update(data).subscribe((response:any)=>{
-          if (response == false) {
-            this.toastrService.error("Approve data Failed");
-            this.approveParameter();
-            return;
-          }
-
-          this.toastrService.success("Approve data Success");
-          this.dataList();
-        })        
+        this.activeUpdate(data);       
       });
     });
     
+  }
+
+  activeUpdate(data){
+    data._id = this._id;
+    data.flag = "active";
+    data["flag_validation"] = "unique:flag";
+    data["approval"] = this.nikUser._hash;
+    data["approval_encoded"] = "base64";
+    data["approvalDate"] = this.datePipe.transform(Date.now(),'yyyy-MM-dd');
+
+    this.buybackParameterService.update(data).subscribe((response:any)=>{
+      if (response == false) {
+        this.toastrService.error("Approve data Failed");
+        this.approveParameter();
+        return;
+      }
+
+      this.toastrService.success("Approve data Success");
+      this.dataList();
+    })  
   }
 
   storeParameter(){
