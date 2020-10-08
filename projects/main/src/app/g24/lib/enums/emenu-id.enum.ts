@@ -115,12 +115,15 @@ export enum EMenuID {
     DISTRO              = '10001',
     ROLE                = '10002',
     LAPORAN             = '10003',
-
+    KORPORASI           = '10004',
+    LAPORAN_BUYBACK     = '10009',
     // promosi
     PENGATURAN_PROMO = '10004',
     DAFTAR_PROMO = '10005',
     // offline buyback
     BUYBACK             = '11001',
+    PARAMETER_BUYBACK   = '11002',
+    PARAMETER_ACCEPT_BUYBACK = '11003',
 
     // LAPORAN KEUANGAN
     LAPORAN_KEUANGAN = '21000',

@@ -10,23 +10,13 @@
                 <clr-dg-column>Vendor</clr-dg-column>
                 <clr-dg-column>Denom</clr-dg-column>
                 <clr-dg-column>Series</clr-dg-column>
-                <clr-dg-column>Kondisi</clr-dg-column>
                 <clr-dg-column>Harga</clr-dg-column>
                 <clr-dg-column class="right"></clr-dg-column>
-                <clr-dg-row *clrDgItems="let d of isiSouvenir">
+                <clr-dg-row *clrDgItems="let d of isiSouvenir.data">
                     <clr-dg-cell>{{d.detail.code}}</clr-dg-cell>
                     <clr-dg-cell>{{d.detail.vendor.name}}</clr-dg-cell>
                     <clr-dg-cell>{{d.detail['product-denom'].name}}</clr-dg-cell>
                     <clr-dg-cell>{{d.detail['product-series'].name}}</clr-dg-cell>
-                    <clr-dg-cell style="padding-top: 0px;">
-                        <div class="clr-select-wrapper">
-                            <select id="select-error"  class="clr-select" (click)="hitungHargaBB($event.target.value,d.detail.code,d.detail['product-denom'].name, d.detail.berat)">
-                                <option value="0">Pilih Kondisi</option>
-                                <option value="1">Baik</option>
-                                <option value="2">Rusak</option>
-                            </select>
-                        </div>
-                    </clr-dg-cell>
                     <clr-dg-cell>
                         Rp. {{d.hargaBB | number}}
                     </clr-dg-cell>
@@ -37,7 +27,7 @@
                             </button>                
                         </ng-container>
                         <ng-template #plus >
-                            <button type="button" class="btn btn-icon btn-sm btn-success" (click)="addToCart(d.detail.code, d.detail['vendor'].name , d.detail['product-denom'].name, d.detail['product-series'].name , d.hargaBB)" aria-label="home" >
+                            <button type="button" class="btn btn-icon btn-sm btn-success" (click)="addToCart(d.detail.code, d.detail['vendor'].name , d.detail['product-denom'].name, d.detail['product-series'].name , d.hargaBB, d.detail, isiSouvenir.id)" aria-label="home" >
                                 <clr-icon shape="plus"></clr-icon>
                             </button>       
                         </ng-template>

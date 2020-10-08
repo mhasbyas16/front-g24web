@@ -9,8 +9,8 @@ import { DatePipe } from "@angular/common";
 import { PromotionSettingService } from '../../../services/promotion/promotion-setting.service';
 import { TanggalService } from '../../../lib/helper/tanggal.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
-
-
+import { GenerateVoucherService } from '../../../services/promotion/generate-voucher.service';
+import { SplitDateServiceService } from '../../../services/split-date-service.service';
 
 @Component({
   selector: 'app-daftar-promo',
@@ -25,6 +25,7 @@ export class DaftarPromoComponent implements OnInit {
   actionModal: boolean = false;
   confirmation:boolean = false;
   confirmModal:boolean = false;
+  generateVoucher = null;
 
   isiPromosi : FormGroup = null;
   search: FormGroup = null;
@@ -48,6 +49,8 @@ export class DaftarPromoComponent implements OnInit {
     private datePipe: DatePipe,
     private tanggalService:TanggalService,
     private sessionService: SessionService,
+    private generateVoucherService:GenerateVoucherService,
+    private splitDateServiceService:SplitDateServiceService
   ) { }
 
   ngOnInit(): void {
@@ -57,6 +60,34 @@ export class DaftarPromoComponent implements OnInit {
     this.nikUser = this.sessionService.getUser();
     this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser)),"role":this.nikUser.role.name} ;
     console.debug(this.nikUser.role)
+  }
+  generate(id){
+    let dateNow = this.datePipe.transform(Date.now(),'MM/dd/yyyy');
+    this.generateVoucher = id;
+    let data = {"_id":id,"voucher":"generated",_trigger:"promotion-voucher:promotion-setting"};
+    this.generateVoucherService.generate("?_id="+id+"&date="+dateNow).subscribe((response:any)=>{
+      if (response == false) {
+        this.generateVoucher = null;
+        this.toastrService.error(this.generateVoucherService.message(),"error generated");
+        return;
+      }
+      this.promotionSettingService.update(data).subscribe((response:any)=>{
+        if (response == false) {
+          this.toastrService.error(this.generateVoucherService.message(),"error generated");
+          this.generateVoucher = null;
+          return;
+        }    
+        this.filterPromotion(name);  
+      })
+      this.generateVoucher = null;
+      this.toastrService.success("success generated voucher");
+      
+      return 
+      
+      
+    })
+    
+    
   }
 
   fromSearch(){
@@ -74,6 +105,15 @@ export class DaftarPromoComponent implements OnInit {
     this.loadingDg = true;
 
     let data = this.search.getRawValue(); 
+    let fixDate
+    // data from
+    fixDate = this.splitDateServiceService.split(data.from);
+    data.from = fixDate;
+
+    // data to
+    fixDate = this.splitDateServiceService.split(data.to);
+    data.to = fixDate;
+
     let params = "_hash=1&_sortby=flag:1";
 
     if (data.from == "" && data.text == "") {
@@ -148,6 +188,7 @@ export class DaftarPromoComponent implements OnInit {
 
   // Modal
   actionView(hash, act){
+    let fixDate:any;
     let tgl :any;
     let tglSplit :any;
     let bulan :any;
@@ -157,41 +198,21 @@ export class DaftarPromoComponent implements OnInit {
 
     this.data = JSON.parse(atob(hash));
     // tanggal maker
-    tgl =this.data.makerDate;
-    tglSplit = tgl.split("/");
-    bulan = Number(tglSplit["0"]);
-    hari = tglSplit["1"];
-    tahun = tglSplit["2"];
-    bulanTerbilang = this.tanggalService.bulanGenerate(bulan);
-    this.tglMaker = hari+' '+bulanTerbilang+' '+tahun;
+    fixDate = this.splitDateServiceService.splitBulanTerbilang(this.data.makerDate);
+    this.tglMaker = fixDate;
 
     // tanggal start date
-    tgl =this.data.startDate;
-    tglSplit = tgl.split("/");
-    bulan = Number(tglSplit["0"]);
-    hari = tglSplit["1"];
-    tahun = tglSplit["2"];
-    bulanTerbilang = this.tanggalService.bulanGenerate(bulan);
-    this.tglStart = hari+' '+bulanTerbilang+' '+tahun;
+    fixDate = this.splitDateServiceService.splitBulanTerbilang(this.data.startDate);
+    this.tglStart = fixDate;
 
     // tanggal start date
-    tgl =this.data.endDate;
-    tglSplit = tgl.split("/");
-    bulan = Number(tglSplit["0"]);
-    hari = tglSplit["1"];
-    tahun = tglSplit["2"];
-    bulanTerbilang = this.tanggalService.bulanGenerate(bulan);
-    this.tglEnd = hari+' '+bulanTerbilang+' '+tahun;
+    fixDate = this.splitDateServiceService.splitBulanTerbilang(this.data.endDate);
+    this.tglEnd = fixDate;
 
     // Approval
     // tanggal Approval
-    tgl =this.data.approvalDate;
-    tglSplit = tgl.split("/");
-    bulan = Number(tglSplit["0"]);
-    hari = tglSplit["1"];
-    tahun = tglSplit["2"];
-    bulanTerbilang = this.tanggalService.bulanGenerate(bulan);
-    this.tglApproval = hari+' '+bulanTerbilang+' '+tahun;
+    fixDate = this.splitDateServiceService.splitBulanTerbilang(this.data.approvalDate);
+    this.tglApproval = fixDate;
     
 
     console.debug(this.data,"action")
@@ -207,7 +228,7 @@ export class DaftarPromoComponent implements OnInit {
       flag: new FormControl ("", Validators.required),
       approval: new FormControl (this.nikUser._hash, Validators.required),
       approval_encoded: new FormControl ("base64"),
-      approvalDate: new FormControl (this.datePipe.transform(Date.now(),'MM/dd/yyyy')),
+      approvalDate: new FormControl (this.datePipe.transform(Date.now(),'yyyy-MM-dd')),
       approvalTime: new FormControl(this.datePipe.transform(Date.now(),'h:mm:ss a')),
     });
 
@@ -218,8 +239,11 @@ export class DaftarPromoComponent implements OnInit {
   }
 
   confirmationPromotion(val){
-
+    let fixDate:any;
     let data = this.isiPromosi.getRawValue();
+    // // approval date
+    // fixDate = this.splitDateServiceService.split(data.approvalDate);
+    // data.approvalDate = fixDate;
 
     if (val == 1) {
       if (!this.isiPromosi.valid) {

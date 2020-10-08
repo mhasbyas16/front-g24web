@@ -58,6 +58,7 @@ export const management = [
     // LAPORAN
     {_id: "0004", type: "menu", name : "Laporan", icons: "list", color : "warna-warni", componentId : "S10002", parentId: "", module: "lp"},
     {_id: "0004", type: "sub-menu", name : "Laporan Penjualan", icons: "yang bagus", color : "warna-warni", componentId : "10003", parentId: "S10002", module: "lp",menu : {_id: "0004"}},
+    {_id: "0004", type: "sub-menu", name : "Laporan Buyback", icons: "yang bagus", color : "warna-warni", componentId : "10009", parentId: "S10002", module: "lp",menu : {_id: "0005"}},
     //buyback
     {_id: "1001", type: "menu", name : "Buyback", icons: "coin-bag", color : "warna-warni", componentId : "S10011", parentId: "", module: "bb"},
     {_id: "1001", type: "sub-menu", name : "Terima Buyback", icons: "yang bagus", color : "warna-warni", componentId : "11001", parentId: "S10011", module: "bb",menu : {_id: "0001 "}},
@@ -88,6 +89,11 @@ export const kadetRetail = [
   {_id: "0007", type: "menu", name : "Inisiasi Promo", icons: "bundle", color : "warna-warni", componentId : "S10004", parentId: "", module: "promo"},
   {_id: "0007", type: "sub-menu", name : "Pengaturan Promosi", icons: "", color : "warna-warni", componentId : "10004", parentId: "S10004", module: "promo",menu : {_id: "0007"}},
   {_id: "0007", type: "sub-menu", name : "Daftar Promosi", icons: "", color : "warna-warni", componentId : "10005", parentId: "S10004", module: "promo",menu : {_id: "0007"}},
+   //buyback
+   {_id: "1001", type: "menu", name : "Buyback", icons: "coin-bag", color : "warna-warni", componentId : "S10011", parentId: "", module: "bb"},
+   {_id: "1001", type: "sub-menu", name : "Terima Buyback", icons: "yang bagus", color : "warna-warni", componentId : "11001", parentId: "S10011", module: "bb",menu : {_id: "0001 "}},
+   {_id: "1001", type: "sub-menu", name : "Parameter Buyback", icons: "yang bagus", color : "warna-warni", componentId : "11002", parentId: "S10011", module: "bb",menu : {_id: "0001 "}},
+   {_id: "1001", type: "sub-menu", name : "Parameter Accept Buyback", icons: "yang bagus", color : "warna-warni", componentId : "11003", parentId: "S10011", module: "bb",menu : {_id: "0001 "}},
 ];
 
 export const staffRetail = [
@@ -95,5 +101,8 @@ export const staffRetail = [
   {_id: "0007", type: "menu", name : "Inisiasi Promo", icons: "bundle", color : "warna-warni", componentId : "S10004", parentId: "", module: "promo"},
   {_id: "0007", type: "sub-menu", name : "Pengaturan Promosi", icons: "", color : "warna-warni", componentId : "10004", parentId: "S10004", module: "promo",menu : {_id: "0007"}},
   {_id: "0007", type: "sub-menu", name : "Daftar Promosi", icons: "", color : "warna-warni", componentId : "10005", parentId: "S10004", module: "promo",menu : {_id: "0007"}},
-  
+   //buyback
+   {_id: "1001", type: "menu", name : "Buyback", icons: "coin-bag", color : "warna-warni", componentId : "S10011", parentId: "", module: "bb"},
+   {_id: "1001", type: "sub-menu", name : "Terima Buyback", icons: "yang bagus", color : "warna-warni", componentId : "11001", parentId: "S10011", module: "bb",menu : {_id: "0001 "}},
+   {_id: "1001", type: "sub-menu", name : "Parameter Buyback", icons: "yang bagus", color : "warna-warni", componentId : "11002", parentId: "S10011", module: "bb",menu : {_id: "0001 "}},
 ];

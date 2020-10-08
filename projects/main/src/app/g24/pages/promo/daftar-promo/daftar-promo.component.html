@@ -64,7 +64,31 @@
                             <!-- rejected -->
                             <clr-dg-cell><span class="badge badge-danger">Rejected</span></clr-dg-cell>
                         </ng-container>
-                        <clr-dg-cell>button</clr-dg-cell>
+                        <clr-dg-cell>
+                            <ng-container *ngIf="data.voucher == 'generated'; else not">
+                                
+                                <button class="btn btn-success btn-sm">View Voucher</button>
+                            </ng-container>
+                            <ng-template #not>
+                                <ng-container *ngIf="data._id == generateVoucher; else load">
+                                    <clr-spinner clrInline>
+                                        Generating
+                                      </clr-spinner>
+                                      <span>
+                                          Generating
+                                      </span>
+                                </ng-container>
+                                <ng-template #load>
+                                    <ng-container *ngIf="data.flag == 1; else fla">
+                                        <button class="btn btn-primary btn-sm" (click)="generate(data._id)">Generate Voucher</button>
+                                    </ng-container>
+                                    <ng-template #fla>
+                                        <button class="btn btn-primary btn-sm" disabled>Generate Voucher</button>
+                                    </ng-template>
+                                    
+                                </ng-template>
+                            </ng-template>                            
+                            </clr-dg-cell>
                         
                     </clr-dg-row>
                 </clr-datagrid>
@@ -80,6 +104,11 @@
         <h3 class="modal-title">Promosi {{data.name}}</h3>
         <div class="modal-body">
             <form clrForm class="clr-form-compact" >
+                <clr-input-container>
+                    <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">ID Promosi</label>
+                    <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
+                    <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{data.id}}</label>
+                </clr-input-container>
                 <clr-input-container>
                     <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Nama Program</label>
                     <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
@@ -103,11 +132,11 @@
                 <clr-input-container>
                     <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Approval Date/Time</label>
                     <label class="clr-col-sm-1 clr-col-md-1 clr-col-lg-1">:</label>
-                    <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{tglApproval+', '+data.approvalTime}}</label>
+                    <label *ngIf="data.approvalDate != ''" class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">{{tglApproval+', '+data.approvalTime}}</label>
                 </clr-input-container>
 
                 <!-- Type Quota -->
-                <ng-container *ngIf="data.typeQuota == 0">
+                <ng-container *ngIf="data.typeQuota == 'nolimit'">
                     <!-- tidak ada batasan -->
                     <clr-input-container>
                         <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Tipe Kuota</label>
@@ -115,7 +144,7 @@
                         <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">Tidak Ada Batasan</label>
                     </clr-input-container>                    
                 </ng-container>
-                <ng-container *ngIf="data.typeQuota == '1'">
+                <ng-container *ngIf="data.typeQuota == 'allproduct'">
                     <!-- Semua Produk -->
                     <clr-input-container>
                         <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Tipe Kuota</label>
@@ -123,7 +152,7 @@
                         <label class="clr-col-sm-8 clr-col-md-8 clr-col-lg-8">Semua Product</label>
                     </clr-input-container>
                 </ng-container>
-                <ng-container *ngIf="data.typeQuota == 2">
+                <ng-container *ngIf="data.typeQuota == 'perproduct'">
                     <!-- per product -->
                     <clr-input-container>
                         <label class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3">Tipe Kuota</label>
@@ -199,7 +228,7 @@
                     <div class="card-block">
                         <div class="card-text">
 
-                            <div class="card" style="margin-top: 0em;" *ngFor="let li of data.product">   
+                            <div class="card" style="margin-top: 0em;" *ngFor="let li of data['product-category']">   
                                 <div class="card-header">
                                     {{li.name}}
                                 </div>   
