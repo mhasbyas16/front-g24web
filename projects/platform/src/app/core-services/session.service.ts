@@ -90,8 +90,15 @@ export class SessionService {
     sessionStorage.clear();
   }
 
-  public postHeader() {
-    if (this.getLoginId() != null) {
+  public postHeader(isJSON? : boolean) {
+    if(this.getLoginId() != null && isJSON)
+    {
+      return {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + this.getBearer()
+      };
+    } else if (this.getLoginId() != null) {
       return {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Accept': 'application/json',

@@ -4,7 +4,7 @@
         <b>Approval Inisiasi Permata</b>
     </div>
         <div class="card-block">
-            <form [formGroup]="searchFG" clrLayout="compact" #penerimaan id="penerimaan" clrForm>
+            <form [formGroup]="searchFG" clrLayout="compact" #approval id="approval" clrForm>
                 <div class="clr-row">
                     <div class="clr-col-4">
                         <clr-input-container>
@@ -88,7 +88,7 @@
 <div class="clr-row">
     <div class="card" style="margin-top: 0em;">
         <div class="card-header">
-                List Penerimaan
+                List Approval
         </div>
         <clr-datagrid [clrDgLoading]="loading" [(clrDgSingleSelected)]="selected">
             <clr-dg-action-bar>
@@ -163,9 +163,9 @@
     </div>
 </div>
 
-<detail-item-inisiasi-approval-gift #item_terima>
+<detail-item-inisiasi-approval-permata #item_terima>
 
-</detail-item-inisiasi-approval-gift>
+</detail-item-inisiasi-approval-permata>
 
 <clr-modal #modalMsg [(clrModalOpen)]="modalOpen" [clrModalStaticBackdrop]="false">
     <h3 class="modal-title">{{errorTitle}}</h3>

@@ -13,4 +13,8 @@ export class ServerDateTimeService {
   task(params?) {
     return this.commonService.getDate();
   }
+
+  message() {
+    return this.commonService.message;
+  }
 }

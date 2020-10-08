@@ -69,6 +69,9 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
     if(dt == false)
     {
       this.errorHappened = true;
+      this.doReset();
+      this.Close();
+      this.toastr.info("Gagal mengambil tanggal server.");
       return;
     }
     let dtarr = dt.split("T");
@@ -83,7 +86,6 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
       this.jeniss.pop();
     }
 
-    this.jeniss = [];
     let jeniss = await this.jenisService.list("?product-category.code=c03").toPromise();
     if(jeniss)
     {
@@ -673,7 +675,9 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
       'product-jenis' : this.inisiasi['product-jenis'],
       'product-gold-color' : this.inisiasi['product-gold-color'],
       'hpp_inisiasi' : this.inisiasi.hpp_emas,
+      'hpp_inisiasi_encoded' : "double",
       'hpp' : this.inisiasi.hpp_emas,
+      'hpp_encoded' : "double",
 
       'product-clarity' : this.inisiasi['clarity_berlian'],
       'product-diamond-color' : this.inisiasi['warna_berlian'],
@@ -681,16 +685,20 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
       'product-carat' : this.inisiasi.total_carat_berlian,
       'product-cut' : this.inisiasi.cutting_berlian,
       'hpp_berlian_inisiasi' : this.inisiasi.hpp_berlian,
+      'hpp_berlian_inisiasi_encoded' : "double",
       'hpp_berlian' : this.inisiasi.hpp_berlian,
+      'hpp_berlian_encoded' : "double",
 
       'product-stone' : this.inisiasi.jenis_batu,
       'product-stone-color' : this.inisiasi.warna_batu,
       'product-stone-carat' : this.inisiasi.carat_batu,
       'product-stone-dimension' : this.inisiasi.dimensi_batu,
       'hpp_batu_inisiasi' : this.inisiasi.hpp_batu,
+      'hpp_batu_inisiasi_encoded' : "double",
       'hpp_batu' : this.inisiasi.hpp_batu,
+      'hpp_batu_encoded' : "double",
 
-      _log : 1
+      _log : "1"
     }
     DataTypeUtil.Encode(product);
     let result = await this.productService.add(product).toPromise();
@@ -719,7 +727,7 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
     tempInisiasi.no_po = this.inisiasi.no_po;
     tempInisiasi._id = this.inisiasi._id;
     tempInisiasi.product = this.inisiasi.product;
-    tempInisiasi._log = 1;
+    tempInisiasi._log = "1";
     // Object.assign(tempInisiasi, this.inisiasi);
     DataTypeUtil.Encode(tempInisiasi);
 
@@ -730,7 +738,7 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
       return;
     } else {
       Object.assign(this.inisiasi, tempInisiasi);
-      this.doAccounting(inisiasi._id);
+      await this.doAccounting(inisiasi._id);
       console.log(this.inisiasi);
       this.parentListener.onAfterUpdate(this.inisiasi._id);
       this.toastr.success("PO berhasil diterima.");
@@ -760,9 +768,9 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
     // }
   }
 
-  doAccounting(idInisiasi :string)
-    {
-    this.jurnalInisiasi.bayar(idInisiasi).subscribe(output => {
+  async doAccounting(idInisiasi :string)
+  {
+    await this.jurnalInisiasi.terima(idInisiasi).subscribe(output => {
       if(output == false)
       {
         let msg = this.jurnalInisiasi.message();
@@ -774,5 +782,5 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
         return;
       }
     });
-    }
+  }
 }

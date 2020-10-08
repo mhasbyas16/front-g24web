@@ -162,6 +162,12 @@
                 <clr-dg-column>
                     Pieces
                 </clr-dg-column>
+                <clr-dg-column>
+                    Total Terima
+                </clr-dg-column>
+                <clr-dg-column>
+                    Jumlah Diterima
+                </clr-dg-column>
                 <!-- <clr-dg-column>
                     Ongkos
                 </clr-dg-column> -->
@@ -169,58 +175,102 @@
                     Pajak
                 </clr-dg-column>
     
-                <clr-dg-row *clrDgItems="let data of (getItemsOfInisiasi() || []); let itemsIndex = index;" [clrDgItem]="data">
-                    <clr-dg-cell>{{data?.sku}} </clr-dg-cell>
-                    <clr-dg-cell>{{GetDisplayValue(data['product-denom'])}}</clr-dg-cell>
+                <clr-dg-row *clrDgItems="let item of getItemsOfInisiasi(); let itemsIndex = index;">
+                    <clr-dg-cell>{{item?.sku}} </clr-dg-cell>
+                    <clr-dg-cell>{{GetDisplayValue(item['product-denom'])}}</clr-dg-cell>
                     <!-- <clr-dg-cell>{{GetDisplayValue(data['product-series'])}}</clr-dg-cell> -->
-                    <clr-dg-cell>{{data?.pieces}}</clr-dg-cell>
-                    <!-- <clr-dg-cell>{{data?.ongkos_pieces}}</clr-dg-cell> -->
-                    <!-- <clr-dg-cell>{{data.gram_tukar}}</clr-dg-cell><input readonly type="number" class="clr-input" [ngModel]="input.items[i]['pajak'] = 0" [ngModelOptions]="{standalone:true}"> -->
-                    <clr-dg-cell>{{data?.pajak}} </clr-dg-cell>
-                    
+                    <clr-dg-cell>{{item?.pieces}}</clr-dg-cell>
+                    <clr-dg-cell>{{item?.total_terima}}</clr-dg-cell>
+                    <clr-dg-cell><input [readOnly]="mode == EPriviledge.READ || item?.total_terima == item.pieces" type="number" min=0 step=1 class="clr-input" [(ngModel)]="item['detail_terima']" [ngModelOptions]="{standalone : true}" (keyup)="onDetailTerimaChanged(item, $event, itemsIndex)" name="detail_terima"></clr-dg-cell>
+                    <clr-dg-cell>{{item?.pajak}} </clr-dg-cell>
+    
                     <clr-dg-row-detail *clrIfExpanded="false" (clrIfExpandedChange)="onExpand(itemsIndex)">
-                        <table class="table table-compact">
+
+                        <clr-datagrid>
+                            <clr-dg-column>
+                                No.
+                            </clr-dg-column>
+                            <clr-dg-column>
+                                _id
+                            </clr-dg-column>
+                            <clr-dg-column>
+                                SKU
+                            </clr-dg-column>
+                            <clr-dg-column>
+                                Barcode
+                            </clr-dg-column>
+                            <clr-dg-column>
+                                Vendor
+                            </clr-dg-column>
+                            <clr-dg-column>
+                                Denom
+                            </clr-dg-column>
+                            <clr-dg-column>
+                                HPP Inisiasi
+                            </clr-dg-column>
+
+                            <clr-dg-row *clrDgItems="let product of (item.products || []); let productNum = index;">
+                                <clr-dg-cell>{{productNum + 1}} </clr-dg-cell>
+                                <clr-dg-cell>{{product?._id}} </clr-dg-cell>
+                                <clr-dg-cell>{{product?.sku}} </clr-dg-cell>
+                                <clr-dg-cell>{{product?.code}} </clr-dg-cell>
+                                <clr-dg-cell>{{GetDisplayValue(product?.vendor)}} </clr-dg-cell>
+                                <clr-dg-cell>{{GetDisplayValue(product['product-denom'])}} </clr-dg-cell>
+                                <clr-dg-cell>{{product?.hpp_inisiasi}} </clr-dg-cell>
+                            </clr-dg-row>
+                            <clr-dg-footer>
+                                <div>
+                                    <clr-dg-pagination #pagination [clrDgPageSize]="10">
+                                        <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100, 1000]">Items per page</clr-dg-page-size>
+                                        {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                                        of {{pagination.totalItems}} items
+                                    </clr-dg-pagination>
+                                </div>
+                                  {{ inisiasi?.items?.length || 0}} items.
+                            </clr-dg-footer>
+                        </clr-datagrid>
+                        <!-- <table class="table table-compact">
                             <thead>
                                 <tr>
-                                    <!-- <th><button [disabled]="mode == EPriviledge.READ ? true : null" class="btn btn-primary btn-icon btn-sm" (click)="onAddProduct(itemsIndex)" type="button" ><clr-icon shape="plus"></clr-icon></button></th> -->
-                                    <!-- <th><input type="checkbox" [(ngModel)]="data.checked" (change)="onCheckAll(data)" /></th> -->
+                                    <-- <th><button [disabled]="mode == EPriviledge.READ ? true : null" class="btn btn-primary btn-icon btn-sm" (click)="onAddProduct(itemsIndex)" type="button" ><clr-icon shape="plus"></clr-icon></button></th> -->
+                                    <!-- <th><input type="checkbox" [(ngModel)]="data.checked" (change)="onCheckAll(data)" /></th> ->
                                     <th>No.</th>
                                     <th>_id</th>
                                     <th>SKU</th>
                                     <th>Barcode</th>
                                     <th>Vendor</th>
                                     <th>Denom</th>
-                                    <!-- <th>Series</th>
-                                    <th>Ongkos (Rp.)</th> -->
+                                    <-- <th>Series</th>
+                                    <th>Ongkos (Rp.)</th> ->
                                     <th>HPP Inisiasi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <ng-container *ngFor="let product of data?.products; let productIndex = index">
                                     <tr>
-                                        <!-- <td><button [disabled]="mode == EPriviledge.READ ? true : null" class="btn btn-danger btn-icon btn-sm" (click)="onDeleteProduct(itemsIndex, productIndex)" type="button"><clr-icon shape="minus"></clr-icon></button></td> -->
-                                        <!-- <td><input [disabled]="isAlreadyTerima(product)" type="checkbox" [(ngModel)]="product.isTerima" /></td> -->
+                                        <-- <td><button [disabled]="mode == EPriviledge.READ ? true : null" class="btn btn-danger btn-icon btn-sm" (click)="onDeleteProduct(itemsIndex, productIndex)" type="button"><clr-icon shape="minus"></clr-icon></button></td> ->
+                                        <-- <td><input [disabled]="isAlreadyTerima(product)" type="checkbox" [(ngModel)]="product.isTerima" /></td> ->
                                         <td>{{productIndex + 1}}</td>
                                         <td>{{product?._id}}</td>
                                         <td>{{product?.sku}}</td>
                                         <td>{{product?.code}}</td>
                                         <td>{{GetDisplayValue(product.vendor)}}</td>
                                         <td>{{GetDisplayValue(product['product-denom'])}}</td>
-                                        <!-- <td>{{GetDisplayValue(product['product-series'])}}</td> -->
-                                        <!-- <td>{{product?.ongkos_pieces}}</td> -->
+                                        <-- <td>{{GetDisplayValue(product['product-series'])}}</td> ->
+                                        <-- <td>{{product?.ongkos_pieces}}</td> ->
                                         <td>{{product?.hpp_inisiasi}}</td>
                                     </tr>
                                 </ng-container>
                             </tbody>
-                        </table>
+                        </table> -->
                         
                     </clr-dg-row-detail>
                 </clr-dg-row>
     
                 <clr-dg-footer>
                     <div>
-                        <clr-dg-pagination #pagination [clrDgPageSize]="10">
-                            <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Items per page</clr-dg-page-size>
+                        <clr-dg-pagination #pagination [clrDgPageSize]="100">
+                            <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100, 1000]">Items per page</clr-dg-page-size>
                             {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
                             of {{pagination.totalItems}} items
                         </clr-dg-pagination>
@@ -231,7 +281,10 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" [disabled]="mode == EPriviledge.READ" (click)="doTerima()">Terima</button>
-        <button class="btn btn-danger" [disabled]="mode == EPriviledge.READ" (click)="doTolak()">Tolak</button>
+        <button class="btn btn-primary" [disabled]="mode == EPriviledge.READ" (click)="doSave()">Terima</button>
     </div>
 </clr-modal>
+
+<loading-spinner #spinner>
+
+</loading-spinner>

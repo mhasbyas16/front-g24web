@@ -13,6 +13,7 @@ import { SessionService } from 'projects/platform/src/app/core-services/session.
 import { IDetailCallbackListener } from 'projects/main/src/app/g24/lib/base/idetail-callback-listener';
 import { PaymentType } from 'projects/main/src/app/g24/lib/enums/payment-type';
 import { JurnalInisiasiService } from 'projects/main/src/app/g24/services/keuangan/jurnal/stock/jurnal-inisiasi.service';
+import { ServerDateTimeService } from 'projects/main/src/app/g24/services/system/server-date-time.service';
 
 @Component({
   selector: 'detail-item-inisiasi-approval-emas-batangan',
@@ -26,6 +27,7 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
     private toastr : ToastrService,
     private session : SessionService,
     private jurnalInisiasi : JurnalInisiasiService,
+    private dateService : ServerDateTimeService,
 
     private inisiasiService : InisiasiService,
     private kadarService : ProductPurityService,
@@ -38,6 +40,10 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
   
   user : any = this.session.getUser();
   unit : any = this.session.getUnit();
+  date : string = "";
+  time : string = "";
+
+  errorHappened : boolean = false;
 
   EPriviledge = EPriviledge;
 
@@ -46,6 +52,23 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
   LoadAllParameter()
   {
     this.LoadJenis();
+  }
+
+  async LoadDate()
+  {
+    let resp = await this.dateService.task("").toPromise();
+    if(resp == false)
+    {
+      this.errorHappened = true;
+      this.doReset();
+      this.Close();
+      this.toastr.info("Gagal mengambil tanggal server.");
+      return;
+    }
+
+    let dtarr = resp.split("T");
+    this.date = dtarr[0];
+    this.time = dtarr[0].split("Z")[0];
   }
 
   async LoadJenis()
@@ -541,8 +564,71 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
     return true;
   }
 
+  async onTolak()
+  {
+    if(this.errorHappened)
+    {
+      this.toastr.error("Terjadi Kesalahan! Harap proses ulang!");
+      this.doReset();
+      this.Close();
+      return;
+    }
+
+    if(this.mode == EPriviledge.READ)
+    {
+      this.toastr.info("Mode 'READ' only.");
+      return;
+    }
+
+    if(!this.validateItems())
+    {
+      return;
+    }
+
+    if(!this.validateInisiasi())
+    {
+      return;
+    }
+
+    this.inisiasi.order_status = OrderStatus.TOLAK.code;
+    this.inisiasi.update_date = this.date;
+    this.inisiasi.update_by = this.user.username;
+    this.inisiasi['tgl_approved'] = this.inisiasi.update_date;
+    this.inisiasi.approved_by = this.user.username;
+    let items = this.inisiasi.items;
+    console.log(items);
+
+    console.log(this.inisiasi);
+    let tempInisiasi = {}
+    Object.assign(tempInisiasi, this.inisiasi);
+    DataTypeUtil.Encode(tempInisiasi);
+
+    let inisiasi = await this.inisiasiService.update(tempInisiasi).toPromise();
+    if(inisiasi == false)
+    {
+      this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk.");
+      return;
+    } else {
+      Object.assign(this.inisiasi, tempInisiasi);
+      console.log(this.inisiasi);
+      this.parentListener.onAfterUpdate(this.inisiasi._id);
+      // this.doAccounting(this.inisiasi._id);
+      this.toastr.success("PO berhasil di Tolak.");
+      this.doReset();
+      this.Close();
+    }
+  }
+
   async doSave()
   {
+    if(this.errorHappened)
+    {
+      this.toastr.error("Terjadi Kesalahan! Harap proses ulang!");
+      this.doReset();
+      this.Close();
+      return;
+    }
+
     if(this.mode == EPriviledge.READ)
     {
       this.toastr.info("Mode 'READ' only.");
@@ -560,43 +646,19 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
     }
 
     this.inisiasi.order_status = OrderStatus.APPROVAL.code;
-    this.inisiasi.update_date = new Date().toISOString().split("T")[0];
+    this.inisiasi.update_date = this.date;
     this.inisiasi.update_by = this.user.username;
     this.inisiasi['tgl_approved'] = this.inisiasi.update_date;
     this.inisiasi.approved_by = this.user.username;
     let items = this.inisiasi.items;
-    let productNoId = [];
-    let ids = [];
     console.log(items);
-    
-    // for(let i =0; i < productNoId.length; i++)
-    // {
-    //   let product = productNoId[i];
-    //   let fail = {itemIndex : product.no_item_po, productIndex: product.no_index_products}
-    //   delete product._id;
-    //   DataTypeUtil.Encode(product);
-
-    //   itemProduct.set(fail.itemIndex + "," + fail.productIndex, product);
-
-    //   let result = await this.productService.add(product).toPromise();
-    //   if(result == false)
-    //   {
-    //     this.toastr.error("Barang nomor: " + fail.productIndex + " dengan nomor Bulk: " + fail.itemIndex + " gagal masuk.");
-    //     continue;
-    //   } else {
-    //     let product = itemProduct.get(fail.itemIndex + "," + fail.productIndex);
-    //     Object.assign(product, result);
-    //     itemProduct.set(fail.itemIndex + "," + fail.productIndex, result);
-    //     console.log(result);
-    //   }
-    // }
 
     console.log(this.inisiasi);
     let tempInisiasi = {}
     Object.assign(tempInisiasi, this.inisiasi);
     DataTypeUtil.Encode(tempInisiasi);
 
-    let inisiasi = await this.inisiasiService.update(tempInisiasi).toPromise();
+    let inisiasi = await this.inisiasiService.ApprovalInisiasiEmas(tempInisiasi).toPromise();
     if(inisiasi == false)
     {
       this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk.");
@@ -605,32 +667,11 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
       Object.assign(this.inisiasi, tempInisiasi);
       console.log(this.inisiasi);
       this.parentListener.onAfterUpdate(this.inisiasi._id);
-      this.doAccounting(this.inisiasi._id);
-      this.toastr.success("PO berhasil diterima.");
+      // this.doAccounting(this.inisiasi._id);
+      this.toastr.success("PO berhasil di Approve.");
       this.doReset();
       this.Close();
     }
-
-    // HERE BATCH_ADD
-    // let counter : number = this.inisiasi.total_piece;
-    // let enc = {batch_counter : counter};
-    // for(let i = 0; i < counter; i++)
-    // {
-    //   delete productNoId[i]._id;
-    //   enc[i+1] = productNoId[i];
-    // }
-
-    // DataTypeUtil.Encode(enc);
-    // console.log('enc', enc);
-
-    // let result = await this.productService.batchAdd(enc).toPromise();
-    // console.log(result);
-    
-    // for(let i = 0; i < result.length; i++)
-    // {
-    //   let product = result[i];
-      
-    // }
   }
 
   totalDPP(){

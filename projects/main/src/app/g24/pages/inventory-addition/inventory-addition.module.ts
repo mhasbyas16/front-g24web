@@ -40,6 +40,7 @@ import { DetailInisiasiApprovalPermataComponent } from './inisiasi-approval/deta
 import { DetailItemInisiasiApprovalPermataComponent } from './inisiasi-approval/detail-inisiasi-approval-permata/detail-item-inisiasi-approval-permata/detail-item-inisiasi-approval-permata.component';
 import { DetailPenerimaanPermataComponent } from './penerimaan/detail-penerimaan-permata/detail-penerimaan-permata.component';
 import { DetailItemPenerimaanPermataComponent } from './penerimaan/detail-penerimaan-permata/detail-item-penerimaan-permata/detail-item-penerimaan-permata.component';
+import { NavModule } from '../../nav/nav.module';
 
 @NgModule({
   declarations: 
@@ -82,6 +83,7 @@ import { DetailItemPenerimaanPermataComponent } from './penerimaan/detail-peneri
   ], 
   imports: [
     CommonModule,
+    NavModule,
     InventoryAdditionRoutingModule,
     ClarityModule,
     ReactiveFormsModule,
