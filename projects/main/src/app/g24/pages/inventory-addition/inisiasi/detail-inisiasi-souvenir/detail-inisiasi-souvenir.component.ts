@@ -674,7 +674,6 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
     try
     {
       seq = await this.sequencer.use(key).toPromise();
-
     } catch(err)
     {
       msg = err.message;
@@ -691,7 +690,7 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
     }
 
     let st = StringHelper.LeftZeroPad(Number(seq.value).toString(), 5);
-    let PO = "PO" + this.session.getUnit()?.code + date_split[0].substring(1, 3) + date_split[1] + st;
+    let PO = "PO" + this.session.getUnit()?.code + date_split[0].substring(2, 4) + date_split[1] + date_split[2] + st;
 
     let def =
     {

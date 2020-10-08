@@ -14,6 +14,8 @@ import { IDetailCallbackListener } from 'projects/main/src/app/g24/lib/base/idet
 import { PaymentType } from 'projects/main/src/app/g24/lib/enums/payment-type';
 import { JurnalInisiasiService } from 'projects/main/src/app/g24/services/keuangan/jurnal/stock/jurnal-inisiasi.service';
 import { ServerDateTimeService } from 'projects/main/src/app/g24/services/system/server-date-time.service';
+import { ViewChild } from '@angular/core';
+import { LoadingSpinnerComponent } from 'projects/main/src/app/g24/nav/modal/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'detail-item-inisiasi-approval-emas-batangan',
@@ -30,13 +32,15 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
     private dateService : ServerDateTimeService,
 
     private inisiasiService : InisiasiService,
-    private kadarService : ProductPurityService,
-    private jenisService : ProductJenisService,
-    private goldColorService : ProductGoldColorService,
-    private productService : ProductService
+    private jenisService : ProductJenisService
   ) { }
+  
+  @ViewChild('spinner', {static: false}) spinner : LoadingSpinnerComponent;
 
   parentListener : IDetailCallbackListener;
+  
+  PaymentTypeValues = Object.values(PaymentType);
+  PaymentType = PaymentType;
   
   user : any = this.session.getUser();
   unit : any = this.session.getUnit();
@@ -128,9 +132,11 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
       this.Close();
       return;
     }
+    this.spinner.Open();
 
     this.inisiasiService.list("?_or=product-category.code=c05&no_po="+id).subscribe(output => 
     {
+      this.spinner.Close();
       if(output != false)
       {
         if(output.length > 1)
@@ -621,8 +627,11 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
 
   async doSave()
   {
+    this.spinner.Open();
+
     if(this.errorHappened)
     {
+      this.spinner.Close();
       this.toastr.error("Terjadi Kesalahan! Harap proses ulang!");
       this.doReset();
       this.Close();
@@ -631,24 +640,27 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
 
     if(this.mode == EPriviledge.READ)
     {
+      this.spinner.Close();
       this.toastr.info("Mode 'READ' only.");
       return;
     }
 
     if(!this.validateItems())
     {
+      this.spinner.Close();
       return;
     }
 
     if(!this.validateInisiasi())
     {
+      this.spinner.Close();
       return;
     }
 
     this.inisiasi.order_status = OrderStatus.APPROVAL.code;
     this.inisiasi.update_date = this.date;
     this.inisiasi.update_by = this.user.username;
-    this.inisiasi['tgl_approved'] = this.inisiasi.update_date;
+    this.inisiasi['tgl_approved'] = this.date;
     this.inisiasi.approved_by = this.user.username;
     let items = this.inisiasi.items;
     console.log(items);
@@ -658,10 +670,22 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
     Object.assign(tempInisiasi, this.inisiasi);
     DataTypeUtil.Encode(tempInisiasi);
 
-    let inisiasi = await this.inisiasiService.ApprovalInisiasiEmas(tempInisiasi).toPromise();
+    let msg = "";
+    let inisiasi : any = null; 
+    try{
+      await this.inisiasiService.ApprovalInisiasiEmas(tempInisiasi).toPromise();
+    } catch (err) {
+      msg = err.message;
+      inisiasi = false;
+    }
+
+    this.spinner.Close();
     if(inisiasi == false)
     {
-      this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk.");
+      if(msg == "") msg = this.inisiasiService.message();
+      this.toastr.error("Terjadi Error. Mohon check terlebih dahulu apakah PO sudah terproses atau belum. Jika belum, Harap hubungi IT Support/Helpdesk. Error: " + msg);
+      this.doReset();
+      this.Close();
       return;
     } else {
       Object.assign(this.inisiasi, tempInisiasi);
@@ -672,20 +696,6 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
       this.doReset();
       this.Close();
     }
-  }
-
-  totalDPP(){
-    if(!this.inisiasi.total_dpp){
-      return this.inisiasi['total_dpp']=0;
-    }
-    return this.inisiasi['total_dpp'];
-  }
-
-  hargaBaku(){
-    if(!this.inisiasi.harga_baku){
-      return this.inisiasi["harga_baku"]=0;
-    }
-    return this.inisiasi["harga_baku"];
   }
 
   doAccounting(idInisiasi :string)
@@ -738,54 +748,6 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
     return value;
   }
   
-  getBakuTukarFromItems()
-  {
-    if(this.inisiasi == null) return 0;
-
-    let value = 0;
-    for(let i = 0; i < this.inisiasi.items.length; i++)
-    {
-      if(this.inisiasi.items[i]?.baku_tukar == null || this.inisiasi.items[i]?.baku_tukar == "null")
-        continue;
-        value += parseInt(this.inisiasi.items[i].baku_tukar);
-    }
-
-    this.inisiasi['total_baku_tukar'] = Math.round(value * 100) / 100;
-    return value;
-  }
-  
-  getGramTukarFromItems()
-  {
-    if(this.inisiasi == null) return 0;
-
-    let value = 0;
-    for(let i = 0; i < this.inisiasi.items.length; i++)
-    {
-      if(this.inisiasi.items[i]?.gram_tukar == null || this.inisiasi.items[i]?.gram_tukar == "null")
-        continue;
-        value += parseFloat(this.inisiasi.items[i].gram_tukar);
-    }
-
-    this.inisiasi['total_gram_tukar'] = Math.round(value * 100) / 100;
-    return value;
-  }
-  
-  getOngkosFromItems()
-  {
-    if(this.inisiasi == null) return 0;
-
-    let value = 0;
-    for(let i = 0; i < this.inisiasi.items.length; i++)
-    {
-      if(this.inisiasi.items[i]?.total_ongkos == null || this.inisiasi.items[i]?.total_ongkos == "null")
-        continue;
-        value += parseFloat(this.inisiasi.items[i].ongkos);
-    }
-
-    this.inisiasi['total_ongkos'] = Math.round(value * 100) / 100;
-    return value;
-  }
-  
   getPajakFromItems()
   {
     if(this.inisiasi == null) return 0;
@@ -800,17 +762,6 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
 
     this.inisiasi['total_pajak'] = Math.round(value * 100) / 100;
     return value;
-  }
-
-  hitungTotalHarga()
-  {
-    if(this.inisiasi == null) return 0;
-
-    let hbaku = Number(this.inisiasi['harga_baku']);
-    let total_gram_tukar = this.getGramTukarFromItems();
-
-    this.inisiasi['total_harga'] = Math.round(hbaku * total_gram_tukar * 100) /100;
-    return this.inisiasi['total_harga'];
   }
 
   hitungTotalDPP()

@@ -690,7 +690,7 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
     }
 
     let st = StringHelper.LeftZeroPad(Number(seq.value).toString(), 5);
-    let PO = "PO" + this.session.getUnit()?.code + date_split[0].substring(1, 3) + date_split[1] + st;
+    let PO = "PO" + this.session.getUnit()?.code + date_split[0].substring(2, 4) + date_split[1] + date_split[2] + st;
 
     let def =
     {

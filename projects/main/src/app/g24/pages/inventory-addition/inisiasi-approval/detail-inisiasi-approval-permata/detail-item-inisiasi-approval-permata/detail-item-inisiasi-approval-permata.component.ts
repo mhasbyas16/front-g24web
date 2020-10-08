@@ -34,6 +34,9 @@ export class DetailItemInisiasiApprovalPermataComponent implements OnInit {
 
   parentListener : IDetailCallbackListener;
   
+  PaymentTypeValues = Object.values(PaymentType);
+  PaymentType = PaymentType;
+  
   user : any = this.session.getUser();
   unit : any = this.session.getUnit();
 

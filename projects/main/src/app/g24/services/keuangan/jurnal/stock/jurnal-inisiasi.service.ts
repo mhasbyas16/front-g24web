@@ -9,6 +9,16 @@ export class JurnalInisiasiService {
   key = "journal-api/inisiasi";
 
   constructor(private commonService:CommonService) { }
+  
+  bayarDinar(id : string) {
+    let obj = {_id : id}
+    return this.commonService.task("journal-api/inisiasi/bayar-emas", obj); // currently ke emas
+  }
+
+  bayarEmas(id : string) {
+    let obj = {_id : id}
+    return this.commonService.task("journal-api/inisiasi/bayar-emas", obj);
+  }
 
   bayar(id : string) {
     let obj = {_id : id};

@@ -141,6 +141,9 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
 
   public setId(id : string)
   {
+    this.inisiasi = null;
+    this.items = [];
+
     if(id == null || id == "")
     {
       this.toastr.error("No ID is set.");
