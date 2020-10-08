@@ -41,6 +41,9 @@ export const management = [
     //INQUERY PRODUCT
     {_id: "0011", type: "menu", name : "Inquery Product", icons: "data-cluster", color : "warna-warni", componentId : "IP101", parentId: "", module: "ip"},
     {_id: "0011", type: "sub-menu", name : "Data Product", icons: "yang bagus", color : "warna-warni", componentId : "99101", parentId: "IP101", module: "ip",menu : {_id: "0011"}},
+    //KONVERSI
+    {_id: "0012", type: "menu", name : "Konversi", icons: "organization", color : "warna-warni", componentId : "KV101", parentId: "", module: "kv"},
+    {_id: "0012", type: "sub-menu", name : "Konversi Product", icons: "yang bagus", color : "warna-warni", componentId : "3001", parentId: "KV101", module: "kv",menu : {_id: "0012"}},
     // PENJUALAN
     {_id: "0003", type: "menu", name : "Penjualan", icons: "shopping-cart", color : "warna-warni", componentId : "S10001", parentId: "", module: "pj"},
     {_id: "0003", type: "sub-menu", name : "Penjualan Distro", icons: "yang bagus", color : "warna-warni", componentId : "10001", parentId: "S10001", module: "pj",menu : {_id: "0003"}},

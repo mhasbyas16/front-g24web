@@ -68,6 +68,7 @@ export class AppRoutingModule
     ModuleLoader.register('pr', () => import('./pages/parameter/parameter.module').then(m => m.ParameterModule))
     ModuleLoader.register('prp', () => import('./pages/parameter-product/parameter-product.module').then(m => m.ParameterProductModule))
     ModuleLoader.register('ip', () => import('./pages/inquery-product/inquery-product.module').then(m => m.InqueryProductModule))
+    ModuleLoader.register('kv', () => import('./pages/konversi/konversi.module').then(m => m.KonversiModule));
     ModuleLoader.register('ag', () => import('./pages/anggaran/anggaran.module').then(m => m.AnggaranModule))
   }
 }
