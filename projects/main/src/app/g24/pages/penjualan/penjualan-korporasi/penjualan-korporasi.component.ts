@@ -11,7 +11,8 @@ import { ContentPage } from '../../../lib/helper/content-page';
 // services
 import { PrmMarginService } from '../../../services/parameter/prm-margin.service';
 import { TransactionBookingService } from '../../../services/transaction/transaction-booking.service';
-
+import { TransactionFlagService } from '../../../services/transaction/transaction-flag.service';
+import { ProductService } from '../../../services/product/product.service';
 @Component({
   selector: 'app-penjualan-korporasi',
   templateUrl: './penjualan-korporasi.component.html',
@@ -44,7 +45,9 @@ export class PenjualanKorporasiComponent implements OnInit {
     private prmMarginService:PrmMarginService,
     private splitDateServiceService:SplitDateServiceService,
     private transactionBookingService:TransactionBookingService,
-    private toastrService:ToastrService
+    private toastrService:ToastrService,
+    private transactionFlagService:TransactionFlagService,
+    private productService:ProductService
   ) { }
 
   ngOnInit(): void {
@@ -55,13 +58,13 @@ export class PenjualanKorporasiComponent implements OnInit {
 
   form(){
     this.formData = new FormGroup ({
-      cif: new FormControl (""),
-      name: new FormControl (""),
-      client: new FormControl (""),
+      cif: new FormControl ("", Validators.required),
+      name: new FormControl ("", Validators.required),
+      client: new FormControl ("", Validators.required),
       client_encoded: new FormControl ("base64"),
       tglPengajuan: new FormControl (this.datePipe.transform(Date.now(), 'yyyy-MM-dd')),
       periode: new FormControl ("", Validators.required),
-      lastPeriode: new FormControl (""),
+      lastPeriode: new FormControl ("", Validators.required),
       flag: new FormControl ("booking")
     });
 
@@ -90,6 +93,7 @@ export class PenjualanKorporasiComponent implements OnInit {
     this.productData = [];
     this.dataMulia =[];
     this.productData = [];
+    this.hargaLogamMulia = 0;
     this.prmMargin = data.margin;
     // this.formData.get(tglPengajuan)
   }
@@ -142,13 +146,14 @@ export class PenjualanKorporasiComponent implements OnInit {
 
     let data = Object.assign(form,{'pic': btoa(JSON.stringify(Pic))}, {product:btoa(JSON.stringify(this.productData))});
 
-    console.debug(data, "data booking")
+    this.transactionFlagService.batchUpdateOne(this.productData);
 
     this.transactionBookingService.add(data).subscribe((response)=>{
       if (response == false) {
         this.toastrService.error("Add Data Failed !!");
         return;
       }
+      
       this.ChangeContentArea('10004');
       this.toastrService.success("Success Add Data !!");
       return;
