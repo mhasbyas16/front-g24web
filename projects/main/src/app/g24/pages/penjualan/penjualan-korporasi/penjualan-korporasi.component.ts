@@ -5,9 +5,12 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LM } from '../../../sample/cart';
 import { DatePipe } from '@angular/common';
 import { SplitDateServiceService } from '../../../services/split-date-service.service';
+import { ToastrService } from 'ngx-toastr';
+import { ContentPage } from '../../../lib/helper/content-page';
+
 // services
 import { PrmMarginService } from '../../../services/parameter/prm-margin.service';
-
+import { TransactionBookingService } from '../../../services/transaction/transaction-booking.service';
 
 @Component({
   selector: 'app-penjualan-korporasi',
@@ -20,6 +23,7 @@ import { PrmMarginService } from '../../../services/parameter/prm-margin.service
 export class PenjualanKorporasiComponent implements OnInit {
 
   formData: FormGroup = null;
+  pic: FormGroup = null;
   isiClientData:any;
   hargaLogamMulia:any;
   mulia:any;
@@ -38,7 +42,9 @@ export class PenjualanKorporasiComponent implements OnInit {
   constructor(
     private datePipe:DatePipe,
     private prmMarginService:PrmMarginService,
-    private splitDateServiceService:SplitDateServiceService
+    private splitDateServiceService:SplitDateServiceService,
+    private transactionBookingService:TransactionBookingService,
+    private toastrService:ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -49,17 +55,20 @@ export class PenjualanKorporasiComponent implements OnInit {
 
   form(){
     this.formData = new FormGroup ({
-      cif: new FormControl ("", Validators.required),
-      name: new FormControl ("", Validators.required),
-      client: new FormControl ("", Validators.required),
+      cif: new FormControl (""),
+      name: new FormControl (""),
+      client: new FormControl (""),
       client_encoded: new FormControl ("base64"),
-      nomorIdentitas: new FormControl ("", [Validators.required, Validators.pattern(/^[0-9]\d*$/)]),
+      tglPengajuan: new FormControl (this.datePipe.transform(Date.now(), 'yyyy-MM-dd')),
+      periode: new FormControl ("", Validators.required),
+      lastPeriode: new FormControl (""),
+      flag: new FormControl ("booking")
+    });
+
+    this.pic = new FormGroup ({
       namePIC: new FormControl ("", Validators.required),
       typeId: new FormControl ("", Validators.required),
-      numberId: new FormControl ("", Validators.required),
-      tglPengajuan: new FormControl (this.datePipe.transform(Date.now(), 'yyyy-MM-dd'), Validators.required),
-      periode: new FormControl ("", Validators.required),
-      lastPeriode: new FormControl ("")
+      numberId: new FormControl ("", [Validators.required, Validators.pattern(/^[0-9]\d*$/)]),
     })
   }
 
@@ -76,7 +85,7 @@ export class PenjualanKorporasiComponent implements OnInit {
     d.setDate(d.getDate() + (Number(data.periode)-1));
     let hasil = this.splitDateServiceService.split(d.toLocaleDateString());
     console.log(hasil);
-    this.formData.patchValue({lastPeriode:hasil});
+    this.formData.patchValue({lastPeriode:hasil, periode:data.periode});
 
     this.productData = [];
     this.dataMulia =[];
@@ -116,6 +125,40 @@ export class PenjualanKorporasiComponent implements OnInit {
     }
 
     console.debug(val, "HASIL EMMMMMMIT")
+  }
+
+  storeTransaction(){
+    if (!this.formData.valid || !this.pic.valid) {
+      this.toastrService.error("Form Not Valid !!");
+      return;
+    }
+
+    let form = this.formData.getRawValue();
+    form.pic_encoded = "base64";
+    form.product_encoded = "base64array";
+    delete form.cif;
+    delete form.name;
+    let Pic = this.pic.getRawValue();
+
+    let data = Object.assign(form,{'pic': btoa(JSON.stringify(Pic))}, {product:btoa(JSON.stringify(this.productData))});
+
+    console.debug(data, "data booking")
+
+    this.transactionBookingService.add(data).subscribe((response)=>{
+      if (response == false) {
+        this.toastrService.error("Add Data Failed !!");
+        return;
+      }
+      this.ChangeContentArea('10004');
+      this.toastrService.success("Success Add Data !!");
+      return;
+    })
+  }
+
+  ChangeContentArea(pageId : string)
+  {
+    if(pageId.startsWith("x")) return;
+    ContentPage.ChangeContent(pageId, true)
   }
   static key = EMenuID.KORPORASI;
 

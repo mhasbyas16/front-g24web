@@ -5,13 +5,14 @@
         </div>
        
         <div class="card-block">
-            <form class="clr-form clr-form-horizontal" [formGroup]="formData">
+            
             <div class="card-text">
                 <!-- Data Nasabah -->
                 <div class="card" style="margin-top: 0;">
                     <div class="card-header">
                         Detail Pencarian
                     </div>
+                    <form class="clr-form clr-form-horizontal" [formGroup]="formData">
                     <div class="card-block">
                         
                         <div class="card-text">
@@ -42,7 +43,8 @@
                                 <div class="clr-col-6" style="margin-left: 30px;">
                                     <clr-select-container>
                                         <label>Periode Waktu</label>
-                                        <select clrSelect formControlName="periode" id="" (click)="getAkhirPeriode($event.target.value)">
+                                        <select clrSelect id="" (click)="getAkhirPeriode($event.target.value)">
+                                            <option selected disabled value="">-- select One --</option>
                                             <option *ngFor="let item of periodeData" [value]="item._hash">{{item.periode}} hari</option>
                                         </select>
                                     </clr-select-container>
@@ -71,13 +73,18 @@
                         <!-- hidden field put here-->
                         <input type="hidden" formControlName="client">
                         <input type="hidden" formControlName="client_encoded">
+                        <input type="hidden" formControlName="flag">
+                        <input type="hidden" formControlName="periode">
+                        
                     </div>
+                    </form>
                 </div>
                 <!-- data Penerima -->
                 <div class="card" style="margin-top: 0;">
                     <div class="card-header">
                         Data Penanggung Jawab
                     </div>
+                    <form class="clr-form clr-form-horizontal" [formGroup]="pic">
                     <div class="card-block">
                         
                         <div class="card-text">
@@ -99,6 +106,7 @@
                             </clr-input-container>
                         </div>
                     </div>
+                    </form>
                 </div>
                 <!-- barang -->
                 <div class="card" style="margin-top: 0;">
@@ -130,6 +138,8 @@
                                 <clr-dg-placeholder></clr-dg-placeholder>
                                 <!-- <clr-dg-column>Product Id</clr-dg-column> -->
                                 
+                                <clr-dg-column>Nama Penerima</clr-dg-column>
+                                <clr-dg-column>No Identitas</clr-dg-column>
                                 <clr-dg-column>Vendor</clr-dg-column>
                                 <clr-dg-column>Denom</clr-dg-column>
                                 <clr-dg-column>Tipe Barang</clr-dg-column>
@@ -137,6 +147,8 @@
                                 
                                 <clr-dg-row *clrDgItems="let d of productData" [clrDgItem]="d">
                                     <!-- <clr-dg-cell>{{d.id}}</clr-dg-cell> -->
+                                    <clr-dg-cell>{{d.name}}</clr-dg-cell>
+                                    <clr-dg-cell>{{d.noId}}</clr-dg-cell>
                                     <clr-dg-cell>{{d.vendor}}</clr-dg-cell>
                                     <clr-dg-cell>{{d.denom}}</clr-dg-cell>
                                     <clr-dg-cell>{{d.flag | titlecase }} </clr-dg-cell>
@@ -151,17 +163,15 @@
                                 </clr-dg-footer>
                             </clr-datagrid>
 
-                            <h3>Total Rp. {{hargaLogamMulia}}</h3>
+                            <h3>Total Rp. {{hargaLogamMulia| number}}</h3>
                         </div>
                     </div>
                 </div>
                 
             </div>
-            </form>
         </div>
         <div class="card-footer">
-            <!-- <button class="btn btn-sm btn-link">Footer Action 1</button>
-            <button class="btn btn-sm btn-link">Footer Action 2</button> -->
+            <button class="btn btn-primary" (click)="storeTransaction()">Submit</button>
         </div>
     </div>
 </div>

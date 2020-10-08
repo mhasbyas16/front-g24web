@@ -46,6 +46,8 @@
     <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
     <!-- <clr-dg-column>Product Id</clr-dg-column> -->
     
+    <clr-dg-column>Nama Penerima</clr-dg-column>
+    <clr-dg-column>No Identitas</clr-dg-column>
     <clr-dg-column>Vendor</clr-dg-column>
     <clr-dg-column>Denom</clr-dg-column>
     <clr-dg-column>Jumlah Stock</clr-dg-column>
@@ -55,6 +57,12 @@
 
     <clr-dg-row *clrDgItems="let d of datamulias" [clrDgItem]="d">
         <!-- <clr-dg-cell>{{d.id}}</clr-dg-cell> -->
+        <clr-dg-cell>
+            <input type="text" name="" id="" #name>
+        </clr-dg-cell>
+        <clr-dg-cell>
+            <input type="text" name="" id="" #noId>
+        </clr-dg-cell>
         <clr-dg-cell>{{d.vendor}}</clr-dg-cell>
         <clr-dg-cell>{{d.denom}}</clr-dg-cell>
         <clr-dg-cell>{{d.qty}}</clr-dg-cell>
@@ -68,7 +76,7 @@
                     </clr-input-container>
                 </div>
                 <div class="clr-col">
-                    <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.vendor, d.denom, d.qty, d.harga)">
+                    <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.vendor, d.denom, d.qty, d.harga, name.value, noId.value)">
                         <clr-icon shape="plus"></clr-icon>
                     </button> 
                 </div>

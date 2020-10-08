@@ -189,8 +189,8 @@ export class MuliaKorporasiComponent implements OnInit {
                   "denom" : this.mulias[0]['product-denom'].name,
                   "qty" : this.qty,
                   "flag" : this.mulias[0].flag,
-                  "harga" : hargaLM
-                  
+                  "harga" : hargaLM,
+                  "code" : this.mulias[0].code
                 });
                   this.datamulias = cariMulia;
                   this.loadingDg = false;
@@ -209,7 +209,7 @@ export class MuliaKorporasiComponent implements OnInit {
     return ARR;
   }
 
-  addCart(vendorLM: any, denomLM: any, qtyLM: any, harga: any){
+  addCart(vendorLM: any, denomLM: any, qtyLM: any, harga: any, name:any, noId:any){
     this.loadingDg = true;
 
     if (qtyLM < this.jumlahLM) {
@@ -256,6 +256,8 @@ export class MuliaKorporasiComponent implements OnInit {
                 'denom' : lm[index]['product-denom'].name,
                 'harga' : harga,
                 'flag' : lm[index].flag,
+                'name' : name,
+                'noId': noId,
                 'detail' : JSON.parse(atob(lm[index]._hash))
             })
             console.debug(this.cartList)
