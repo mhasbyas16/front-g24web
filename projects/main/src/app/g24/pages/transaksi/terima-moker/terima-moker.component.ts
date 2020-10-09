@@ -4,9 +4,6 @@ import { EMenuID } from '../../../lib/enums/emenu-id.enum';
 import { DContent } from '../../../decorators/content/pages';
 //toast
 import { ToastrService } from "ngx-toastr";
-//select2
-import { Select2OptionData } from "ng-select2";
-import { Options } from "select2";
 //Session
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { ServerDateTimeService } from "../../../services/system/server-date-time.service";
@@ -17,15 +14,15 @@ import { BranchPegadaianService } from "../../../services/branch-pegadaian.servi
 import { UnitService } from "../../../services/system/unit.service";
 
 @Component({
-  selector: 'app-otorisasi-moker',
-  templateUrl: './otorisasi-moker.component.html',
-  styleUrls: ['./otorisasi-moker.component.scss'],
+  selector: 'app-terima-moker',
+  templateUrl: './terima-moker.component.html',
+  styleUrls: ['./terima-moker.component.scss'],
   providers: [DatePipe],
 })
 
-@DContent(OtorisasiMokerComponent.key)
-export class OtorisasiMokerComponent implements OnInit {
-  static key = EMenuID.OTORISASI_MOKER
+@DContent(TerimaMokerComponent.key)
+export class TerimaMokerComponent implements OnInit {
+  static key = EMenuID.TERIMA_MOKER
 
   //title
   breadcrumb = "Input Moker"
@@ -70,32 +67,12 @@ export class OtorisasiMokerComponent implements OnInit {
     private unitServices : UnitService,
   ) { }
 
-  defaultInput(): any {
-    return{
-      
-    }
-  }
-
   ngOnInit(): void {
     this.getUnit();
     this.getDateTime();
 
     this.nikUser = this.sessionService.getUser();
     this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser)),"nik":this.nikUser["username"]};
-  }
-
-  validateInput(){
-    for(let key in this.inputModel)
-    {
-      let value = this.inputModel[key];
-      // console.log(value, key, 'key')
-      if(value == null || value == "null" || value == 0 || (typeof value === 'number' && value === 0))
-      {
-        this.toastrService.warning("Field belum diisi / sama dengan 0 ");
-        return true
-      }
-    }
-    return false
   }
 
   muter(){
@@ -135,6 +112,7 @@ export class OtorisasiMokerComponent implements OnInit {
     this.loadingDg = true; // CLR Datagrid loading
     let tgl = this.datePipe.transform(data.tanggal, 'yyyy-MM-dd');
     this.param = "?_sortby=_id:2&create_date=" + tgl;
+    // this.param = "?_sortby=_id:2&flag=approved&create_date=" + tgl;
 
     this.mokerServices.list(this.param).subscribe(out => {
       if (out == false) {
@@ -175,25 +153,24 @@ export class OtorisasiMokerComponent implements OnInit {
   mainApproveSubmit(){
     const data = {
       "_id" : this.inputModel._id,
-      "otorisasi_by" : this.nikUser["_hash"],
-      "otorisasi_by_encoded" : "base64",
-      "otorisasi_date" : this.date_now,
-      "otorisasi_time" : this.time,
-      "flag" : "approved",
+      "terima_by" : this.nikUser["_hash"],
+      "terima_by_encoded" : "base64",
+      "terima_date" : this.date_now,
+      "terima_time" : this.time,
+      "flag" : "terima",
     }
 
     this.spinner = true;
     this.mokerServices.update(data).subscribe((response) => {
       if (response == false) {
-        this.toastrService.error('Otorisasi Failed')
+        this.toastrService.error('Terima Failed')
         return
       }
       this.spinner = false;
       this.modalApproveDialog = false;
-      this.toastrService.success('Otorisasi Success')
+      this.toastrService.success('Terima Success')
     });
     console.log("submitted data", data);
   }
-
 
 }

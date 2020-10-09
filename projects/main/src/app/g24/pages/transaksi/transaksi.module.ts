@@ -12,9 +12,11 @@ import { NavModule } from '../../nav/nav.module';
 import { DatePipe } from '@angular/common';
 import { NgSelect2Module } from "ng-select2";
 import { OtorisasiMokerComponent } from './otorisasi-moker/otorisasi-moker.component';
+import { TerimaMokerComponent } from './terima-moker/terima-moker.component';
+import { ApproveTerimaMokerComponent } from './approve-terima-moker/approve-terima-moker.component';
 
 @NgModule({
-  declarations: [InputMokerComponent, ExportPdfComponent, OtorisasiMokerComponent],
+  declarations: [InputMokerComponent, ExportPdfComponent, OtorisasiMokerComponent, TerimaMokerComponent, ApproveTerimaMokerComponent],
   imports: [
     CommonModule,
     ClarityModule,

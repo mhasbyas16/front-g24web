@@ -56,8 +56,11 @@
             <ng-container *ngIf="data.flag == 'submit'">
               <clr-dg-cell class="width-1"><span class="label label-warning">Waiting</span></clr-dg-cell>
             </ng-container>
-            <ng-container *ngIf="data.flag == 'declined'">
-              <clr-dg-cell class="width-1"><span class="label label-danger">Declined</span></clr-dg-cell>
+            <ng-container *ngIf="data.flag == 'terima'">
+              <clr-dg-cell class="width-1"><span class="label label-warning">Terima</span></clr-dg-cell>
+            </ng-container>
+            <ng-container *ngIf="data.flag == 'terima_approved'">
+              <clr-dg-cell class="width-1"><span class="label label-success">Terima Approved</span></clr-dg-cell>
             </ng-container>
           </clr-dg-row>
           <clr-dg-footer>
