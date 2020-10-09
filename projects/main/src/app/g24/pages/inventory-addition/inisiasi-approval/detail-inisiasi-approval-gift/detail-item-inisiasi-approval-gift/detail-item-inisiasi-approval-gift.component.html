@@ -54,6 +54,19 @@
                         </b>
                     </div>
                 </div>
+                <div class="clr-row" *ngIf="inisiasi?.asal_uang == 'bank'">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Bank &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{GetDisplayName(inisiasi?.bank)}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                &nbsp;
                 <div class="clr-row">
                     <div class="clr-col-6">
                         <b>
@@ -146,7 +159,7 @@
                         <div class="clr-col-1">Total Pajak: </div>
                         <div class="clr-col-2"><p>Rp<span>{{getPajakFromItems()}}</span></p></div>
                         <div class="clr-col-1">Total DPP: </div>
-                        <div class="clr-col-2"><p>Rp <span>{{inisiasi?.total_dpp}}</span>.</p></div>
+                        <div class="clr-col-2"><p>Rp <span>{{totalDPP()}}</span>.</p></div>
                         <div class="clr-col-1">Total Harga: </div>
                         <div class="clr-col-2"><p>Rp.<span>{{inisiasi?.total_harga}}</span></p></div>
                     </div>

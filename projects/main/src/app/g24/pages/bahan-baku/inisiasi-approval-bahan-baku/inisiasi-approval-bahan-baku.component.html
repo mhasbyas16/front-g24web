@@ -1,0 +1,71 @@
+<div class="clr-row">
+    <div class="clr-col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                Approval Inisiasi Bahan Baku
+            </div>
+            <div class="card-block">
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Rekening MA Bank</label>
+                            <input clrInput [(ngModel)]="bahan_baku.ma_bank" name="ma_bank" (keydown.enter)="CekCodeCoa()">
+                            <clr-control-helper> Optional</clr-control-helper>
+                            <clr-control-helper style="color: dodgerblue;"><clr-icon shape="info-standard"></clr-icon> Harap tekan enter apabila sudah mengisi kode MA Bank</clr-control-helper>
+                        </div>
+                    </div>
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Nama MA Bank</label>
+                            <input clrInput [(ngModel)]="bahan_baku.nama_bank" name="nama_bank" value="{{bahan_baku.nama_bank}}" readonly style="width: 400px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                        <label class="clr-control-label">Tanggal Inisiasi Awal</label>
+                        <clr-date-container>
+                            <input type="date" clrDate [(ngModel)]="bahan_baku.tgl_inisiasi_awal" name="tgl_inisiasi_awal" required>
+                            <clr-control-helper><clr-icon shape="exclamation-circle" style="color: red;"></clr-icon> Wajib di isi</clr-control-helper>
+                            <clr-control-error>Wajib di isi</clr-control-error>
+                        </clr-date-container>
+                        </div>
+                    </div>
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                        <label class="clr-control-label">Tanggal Inisiasi Akhir</label>
+                        <clr-date-container>
+                            <input type="date" clrDate [(ngModel)]="bahan_baku.tgl_inisiasi_akhir" name="tgl_inisiasi_akhir">
+                            <clr-control-helper>Optional</clr-control-helper>
+                        </clr-date-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-icon btn-info-outline" (click)="Search()"><clr-icon shape="search"></clr-icon> Cari</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="clr-row">
+    <div class="clr-col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                Hasil Pencarian
+            </div>
+            <div class="card-block">
+                <clr-datagrid>
+                    <clr-dg-column>Mata Anggaran Bank</clr-dg-column>
+                    <clr-dg-column>Jenis Produk</clr-dg-column>
+                    <clr-dg-column>Vendor</clr-dg-column>
+                    <clr-dg-column>Tanggal Inisiasi</clr-dg-column>
+                    <clr-dg-column>Jumlah Gram</clr-dg-column>
+                    <clr-dg-column>Total Harga Gram</clr-dg-column>
+                </clr-datagrid>
+            </div>
+        </div>
+    </div>
+</div>

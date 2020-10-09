@@ -12,6 +12,7 @@ import { DataTypeUtil } from 'projects/main/src/app/g24/lib/helper/data-type-uti
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { IDetailCallbackListener } from 'projects/main/src/app/g24/lib/base/idetail-callback-listener';
 import { PaymentType } from 'projects/main/src/app/g24/lib/enums/payment-type';
+import { JurnalInisiasiService } from 'projects/main/src/app/g24/services/keuangan/jurnal/stock/jurnal-inisiasi.service';
 
 @Component({
   selector: 'detail-item-inisiasi-approval-perhiasan',
@@ -24,6 +25,7 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
   (
     private toastr : ToastrService,
     private session : SessionService,
+    private jurnalInisiasi : JurnalInisiasiService,
 
     private inisiasiService : InisiasiService,
     private kadarService : ProductPurityService,
@@ -89,6 +91,7 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
 
   // input
   inisiasi : any = null;
+
   public getItemsOfInisiasi() : any[]
   {
     return this.inisiasi == null ? [] : this.inisiasi.items;
@@ -157,6 +160,7 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    
   }
   
   GetDisplayValue(object : any) : string
@@ -571,30 +575,6 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
     // console.log(productNoId);
     // console.log(this.inisiasi);
 
-    // let failedIndex : any[] = [];
-    // let someFailed : boolean = false;
-
-    // for(let i =0; i < productNoId.length; i++)
-    // {
-    //   let product = productNoId[i];
-    //   let fail = {itemIndex : product.no_item_po, productIndex: product.no_index_products}
-    //   delete product._id;
-    //   DataTypeUtil.Encode(product);
-
-    //   itemProduct.set(fail.itemIndex + "," + fail.productIndex, product);
-
-    //   let result = await this.productService.add(product).toPromise();
-    //   if(result == false)
-    //   {
-    //     this.toastr.error("Barang nomor: " + fail.productIndex + " dengan nomor Bulk: " + fail.itemIndex + " gagal masuk.");
-    //     continue;
-    //   } else {
-    //     let product = itemProduct.get(fail.itemIndex + "," + fail.productIndex);
-    //     Object.assign(product, result);
-    //     itemProduct.set(fail.itemIndex + "," + fail.productIndex, result);
-    //     console.log(result);
-    //   }
-    // }
 
     console.log(this.inisiasi);
     let tempInisiasi = {}
@@ -613,7 +593,8 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
       Object.assign(this.inisiasi, tempInisiasi);
       console.log(this.inisiasi);
       this.parentListener.onAfterUpdate(this.inisiasi._id);
-      this.toastr.success("PO berhasil diterima.");
+      this.doAccounting(this.inisiasi._id);
+      this.toastr.success("PO berhasil diapproved.");
       this.doReset();
       this.Close();
     }
@@ -744,5 +725,49 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
 
     this.inisiasi['total_harga'] = Math.round(hbaku * total_gram_tukar * 100) /100;
     return this.inisiasi['total_harga'];
+  }
+
+  hitungTotalDPP()
+  {
+    if(this.inisiasi == null)
+    {
+      return 0;
+    }
+
+    let total_harga = Math.round(Number(this.inisiasi['total_harga']));
+    if(total_harga == 0)
+    {
+      return 0;
+    }
+
+    let total_pajak = Math.round(this.inisiasi['total_pajak']);
+
+    total_harga -= total_pajak;
+
+    this.inisiasi['total_dpp'] = total_harga;
+    return this.inisiasi['total_dpp'];
+  }
+
+  totalDPP(){
+    if(!this.inisiasi.total_dpp){
+      return this.inisiasi['total_dpp']=0;
+    }
+    return this.inisiasi['total_dpp'];
+  }
+
+  doAccounting(idInisiasi :string)
+  {
+    this.jurnalInisiasi.bayar(idInisiasi).subscribe(output => {
+      if(output == false)
+      {
+        let msg = this.jurnalInisiasi.message();
+        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg, "Error!", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
+        // console.log()
+        return;
+      } else {
+        this.toastr.success("Jurnal berhasil.")
+        return;
+      }
+    });
   }
 }

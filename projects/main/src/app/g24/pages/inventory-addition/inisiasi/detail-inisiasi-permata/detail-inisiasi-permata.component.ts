@@ -6,13 +6,20 @@ import { ProductGoldColorService } from '../../../../services/product/product-go
 import { ProductPurityService } from '../../../../services/product/product-purity.service';
 import { PrmMarginService } from '../../../../services/parameter/prm-margin.service';
 import { ToastrService } from 'ngx-toastr';
-import { NgForm } from '@angular/forms';
 import { PrmJualService } from '../../../../services/parameter/prm-jual.service';
 import { VendorService } from '../../../../services/vendor.service';
 import { InitiationType } from '../../../../lib/enums/initiation-type';
 import { PaymentType } from '../../../../lib/enums/payment-type';
 import { BankService } from '../../../../services/transaction/bank.service';
-import {MaskDirective} from 'ngx-mask';
+import { environment } from 'projects/main/src/environments/environment';
+import { InisiasiService } from '../../../../services/stock/inisiasi.service';
+import { OrderStatus } from '../../../../lib/enum/order-status';
+import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
+import { LoadingSpinnerComponent } from '../../../../nav/modal/loading-spinner/loading-spinner.component';
+import { ViewChild } from '@angular/core';
+import { SessionService } from 'projects/platform/src/app/core-services/session.service';
+import { SequenceService } from '../../../../services/system/sequence.service';
+import { StringHelper } from '../../../../lib/helper/string-helper';
 
 @Component({
   selector: 'detail-inisiasi-permata',
@@ -21,14 +28,18 @@ import {MaskDirective} from 'ngx-mask';
 })
 export class DetailInisiasiPermataComponent implements OnInit {
 
-  
+  @ViewChild('spinner', {static: false}) spinner : LoadingSpinnerComponent;
 
   constructor
   (
     private dateService : ServerDateTimeService,
     private toastr : ToastrService,
+    private session : SessionService,
+    private sequencer : SequenceService,
 
-    private productCategoryService : ProductCategoryService,
+    private inisiasiService : InisiasiService,
+
+    private productCatService : ProductCategoryService,
     private vendorService : VendorService,
     private jenisService : ProductJenisService,
     private gColorService : ProductGoldColorService,
@@ -37,14 +48,17 @@ export class DetailInisiasiPermataComponent implements OnInit {
     private marginService : PrmMarginService,
     private bankService : BankService,
   ) { }
+  
+  isDev = !environment.production;
 
   InitiationType = Object.values(InitiationType);
   PaymentTypeValues = Object.values(PaymentType);
   PaymentType = PaymentType;
+  
+  OnlyUpperAlphabetsPattern  = new RegExp('[^A-Z]+', 'g');
+  AlphaNumericPattern = new RegExp('[^A-Z0-9]+', 'g');
 
-  OnlyAlphabetsPattern : any = {'oa' : {pattern : new RegExp('\[a-z\]')}};
-  AlphaNumericPattern : any = { 'an' : {pattern : new RegExp('[a-z0-9\]')}};
-
+  user : any = this.session.getUser();
   date : string = "";
   time : string = "";
 
@@ -123,26 +137,33 @@ console.log(this.hbeli);
 
   async LoadVendor()
   {
-    while(this.products.length > 0)
+    while(this.vendors.length > 0)
     {
       this.vendors.pop();
     }
-    let vendors = await this.vendorService.list("?product-category.code=c03").toPromise();
+
+    let msg = "";
+    let vendors : any = false;
+    try {
+      vendors = await this.vendorService.list("?product-category.code=c03").toPromise();
+    } catch(err) {
+      vendors = false;
+      msg = err.message;
+    }
+    
     if(vendors == false)
     {
       this.errorHappened = true;
-      let msg = this.vendorService.message();
+      if(msg == "") msg = this.vendorService.message();
       this.toastr.error("Gagal Loading 'Vendor'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
       return;
     }
-
-    console.log(vendors);
 
     for(let i = 0; i < vendors.length; i++)
     {
       this.vendors.push(vendors[i]);
     }
-    this.vendors.sort((a, b) => ('' + a.name).localeCompare(b.name));
+    this.vendors.sort((a,b) => ('' + a.name).localeCompare(b.name))
   }
   
   async LoadParameterJual()
@@ -193,17 +214,21 @@ console.log(this.hbeli);
 
   async LoadDate()
   {
-    let dt = await this.dateService.task().toPromise();
-    if(dt == false)
+    let resp : any = false;
+    try {
+      resp = await this.dateService.task("").toPromise();
+    } catch(err) {
+      resp = false;
+    }
+    if(resp == false)
     {
-      this.toastr.error("Gagal load tanggal server.");
       this.errorHappened = true;
       return;
     }
 
-    let dtarr = dt.split("T");
+    let dtarr = resp.split("T");
     this.date = dtarr[0];
-    this.time = dtarr[1].split("Z")[0];
+    this.time = dtarr[0].split("Z")[0];
   }
   
   async LoadBanks()
@@ -212,13 +237,31 @@ console.log(this.hbeli);
     {
       this.banks.pop();
     }
+    
+    let msg = "";
+    let banks : any = false;
+    try {
+      banks = await this.bankService.list("?").toPromise();
+    } catch(err) {
+      banks = false;
+      msg = err.message;
+    }
 
-    let banks = await this.bankService.list("?").toPromise();
+    if(banks == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.bankService.message();
+      this.toastr.error("Gagal Loading 'Bank'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
+      return;
+    }
+
+    console.log(banks);
+
     for(let i = 0; i < banks.length; i++)
     {
       this.banks.push(banks[i]);
     }
-    this.banks.sort((a,b) => ('' + a.name).localeCompare(b.name))
+    this.banks.sort((a, b) => ('' + a.name).localeCompare(b.name));
   }
 
   async LoadProductCategory()
@@ -228,11 +271,19 @@ console.log(this.hbeli);
       this.products.pop();
     }
 
-    let products = await this.productCategoryService.list("?code=c03").toPromise();
+    let msg = "";
+    let products : any = false;
+    try {
+      products = await this.productCatService.list("?code=c03").toPromise();
+    } catch(err) {
+      products = false;
+      msg = err.message;
+    }
+    
     if(products == false)
     {
       this.errorHappened = true;
-      let msg = this.productCategoryService.message();
+      if(msg == "") msg = this.productCatService.message();
       this.toastr.error("Gagal Loading 'Jenis Produk'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
       return;
     }
@@ -253,11 +304,19 @@ console.log(this.hbeli);
       this.jeniss.pop();
     }
 
-    let jeniss = await this.jenisService.list("?").toPromise();
+    let msg = "";
+    let jeniss : any = false;
+    try {
+      jeniss = await this.jenisService.list("?").toPromise();
+    } catch(err) {
+      jeniss = false;
+      msg = err.message;
+    }
+
     if(jeniss == false)
     {
       this.errorHappened = true;
-      let msg = this.jenisService.message();
+      if(msg == "") msg = this.jenisService.message();
       this.toastr.error("Gagal Loading 'Jenis Perhiasan'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
       return;
     }
@@ -266,7 +325,6 @@ console.log(this.hbeli);
     {
       this.jeniss.push(jeniss[i]);
     }
-
     this.jeniss.sort((a,b) => ('' + a.name).localeCompare(b.name));
   }
 
@@ -277,20 +335,27 @@ console.log(this.hbeli);
       this.kadars.pop();
     }
 
-    let kadars = await this.kadarService.list("?").toPromise();
+    let msg = "";
+    let kadars : any = false;
+    try {
+      kadars = await this.kadarService.list("?").toPromise();
+    } catch(err) {
+      kadars = false;
+      msg = err.message;
+    }
+
     if(kadars == false)
     {
       this.errorHappened = true;
-      let msg = this.kadarService.message();
+      if(msg == "") msg = this.kadarService.message();
       this.toastr.error("Gagal Loading 'Kadar Perhiasan'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
       return;
     }
-
     for(let i = 0; i < kadars.length; i++)
     {
       this.kadars.push(kadars[i]);
     }
-    this.kadars.sort((a,b) => parseInt(a.name) - parseInt(b.name))
+    this.kadars.sort((a,b) => parseInt(a.name) - parseInt(b.name));
   }
 
   async LoadGWarna()
@@ -319,17 +384,7 @@ console.log(this.hbeli);
   // ON EVENTS  
   onProductChanged()
   {
-    // this.input['create_date'] = this.date.split("T")[0];
-
-    // for(let i = 0; i < this.products.length; i++)
-    // {
-    //   let perhiasan = this.products[i];
-    //   if(perhiasan.code == "c03")
-    //   {
-    //     this.input['product-category'] = perhiasan;
-    //     break;
-    //   }
-    // }
+    
   }
   
   onTipeBayarChanged()
@@ -345,8 +400,17 @@ console.log(this.hbeli);
     this.hitungHPPEmas();
   }
 
+  onKadarEmasChanged()
+  {
+    this.hitungHPPEmas();
+  }
+
   hitungHPPEmas()
   {
+    if(this.input == null) return;
+    if(this.input['product-purity'] == null) return;
+    if(this.hbeli == null) return;
+
     let kadar = Number(this.input['product-purity'].name);
     let berat_emas = Number(this.input.berat_emas);
     let hbuy = Number(this.hbeli.harga_buyback);
@@ -424,6 +488,7 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
 
 
     // BATU
+    let batu_empty : boolean = false;
     if( // jika param batu ada yang keisi, semua param batu kena validasi
       (input['jenis_batu'] != "" ) ||
       input['warna_batu'] != "" ||
@@ -445,24 +510,27 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
         this.toastr.warning("Atribut Batu belum semua terisi");
         return true;
       }
+    } else {
+      batu_empty = false;
     }
     // BATU
 
     // BERLIAN
+    let berlian_empty : boolean = false; // salah satu harus true
     if( // jika param batu ada yang keisi, semua param batu kena validasi
-      (input['jenis_berlian'] != "" ) ||
       input['warna_berlian'] != "" ||
-      ((input['carat_berlian'] != 0)) ||
+      input['clarity_berlian'] != "" ||
+      input['cutting_berlian'] != "" ||
       (input['total_butir_berlian'] != 0) ||
       (input['total_carat_berlian'] != 0)
     )
     {
-      console.log((input['carat_berlian'] != 0),
-      input['warna_berlian'] != "", input['jenis_berlian'] != "");
+      console.log((input['carat_berlian'] != 0),input['carat_berlian'] ,
+      input['warna_berlian'] != "", input['warna_berlian'], input['jenis_berlian'] != "", input['jenis_berlian']);
       if(
-        input['jenis_berlian'] == "" || input['jenis_berlian'] == null ||
         input['warna_berlian'] == "" || input['warna_berlian'] == null ||
-        input['carat_berlian'] == 0 || input['carat_berlian'] == null ||
+        input['cutting_berlian'] == "" || input['cutting_berlian'] == null ||
+        input['clarity_berlian'] == "" || input['clarity_berlian'] == null ||
         input['hpp_berlian'] == 0 || input['hpp_berlian'] == "" || input['hpp_berlian'] == null ||
         input['margin_berlian'] == 0 || input['margin_berlian'] == null ||
         input['total_butir_berlian'] == 0 || input['total_butir_berlian'] == null ||
@@ -472,8 +540,16 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
         this.toastr.warning("Atribut Berlian belum semua terisi");
         return true;
       }
+    } else {
+      berlian_empty = false;
     }
     // BERLIAN
+
+    if(berlian_empty && batu_empty)
+    {
+      this.toastr.warning("Kedua Atribut Berlian dan Batu kosong.");
+      return true;
+    }
 
     if(input.nomor_nota == "" || input.nomor_nota == null)
     {
@@ -648,35 +724,104 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
   }
 
   // 'DO' EVENTS
-  doSave()
+  async doSave()
   {
+    this.spinner.Open();
     if(this.errorHappened)
     {
+      this.spinner.Close();
       this.toastr.error("Harap Refresh sebelumnya terjadi kesalahan.");
       return;
     }
 
-    if(this.validateInput()) return;
+    if(this.validateInput())
+    {
+      this.spinner.Close();
+      return;
+    }
+    if(this.user?.unit == null)
+    {
+      this.spinner.Close();
+      this.toastr.warning("Unit dari User belum di-Assign. Harap hubungi IT Support/Helpdesk.", "Error!");
+      return;
+    }
 
-    this.input.id_harga = this.hbeli._id;
-    this.input.harga_beli = this.hbeli.harga_buyback;
+    let date = this.date;
+    let date_split = date.split("-");
+    let time = this.time;
 
-    console.log(this.input, "in");
+    let unitCode = this.session.getUnit()?.code;
+    let key = {key : "PO-" + unitCode + "-" + this.date }
+    let seq : any = "";
+    let msg = "";
+    try
+    {
+      seq = await this.sequencer.use(key).toPromise();
 
-    // if(this.input.items?.length <= 0) {
-    //   this.toastr.warning("Tidak ada item pada Tabel Input Detail.", "Peringatan!");
-    //   return;
-    // }
+    } catch(err)
+    {
+      msg = err.message;
+      seq = false;
+    }
+
+    if(seq == false)
+    {
+      if(msg == "") msg = this.sequencer.message();
+      this.toastr.error("Gagal membentuk Format Nomor PO. Error: " + msg);
+      this.spinner.Close();
+      this.ResetAll();
+      return;
+    }
+
+    let st = StringHelper.LeftZeroPad(Number(seq.value).toString(), 5);
+    let PO = "PO" + this.session.getUnit()?.code + date_split[0].substring(2, 4) + date_split[1] + date_split[2] + st;
+
+    let def = {
+      no_po : PO,
+      // __format : "no_po:inc",
+      create_by : this.user,
+      create_date : date,
+      create_time : time,
+      unit : this.user.unit.code,
+      status_bayar : '1',
+      order_status : OrderStatus.SUBMIT.code,
+      __version : new Date().getMilliseconds(),
+      __version_d : "0",
+      _log : 1
+    }
+
+    Object.assign(this.input, def);
+    let init = DataTypeUtil.Encode(this.input);
+
+    // this.input.id_harga = this.hbeli._id;
+    // this.input.harga_beli = this.hbeli.harga_buyback;
+
+    this.inisiasiService.add(init).subscribe(output => {
+      this.spinner.Close();
+      if(output == false)
+      {
+        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + this.inisiasiService.message());
+        return;
+      } else {
+        this.toastr.success("Inisiasi Berhasil. Harap hubungi Kepala Departemen untuk melakukan Approval. No. PO : " + output.no_po, "Info", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
+        if(!environment.production)console.log(output,'ts');
+        this.ResetAll();
+      }
+    }, err => {
+      this.spinner.Close();
+      this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + err.message, "Error!", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
+      return;
+    });
   }
 
-  async ResetAll(form2reset : NgForm)
+  async ResetAll()
   {
+    this.errorHappened = false;
     await this.LoadAllParameter();
     await this.LoadDate();
     await this.LoadParameterJual();
     await this.LoadMargin();
     this.input = this.defaultInput();
-    this.errorHappened = false;
   }
 
   onPanjangChanged()
@@ -706,23 +851,32 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
 
   hitungHPPBerlian()
   {
+    // if(this.input == null) return;
+    // if(this.hbeli == null) return;
+
     let hpp_berlian = Number(this.input.hpp_berlian);
     let persen_margin_berlian = Number(this.input.persen_margin_berlian);
 
     let margin_berlian = hpp_berlian * persen_margin_berlian / 100;
     margin_berlian = Math.round(margin_berlian);
 
+    console.log(this.hbeli, this.input, this.hbeli, margin_berlian, hpp_berlian, persen_margin_berlian);
     this.input.margin_berlian = margin_berlian;
     return this.input.margin_berlian;
   }
 
   hitungHPPBatu()
   {
+    // if(this.input == null) return;
+    // if(this.hbeli == null) return;
+console.log(this.input.margin_batu)
     let hpp_batu = Number(this.input.hpp_batu);
     let persen_margin_batu = Number(this.input.persen_margin_batu);
 
     let margin_batu = hpp_batu * persen_margin_batu / 100;
     margin_batu = Math.round(margin_batu);
+    
+    if(!environment.production) console.log(margin_batu);
 
     this.input.margin_batu = margin_batu;
     return this.input.margin_batu;
@@ -765,9 +919,11 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
     input.margin_batu = 0;
   }
 
-  LowersCase(key)
+  RestrictInputOnModel(value : string, pattern : RegExp)
   {
-
+    let nVal = value.replace(pattern, '');
+    if(!environment.production)console.log(nVal)
+    return nVal;
   }
 
   debug()

@@ -70,6 +70,10 @@ export class CommonService {
         observer.next(output);
         observer.complete();
         return (observer).unsubscribe();
+      }, error => {
+        observer.error(error);
+        observer.complete();
+        throw error;
       });
     });    
   }
@@ -100,6 +104,10 @@ export class CommonService {
         observer.next(respond.data);
         observer.complete();
         return (observer).unsubscribe();;
+      }, error => {
+        observer.error(error);
+        observer.complete();
+        throw error;
       });
     });
   }
@@ -130,12 +138,15 @@ export class CommonService {
         observer.next(respond.data);
         observer.complete();
         return (observer).unsubscribe();;
+      }, error => {
+        observer.error(error);
+        throw error;
       });
     });
   }
 
   public get(key: string, params: string): Observable<any> {
-    return Observable.create(observer => {
+    return new Observable(observer => {
 
       const url = `${this.sessionService.server}/${key}/get${params}`;
       console.debug(key, url);
@@ -155,15 +166,20 @@ export class CommonService {
         observer.next(respond.data);
         observer.complete();
         return (observer).unsubscribe();
+      }, error => {
+        observer.error(error);
+        observer.complete();
+        throw error;
       });
     });
   }
 
-  public add(key: string, data: any): Observable<any> {
-    return Observable.create(observer => {
+  public add(key: string, data: any, notFormUrlEncoded? : boolean): Observable<any> {
+    return new Observable(observer => {
 
       const url = `${this.sessionService.server}/${key}/add`;
-      console.debug(key, url);
+      console.debug(key, url, data);
+      // let encodedData = notFormUrlEncoded ? data : this.getFormUrlEncoded(data); // true: send Object form, false: send URL Encoded form
 
       this.http.post(url, this.getFormUrlEncoded(data), { headers: this.sessionService.postHeader() }).subscribe((respond: any) => {
         console.debug("add", url, respond);
@@ -180,12 +196,16 @@ export class CommonService {
         observer.next(json.data);
         observer.complete();
         return (observer).unsubscribe();
+      }, error => {
+        observer.error(error);
+        observer.complete();
+        throw error;
       });
     });
   }
 
   public batchAdd(key: string, data: any): Observable<any> {
-    return Observable.create(observer => {
+    return new Observable(observer => {
 
       const url = `${this.sessionService.server}/${key}/batch_add`;
 
@@ -204,12 +224,16 @@ export class CommonService {
         observer.next(json.data);
         observer.complete();
         return (observer).unsubscribe();
+      }, error => {
+        observer.error(error);
+        observer.complete();
+        throw error;
       });
     });
   }  
 
   public batchUpdate(key: string, data: any): Observable<any> {
-    return Observable.create(observer => {
+    return new Observable(observer => {
 
       const url = `${this.sessionService.server}/${key}/batch_update`;
 
@@ -228,12 +252,16 @@ export class CommonService {
         observer.next(json.data);
         observer.complete();
         return (observer).unsubscribe();
+      }, error => {
+        observer.error(error);
+        observer.complete();
+        throw error;
       });
     });
   }
 
   public task(key: string, data: any): Observable<any> {
-    return Observable.create(observer => {
+    return new Observable(observer => {
 
       const url = `${this.sessionService.server}/${key}`;
       
@@ -252,14 +280,19 @@ export class CommonService {
         observer.next(json.data);
         observer.complete();
         return (observer).unsubscribe();
+      }, error => {
+        observer.error(error);
+        observer.complete();
+        throw error;
       });
     });
   }
 
-  public update(key: string, data: any): Observable<any> {
-    return Observable.create(observer => {
+  public update(key: string, data: any, notFormUrlEncoded? : boolean): Observable<any> {
+    return new Observable(observer => {
 
       const url = `${this.sessionService.server}/${key}/update`;
+      // let encodedData = notFormUrlEncoded ? data : this.getFormUrlEncoded(data); // true: send Object form, false: send URL Encoded form
       
       this.http.post(url, this.getFormUrlEncoded(data), { headers: this.sessionService.postHeader() }).subscribe((respond: any) => {
         
@@ -275,6 +308,10 @@ export class CommonService {
         observer.next(json.data);
         observer.complete();
         return (observer).unsubscribe();
+      }, error => {
+        observer.error(error);
+        observer.complete();
+        throw error;
       });
     });
   }
@@ -297,6 +334,10 @@ export class CommonService {
         observer.next(json.data);
         observer.complete();
         return (observer).unsubscribe();
+      }, error => {
+        observer.error(error);
+        observer.complete();
+        throw error;
       });
     });
   }
@@ -322,6 +363,10 @@ export class CommonService {
         observer.next(json.data);
         observer.complete();
         return (observer).unsubscribe();
+      }, error => {
+        observer.error(error);
+        observer.complete();
+        throw error;
       });
     });
   }
@@ -346,12 +391,16 @@ export class CommonService {
         observer.next(json.data);
         observer.complete();
         return (observer).unsubscribe();
+      }, error => {
+        observer.error(error);
+        observer.complete();
+        throw error;
       });
     });
   }
 
   public customUpload(operation: string, key: string, data: any): Observable<any> {
-    return Observable.create(observer => {
+    return new Observable(observer => {
 
       const url = `${this.sessionService.server}/${key}/${operation}`;
 
@@ -370,12 +419,16 @@ export class CommonService {
         observer.next(json.data);
         observer.complete();
         return (observer).unsubscribe();
+      }, error => {
+        observer.error(error);
+        observer.complete();
+        throw error;
       });
     });
   }
 
   public customGet(operation: string, key: string, param: string): Observable<any> {
-    return Observable.create(observer => {
+    return new Observable(observer => {
 
       const url = `${this.sessionService.server}/${key}/${operation}/${param}`;
 
@@ -391,13 +444,17 @@ export class CommonService {
         observer.next(json.data);
         observer.complete();
         return (observer).unsubscribe();
+      }, error => {
+        observer.error(error);
+        observer.complete();
+        throw error;
       });
     });
   }
 
 
   public download(key: string, params: string): Observable<any> {
-    return Observable.create(observer => {
+    return new Observable(observer => {
 
       const url = `${this.sessionService.server}/${key}/download${params}`;
 
@@ -416,12 +473,16 @@ export class CommonService {
         observer.next(respond.data);
         observer.complete();
         return (observer).unsubscribe();
+      }, error => {
+        observer.error(error);
+        observer.complete();
+        throw error;
       });
     });
   }
 
   public getDate(): Observable<any>  {
-    return Observable.create(observer => {
+    return new Observable(observer => {
 
       const url = `${this.sessionService.server}/date`;
 
@@ -440,12 +501,16 @@ export class CommonService {
         observer.next(respond.data);
         observer.complete();
         return (observer).unsubscribe();
+      }, error => {
+        observer.error(error);
+        observer.complete();
+        throw error;
       });
     });
   }
 
   public custom(key : string, data : any) {
-    return Observable.create(observer => {
+    return new Observable(observer => {
 
       const url = `${this.sessionService.server}/${key}${data}`;
 
@@ -464,6 +529,10 @@ export class CommonService {
         observer.next(respond.data);
         observer.complete();
         return (observer).unsubscribe();
+      }, error => {
+        observer.error(error);
+        observer.complete();
+        throw error;
       });
     });
   }

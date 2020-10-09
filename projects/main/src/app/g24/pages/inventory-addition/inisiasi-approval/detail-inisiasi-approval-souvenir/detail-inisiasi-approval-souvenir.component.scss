@@ -1,0 +1,11 @@
+.text-middle {
+    text-align:  center;
+    align-self: center;
+}
+
+.required::after {
+    font-size: large;
+    content : "*";
+    color : red;
+    font-weight: bold;
+}

@@ -2,7 +2,7 @@
 <div class="clr-row">
     <div class="card" style="margin-top: 0em;">
         <div class="card-header">
-            Inisiasi Perhiasan
+            <span><b>Inisiasi Perhiasan</b></span> &nbsp;&nbsp; <a *ngIf="errorHappened" class="label label-danger" style="cursor: pointer;" (click)="ResetAll()"><strong>Terjadi Error! Klik label ini untuk refresh</strong></a>
         </div>
         <div class="card-block">
             <form #inisiasi id="inisiasi" clrForm>
@@ -62,7 +62,7 @@
                         </clr-select-container>
                     </div>
                 </div>
-                
+
                 <div class="clr-row">
                     <div class="clr-col-6">
                         <clr-select-container class="clr-form-control">
@@ -405,3 +405,7 @@
 </clr-modal>
 
 <div #container></div>
+
+<loading-spinner #spinner>
+
+</loading-spinner>

@@ -370,7 +370,7 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
     switch(order_status)
     {
       case '0':
-        order_status_p = "&order_status="+ OrderStatus.SUBMIT.code;
+        order_status_p = "&order_status="+ OrderStatus.APPROVAL.code;
         break;
 
       case '1':
@@ -400,6 +400,7 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
     this.loading = true;
     this.inisiasiService.list(params).subscribe(output =>
     {
+        this.loading = false;
         if(output != false)
         {
           // for(let data in output)
@@ -417,8 +418,11 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
         } else {
           this.toastr.error("Terjadi kesalahan. Harap hubungi IT Support/Helpdesk. " + this.inisiasiService.message(), "Error")
         }
-
-        this.loading = false;
+        
+    }, err => {
+      this.loading = false;
+      this.toastr.error("Terjadi Kesalahan. Error: " + err.message);
+      return;
     })
 
   }

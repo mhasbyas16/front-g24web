@@ -370,7 +370,7 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
     switch(order_status)
     {
       case '0':
-        order_status_p = "&order_status="+ OrderStatus.SUBMIT.code;
+        order_status_p = "&order_status="+ OrderStatus.APPROVAL.code;
         break;
 
       case '1':
@@ -637,11 +637,11 @@ export class DetailPenerimaanGiftComponent extends BasePersistentFields implemen
     return true;
   }
 
-  onTerima()
+  onSimpan()
   {
-    if(this.selected.order_status == 'terima_full')
+    if(this.selected.order_status == 'terima_full' || this.selected.order_status == 'tolak')
     {
-      this.toastr.show("PO sudah di Terima Full.", "Terima says");
+      this.toastr.show("PO sudah di Terima Full / ditolak", "Terima says");
       return;
     }
 

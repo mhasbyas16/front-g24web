@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SessionService } from './session.service';
+import { PrmLookupService } from './prm-lookup.service';
 
-describe('SessionService', () => {
-  let service: SessionService;
+describe('PrmLookupService', () => {
+  let service: PrmLookupService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(SessionService);
+    service = TestBed.inject(PrmLookupService);
   });
 
   it('should be created', () => {

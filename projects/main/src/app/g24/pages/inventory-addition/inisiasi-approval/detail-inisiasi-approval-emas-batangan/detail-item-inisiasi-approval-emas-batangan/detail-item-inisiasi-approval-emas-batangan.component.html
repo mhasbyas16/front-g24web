@@ -54,31 +54,30 @@
                         </b>
                     </div>
                 </div>
-                <div class="clr-row">
-                    <div class="clr-col-6">
+                <div class="clr-row" *ngIf="inisiasi?.asal_uang == 'bank'">
+                    <div class="clr-col-3">
                         <b>
-                            <span>Harga Baku &#58; </span>
-                            <u><span>{{inisiasi?.harga_baku}}</span></u>
+                            <span>Bank &#58; </span>
                         </b>
                     </div>
-                    <div class="clr-col-6">
+                    <div class="clr-col-3">
                         <b>
-                            <span>Harga Pajak &#58; </span>
-                            <u><span>{{ inisiasi?.total_pajak}}</span></u>
+                            <u><span>{{GetDisplayName(inisiasi?.bank)}}</span></u>
                         </b>
                     </div>
                 </div>
+                &nbsp;
                 <div class="clr-row">
                     <div class="clr-col-6">
                         <b>
                             <span>Total Berat &#58; </span>
-                            <u><span>{{inisiasi?.total_berat}}</span></u>
+                            <u><span>{{inisiasi?.total_berat | mask : 'separator' : ','}}</span></u>
                         </b>
                     </div>
                     <div class="clr-col-6">
                         <b>
                             <span>Total Pieces &#58; </span>
-                            <u><span>{{ inisiasi?.total_piece}}</span></u>
+                            <u><span>{{ inisiasi?.total_piece | mask : 'separator' : ','}}</span></u>
                         </b>
                     </div>
                 </div>
@@ -120,32 +119,47 @@
                     <clr-dg-cell>{{GetDisplayValue(data['product-denom'])}}</clr-dg-cell>
                     <clr-dg-cell>{{data?.pieces}}</clr-dg-cell>
                     <clr-dg-cell>{{data?.total_berat}}</clr-dg-cell>
-                    <clr-dg-cell>{{data?.harga_piece}}</clr-dg-cell>
-                    <clr-dg-cell>{{data?.total_harga}}</clr-dg-cell>
-                    <clr-dg-cell>{{data?.pajak}}</clr-dg-cell>
+                    <clr-dg-cell>{{data?.harga_piece | mask : 'separator' : ','}}</clr-dg-cell>
+                    <clr-dg-cell>{{data?.total_harga | mask : 'separator' : ','}}</clr-dg-cell>
+                    <clr-dg-cell>{{data?.pajak | mask : 'separator' : ','}}</clr-dg-cell>
                 </clr-dg-row>
     
                 
                 <clr-dg-footer>
                     <div class="clr-row">
-                        <div class="clr-col-1">Total Berat: </div>
-                        <div class="clr-col-2"><p>{{getBeratFromItems()}} gram.</p></div>
                         <div class="clr-col-1">Total Pajak: </div>
-                        <div class="clr-col-2"><p>Rp<span>{{getPajakFromItems()}}</span></p></div>
-                        <div class="clr-col-1">Total DPP: </div>
-                        <div class="clr-col-2"><p>Rp <span>{{inisiasi?.total_dpp}}</span>.</p></div>
-                        <div class="clr-col-1">Total Harga: </div>
-                        <div class="clr-col-2"><p>Rp.<span>{{inisiasi?.total_harga}}</span></p></div>
-                    </div>
-                    <div class="clr-row">
-                        <div class="clr-col-1">Total Pieces: </div>
-                        <div class="clr-col-2"><p>{{getPiecesFromItems()}}.</p></div>
-                        <div class="clr-col-1">Total Ongkos: </div>
-                        <div class="clr-col-2"><p><span [ngStyle]="{'float' : 'left'}">Rp.</span><span>{{getOngkosFromItems()}}.</span></p></div>
+                        <div class="clr-col-2">
+                            <p><span [ngStyle]="{'float' : 'left'}">Rp.</span>
+                                <span>
+                                    <span>{{inisiasi?.total_pajak | mask : 'separator' : ','}}</span>
+                                </span>
+                            </p>
+                        </div>
                         <div class="clr-col-6"></div>
                     </div>
+                    <div class="clr-row">
+                        <div class="clr-col-1">Total DPP : </div>
+                        <div class="clr-col-2">
+                            <p><span [ngStyle]="{'float' : 'left'}">Rp.</span>
+                                <span>
+                                    <span>{{inisiasi?.total_dpp | mask : 'separator' : ','}}</span>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="clr-row">
+                        <div class="clr-col-1">Total Harga : </div>
+                        <div class="clr-col-2">
+                            <p><span [ngStyle]="{'float' : 'left'}">Rp.</span>
+                                <span>
+                                    <span>{{inisiasi?.total_harga | mask: 'separator' : ','}}</span>
+                                    <!-- <input min=0 class="clr-input" type="number" [(ngModel)]="input.total_harga" [ngModelOptions]="{standalone : true}"> -->
+                                </span>
+                            </p>
+                        </div>
+                    </div>
                     <div>
-                        <clr-dg-pagination #pagination [clrDgPageSize]="10">
+                        <clr-dg-pagination #pagination [clrDgPageSize]="100">
                             <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Items per page</clr-dg-page-size>
                             {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
                             of {{pagination.totalItems}} items
@@ -158,5 +172,10 @@
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" [disabled]="mode == EPriviledge.READ" (click)="doSave()">Simpan</button>
+        <button class="btn btn-danger" [disabled]="mode == EPriviledge.READ" (click)="onTolak()">Tolak</button>
     </div>
 </clr-modal>
+
+<loading-spinner #spinner>
+
+</loading-spinner>

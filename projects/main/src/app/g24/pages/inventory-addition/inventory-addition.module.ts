@@ -38,6 +38,9 @@ import { DetailInisiasiApprovalDinarComponent } from './inisiasi-approval/detail
 import { DetailItemInisiasiApprovalDinarComponent } from './inisiasi-approval/detail-inisiasi-approval-dinar/detail-item-inisiasi-approval-dinar/detail-item-inisiasi-approval-dinar.component';
 import { DetailInisiasiApprovalPermataComponent } from './inisiasi-approval/detail-inisiasi-approval-permata/detail-inisiasi-approval-permata.component';
 import { DetailItemInisiasiApprovalPermataComponent } from './inisiasi-approval/detail-inisiasi-approval-permata/detail-item-inisiasi-approval-permata/detail-item-inisiasi-approval-permata.component';
+import { DetailPenerimaanPermataComponent } from './penerimaan/detail-penerimaan-permata/detail-penerimaan-permata.component';
+import { DetailItemPenerimaanPermataComponent } from './penerimaan/detail-penerimaan-permata/detail-item-penerimaan-permata/detail-item-penerimaan-permata.component';
+import { NavModule } from '../../nav/nav.module';
 
 @NgModule({
   declarations: 
@@ -74,16 +77,19 @@ import { DetailItemInisiasiApprovalPermataComponent } from './inisiasi-approval/
     DetailInisiasiApprovalDinarComponent,
     DetailItemInisiasiApprovalDinarComponent,
     DetailInisiasiApprovalPermataComponent,
-    DetailItemInisiasiApprovalPermataComponent
+    DetailItemInisiasiApprovalPermataComponent,
+    DetailPenerimaanPermataComponent,
+    DetailItemPenerimaanPermataComponent
   ], 
   imports: [
     CommonModule,
+    NavModule,
     InventoryAdditionRoutingModule,
     ClarityModule,
     ReactiveFormsModule,
     FormsModule,
     ToastrModule,
-    NgxMaskModule.forChild()
+    NgxMaskModule.forRoot()
   ],
   exports: [InisiasiComponent, PemesananComponent],
   entryComponents: [InisiasiComponent, PemesananComponent],

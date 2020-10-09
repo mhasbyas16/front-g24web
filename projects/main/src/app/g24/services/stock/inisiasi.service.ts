@@ -38,4 +38,12 @@ export class InisiasiService {
     return this.commonService.count(this.key, params);
   }
 
+  ApprovalInisiasiEmas(data) {
+    return this.commonService.task("master-api/inisiasi/approval-inisiasi-emas", data);
+  }
+
+  TerimaEmas(data) {
+    return this.commonService.task("master-api/inisiasi/terima-emas", data);
+  }
+
 }

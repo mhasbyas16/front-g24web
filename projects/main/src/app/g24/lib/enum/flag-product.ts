@@ -7,6 +7,7 @@ export class FlagProduct {
     public static STOCK = {code : "stock", name : "Ada di Gudang"}
     public static TRANSIT = {code : "transit", name : "Di Perjalanan Mutasi"}
     public static BOOKING = {code : "booking", name : "Sedang Booking"}
+    public static BOOKING_CORPORATE = {code : "booking-corporate", name : "Sedang Booking (Corporate)"}
     public static SOLD = {code : "sale", name : "Sudah Terjual"}
     public static ISSUE = {code : "issue", name : "Barang bermasalah"}
 }

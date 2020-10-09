@@ -12,6 +12,7 @@ import { ProductService } from 'projects/main/src/app/g24/services/product/produ
 import { DataTypeUtil } from 'projects/main/src/app/g24/lib/helper/data-type-util';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { IDetailCallbackListener } from 'projects/main/src/app/g24/lib/base/idetail-callback-listener';
+import { PaymentType } from 'projects/main/src/app/g24/lib/enums/payment-type';
 import { OrdersModule } from '../../../../orders/orders.module';
 
 /**
@@ -85,10 +86,29 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
     this.isOpened = open
   }
 
-  private title : string = "Detail Penerimaan Perhiasan";
+  private title : string = "Detail Penerimaan Souvenir";
   public get Title()
   {
     return this.title;
+  }
+
+  GetDisplayName(key : string) : string
+  {
+    let name = "";
+    switch(key)
+    {
+      case PaymentType.UANG.code:
+        name = PaymentType.UANG.name;
+        break;
+
+      case PaymentType.MAKLON.code:
+        name = PaymentType.MAKLON.name;
+        break;
+
+        default:
+
+    }
+    return name;
   }
 
   // input
@@ -407,7 +427,7 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
     return true;
   }
 
-  async doSave()
+  async doTerima()
   {
     if(this.mode == EPriviledge.READ)
     {
@@ -507,5 +527,49 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
     //   let product = result[i];
       
     // }
+  }
+
+  async doTolak(){
+    if(this.mode == EPriviledge.READ)
+    {
+      this.toastr.info("Mode 'READ' only.");
+      return;
+    }
+
+    if(!this.validateItems())
+    {
+      return;
+    }
+
+    if(!this.validateInisiasi())
+    {
+      return;
+    }
+
+    this.inisiasi.order_status = OrderStatus.TOLAK.code;
+    this.inisiasi.update_date = new Date().toISOString().split("T")[0];
+    this.inisiasi.update_by = this.user.username;
+    this.inisiasi['tgl_tolak'] = this.inisiasi.update_date;
+    this.inisiasi.tolak_by = this.user.username;
+
+    console.log(this.inisiasi);
+    let tempInisiasi = {}
+    Object.assign(tempInisiasi, this.inisiasi);
+    DataTypeUtil.Encode(tempInisiasi);
+
+    // let inisiasi = await this.inisiasiService.update(tempInisiasi).toPromise();
+    // if(inisiasi == false)
+    // {
+    //   this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk.");
+    //   return;
+    // } else {
+    //   Object.assign(this.inisiasi, tempInisiasi);
+    //   console.log(this.inisiasi);
+    //   this.parentListener.onAfterUpdate(this.inisiasi._id);
+    //   this.toastr.success("PO berhasil ditolak.");
+    //   this.doReset();
+    //   this.Close();
+    // }
+
   }
 }

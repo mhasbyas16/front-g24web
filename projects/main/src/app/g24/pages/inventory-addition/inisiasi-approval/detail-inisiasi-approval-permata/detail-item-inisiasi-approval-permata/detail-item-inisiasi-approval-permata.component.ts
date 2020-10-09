@@ -34,12 +34,18 @@ export class DetailItemInisiasiApprovalPermataComponent implements OnInit {
 
   parentListener : IDetailCallbackListener;
   
+  PaymentTypeValues = Object.values(PaymentType);
+  PaymentType = PaymentType;
+  
   user : any = this.session.getUser();
   unit : any = this.session.getUnit();
 
   EPriviledge = EPriviledge;
 
   jeniss : any[] = [];
+
+  batu_empty : boolean = false;
+  berlian_empty : boolean = false;
 
   LoadAllParameter()
   {
@@ -210,6 +216,18 @@ export class DetailItemInisiasiApprovalPermataComponent implements OnInit {
   onContentFound(content : any)
   {
     this.inisiasi = content;
+    let input = this.inisiasi;
+    
+    this.batu_empty = (input['jenis_batu'] != "" ) ||
+      input['warna_batu'] != "" ||
+      ((input['carat_batu'] != 0)) ||
+      (input['dimensi_batu'] != "0x0x0");
+
+    this.berlian_empty = input['warna_berlian'] != "" ||
+      input['clarity_berlian'] != "" ||
+      input['cutting_berlian'] != "" ||
+      (input['total_butir_berlian'] != 0) ||
+      (input['total_carat_berlian'] != 0);
 
     if(this.inisiasi.order_status == OrderStatus.TERIMA_FULL.code && this.mode == EPriviledge.UPDATE)
     {
@@ -221,7 +239,7 @@ export class DetailItemInisiasiApprovalPermataComponent implements OnInit {
     
     //this.LoadAllParameter();
 
-    this.fillItemsWithProducts();
+    // this.fillItemsWithProducts();
   }
 
   ts;
@@ -557,49 +575,46 @@ export class DetailItemInisiasiApprovalPermataComponent implements OnInit {
       return;
     }
 
-    this.inisiasi.order_status = OrderStatus.TERIMA_FULL.code;
+    this.inisiasi.order_status = OrderStatus.APPROVAL.code;
     this.inisiasi.update_date = new Date().toISOString().split("T")[0];
     this.inisiasi.update_by = this.user.username;
     this.inisiasi['tgl_terima'] = this.inisiasi.update_date;
     this.inisiasi.terima_by = this.user.username;
-    let items = this.inisiasi.items;
-    let productNoId = [];
-    let ids = [];
-    console.log(items);
+    // console.log(items);
     
-    for(let i = 0; i < items.length; i++)
-    {
-      let products = items[i].products;
-      productNoId.push(...products);
-    }
+    // for(let i = 0; i < items.length; i++)
+    // {
+    //   let products = items[i].products;
+    //   productNoId.push(...products);
+    // }
 
-    let itemProduct : Map<string, number> = new Map<string,number>();
+    // let itemProduct : Map<string, number> = new Map<string,number>();
     
-    console.log(productNoId);
+    // console.log(productNoId);
 
-    let failedIndex : any[] = [];
-    let someFailed : boolean = false;
-    for(let i =0; i < productNoId.length; i++)
-    {
-      let product = productNoId[i];
-      let fail = {itemIndex : product.no_item_po, productIndex: product.no_index_products}
-      delete product._id;
-      DataTypeUtil.Encode(product);
+    // let failedIndex : any[] = [];
+    // let someFailed : boolean = false;
+    // for(let i =0; i < productNoId.length; i++)
+    // {
+    //   let product = productNoId[i];
+    //   let fail = {itemIndex : product.no_item_po, productIndex: product.no_index_products}
+    //   delete product._id;
+    //   DataTypeUtil.Encode(product);
 
-      itemProduct.set(fail.itemIndex + "," + fail.productIndex, product);
+    //   itemProduct.set(fail.itemIndex + "," + fail.productIndex, product);
 
-      let result = await this.productService.add(product).toPromise();
-      if(result == false)
-      {
-        this.toastr.error("Barang nomor: " + fail.productIndex + " dengan nomor Bulk: " + fail.itemIndex + " gagal masuk.");
-        continue;
-      } else {
-        let product = itemProduct.get(fail.itemIndex + "," + fail.productIndex);
-        Object.assign(product, result);
-        itemProduct.set(fail.itemIndex + "," + fail.productIndex, result);
-        console.log(result);
-      }
-    }
+    //   let result = await this.productService.add(product).toPromise();
+    //   if(result == false)
+    //   {
+    //     this.toastr.error("Barang nomor: " + fail.productIndex + " dengan nomor Bulk: " + fail.itemIndex + " gagal masuk.");
+    //     continue;
+    //   } else {
+    //     let product = itemProduct.get(fail.itemIndex + "," + fail.productIndex);
+    //     Object.assign(product, result);
+    //     itemProduct.set(fail.itemIndex + "," + fail.productIndex, result);
+    //     console.log(result);
+    //   }
+    // }
 
     console.log(this.inisiasi);
     let tempInisiasi = {}

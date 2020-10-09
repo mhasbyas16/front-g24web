@@ -1,16 +1,16 @@
 
 export class StringHelper {
 
-    public static LeftZeroPad(num : string, size : number) : string
+    public static LeftZeroPad(str : string, size : number) : string
     {
-        let s = num+"";
+        let s = str+"";
         while (s.length < size) s = "0" + s;
         return s;
     }
 
-    public static RightZeroPad(num : string, size : number) : string
+    public static RightZeroPad(str : string, size : number) : string
     {
-        let s = ""+num;
+        let s = ""+str;
         while (s.length < size) s = s + "0";
         return s;
     }

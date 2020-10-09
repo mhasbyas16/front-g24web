@@ -123,7 +123,7 @@
         <clr-datagrid [clrDgLoading]="loading" [(clrDgSingleSelected)]="selected">
             <clr-dg-action-bar>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-secondary" (click)="onTerima()" *ngIf="Selected?.order_status!= 'terima_full' && Selected?.order_status != null"><clr-icon shape="pencil"></clr-icon>Terima</button>
+                    <button type="button" class="btn btn-sm btn-secondary" (click)="onTerima()" *ngIf="Selected?.order_status!= 'terima_full' && Selected?.order_status!='tolak' && Selected?.order_status != null"><clr-icon shape="pencil"></clr-icon>Terima</button>
                     <button type="button" class="btn btn-sm btn-secondary" (click)="onLihat()" *ngIf="Selected?._id != ''"><clr-icon shape="view-list"></clr-icon>Lihat</button>
                     <button type="button" class="btn btn-sm btn-secondary" (click)="Debug()"><clr-icon shape="bug"></clr-icon>Debug</button>
                 </div>
@@ -181,8 +181,8 @@
 
             <clr-dg-footer>
                 <div>
-                    <clr-dg-pagination #pagination [clrDgPageSize]="10">
-                        <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Items per page</clr-dg-page-size>
+                    <clr-dg-pagination #pagination [clrDgPageSize]="100">
+                        <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100,1000]">Items per page</clr-dg-page-size>
                         {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
                         of {{pagination.totalItems}} items
                     </clr-dg-pagination>

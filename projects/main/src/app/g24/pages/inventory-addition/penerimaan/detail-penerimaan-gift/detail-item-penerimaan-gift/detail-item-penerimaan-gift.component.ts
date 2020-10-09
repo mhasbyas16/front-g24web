@@ -13,6 +13,7 @@ import { DataTypeUtil } from 'projects/main/src/app/g24/lib/helper/data-type-uti
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { IDetailCallbackListener } from 'projects/main/src/app/g24/lib/base/idetail-callback-listener';
 import { OrdersModule } from '../../../../orders/orders.module';
+import { PaymentType } from 'projects/main/src/app/g24/lib/enums/payment-type';
 import { ProductSeriesService } from 'projects/main/src/app/g24/services/product/product-series.service';
 
 /**
@@ -65,6 +66,25 @@ export class DetailItemPenerimaanGiftComponent implements OnInit {
   public get Title()
   {
     return this.title;
+  }
+
+  GetDisplayName(key : string) : string
+  {
+    let name = "";
+    switch(key)
+    {
+      case PaymentType.UANG.code:
+        name = PaymentType.UANG.name;
+        break;
+
+      case PaymentType.MAKLON.code:
+        name = PaymentType.MAKLON.name;
+        break;
+
+        default:
+
+    }
+    return name;
   }
 
   // input
@@ -383,7 +403,7 @@ export class DetailItemPenerimaanGiftComponent implements OnInit {
     return true;
   }
 
-  async doSave()
+  async doTerima()
   {
     if(this.mode == EPriviledge.READ)
     {
@@ -481,5 +501,47 @@ export class DetailItemPenerimaanGiftComponent implements OnInit {
     //   let product = result[i];
       
     // }
+  }
+
+  async doTolak(){
+    if(this.mode == EPriviledge.READ)
+    {
+      this.toastr.info("Mode 'READ' only.");
+      return;
+    }
+
+    if(!this.validateItems())
+    {
+      return;
+    }
+
+    if(!this.validateInisiasi())
+    {
+      return;
+    }
+
+    this.inisiasi.order_status = OrderStatus.TOLAK.code;
+    this.inisiasi.update_date = new Date().toISOString().split("T")[0];
+    this.inisiasi.update_by = this.user.username;
+    this.inisiasi['tgl_tolak'] = this.inisiasi.update_date;
+    this.inisiasi.tolak_by = this.user.username;
+
+    let tempInisiasi = {}
+    Object.assign(tempInisiasi, this.inisiasi);
+    DataTypeUtil.Encode(tempInisiasi);
+
+    let inisiasi = await this.inisiasiService.update(tempInisiasi).toPromise();
+    if(inisiasi == false)
+    {
+      this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk.");
+      return;
+    } else {
+      Object.assign(this.inisiasi, tempInisiasi);
+      console.log(this.inisiasi);
+      this.parentListener.onAfterUpdate(this.inisiasi._id);
+      this.toastr.success("PO berhasil diterima.");
+      this.doReset();
+      this.Close();
+    }
   }
 }
