@@ -108,13 +108,10 @@ export const staffRetail = [
   {_id: "0007", type: "menu", name : "Inisiasi Promo", icons: "bundle", color : "warna-warni", componentId : "S10004", parentId: "", module: "promo"},
   {_id: "0007", type: "sub-menu", name : "Pengaturan Promosi", icons: "", color : "warna-warni", componentId : "10004", parentId: "S10004", module: "promo",menu : {_id: "0007"}},
   {_id: "0007", type: "sub-menu", name : "Daftar Promosi", icons: "", color : "warna-warni", componentId : "10005", parentId: "S10004", module: "promo",menu : {_id: "0007"}},
-<<<<<<< HEAD
    //buyback
    {_id: "1001", type: "menu", name : "Buyback", icons: "coin-bag", color : "warna-warni", componentId : "S10011", parentId: "", module: "bb"},
    {_id: "1001", type: "sub-menu", name : "Terima Buyback", icons: "yang bagus", color : "warna-warni", componentId : "11001", parentId: "S10011", module: "bb",menu : {_id: "0001 "}},
    {_id: "1001", type: "sub-menu", name : "Parameter Buyback", icons: "yang bagus", color : "warna-warni", componentId : "11002", parentId: "S10011", module: "bb",menu : {_id: "0001 "}},
 ];
-=======
   
 ];
->>>>>>> e934a3948aa5498ee8d2236091d3f0699a9dcb39
