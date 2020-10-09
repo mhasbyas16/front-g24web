@@ -15,7 +15,7 @@
                 <clr-dg-column>Kondisi</clr-dg-column>
                 <clr-dg-column>Harga</clr-dg-column>
                 <clr-dg-column class="right"></clr-dg-column>
-                <clr-dg-row *clrDgItems="let d of isiPerhiasan">
+                <clr-dg-row *clrDgItems="let d of isiPerhiasan.data">
                     <clr-dg-cell>{{d.detail.code}}</clr-dg-cell>
                     <clr-dg-cell>{{d.detail.vendor.name}}</clr-dg-cell>
                     <clr-dg-cell>{{d.detail['product-jenis'].name}}</clr-dg-cell>
@@ -41,7 +41,7 @@
                             </button>                
                         </ng-container>
                         <ng-template #plus >
-                            <button type="button" class="btn btn-icon btn-sm btn-success" (click)="addToCart(d.detail.code, d.detail['product-jenis'].name, d.detail.berat, d.detail['product-purity'].name, d.hargaBB)" aria-label="home" >
+                            <button type="button" class="btn btn-icon btn-sm btn-success" (click)="addToCart(d.detail.code, d.detail['product-jenis'].name, d.detail.berat, d.detail['product-purity'].name, d.hargaBB, d.detail, isiPerhiasan.id)" aria-label="home" >
                                 <clr-icon shape="plus"></clr-icon>
                             </button>       
                         </ng-template>

@@ -10,6 +10,7 @@ import { ContentPage } from '../../../lib/helper/content-page';
 import { DatePipe } from "@angular/common";
 
 // services
+import { SplitDateServiceService } from '../../../services/split-date-service.service';
 import { PromoService } from '../promo.service';
 import { UnitService } from '../../../services/system/unit.service';
 import { ProductCategoryService } from '../../../services/product/product-category.service';
@@ -19,7 +20,7 @@ import { ProductJenisService } from '../../../services/product/product-jenis.ser
 import { PromotionSettingService } from '../../../services/promotion/promotion-setting.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { BudgetCostService } from '../../../services/promotion/budget-cost.service';
-
+import { TanggalService } from '../../../lib/helper/tanggal.service';
 
 @Component({
   selector: 'app-pengaturan-promo',
@@ -40,6 +41,8 @@ export class PengaturanPromoComponent implements OnInit {
   mulia:boolean = false;
   giftSouvenir:boolean = false;
   dinar:boolean = false;
+
+  idpromosi:any;
 
   manualWizard: boolean = false;
   penjualanWizard: boolean = false;
@@ -98,7 +101,9 @@ export class PengaturanPromoComponent implements OnInit {
     private toastrService: ToastrService,
     private datePipe: DatePipe,
     private promoService:PromoService,
-    private budgetCostService:BudgetCostService
+    private budgetCostService:BudgetCostService,
+    private splitDateServiceService: SplitDateServiceService,
+    private tanggalService:TanggalService
   ) { }
 
   ngOnInit(): void {
@@ -193,13 +198,13 @@ export class PengaturanPromoComponent implements OnInit {
   }
 
   selectKuota(val){
-    if (val == '0') {
+    if (val == 'nolimit') {
       this.inputKuota = false;
       this.kuotaProduk = false;
-    }else if (val == '1') {
+    }else if (val == 'allproduct') {
       this.inputKuota = true;
       this.kuotaProduk = false;
-    }else if (val == '2'){
+    }else if (val == 'perproduct'){
       this.inputKuota = false;
       this.kuotaProduk = true;
     }
@@ -279,8 +284,11 @@ export class PengaturanPromoComponent implements OnInit {
       approvalDate: new FormControl(""),
       approvalTime: new FormControl(""),
       'budget-cost': new FormControl ("", Validators.required),
-      'budget-cost_encoded': new FormControl ("base64")
+      'budget-cost_encoded': new FormControl ("base64"),
+      id : new FormControl ("", Validators.required),
+      idAi : new FormControl ("", Validators.required)
     });
+    this.idPromosi();
   }
 
   openWizard(val){
@@ -299,8 +307,8 @@ export class PengaturanPromoComponent implements OnInit {
 
   // get data
   getPerhiasan(data){
-      this.passingPerhiasan = data;
-      this.passingData();
+    this.passingPerhiasan = data;
+    this.passingData();
   }
   getMulia(data){
     this.passingMulia = data;
@@ -333,6 +341,8 @@ export class PengaturanPromoComponent implements OnInit {
 
   getDataPromosi(){
     let productCAT = [];    
+    let productCAT2 = [];
+    let gabung:any;
     let PUnits = [];
     // section1
     let section1 = this.section1_penjualan.getRawValue();
@@ -355,22 +365,97 @@ export class PengaturanPromoComponent implements OnInit {
       for (let data of section1["pickProduct-category"]) {
         productCAT.push(JSON.parse(atob(data)))      
       }
-      section1["product-category"] = btoa(JSON.stringify(productCAT));
+
+      productCAT.forEach((value, index) => {
+        this.promoService.product.forEach((val, ind) => {
+          if (value.code == val.code) {
+            gabung = Object.assign(value,val);
+            productCAT2.push(gabung);
+          }
+        });
+      });
+      section1["product-category"] = btoa(JSON.stringify(productCAT2));
       section1["product-category_encoded"] = "base64array";
       delete section1["pickProduct-category"];
     }else{
       delete section1["pickProduct-category"];
       // section1.units_encoded = "base64array";
     }
+
+    
+
+    let fixDate:any;
+    // tanggal maker
+    fixDate = this.splitDateServiceService.split(section1.makerDate);
+    section1.makerDate = fixDate;
+
+    // tanggal start date
+    fixDate = this.splitDateServiceService.split(section1.startDate);
+    section1.startDate = fixDate;
+
+    // tanggal end date
+    fixDate = this.splitDateServiceService.split(section1.endDate);
+    section1.endDate = fixDate;
+
     // end section1
-        
     let data = Object.assign(section1,{
-      'product' : btoa(JSON.stringify(this.promoService.product)),
-      'product_encoded':'base64array',
-      'flag':'0'});
+      // 'product' : btoa(JSON.stringify(this.promoService.product)),
+      // 'product_encoded':'base64array',
+      'flag':'0',
+      'voucher':'notgenerated'});
     console.debug (data,"isi data");
     // return;
     this.storePromotion(data);
+  }
+
+  idPromosi() {
+    this.idpromosi = null;
+    let inc = null;
+    let d1 = this.datePipe.transform(Date.now(), 'yyyy-01-01');
+    let d2 = this.datePipe.transform(Date.now(), 'yyyy-12-31');
+    let d3 = this.datePipe.transform(Date.now(), 'yy');
+    let unit = this.sessionService.getUnit();
+
+    let params = "?_between=makerDate&_start=" + d1 + "&_end=" + d2;
+
+    this.promotionSetiingService.list(params + '&_sortby=idAi:0&_rows=1').subscribe((response: any) => {
+      let count = null;
+      let re = response;
+      if (re.length == 0) {
+        count = JSON.stringify(1);
+      }else{
+        count = JSON.stringify(Number(re["0"]["idAi"]) + 1);
+      }
+      console.debug(unit.code);       
+      switch (count.length) {
+        case 1:
+          inc = "000000" + count;
+          break;
+        case 2:
+          inc = "00000" + count;
+          break;
+        case 3:
+          inc = "0000" + count;
+          break;
+        case 4:
+          inc = "000" + count;
+          break;
+        case 5:
+          inc = "00" + count;
+          break;
+        case 6:
+          inc = "0" + count;
+          break;
+        case 7:
+          inc = count;
+          break;
+        default:
+          break;
+      }
+      this.idpromosi = unit.code + d3 + inc;
+      this.section1_penjualan.patchValue({ id: this.idpromosi, idAi: count });
+    });
+
   }
 
   storePromotion(data){   
