@@ -140,9 +140,9 @@ export class RekeningKoranComponent implements OnInit {
 
     if (data.text != "") {
       if (val == 'noRek') {
-        this.rekeningKoranService.list("?"+params+"&detail.noRek_regex=1&detail.noRek="+data.text).subscribe((response:any)=>{
+        this.rekeningKoranService.list("?"+params+"&detail.noRek="+data.text).subscribe((response:any)=>{
           if (response["length"] != 0) {
-            params = params+"&detail.noRek_regex=1&detail.noRek="+data.text;
+            params = params+"&detail.noRek="+data.text;
             this.getJurnal(params);
             this.datatext = data.text;
             return
