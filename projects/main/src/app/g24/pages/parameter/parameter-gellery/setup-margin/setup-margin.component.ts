@@ -17,7 +17,6 @@ import { PrmMarginService } from '../../../../services/parameter/prm-margin.serv
 import { ServerDateTimeService } from "../../../../services/system/server-date-time.service";
 import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
 
-
 @Component({
   selector: 'app-setup-margin',
   templateUrl: './setup-margin.component.html',
