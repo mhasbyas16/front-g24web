@@ -9,7 +9,7 @@ import { Select2OptionData } from "ng-select2";
 import { Options } from "select2";
 //Session
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
-import { DateService } from "../../../services/system/date.service";
+import { ServerDateTimeService } from "../../../services/system/server-date-time.service";
 import { DatePipe } from '@angular/common';
 //database
 import { MokerService } from "../../../services/transaction/moker.service";
@@ -70,7 +70,7 @@ export class InputMokerComponent implements OnInit {
     private toastrService: ToastrService,
     //session
     private sessionService: SessionService,
-    private dateServices: DateService,
+    private dateServices: ServerDateTimeService,
     private datePipe: DatePipe,
     //database
     private mokerServices: MokerService,
