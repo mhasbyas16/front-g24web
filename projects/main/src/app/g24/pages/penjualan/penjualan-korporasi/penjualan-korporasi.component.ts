@@ -146,7 +146,7 @@ export class PenjualanKorporasiComponent implements OnInit {
 
     let data = Object.assign(form,{'pic': btoa(JSON.stringify(Pic))}, {product:btoa(JSON.stringify(this.productData))});
 
-    this.transactionFlagService.batchUpdateOne(this.productData);
+    // this.transactionFlagService.batchUpdateOne(this.productData);
 
     this.transactionBookingService.add(data).subscribe((response)=>{
       if (response == false) {

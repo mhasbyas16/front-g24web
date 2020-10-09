@@ -81,21 +81,23 @@ export class TransactionFlagService {
     if (val.length != 0) {
       for (let p of val) {
         no++;
-        product[no] = btoa(
-          JSON.stringify({ _id: p.detail._id, flag: "booking" })
-        );
-        product[no + "_encoded"] = "base64";
+        let data = {_id: p.detail._id, flag: "bookingCorporate"}
+        this.productService.update(data).subscribe((response:any)=>{
+          if (response == false) {
+            console.debug("batch update failed");
+            return;        
+          }
+        })
+        // product[no] = btoa(
+        //   JSON.stringify({ _id: p.detail._id, flag: "booking" })
+        // );
+        // product[no + "_encoded"] = "base64";
       }
     }
 
-    let data = Object.assign(batch, product);
+    // let data = Object.assign(batch, product);
 
-    this.productService.batchUpdate(data).subscribe((response:any)=>{
-      if (response == false) {
-        console.debug("batch update failed");
-        return;        
-      }
-    })
-    console.debug(data, "data update flag");
+    
+    // console.debug(data, "data update flag");
   }
 }
