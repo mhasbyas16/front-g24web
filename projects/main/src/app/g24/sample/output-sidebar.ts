@@ -40,6 +40,12 @@ export const keuangan = [
      {_id: "0006", type: "menu", name : "Parameter Gallery", icons: "dashboard", color : "warna-warni", componentId : "S20000", parentId: "", module: "pr"},
      {_id: "0006", type: "sub-menu", name : "Parameter Global", icons: "", color : "warna-warni", componentId : "20002", parentId: "S20000", module: "pr",menu : {_id: "0006"}},
      {_id: "0006", type: "sub-menu", name : "Parameter Harga", icons: "", color : "warna-warni", componentId : "20001", parentId: "S20000", module: "pr",menu : {_id: "0006"}},
+     // TRANSAKSI-MOKER
+     {_id: "0006", type: "menu", name : "Transaksi", icons: "nvme", color : "warna-warni", componentId : "S31000", parentId: "", module: "tm"},
+     {_id: "0006", type: "sub-menu", name : "Approval Terima Moker", icons: "", color : "warna-warni", componentId : "31004", parentId: "S31000", module: "tm",menu : {_id: "0008"}},
+     {_id: "0006", type: "sub-menu", name : "Input Moker", icons: "", color : "warna-warni", componentId : "31001", parentId: "S31000", module: "tm",menu : {_id: "0008"}},
+     {_id: "0006", type: "sub-menu", name : "Otorisasi Moker", icons: "", color : "warna-warni", componentId : "31002", parentId: "S31000", module: "tm",menu : {_id: "0008"}},
+     {_id: "0006", type: "sub-menu", name : "Terima Moker", icons: "", color : "warna-warni", componentId : "31003", parentId: "S31000", module: "tm",menu : {_id: "0008"}},
 ];
 
 export const stock = [
