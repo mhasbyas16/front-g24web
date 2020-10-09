@@ -138,4 +138,11 @@ export enum EMenuID {
      ANGGARAN               = '30000',
      PENGAJUAN_ANGGARAN     = '30001',
      PERGESERAN_ANGGARAN    = '30002',
- }
+
+    //transaksi moker
+    TRANSAKSI_MOKER         = '31000',
+    INPUT_MOKER             = '31001',
+    OTORISASI_MOKER         = '31002',
+    TERIMA_MOKER            = '31003',
+    APPROVAL_TERIMA_MOKER   = '31004',
+}
