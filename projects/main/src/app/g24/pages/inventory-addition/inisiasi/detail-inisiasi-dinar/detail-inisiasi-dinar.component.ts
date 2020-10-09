@@ -18,6 +18,10 @@ import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
 import { BasePersistentFields } from '../../../../lib/base/base-persistent-fields';
 import { ServerDateTimeService } from '../../../../services/system/server-date-time.service';
 import { JurnalInisiasiService } from '../../../../services/keuangan/jurnal/stock/jurnal-inisiasi.service';
+import { LoadingSpinnerComponent } from '../../../../nav/modal/loading-spinner/loading-spinner.component';
+import { BankService } from '../../../../services/transaction/bank.service';
+import { StringHelper } from '../../../../lib/helper/string-helper';
+import { SequenceService } from '../../../../services/system/sequence.service';
  
 @Component({
   selector: 'detail-inisiasi-dinar',
@@ -35,6 +39,8 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
   @ViewChild('product') product : ElementRef;
 
   @ViewChild('Dinar', {static: false}) dinarInput : TemplateRef<any>;
+  
+  @ViewChild('spinner', {static: false}) spinner : LoadingSpinnerComponent;
 
   btoa = btoa;
   parseInt = parseInt;
@@ -247,6 +253,8 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
   constructor(
     private resolver : ComponentFactoryResolver,
     private jurnalInisiasi : JurnalInisiasiService,
+    private bankService : BankService,
+    private sequencer : SequenceService,
     
     // private unitService : UnitService,
     private seriesService : ProductSeriesService,
@@ -287,7 +295,23 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
     {
       this.products.pop();
     }
-    let products = await this.productCatService.list("?code=c06").toPromise();
+
+    let msg = "";
+    let products : any = false;
+    try {
+      products = await this.productCatService.list("?code=c06").toPromise();
+    } catch(err) {
+      products = false;
+      msg = err.message;
+    }
+    
+    if(products == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.productCatService.message();
+      this.toastr.error("Gagal Loading 'Jenis Produk'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
+      return;
+    }
 
     console.log(products);
 
@@ -300,7 +324,28 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
 
   async LoadVendor()
   {
-    let vendors = await this.vendorService.list("?product-category.code=c06").toPromise();
+    while(this.vendors.length > 0)
+    {
+      this.vendors.pop();
+    }
+
+    let msg = "";
+    let vendors : any = false;
+    try {
+      vendors = await this.vendorService.list("?product-category.code=c06").toPromise();
+    } catch(err) {
+      vendors = false;
+      msg = err.message;
+    }
+    
+    if(vendors == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.vendorService.message();
+      this.toastr.error("Gagal Loading 'Vendor'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
+      return;
+    }
+
     for(let i = 0; i < vendors.length; i++)
     {
       this.vendors.push(vendors[i]);
@@ -310,7 +355,28 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
 
   async LoadDenom()
   {
-    let denoms = await this.denomService.list("?product-category.code=c06").toPromise();
+    while(this.denoms.length > 0)
+    {
+      this.denoms.pop();
+    }
+    
+    let msg = "";
+    let denoms : any = false;
+    try {
+      denoms = await this.denomService.list("?product-category.code=c06").toPromise();
+    } catch(err) {
+      denoms = false;
+      msg = err.message;
+    }
+    
+    if(denoms == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.denomService.message();
+      this.toastr.error("Gagal Loading 'Denom'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
+      return;
+    }
+
     for(let i = 0; i < denoms.length; i++)
     {
       this.denoms.push(denoms[i]);
@@ -320,7 +386,28 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
   
   async LoadSeries()
   {
-    let series = await this.seriesService.list("?").toPromise();
+    while(this.series.length > 0)
+    {
+      this.series.pop();
+    }
+    
+    let msg = "";
+    let series : any = false;
+    try {
+      series = await this.seriesService.list("?product-category.code=c06").toPromise();
+    } catch(err) {
+      series = false;
+      msg = err.message;
+    }
+    
+    if(series == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.seriesService.message();
+      this.toastr.error("Gagal Loading 'Series'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
+      return;
+    }
+
     for(let i = 0; i < series.length; i++)
     {
       this.series.push(series[i]);
@@ -328,9 +415,45 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
     this.series.sort((a,b) => ('' + a.name).localeCompare(b.name))
   }
 
+  async LoadBanks()
+  {
+    while(this.banks.length > 0)
+    {
+      this.banks.pop();
+    }
+
+    let msg = "";
+    let banks : any = false;
+    try {
+      banks = await this.bankService.list("?").toPromise();
+    } catch(err) {
+      banks = false;
+      msg = err.message;
+    }
+    
+    if(banks == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.bankService.message();
+      this.toastr.error("Gagal Loading 'Bank'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
+      return;
+    }
+
+    for(let i = 0; i < banks.length; i++)
+    {
+      this.banks.push(banks[i]);
+    }
+    this.banks.sort((a,b) => ('' + a.name).localeCompare(b.name))
+  }
+
   async LoadDate()
   {
-    let resp = await this.dateService.task("").toPromise();
+    let resp : any = false;
+    try {
+      resp = await this.dateService.task("").toPromise();
+    } catch(err) {
+      resp = false;
+    }
     if(resp == false)
     {
       this.errorHappened = true;
@@ -347,7 +470,8 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
     this.LoadProductCategory();
     this.LoadVendor();
     this.LoadDenom();
-    this.LoadSeries();
+    // this.LoadSeries();
+    this.LoadBanks();
     
     this.onProductChanged();
   }
@@ -359,9 +483,11 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
 
   async ResetAll()
   {
+    this.errorHappened = false;
+    await this.LoadAllParameter();
     await this.LoadDate();
     this.input = this.defaultInput();
-    console.log(this.input);
+    // console.log(this.input);
   }
 
   onProductChanged()
@@ -501,9 +627,17 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
 
   async doSave()
   {
-    if(this.validateInput()) return;
+    this.spinner.Open();
 
-    if(this.input.items?.length <= 0) {
+    if(this.validateInput())
+    {
+      this.spinner.Close();
+      return;
+    }
+
+    if(this.input.items?.length <= 0)
+    {
+      this.spinner.Close();
       this.toastr.warning("Tidak ada item pada Tabel Input Detail.", "Peringatan!");
       return;
     }
@@ -517,16 +651,41 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
 
     if(this.user?.unit == null)
     {
+      this.spinner.Close();
       this.toastr.warning("Unit dari User belum di-Assign. Harap hubungi IT Support/Helpdesk.", "Error!");
       return;
     }
 
-    let PO = "PO" + this.user.unit.code + date_split[0].substring(1, 3) + date_split[1] + "[0,5]";
+    let unitCode = this.session.getUnit()?.code;
+    let key = {key : "PO-" + unitCode + "-" + this.date }
+    let seq : any = "";
+    let msg = "";
+    try
+    {
+      seq = await this.sequencer.use(key).toPromise();
+
+    } catch(err)
+    {
+      msg = err.message;
+      seq = false;
+    }
+
+    if(seq == false)
+    {
+      if(msg == "") msg = this.sequencer.message();
+      this.toastr.error("Gagal membentuk Format Nomor PO. Error: " + msg);
+      this.spinner.Close();
+      this.ResetAll();
+      return;
+    }
+
+    let st = StringHelper.LeftZeroPad(Number(seq.value).toString(), 5);
+    let PO = "PO" + this.session.getUnit()?.code + date_split[0].substring(2, 4) + date_split[1] + date_split[2] + st;
 
     let def =
     {
       no_po : PO,
-      __format : "no_po:inc",
+      // __format : "no_po:inc",
       create_date : this.input['create_date'],
       create_time : time,
       create_by : this.user.username,
@@ -544,17 +703,23 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
     let init = DataTypeUtil.Encode(def);
 
     this.inisiasiService.add(init).subscribe(output => {
+      
+      this.spinner.Close();
       if(output == false)
       {
-        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + this.inisiasiService.message);
+        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + this.inisiasiService.message());
         return;
       } else {
         this.toastr.success("Inisiasi Berhasil. Harap hubungi Kepala Departemen untuk melakukan Approval. No. PO : " + output.no_po, "Info", {disableTimeOut : true, closeButton : true, tapToDismiss : false});
         this.ResetAll();
         // this.doAccounting(output._id);
       }
+    }, err => {
+      this.spinner.Open();
+      this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + err.message, "Error!", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
+      return;
+
     });
-    // console.log(output);
   }
 
   // doAccounting(idInisiasi :string)

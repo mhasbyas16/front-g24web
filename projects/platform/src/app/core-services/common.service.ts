@@ -174,11 +174,12 @@ export class CommonService {
     });
   }
 
-  public add(key: string, data: any): Observable<any> {
+  public add(key: string, data: any, notFormUrlEncoded? : boolean): Observable<any> {
     return new Observable(observer => {
 
       const url = `${this.sessionService.server}/${key}/add`;
-      console.debug(key, url);
+      console.debug(key, url, data);
+      // let encodedData = notFormUrlEncoded ? data : this.getFormUrlEncoded(data); // true: send Object form, false: send URL Encoded form
 
       this.http.post(url, this.getFormUrlEncoded(data), { headers: this.sessionService.postHeader() }).subscribe((respond: any) => {
         console.debug("add", url, respond);
@@ -287,10 +288,11 @@ export class CommonService {
     });
   }
 
-  public update(key: string, data: any): Observable<any> {
+  public update(key: string, data: any, notFormUrlEncoded? : boolean): Observable<any> {
     return new Observable(observer => {
 
       const url = `${this.sessionService.server}/${key}/update`;
+      // let encodedData = notFormUrlEncoded ? data : this.getFormUrlEncoded(data); // true: send Object form, false: send URL Encoded form
       
       this.http.post(url, this.getFormUrlEncoded(data), { headers: this.sessionService.postHeader() }).subscribe((respond: any) => {
         

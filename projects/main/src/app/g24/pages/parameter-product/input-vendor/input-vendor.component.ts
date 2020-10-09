@@ -168,6 +168,10 @@ listvendor : any[] = [];
   }
 
   TambahKategori(){
+    if(!this.select_kategori){
+      this.toastr.error("Produk kategori belum dipilih","Gagal");
+      return;
+    }
     for(let i = 0; i < this.addkategori.length; i++){
 		  if(this.addkategori[i].code==this.select_kategori.code){
 			  this.toastr.info("Produk kategori sama","Informasi");

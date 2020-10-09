@@ -107,6 +107,10 @@ export enum EMenuID {
     TOKO_PENYEDIA       = '9909',
     VENDOR              = '9910',
 
+    //INQUERY PRODUCT
+    INQUERY_PRODUCT = '99101',
+    DETAIL_INQUERY_PERHIASAN = '99102',
+
     // Offline Sale
     DISTRO              = '10001',
     ROLE                = '10002',
@@ -131,4 +135,11 @@ export enum EMenuID {
      ANGGARAN               = '30000',
      PENGAJUAN_ANGGARAN     = '30001',
      PERGESERAN_ANGGARAN    = '30002',
- }
+
+    //transaksi moker
+    TRANSAKSI_MOKER         = '31000',
+    INPUT_MOKER             = '31001',
+    OTORISASI_MOKER         = '31002',
+    TERIMA_MOKER            = '31003',
+    APPROVAL_TERIMA_MOKER   = '31004',
+}

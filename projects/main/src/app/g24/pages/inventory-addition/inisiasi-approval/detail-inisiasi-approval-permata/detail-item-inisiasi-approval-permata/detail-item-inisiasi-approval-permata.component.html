@@ -79,7 +79,7 @@
                         </b>
                     </div>
                 </div>
-                <div class="clr-row">
+                <div class="clr-row" *ngIf="inisiasi?.tipe_bayar == PaymentType.UANG.code">
                     <div class="clr-col-3">
                         <b>
                             <span>Asal Uang &#58; </span>
@@ -87,7 +87,19 @@
                     </div>
                     <div class="clr-col-3">
                         <b>
-                            <u><span>{{GetDisplayName(inisiasi?.tipe_bayar)}}</span></u>
+                            <u><span>{{GetDisplayName(inisiasi?.asal_uang)}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row" *ngIf="inisiasi?.asal_uang == 'bank'">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Bank &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{GetDisplayName(inisiasi?.bank)}}</span></u>
                         </b>
                     </div>
                 </div>

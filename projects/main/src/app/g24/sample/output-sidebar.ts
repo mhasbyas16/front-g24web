@@ -15,6 +15,10 @@ export const management = [
     {_id: "0008",type: "sub-menu", name : "Mutasi", icons: "yang bagus", color : "warna-warni", componentId : "2001", parentId: "x1002", module: "x2", menu : {_id: "0008"}},
     {_id: "0008",type: "sub-menu", name : "Approval Mutasi", icons: "yang bagus", color : "warna-warni", componentId : "2005", parentId: "x1002", module: "x2", menu : {_id: "0008"}},
     {_id: "0008",type: "sub-menu", name : "Penerimaan", icons: "yang bagus", color : "warna-warni", componentId : "2004", parentId: "x1002", module: "x2", menu : {_id: "0008"}},
+    //INISIASI BAHAN BAKU
+    {_id: "0010", type: "menu", name : "Bahan Baku", icons: "layers", color : "warna-warni", componentId : "x1003", parentId: "", module: "bb"},
+    {_id: "0010",type: "sub-menu", name : "Inisiasi", icons: "yang bagus", color : "warna-warni", componentId : EMenuID.PEMBUATAN, parentId: "x1003", module: "bb", menu : {_id: "0002"}},
+    {_id: "0010",type: "sub-menu", name : "Approval", icons: "yang bagus", color : "warna-warni", componentId : EMenuID.APP_PEMBUATAN, parentId: "x1003", module: "bb", menu : {_id: "0002"}},
     // LAPORAN
     {_id: "0004", type: "menu", name : "Laporan", icons: "list", color : "warna-warni", componentId : "S10002", parentId: "", module: "lp"},
     {_id: "0004", type: "sub-menu", name : "Laporan Penjualan", icons: "yang bagus", color : "warna-warni", componentId : "10003", parentId: "S10002", module: "lp",menu : {_id: "0004"}},
@@ -34,6 +38,12 @@ export const management = [
     {_id: "0009", type: "sub-menu", name : "Param Series", icons: "", color : "warna-warni", componentId : "9908", parentId: "P1001", module: "prp",menu : {_id: "0009"}},
     {_id: "0009", type: "sub-menu", name : "Toko Penyedia", icons: "", color : "warna-warni", componentId : "9909", parentId: "P1001", module: "prp",menu : {_id: "0009"}},
     {_id: "0009", type: "sub-menu", name : "Vendor", icons: "", color : "warna-warni", componentId : "9910", parentId: "P1001", module: "prp",menu : {_id: "0009"}},
+    //INQUERY PRODUCT
+    {_id: "0011", type: "menu", name : "Inquery Product", icons: "data-cluster", color : "warna-warni", componentId : "IP101", parentId: "", module: "ip"},
+    {_id: "0011", type: "sub-menu", name : "Data Product", icons: "yang bagus", color : "warna-warni", componentId : "99101", parentId: "IP101", module: "ip",menu : {_id: "0011"}},
+    //KONVERSI
+    {_id: "0012", type: "menu", name : "Konversi", icons: "organization", color : "warna-warni", componentId : "KV101", parentId: "", module: "kv"},
+    {_id: "0012", type: "sub-menu", name : "Konversi Product", icons: "yang bagus", color : "warna-warni", componentId : "3001", parentId: "KV101", module: "kv",menu : {_id: "0012"}},
     // PENJUALAN
     {_id: "0003", type: "menu", name : "Penjualan", icons: "shopping-cart", color : "warna-warni", componentId : "S10001", parentId: "", module: "pj"},
     {_id: "0003", type: "sub-menu", name : "Penjualan Distro", icons: "yang bagus", color : "warna-warni", componentId : "10001", parentId: "S10001", module: "pj",menu : {_id: "0003"}},
@@ -67,6 +77,12 @@ export const keuangan = [
      {_id: "0006", type: "menu", name : "Parameter Gallery", icons: "dashboard", color : "warna-warni", componentId : "S20000", parentId: "", module: "pr"},
      {_id: "0006", type: "sub-menu", name : "Parameter Global", icons: "", color : "warna-warni", componentId : "20002", parentId: "S20000", module: "pr",menu : {_id: "0006"}},
      {_id: "0006", type: "sub-menu", name : "Parameter Harga", icons: "", color : "warna-warni", componentId : "20001", parentId: "S20000", module: "pr",menu : {_id: "0006"}},
+     // TRANSAKSI-MOKER
+     {_id: "0006", type: "menu", name : "Transaksi", icons: "nvme", color : "warna-warni", componentId : "S31000", parentId: "", module: "tm"},
+     {_id: "0006", type: "sub-menu", name : "Approval Terima Moker", icons: "", color : "warna-warni", componentId : "31004", parentId: "S31000", module: "tm",menu : {_id: "0008"}},
+     {_id: "0006", type: "sub-menu", name : "Input Moker", icons: "", color : "warna-warni", componentId : "31001", parentId: "S31000", module: "tm",menu : {_id: "0008"}},
+     {_id: "0006", type: "sub-menu", name : "Otorisasi Moker", icons: "", color : "warna-warni", componentId : "31002", parentId: "S31000", module: "tm",menu : {_id: "0008"}},
+     {_id: "0006", type: "sub-menu", name : "Terima Moker", icons: "", color : "warna-warni", componentId : "31003", parentId: "S31000", module: "tm",menu : {_id: "0008"}},
 ];
 
 export const stock = [

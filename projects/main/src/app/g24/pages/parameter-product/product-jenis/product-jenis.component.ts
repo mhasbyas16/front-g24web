@@ -152,6 +152,10 @@ modalview : boolean = false;
   }
 
   TambahKategori(){
+	  if(!this.select_kategori){
+		  this.toastr.error("Produk kategori belum dipilih","Gagal");
+		  return;
+	  }
 	  for(let i = 0; i < this.addkategori.length; i++){
 		  if(this.addkategori[i].code==this.select_kategori.code){
 			  this.toastr.info("Data produk kategori sama","Informasi");
@@ -190,12 +194,7 @@ modalview : boolean = false;
 	let name = this.input["name"];
 	let validate = /^[a-zA-Z ]+$/;  
   	// let kategori = this.input["name_kat"];
-  	let data = {
-  		code : code.toUpperCase(),
-  		name : name,
-  		category : "product-jenis",
-  		'product-category' : []
-	  }
+  	
 	  
 	  if(!code || !name){
 		  this.toastr.warning("Kode atau nama belum di isi","Peringatan");
@@ -207,6 +206,13 @@ modalview : boolean = false;
 		this.toastr.info("Input harus huruf","Informasi");
 		return;
 	  }
+	  
+	  let data = {
+		code : code.toUpperCase(),
+		name : name,
+		category : "product-jenis",
+		'product-category' : []
+	}
 	 for(let i = 0; i < this.addkategori.length; i++){
 		 data["product-category"].push(this.addkategori[i]);
 	 }

@@ -1,0 +1,78 @@
+<div class="clr-row">
+    <div class="clr-col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                Dinar <span *ngIf="ErrorPage" class="label label-danger" style="text-align: center;">Gagal Load Page, Silahkan klik button refresh dibawah</span>
+            </div>
+            <div class="card-block">
+                <div class="clr-row">
+                <div class="clr-col-6">
+                    <div class="clr-form-control">
+                        <label class="clr-control-label">Code</label>
+                        <clr-input-container>
+                            <input clrInput [(ngModel)]="inquery.code" name="code">
+                        </clr-input-container>
+                    </div>
+                </div>
+                <div class="clr-col-6">
+                    <div class="clr-form-control">
+                        <label class="clr-control-label">Vendor</label>
+                        <clr-select-container>
+                            <select clrSelect [(ngModel)]="inquery.vendor" name="vendor">
+                                <option [ngValue]=""></option>
+                                <ng-container *ngFor="let data of vendor">
+                                    <option [ngValue]="data">{{data.name}}</option>
+                                </ng-container>
+                            </select>
+                        </clr-select-container>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="card-header">
+                Attribut Dinar
+            </div>
+            <div class="card-block">
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Denom</label>
+                            <clr-select-container>
+                                <select clrSelect [(ngModel)]="inquery.denom" name="denom">
+                                    <option [ngValue]=""></option>
+                                    <ng-container *ngFor="let data of denom">
+                                        <option [ngValue]="data">{{data.name}}</option>
+                                    </ng-container>
+                                </select>
+                            </clr-select-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button [clrLoading]="LoadingSearch" class="btn btn-icon btn-outline-light" (click)="Search()"><clr-icon shape="search"></clr-icon> Cari</button>
+                <button [clrLoading]="LoadingPage" class="btn btn-icon btn-outline-light" (click)="Refresh()"><clr-icon shape="refresh"></clr-icon> Refresh</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="clr-row">
+    <div class="clr-col-md-12">
+        <clr-datagrid>
+            <clr-dg-column>Code</clr-dg-column>
+            <clr-dg-column>Vendor</clr-dg-column>
+            <clr-dg-column>Denom</clr-dg-column>
+            <clr-dg-column>HPP</clr-dg-column>
+            <clr-dg-column>Tipe Stock</clr-dg-column>
+
+            <clr-dg-row *ngFor="let data of outputdata">
+                <clr-dg-cell>{{data.code}}</clr-dg-cell>
+                <clr-dg-cell>{{data.vendor.name}}</clr-dg-cell>
+                <clr-dg-cell>{{data["product-denom"].name}}</clr-dg-cell>
+                <clr-dg-cell>{{data.hpp}}</clr-dg-cell>
+                <clr-dg-cell>{{data.tipe_stock}}</clr-dg-cell>
+            </clr-dg-row>
+        </clr-datagrid>
+    </div>
+</div>
