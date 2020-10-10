@@ -13,7 +13,9 @@
                             Logam Mulia Non Pegadaian
                             <div class="cart-style"> <!-- total isi cart              total harga cart                           -->
                                 <app-cart-buyback-manual-lm
-                                [total]="total"
+                                [totalCart]="totalCart"
+                                (clearEmasBatangan)="clearEmasBatangan($event)"
+                                [hargaTotalEmasBatangan]="hargaTotalEmasBatangan"
                                 >
 
 
@@ -99,7 +101,7 @@
                                 <clr-dg-column>Vendor</clr-dg-column>
                                 <clr-dg-column>Denom</clr-dg-column>
                                 <clr-dg-column>Harga</clr-dg-column>
-                                <clr-dg-column>Quantity Buyback</clr-dg-column>
+                                <clr-dg-column>Jumlah Buyback</clr-dg-column>
                             
                                 <clr-dg-row *clrDgItems="let d of datamulias" [clrDgItem]="d">
                                     <!-- <clr-dg-cell>{{d.id}}</clr-dg-cell> -->
@@ -114,7 +116,7 @@
                                                 </clr-input-container>
                                             </div>
                                             <div class="clr-col">
-                                                <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.vendor, d.denom, d.qty, d.harga)">
+                                                <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.vendor, d.denom, d.harga)">
                                                     <clr-icon shape="plus"></clr-icon>
                                                 </button> 
                                             </div>

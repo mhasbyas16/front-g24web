@@ -11,13 +11,8 @@ import { ToastrService } from 'ngx-toastr';
 
 // prm
 import { PrmJualService } from '../../../../services/parameter/prm-jual.service';
-import { PrmMarginService } from '../../../../services/parameter/prm-margin.service';
 
-//rumus harga 
-import { PricingService }  from '../../../../services/pricing.service';
-
-import { LM } from '../../../../sample/cart';
-import { CountCartService } from '../../../../services/count-cart.service';
+import { LM } from '../../../../sample/cart-buyback-manual-lm';
 
 @Component({
   selector: 'app-mulia-manual',
@@ -29,6 +24,9 @@ import { CountCartService } from '../../../../services/count-cart.service';
 export class MuliaManualComponent implements OnInit {
   loadingDg: boolean;
   hargaBaku: number;
+  cartList = LM;
+  detail: {};
+  sumHarga: number;
 
   constructor(
     private vendorService: VendorService,
@@ -43,22 +41,35 @@ export class MuliaManualComponent implements OnInit {
     this.onListVendor();
     this.onListDenom();
     this.namaProduct
+    LM.splice(0)
+    this.totalCart
+    
+    
   }
   static key = EMenuID.BUYBACKMANUAL
+  @Output() totalIsiCartEmasBatangan = new EventEmitter();
 
+  // @Output() hargaTotalEmasBatangan = new EventEmitter();
+ 
+  hargaTotalEmasBatangan = 0
   vendors = null;
   jenis = null;
   denoms = null;
   jumlahLM = 0
-  total = 0
+  totalCart = 0
   muliaCategory = "?product-category.code=c05";
   placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
   datamulias= null;
+
+  mulia:any;
+  
  
   searchModel : any = {vendors:"pilih", denoms: "pilih"};
   unitDetail : any
   userDetail : any
   namaProduct = "LM Non Pegadaian"
+
+  // hargaTotalEmasBatangan : any = 0
 
   onListVendor(){
     this.vendorService.list("?code=antamrtr").subscribe((response: any) => {
@@ -100,51 +111,75 @@ export class MuliaManualComponent implements OnInit {
 
   onCariMulia(data){
     this.loadingDg = true;
-    // let vendor = data.input_vendor_mulia;
-    // let denom = data.input_denom_mulia;
-    let vendor : any;
-    let denom : any;
-    let harga : any;
-    
-    
-
-    let cariMulia : any[] = [];
+    let vendorCode : any;
+    let vendorName : any;
+    let denomCode : any;
+    let denomName: any;
+    let prmJual : any;
+  
     this.hargaBaku = 0
 
     this.vendorService.get("?code="+data.input_vendor_mulia).subscribe((response: any) => {
-        vendor = response.code
+      vendorCode = response.code;
+      vendorName = response.name;
         this.denomService.get("?code="+data.input_denom_mulia).subscribe((response: any) => {
-          denom = response.code
-          const urlVendor = "vendor.code="+vendor;
-          const urlDenom = "product-denom.code="+denom;
+          denomCode = response.code
+          denomName = response.name
+          const urlVendor = "vendor.code="+vendorCode;
           const urlJenisbarang = "jenis_barang=Buyback"
 
         this.prmJualService.get(this.muliaCategory+"&"+urlVendor+"&"+urlJenisbarang).subscribe((Jualresponse: any) => {
-          harga = Jualresponse
-          this.datamulias = [{vendor : vendor, denom: denom, harga : 10000}]
-          this.hargaBaku = 0
+          prmJual = Jualresponse.harga
+          for (let index = 0; index < prmJual.length; index++) {
+            if (prmJual[index]["product-denom"].code == denomCode) {
+              this.hargaBaku = prmJual[index].harga_baku
+            }
+          }
+          this.detail = {}
+          this.datamulias = [{vendor : vendorName, denom: denomName, harga : this.hargaBaku}]
+          this.loadingDg = false;
         })
       })
     })
-
-   
-    
-    
-
-
-    console.debug(vendor , "vendor")
-    console.debug(denom , "denom")
-    console.debug(this.datamulias , "denom")
-
-    this.loadingDg = false;
-    
       
   }
 
 
-  addCart(vendorLM: any, denomLM: any, qtyLM: any, harga: any){
+  addCart(vendorLM: any, denomLM: any, harga: any){
+    for (let index = 0; index < this.jumlahLM ; index++) {
+      this.cartList.push({
+          'vendor' : vendorLM,
+          'denom' : denomLM,
+          'hargaBB' : harga   
+      })
+    }
+    
+      this.totalCart = this.cartList.length
     
     
-    this.total = Number(this.total) + Number(this.jumlahLM)
+    this.jumlahLM = 0
+    this.refresh("p")
+    // this.totalIsiCartEmasBatangan.emit(this.cartList.length)
+    console.debug(this.totalCart, "totalcart")
+    
+  }
+
+  clearEmasBatangan(data: any){
+    this.totalCart = data.length;
+    this.hargaTotalEmasBatangan = data.harga;
+  }
+
+  totallogamMulia(isi: any){
+    this.mulia = isi;
+  }
+
+  refresh(sum: any){
+     if (sum == "p" && this.cartList.length != 0) {
+      this.sumHarga = 0;
+      for (const i of this.cartList) {
+        this.sumHarga += i.hargaBB;
+      }
+     }
+     this.hargaTotalEmasBatangan = this.sumHarga
   }
 }
