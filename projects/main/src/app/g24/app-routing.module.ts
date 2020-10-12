@@ -62,6 +62,7 @@ export class AppRoutingModule
     ModuleLoader.register('x1', () => import('./pages/inventory-addition/inventory-addition.module').then(m => m.InventoryAdditionModule))
     ModuleLoader.register('x2', () => import('./pages/inventory-management/inventory-management.module').then(m => m.InventoryManagementModule))
     ModuleLoader.register('pj', () => import('./pages/penjualan/penjualan.module').then(m => m.PenjualanModule))
+    ModuleLoader.register('pjk', () => import('./pages/penjualan-korporasi/penjualan-korporasi.module').then(m => m.PenjualanKorporasiModule))
     ModuleLoader.register('lp', () => import('./pages/laporan/laporan.module').then(m => m.LaporanModule))  
     ModuleLoader.register('rl', () => import('./pages/security/security.module').then(m => m.SecurityModule))
     ModuleLoader.register('pr', () => import('./pages/parameter/parameter.module').then(m => m.ParameterModule))
