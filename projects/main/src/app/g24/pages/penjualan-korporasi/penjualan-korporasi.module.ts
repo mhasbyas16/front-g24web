@@ -6,10 +6,11 @@ import { PenjualanKorporasiRoutingModule } from './penjualan-korporasi-routing.m
 import { PenjualanKorporasiComponent } from './penjualan-korporasi/penjualan-korporasi.component';
 import { MuliaKorporasiComponent } from './penjualan-korporasi/mulia/mulia-korporasi.component';
 import { NavModule } from '../../nav/nav.module';
+import { ListPenjualanKorporasiComponent } from './list-penjualan-korporasi/list-penjualan-korporasi.component';
 
 
 @NgModule({
-  declarations: [PenjualanKorporasiComponent, MuliaKorporasiComponent ],
+  declarations: [PenjualanKorporasiComponent, MuliaKorporasiComponent, ListPenjualanKorporasiComponent ],
   imports: [
     NavModule,
     CommonModule,

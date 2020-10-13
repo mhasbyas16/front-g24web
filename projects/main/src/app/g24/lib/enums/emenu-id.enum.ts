@@ -109,7 +109,6 @@ export enum EMenuID {
     DISTRO              = '10001',
     ROLE                = '10002',
     LAPORAN             = '10003',
-    KORPORASI           = '10004',
     LAPORAN_BUYBACK     = '10009',
     // promosi
     PENGATURAN_PROMO = '10004',
@@ -126,4 +125,8 @@ export enum EMenuID {
     //parameter
     PARAMETER             = '20000',
     PRM_GALLERY         = '20001',
+
+    //korporasi
+    KORPORASI           = '30001',
+    LIST_KORPORASI = '30002',
  }

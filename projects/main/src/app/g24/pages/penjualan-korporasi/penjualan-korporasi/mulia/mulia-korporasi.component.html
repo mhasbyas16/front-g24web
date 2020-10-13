@@ -33,6 +33,14 @@
             </clr-select-container>
         </div>
         <div class="clr-col-3">
+            <clr-select-container class="clr-form-control">
+                <label class="clr-control-label">Unit</label>
+                <select [(ngModel)]="searchModel.distro" clrSelect name="input_distro_mulia" ngModel>
+                    <option *ngFor="let item of distroList" value="{{item.code}}">{{item.nama}}</option>
+                </select>
+            </clr-select-container>
+        </div>
+        <div class="clr-col-3">
             <div class="clr-form-control">
                 <div class="clr-control-container" >
                     <button class="btn btn-info-outline btn-sm float-right">Cari</button>

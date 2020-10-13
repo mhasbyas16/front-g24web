@@ -13,6 +13,7 @@ import { PrmMarginService } from '../../../services/parameter/prm-margin.service
 import { TransactionBookingService } from '../../../services/transaction/transaction-booking.service';
 import { TransactionFlagService } from '../../../services/transaction/transaction-flag.service';
 import { ProductService } from '../../../services/product/product.service';
+import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 @Component({
   selector: 'app-penjualan-korporasi',
   templateUrl: './penjualan-korporasi.component.html',
@@ -34,6 +35,7 @@ export class PenjualanKorporasiComponent implements OnInit {
   productData:any;
   prmMargin:any;
   dataMulia:any;
+  idtransaksi:any;
 
   muliaCategory = "?_hash=1&product-category.code=c05";
   channel = "channel.code=ch02";
@@ -47,7 +49,8 @@ export class PenjualanKorporasiComponent implements OnInit {
     private transactionBookingService:TransactionBookingService,
     private toastrService:ToastrService,
     private transactionFlagService:TransactionFlagService,
-    private productService:ProductService
+    private productService:ProductService,
+    private sessionService:SessionService
   ) { }
 
   ngOnInit(): void {
@@ -131,6 +134,54 @@ export class PenjualanKorporasiComponent implements OnInit {
     console.debug(val, "HASIL EMMMMMMIT")
   }
 
+  // idTransaksi() {
+  //   this.idtransaksi = null;
+  //   let inc = null;
+  //   let d1 = this.datePipe.transform(Date.now(), '01/01/yyyy');
+  //   let d2 = this.datePipe.transform(Date.now(), '12/31/yyyy');
+  //   let d3 = this.datePipe.transform(Date.now(), 'yy');
+  //   let unit = this.sessionService.getUnit();
+
+  //   let params = "?_between=makerDate&_start=" + d1 + "&_end=" + d2;
+
+  //   this.transactionService.list(params + '&_sortby=_id:0&_rows=1').subscribe((response: any) => {
+  //     let count = null;
+  //     if (response["0"]["idAi"] == null) {
+  //       count = JSON.stringify(1);
+  //     }else{
+  //       count = JSON.stringify(Number(response["0"]["idAi"]) + 1);
+  //     }
+  //     switch (count.length) {
+  //       case 1:
+  //         inc = "000000" + count;
+  //         break;
+  //       case 2:
+  //         inc = "00000" + count;
+  //         break;
+  //       case 3:
+  //         inc = "0000" + count;
+  //         break;
+  //       case 4:
+  //         inc = "000" + count;
+  //         break;
+  //       case 5:
+  //         inc = "00" + count;
+  //         break;
+  //       case 6:
+  //         inc = "0" + count;
+  //         break;
+  //       case 7:
+  //         inc = count;
+  //         break;
+  //       default:
+  //         break;
+  //     }
+  //     this.idtransaksi = unit.code + "06" + d3 + inc;
+  //     this.formData.patchValue({ idTransaction: this.idtransaksi, idAi: Number(response["0"]["idAi"]) + 1 });
+  //   });
+
+  // }
+
   storeTransaction(){
     if (!this.formData.valid || !this.pic.valid) {
       this.toastrService.error("Form Not Valid !!");
@@ -144,12 +195,12 @@ export class PenjualanKorporasiComponent implements OnInit {
     delete form.name;
     let Pic = this.pic.getRawValue();
 
-    let data = Object.assign(form,{'pic': btoa(JSON.stringify(Pic))}, {product:btoa(JSON.stringify(this.productData))});
+    let data = Object.assign(form,{'pic': btoa(JSON.stringify(Pic))}, {product:btoa(JSON.stringify(this.productData))}, {totalHarga:this.hargaLogamMulia});
 
     // this.transactionFlagService.batchUpdateOne(this.productData);
 
-    this.transactionBookingService.add(data).subscribe((response)=>{
-      if (response == false) {
+      this.transactionBookingService.add(data).subscribe((response)=>{
+        if (response == false) {
         this.toastrService.error("Add Data Failed !!");
         return;
       }

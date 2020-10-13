@@ -143,6 +143,7 @@
                                 <clr-dg-column>Vendor</clr-dg-column>
                                 <clr-dg-column>Denom</clr-dg-column>
                                 <clr-dg-column>Tipe Barang</clr-dg-column>
+                                <clr-dg-column>Unit</clr-dg-column>
                                 <clr-dg-column>Harga</clr-dg-column>
                                 
                                 <clr-dg-row *clrDgItems="let d of productData" [clrDgItem]="d">
@@ -152,6 +153,7 @@
                                     <clr-dg-cell>{{d.vendor}}</clr-dg-cell>
                                     <clr-dg-cell>{{d.denom}}</clr-dg-cell>
                                     <clr-dg-cell>{{d.flag | titlecase }} </clr-dg-cell>
+                                    <clr-dg-cell>{{d.detail.unit.nama}} </clr-dg-cell>
                                     <clr-dg-cell >{{d.harga | number}} </clr-dg-cell>
                                 </clr-dg-row>
                                 <clr-dg-footer>
