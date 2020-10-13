@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { InisiasiService } from 'projects/main/src/app/g24/services/stock/inisiasi.service';
 import { ToastrService } from 'ngx-toastr';
 import { FlagProduct, TipeStock, LocationProduct } from 'projects/main/src/app/g24/lib/enum/flag-product';
@@ -9,6 +9,8 @@ import { DataTypeUtil } from 'projects/main/src/app/g24/lib/helper/data-type-uti
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { IDetailCallbackListener } from 'projects/main/src/app/g24/lib/base/idetail-callback-listener';
 import { PaymentType } from 'projects/main/src/app/g24/lib/enums/payment-type';
+import { LoadingSpinnerComponent } from 'projects/main/src/app/g24/nav/modal/loading-spinner/loading-spinner.component';
+import { ServerDateTimeService } from 'projects/main/src/app/g24/services/system/server-date-time.service';
 
 /**
  * Penerimaan gift baru isi ke stock/product
@@ -24,15 +26,22 @@ export class DetailItemPenerimaanDinarComponent implements OnInit {
   (
     private toastr : ToastrService,
     private session : SessionService,
+    private dateService : ServerDateTimeService,
 
     private inisiasiService : InisiasiService,
     private productService : ProductService
   ) { }
 
+  @ViewChild('spinner', {static: false}) spinner : LoadingSpinnerComponent;
+
   parentListener : IDetailCallbackListener;
   
   user : any = this.session.getUser();
   unit : any = this.session.getUnit();
+  date : string = "";
+  time : string = "";
+
+  errorHappened : boolean = false;
 
   EPriviledge = EPriviledge;
 
@@ -41,6 +50,32 @@ export class DetailItemPenerimaanDinarComponent implements OnInit {
   LoadAllParameter()
   {
 
+  }
+  
+  async LoadDate()
+  {
+    let resp;
+    let msg = "";
+    try{
+      resp = await this.dateService.task("").toPromise();
+    } catch (err) {
+      resp = false;
+      msg = err.message;
+    }
+
+    if(resp == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.dateService.message();
+      this.doReset();
+      this.Close();
+      this.toastr.info("Gagal mengambil tanggal server. Error: " + msg);
+      return;
+    }
+
+    let dtarr = resp.split("T");
+    this.date = dtarr[0];
+    this.time = dtarr[0].split("Z")[0];
   }
 
   isOpened : boolean = false;
@@ -88,6 +123,7 @@ export class DetailItemPenerimaanDinarComponent implements OnInit {
 
   public setId(id : string)
   {
+    this.spinner.Open();
     if(id == null || id == "")
     {
       this.toastr.error("No ID is set.");
@@ -97,6 +133,7 @@ export class DetailItemPenerimaanDinarComponent implements OnInit {
 
     this.inisiasiService.list("?_or=product-category.code=c06&no_po="+id).subscribe(output => 
     {
+      this.spinner.Close();
       if(output != false)
       {
         if(output.length > 1)
@@ -415,6 +452,7 @@ export class DetailItemPenerimaanDinarComponent implements OnInit {
 
   async doTerima()
   {
+    this.spinner.Open();
     if(this.mode == EPriviledge.READ)
     {
       this.toastr.info("Mode 'READ' only.");
@@ -431,45 +469,11 @@ export class DetailItemPenerimaanDinarComponent implements OnInit {
       return;
     }
 
-    this.inisiasi.update_date = new Date().toISOString().split("T")[0];
-    this.inisiasi.update_by = this.user.username;
-    this.inisiasi['tgl_terima'] = this.inisiasi.update_date;
-    this.inisiasi.terima_by = this.user.username;
-    let items = this.inisiasi.items;
-    let productNoId = [];
-    console.log(items);
-    
-    for(let i = 0; i < items.length; i++)
-    {
-      let products = items[i].products;
-      productNoId.push(...products);
-    }
-
-    let itemProduct : Map<string, number> = new Map<string,number>();
-    
-    console.log(productNoId);
-
-    for(let i =0; i < productNoId.length; i++)
-    {
-      let product = productNoId[i];
-      let fail = {itemIndex : product.no_item_po, productIndex: product.no_index_products}
-      delete product._id;
-      DataTypeUtil.Encode(product);
-
-      itemProduct.set(fail.itemIndex + "," + fail.productIndex, product);
-
-      let result = await this.productService.add(product).toPromise();
-      if(result == false)
-      {
-        this.toastr.error("Barang nomor: " + fail.productIndex + " dengan nomor Bulk: " + fail.itemIndex + " gagal masuk.");
-        continue;
-      } else {
-        let product = itemProduct.get(fail.itemIndex + "," + fail.productIndex);
-        Object.assign(product, result);
-        itemProduct.set(fail.itemIndex + "," + fail.productIndex, result);
-        console.log(result);
-      }
-    }
+    this.inisiasi.update_time = this.time;
+    this.inisiasi.update_date = this.date;
+    this.inisiasi.update_by = this.user;
+    this.inisiasi['tgl_terima'] = this.date;
+    this.inisiasi.terima_by = this.user;
 
     this.inisiasi.order_status = OrderStatus.TERIMA_FULL.code;
 
@@ -478,10 +482,24 @@ export class DetailItemPenerimaanDinarComponent implements OnInit {
     Object.assign(tempInisiasi, this.inisiasi);
     DataTypeUtil.Encode(tempInisiasi);
 
-    let inisiasi = await this.inisiasiService.update(tempInisiasi).toPromise();
+    let msg = "";
+    let inisiasi : any = false;
+    try
+    {
+      inisiasi = await this.inisiasiService.TerimaDinar(tempInisiasi).toPromise();
+    } catch (err) {
+      msg = err.message;
+      inisiasi = false;
+    }
+
+    this.spinner.Close();
     if(inisiasi == false)
     {
-      this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk.");
+      if(msg == "") msg = this.inisiasiService.message();
+      this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk. Error : " + msg, "Error", {disableTimeOut : true, closeButton : true});
+      this.parentListener.onAfterUpdate(this.inisiasi._id);
+      this.doReset();
+      this.Close();
       return;
     } else {
       Object.assign(this.inisiasi, tempInisiasi);
@@ -491,27 +509,6 @@ export class DetailItemPenerimaanDinarComponent implements OnInit {
       this.doReset();
       this.Close();
     }
-
-    // HERE BATCH_ADD
-    // let counter : number = this.inisiasi.total_piece;
-    // let enc = {batch_counter : counter};
-    // for(let i = 0; i < counter; i++)
-    // {
-    //   delete productNoId[i]._id;
-    //   enc[i+1] = productNoId[i];
-    // }
-
-    // DataTypeUtil.Encode(enc);
-    // console.log('enc', enc);
-
-    // let result = await this.productService.batchAdd(enc).toPromise();
-    // console.log(result);
-    
-    // for(let i = 0; i < result.length; i++)
-    // {
-    //   let product = result[i];
-      
-    // }
   }
 
   async doTolak(){

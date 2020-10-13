@@ -16,6 +16,9 @@ import { OrdersModule } from '../../../../orders/orders.module';
 import { DetailPenerimaanPerhiasanComponent } from '../detail-penerimaan-perhiasan.component';
 import { PaymentType } from 'projects/main/src/app/g24/lib/enums/payment-type';
 import { JurnalInisiasiService } from 'projects/main/src/app/g24/services/keuangan/jurnal/stock/jurnal-inisiasi.service';
+import { ViewChild } from '@angular/core';
+import { LoadingSpinnerComponent } from 'projects/main/src/app/g24/nav/modal/loading-spinner/loading-spinner.component';
+import { ServerDateTimeService } from 'projects/main/src/app/g24/services/system/server-date-time.service';
 
 /**
  * Penerimaan perhiasan baru isi ke stock/product
@@ -32,15 +35,18 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     private toastr : ToastrService,
     private session : SessionService,
     private jurnalInisiasi : JurnalInisiasiService,
+    private dateService : ServerDateTimeService,
 
     private inisiasiService : InisiasiService,
-    private kadarService : ProductPurityService,
+    // private kadarService : ProductPurityService,
     private jenisService : ProductJenisService,
-    private goldColorService : ProductGoldColorService,
+    // private goldColorService : ProductGoldColorService,
     private productService : ProductService
   ) { }
 
   parentListener : IDetailCallbackListener;
+  
+  @ViewChild('spinner', {static: false}) spinner : LoadingSpinnerComponent;
   
   user : any = this.session.getUser();
   unit : any = this.session.getUnit();
@@ -48,10 +54,34 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
   EPriviledge = EPriviledge;
 
   jeniss : any[] = [];
+  
+  date : string = "";
+  time : string = "";
+
+  errorHappened : boolean = false;
 
   LoadAllParameter()
   {
     this.LoadJenis();
+  }
+
+  async LoadDate()
+  {
+    let resp : any = false;
+    try {
+      resp = await this.dateService.task("").toPromise();
+    } catch(err) {
+      resp = false;
+    }
+    if(resp == false)
+    {
+      this.errorHappened = true;
+      return;
+    }
+
+    let dtarr = resp.split("T");
+    this.date = dtarr[0];
+    this.time = dtarr[0].split("Z")[0];
   }
 
   async LoadJenis()
@@ -203,7 +233,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
       "product-jenis" : null, "product-category" : null, "product-purity" : null, "product-gold-color" : null,
       berat : 0.00, baku_tukar : 0.0, gram_tukar : 0, ongkos : 0.0, unit : null,
       tipe_stock : "stock", vendor : null, flag : "stock", location : "",
-      no_po : "", no_item_po : 0, no_index_products : 0,
+      no_po : "", no_item_po : 0, no_index_products : 0, isTerima : false,
       hpp_inisiasi : 0, hpp : 0
 
     }
@@ -302,6 +332,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     def.tipe_stock = TipeStock.STOCK.code;
     def.location = LocationProduct.PUSAT.code;
     def.no_item_po = item.products.length;
+    def.isTerima = true;
 
     if(!item['products'])
     {
@@ -506,6 +537,12 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
       //   return false;
       // }
 
+      if(item.berat == null || item.berat == 0)
+      {
+        this.toastr.warning("'Berat' barang pada Bulk Item nomor :" + i + " belum diisi.");
+        return false;
+      }
+
       if(item.jenis == null || item.jenis == "")
       {
         this.toastr.warning("'Jenis' barang pada Bulk Item nomor :" + i + " belum diisi.");
@@ -544,77 +581,50 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
 
   async doTerima()
   {
+    this.spinner.Open();
     if(this.mode == EPriviledge.READ)
     {
       this.toastr.info("Mode 'READ' only.");
+      this.spinner.Close();
       return;
     }
 
     if(!this.validateItems())
     {
+      this.spinner.Close();
       return;
     }
 
     if(!this.validateInisiasi())
     {
+      this.spinner.Close();
       return;
     }
 
     this.inisiasi.order_status = OrderStatus.TERIMA_FULL.code;
-    this.inisiasi.update_date = new Date().toISOString().split("T")[0];
-    this.inisiasi.update_by = this.user.username;
-    this.inisiasi['tgl_terima'] = this.inisiasi.update_date;
-    this.inisiasi.terima_by = this.user.username;
-    let items = this.inisiasi.items;
-    let productNoId = [];
-    let ids = [];
-    console.log(items);
-    
-    for(let i = 0; i < items.length; i++)
-    {
-      let products = items[i].products;
-      productNoId.push(...products);
-    }
-
-    let itemProduct : Map<string, number> = new Map<string,number>();
-    
-    console.log(productNoId);
-
-    let failedIndex : any[] = [];
-    let someFailed : boolean = false;
-    for(let i =0; i < productNoId.length; i++)
-    {
-      let product = productNoId[i];
-      let fail = {itemIndex : product.no_item_po, productIndex: product.no_index_products}
-      delete product._id;
-      DataTypeUtil.Encode(product);
-
-      itemProduct.set(fail.itemIndex + "," + fail.productIndex, product);
-
-      let result = await this.productService.add(product).toPromise();
-      if(result == false)
-      {
-        this.toastr.error("Barang nomor: " + fail.productIndex + " dengan nomor Bulk: " + fail.itemIndex + " gagal masuk.");
-        continue;
-      } else {
-        let product = itemProduct.get(fail.itemIndex + "," + fail.productIndex);
-        Object.assign(product, result);
-        itemProduct.set(fail.itemIndex + "," + fail.productIndex, result);
-        console.log(result);
-      }
-    }
-
-    
-
-    console.log(this.inisiasi);
+    this.inisiasi.update_date = this.date;
+    this.inisiasi.update_by = this.user;
+    this.inisiasi['tgl_terima'] = this.date;
+    this.inisiasi.terima_by = this.user;
     let tempInisiasi = {}
     Object.assign(tempInisiasi, this.inisiasi);
     DataTypeUtil.Encode(tempInisiasi);
 
-    let inisiasi = await this.inisiasiService.update(tempInisiasi).toPromise();
+    let msg = "";
+    let inisiasi :any = false;
+    try {
+      inisiasi = await this.inisiasiService.TerimaPerhiasan(tempInisiasi).toPromise();
+    } catch(err) {
+      inisiasi = false;
+      msg = err.message;
+    }
+
+    this.spinner.Close();
     if(inisiasi == false)
     {
-      this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk.");
+      this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk. Error: " + msg, "Error", {closeButton : true, disableTimeOut : true});
+      this.doReset();
+      this.Close();
       return;
     } else {
       Object.assign(this.inisiasi, tempInisiasi);

@@ -71,13 +71,13 @@
                     <div class="clr-col-6">
                         <b>
                             <span>Harga Baku &#58; </span>
-                            <u><span>{{inisiasi?.harga_baku}}</span></u>
+                            <u><span>{{inisiasi?.harga_baku | mask : 'separator' : ','}}</span></u>
                         </b>
                     </div>
                     <div class="clr-col-6">
                         <b>
                             <span>Harga Pajak &#58; </span>
-                            <u><span>{{ inisiasi?.total_pajak}}</span></u>
+                            <u><span>{{ inisiasi?.total_pajak | mask : 'separator' : ','}}</span></u>
                         </b>
                     </div>
                 </div>
@@ -91,7 +91,7 @@
                     <div class="clr-col-6">
                         <b>
                             <span>Total Pieces &#58; </span>
-                            <u><span>{{ inisiasi?.total_piece}}</span></u>
+                            <u><span>{{ inisiasi?.total_piece | mask : 'separator' : ','}}</span></u>
                         </b>
                     </div>
                 </div>
@@ -131,30 +131,30 @@
                 <clr-dg-row *clrDgItems="let data of (getItemsOfInisiasi() || []); let itemsIndex = index;" [clrDgItem]="data">
                     <clr-dg-cell>{{data?.sku}} </clr-dg-cell>
                     <clr-dg-cell>{{GetDisplayValue(data['product-denom'])}}</clr-dg-cell>
-                    <clr-dg-cell>{{data?.pieces}}</clr-dg-cell>
+                    <clr-dg-cell>{{data?.pieces | mask : 'separator' : ','}}</clr-dg-cell>
                     <clr-dg-cell>{{data?.total_berat}}</clr-dg-cell>
-                    <clr-dg-cell>{{data?.harga_piece}}</clr-dg-cell>
-                    <clr-dg-cell>{{data?.total_harga}}</clr-dg-cell>
-                    <clr-dg-cell>{{data?.pajak}}</clr-dg-cell>
+                    <clr-dg-cell>{{data?.harga_piece | mask : 'separator' : ','}}</clr-dg-cell>
+                    <clr-dg-cell>{{data?.total_harga | mask : 'separator' : ','}}</clr-dg-cell>
+                    <clr-dg-cell>{{data?.pajak | mask : 'separator' : ','}}</clr-dg-cell>
                 </clr-dg-row>
     
                 
                 <clr-dg-footer>
                     <div class="clr-row">
                         <div class="clr-col-1">Total Berat: </div>
-                        <div class="clr-col-2"><p>{{getBeratFromItems()}} gram.</p></div>
+                        <div class="clr-col-2"><p>{{getBeratFromItems() | mask : 'separator' : ','}} gram.</p></div>
                         <div class="clr-col-1">Total Pajak: </div>
-                        <div class="clr-col-2"><p>Rp<span>{{getPajakFromItems()}}</span></p></div>
+                        <div class="clr-col-2"><p>Rp<span>{{getPajakFromItems() | mask : 'separator' : ','}}</span></p></div>
                         <div class="clr-col-1">Total DPP: </div>
-                        <div class="clr-col-2"><p>Rp <span>{{totalDPP()}}</span>.</p></div>
+                        <div class="clr-col-2"><p>Rp <span>{{totalDPP() | mask : 'separator' : ','}}</span>.</p></div>
                         <div class="clr-col-1">Total Harga: </div>
-                        <div class="clr-col-2"><p>Rp.<span>{{inisiasi?.total_harga}}</span></p></div>
+                        <div class="clr-col-2"><p>Rp.<span>{{inisiasi?.total_harga | mask : 'separator' : ','}}</span></p></div>
                     </div>
                     <div class="clr-row">
                         <div class="clr-col-1">Total Pieces: </div>
-                        <div class="clr-col-2"><p>{{getPiecesFromItems()}}.</p></div>
+                        <div class="clr-col-2"><p>{{getPiecesFromItems() | mask : 'separator' : ','}}.</p></div>
                         <div class="clr-col-1">Total Ongkos: </div>
-                        <div class="clr-col-2"><p><span [ngStyle]="{'float' : 'left'}">Rp.</span><span>{{getOngkosFromItems()}}.</span></p></div>
+                        <div class="clr-col-2"><p><span [ngStyle]="{'float' : 'left'}">Rp.</span><span>{{getOngkosFromItems() | mask : 'separator' : ','}}.</span></p></div>
                         <div class="clr-col-6"></div>
                     </div>
                     <div>
@@ -173,3 +173,7 @@
         <button class="btn btn-primary" [disabled]="mode == EPriviledge.READ" (click)="doSave()">Simpan</button>
     </div>
 </clr-modal>
+
+<loading-spinner #spinner>
+
+</loading-spinner>
