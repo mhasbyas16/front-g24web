@@ -149,30 +149,23 @@
                     <div class="clr-row">
                         <div class="clr-col-1">Total Berat: </div>
                         <div class="clr-col-2"><p>{{getBeratFromItems() | mask : 'separator' : ','}} gram.</p></div>
-                        <div class="clr-col-1">Total DPP: </div>
-                        <div class="clr-col-2"><p>Rp. <span></span>{{totalDPP() | mask : 'separator' : ','}}</p></div>
+                        <div class="clr-col-1">Total Gram Tukar: </div>
+                        <div class="clr-col-2"><p>{{getGramTukarFromItems()}} gram.</p></div>
                         <div class="clr-col-1">Total Pieces: </div>
                         <div class="clr-col-2"><p>{{getPiecesFromItems() | mask : 'separator' : ','}} piece.</p></div>
                         <div class="clr-col-1">Total Baku Tukar: </div>
-                        <div class="clr-col-2"><p>{{getBakuTukarFromItems()}}.</p></div>
-                        <div class="clr-col-1">Total Gram Tukar: </div>
-                        <div class="clr-col-2"><p>{{getGramTukarFromItems()}} gram.</p></div>
+                        <div class="clr-col-2"><p>{{inisiasi?.total_baku_tukar}}.</p></div>
+                        <div class="clr-col-1">Total Pajak: </div>
+                        <div class="clr-col-2"><p><span [ngStyle]="{'float' : 'left'}">Rp.</span><span>{{inisiasi?.total_pajak | mask : 'separator' : ','}}.</span></p></div>
                     </div>
                     <div class="clr-row">
-                        <div class="clr-col-1">Total Ongkos: </div>
-                        <div class="clr-col-2"><p>Rp. <span></span>{{getOngkosFromItems() | mask : 'separator' : ','}}.</p></div>
-                        <div class="clr-col-1">Total Pajak: </div>
-                        <div class="clr-col-2"><p><span [ngStyle]="{'float' : 'left'}">Rp.</span><span>{{getPajakFromItems() | mask : 'separator' : ','}}.</span></p></div>
+                        <div class="clr-col-1">Total DPP: </div>
+                        <div class="clr-col-2"><p><span [ngStyle]="{'float' : 'left'}">Rp.</span><span>{{inisiasi?.total_dpp | mask : 'separator' : ','}}.</span></p></div>
                         <div class="clr-col-6"></div>
                     </div>
                     <div class="clr-row">
                         <div class="clr-col-1">Total Harga : </div>
-                        <div class="clr-col-2">
-                            <p><span>Rp.</span>
-                                <span>{{hitungTotalHarga() | mask : 'separator' : ','}}</span>
-                                <!-- <span><input readonly min=0 class="clr-input" type="number" [(ngModel)]="input.total_harga" [ngModelOptions]="{standalone : true}"></span> -->
-                            </p>
-                        </div>
+                        <div class="clr-col-2"><p><span [ngStyle]="{'float' : 'left'}">Rp.</span><span>{{inisiasi?.total_harga | mask : 'separator' : ','}}.</span></p></div>
                     </div>
                     <div>
                         <clr-dg-pagination #pagination [clrDgPageSize]="10">

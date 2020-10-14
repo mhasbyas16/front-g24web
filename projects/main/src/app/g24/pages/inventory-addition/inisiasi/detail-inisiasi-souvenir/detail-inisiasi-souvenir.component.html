@@ -341,23 +341,6 @@
                     </div>
                 </div>
             </div>
-        </div><div class="clr-row">
-            <div class="clr-col-6">
-                <div class="clr-form-control">
-                    <label class="clr-control-label" style="padding-left: 10px">Harga/Piece(Rp.)</label>
-                    <div class="clr-control-container">
-                        <input mask="separator" thousandSeparator="," readonly [(ngModel)]="Selected['harga_piece']" (ngModelChange)="onHargaPieceChanged()" min="0" class="clr-input" type="text" name="ongkos" placeholder="Rp. 5000.00" />
-                    </div>
-                </div>
-            </div>
-            <div class="clr-col-6">
-                <div class="clr-form-control">
-                    <label class="clr-control-label" style="padding-left: 10px">Total Harga(Rp.)</label>
-                    <div class="clr-control-container">
-                        <input mask="separator" thousandSeparator="," readonly [ngModel]="Selected['total_harga']" min="0" class="clr-input" type="text" name="pajak" placeholder="Rp. 5000.00" />
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="clr-row">
             <div class="clr-col-6">
@@ -373,6 +356,24 @@
                     <label class="clr-control-label" style="padding-left: 10px">Total Pajak</label>
                     <div class="clr-control-container">
                         <input mask="separator" thousandSeparator="," readonly [ngModel]="Selected['pajak']" min="0" class="clr-input" type="text" name="pajak" placeholder="Rp. 5000.00" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clr-row">
+            <div class="clr-col-6">
+                <div class="clr-form-control">
+                    <label class="clr-control-label" style="padding-left: 10px">Harga/Piece(Rp.)</label>
+                    <div class="clr-control-container">
+                        <input mask="separator" thousandSeparator="," readonly [(ngModel)]="Selected['harga_piece']" (ngModelChange)="onHargaPieceChanged()" min="0" class="clr-input" type="text" name="ongkos" placeholder="Rp. 5000.00" />
+                    </div>
+                </div>
+            </div>
+            <div class="clr-col-6">
+                <div class="clr-form-control">
+                    <label class="clr-control-label" style="padding-left: 10px">Total Harga(Rp.)</label>
+                    <div class="clr-control-container">
+                        <input mask="separator" thousandSeparator="," readonly [ngModel]="Selected['total_harga']" min="0" class="clr-input" type="text" name="pajak" placeholder="Rp. 5000.00" />
                     </div>
                 </div>
             </div>
