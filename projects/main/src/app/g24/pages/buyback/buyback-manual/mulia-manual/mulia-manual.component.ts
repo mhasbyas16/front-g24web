@@ -7,17 +7,22 @@ import { VendorService } from '../../../../services/vendor.service';
 import { ProductDenomService } from '../../../../services/product/product-denom.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { ToastrService } from 'ngx-toastr';
-
+import { ProductCategoryService } from '../../../../services/product/product-category.service';
+import { BuybackAcceptParameterService } from '../../../../services/buyback/buyback-accept-parameter.service';
+import { BuybackTransactionService } from '../../../../services/buyback/buyback-transaction.service';
+import { DatePipe } from "@angular/common";
 
 // prm
 import { PrmJualService } from '../../../../services/parameter/prm-jual.service';
 
 import { LM } from '../../../../sample/cart-buyback-manual-lm';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-mulia-manual',
   templateUrl: './mulia-manual.component.html',
-  styleUrls: ['./mulia-manual.component.scss']
+  styleUrls: ['./mulia-manual.component.scss'],
+  providers:[DatePipe],
 })
 
 @DContent(MuliaManualComponent.key)
@@ -32,7 +37,12 @@ export class MuliaManualComponent implements OnInit {
     private vendorService: VendorService,
     private denomService: ProductDenomService,
     private sessionService: SessionService,
-    private prmJualService: PrmJualService
+    private prmJualService: PrmJualService, 
+    private productCategoryService : ProductCategoryService,
+    private buybackAcceptParameterService : BuybackAcceptParameterService,
+    private toastrService:ToastrService,
+    private buybackTransactionService : BuybackTransactionService,
+    private datePipe: DatePipe,
   ) { }
 
   ngOnInit(): void {
@@ -43,6 +53,7 @@ export class MuliaManualComponent implements OnInit {
     this.namaProduct
     LM.splice(0)
     this.totalCart
+    this.onGetParameterMax();
     
     
   }
@@ -60,6 +71,7 @@ export class MuliaManualComponent implements OnInit {
   muliaCategory = "?product-category.code=c05";
   placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
   datamulias= null;
+  maxGrDay : any;
 
   mulia:any;
   
@@ -98,6 +110,26 @@ export class MuliaManualComponent implements OnInit {
     });
   }
 
+  onGetParameterMax(){
+    let bulan= Number(this.datePipe.transform(Date.now(),'MM'));
+    let hari = this.datePipe.transform(Date.now(),'dd');
+    let tahun = this.datePipe.transform(Date.now(),'yyyy');
+    let fromPick = tahun+'-'+bulan+'-'+hari;
+    
+    this.buybackAcceptParameterService.get("?flag=active").subscribe((response: any) => {
+      let paramMaxGr = Number(response.maxPrm)
+      this.buybackTransactionService.list("?unit.code="+this.unitDetail.code+"&transaction-type.code=b02&approvalDate="+fromPick+"&flag=approved").subscribe((response: any) => {
+        let databuyback = response
+        let grTransaction = 0
+        for (let index = 0; index < databuyback.length; index++) {
+          for (let i = 0; i < databuyback[index].product.LM.length; i++) {
+            grTransaction =  grTransaction + Number(databuyback[index].product.LM[i].detail['product-denom'].value)
+          }
+        }
+        this.maxGrDay = paramMaxGr - grTransaction
+      })
+    })
+  }
   getUnit() {
     this.unitDetail = this.sessionService.getUnit();
     console.debug(this.unitDetail)
@@ -115,6 +147,7 @@ export class MuliaManualComponent implements OnInit {
     let vendorName : any;
     let denomCode : any;
     let denomName: any;
+    let denomValue: any;
     let prmJual : any;
   
     this.hargaBaku = 0
@@ -125,6 +158,7 @@ export class MuliaManualComponent implements OnInit {
         this.denomService.get("?code="+data.input_denom_mulia).subscribe((response: any) => {
           denomCode = response.code
           denomName = response.name
+          denomValue = response.value
           const urlVendor = "vendor.code="+vendorCode;
           const urlJenisbarang = "jenis_barang=Buyback"
 
@@ -136,7 +170,7 @@ export class MuliaManualComponent implements OnInit {
             }
           }
           this.detail = {}
-          this.datamulias = [{vendor : vendorName, denom: denomName, harga : this.hargaBaku}]
+          this.datamulias = [{vendor : vendorName, denom: denomName, harga : this.hargaBaku, denomCodes : denomCode, denomValues: denomValue}]
           this.loadingDg = false;
         })
       })
@@ -145,22 +179,56 @@ export class MuliaManualComponent implements OnInit {
   }
 
 
-  addCart(vendorLM: any, denomLM: any, harga: any){
-    for (let index = 0; index < this.jumlahLM ; index++) {
-      this.cartList.push({
-          'vendor' : vendorLM,
-          'denom' : denomLM,
-          'hargaBB' : harga   
+  addCart(vendorLM: any, denomLM: any, harga: any, denomCode:any, denomValue: any){
+    //detail
+    let detail : any
+    let productCategory : any;
+    let unit = this.sessionService.getUnit();
+    
+    let totalBeratLM = Number(denomValue) * Number(this.jumlahLM)
+
+    if (this.maxGrDay < totalBeratLM) {
+      this.toastrService.error("Terima LM Melebihi Maksimal Berat");
+    } else {
+      this.productCategoryService.get("?code=c05").subscribe((response: any) => {
+        productCategory = response
+        this.vendorService.get("?code=antamrtr").subscribe((response: any) => {
+          let vendorDet = response
+          this.denomService.get("?code="+denomCode).subscribe((response: any) => {
+            let denomDet = response
+              detail = {
+                "product-category" : productCategory,
+                "flag" : "stock",
+                "hpp" : harga,
+                "hpp_inisiasi" : harga,
+                "unit" : unit,
+                "vendor" : vendorDet,
+                "tipe_stock" : "stock",
+                "location" : "pusat",
+                "sku" : "1234",
+                "product-denom" : denomDet,
+                "status" : 1
+              }
+              console.debug(productCategory);
+              for (let index = 0; index < this.jumlahLM ; index++) {
+                this.cartList.push({
+                    'vendor' : vendorLM,
+                    'denom' : denomLM,
+                    'hargaBB' : harga,
+                    'detail' :  detail
+                })
+              }
+              
+              this.totalCart = this.cartList.length
+              this.maxGrDay = this.maxGrDay - totalBeratLM
+              console.debug(this.cartList , "cartlist")
+              this.jumlahLM = 0
+              this.refresh("p")
+          })
+        })
       })
     }
     
-      this.totalCart = this.cartList.length
-    
-    
-    this.jumlahLM = 0
-    this.refresh("p")
-    // this.totalIsiCartEmasBatangan.emit(this.cartList.length)
-    console.debug(this.totalCart, "totalcart")
     
   }
 
@@ -181,5 +249,9 @@ export class MuliaManualComponent implements OnInit {
       }
      }
      this.hargaTotalEmasBatangan = this.sumHarga
+  }
+
+  refreshTotalBerat(val){
+    this.maxGrDay = val
   }
 }

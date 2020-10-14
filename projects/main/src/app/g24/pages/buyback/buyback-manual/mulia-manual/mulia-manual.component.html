@@ -10,15 +10,15 @@
                 <div class="clr-row">
                     <div class="card" style="margin-top: 0;">
                         <div class="card-header">
-                            Logam Mulia Non Pegadaian
+                            Logam Mulia Non Pegadaian <span style="color: red;">(Max {{maxGrDay}}gr)</span> 
                             <div class="cart-style"> <!-- total isi cart              total harga cart                           -->
                                 <app-cart-buyback-manual-lm
                                 [totalCart]="totalCart"
+                                [maxGrDay] = "maxGrDay"
                                 (clearEmasBatangan)="clearEmasBatangan($event)"
                                 [hargaTotalEmasBatangan]="hargaTotalEmasBatangan"
+                                (cartTotalBerat)="refreshTotalBerat($event)"
                                 >
-
-
                                 </app-cart-buyback-manual-lm>
                             </div>
                         </div>
@@ -116,7 +116,7 @@
                                                 </clr-input-container>
                                             </div>
                                             <div class="clr-col">
-                                                <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.vendor, d.denom, d.harga)">
+                                                <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.vendor, d.denom, d.harga, d.denomCodes, d.denomValues)">
                                                     <clr-icon shape="plus"></clr-icon>
                                                 </button> 
                                             </div>

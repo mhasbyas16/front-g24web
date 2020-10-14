@@ -1,5 +1,5 @@
 import { Component, OnInit , Output, EventEmitter} from '@angular/core';
-import { PERHIASAN, LM , GS, BERLIAN, DINAR } from '../../../sample/cart-buyback';
+import { LM } from '../../../sample/cart-buyback-manual-lm';
 
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
@@ -18,16 +18,15 @@ import { TransactionTypeService } from '../../../services/transaction/transactio
 
 import { UserService } from 'projects/platform/src/app/services/security/user.service';
 import { ContentPage } from '../../../lib/helper/content-page';
-// import { promises } from 'fs';
+
 
 @Component({
-  selector: 'app-checkout-buyback',
-  templateUrl: './checkout-buyback.component.html',
-  styleUrls: ['./checkout-buyback.component.scss'],
+  selector: 'app-checkout-buyback-manual',
+  templateUrl: './checkout-buyback-manual.component.html',
+  styleUrls: ['./checkout-buyback-manual.component.scss'],
   providers: [DatePipe]
 })
-export class CheckoutBuybackComponent implements OnInit {
-
+export class CheckoutBuybackManualComponent implements OnInit {
   @Output() cartModal = new EventEmitter();
 
   formData: any;
@@ -35,11 +34,11 @@ export class CheckoutBuybackComponent implements OnInit {
   tf:boolean = false;
   
   //cart
-  perhiasan = PERHIASAN;
+  // perhiasan = PERHIASAN;
   emasBatangan = LM;
-  souvenir = GS;
-  berlian = BERLIAN;
-  dinar = DINAR;
+  // souvenir = GS;
+  // berlian = BERLIAN;
+  // dinar = DINAR;
 
   //cart list
   jumlahPerhiasan:any;
@@ -75,10 +74,9 @@ export class CheckoutBuybackComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
+    
     this.nikUser = this.sessionService.getUser();
     this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser)),"nik":this.nikUser["username"],"name":this.nikUser["name"],"username":this.nikUser["username"]} ;
-  
   }
 
   openModal(totalHarga: any){
@@ -101,30 +99,39 @@ export class CheckoutBuybackComponent implements OnInit {
       maker: new FormControl(this.nikUser["_hash"], [Validators.required]),
       maker_encoded: new FormControl("base64"),
       idAi: new FormControl("", Validators.required),
+      "transaction-type": new FormControl(""),
+      "transaction-type_encoded": new FormControl("base64"),
     })
 
     console.debug(LM, "sadsda")
-    this.jumlahPerhiasan = this.perhiasan.length;
+    // this.jumlahPerhiasan = this.perhiasan.length;
     this.jumlahEmasBatangan = this.emasBatangan.length;
-    this.jumlahSouvenir = this.souvenir.length;
-    this.jumlahBerlian = this.berlian.length;
-    this.jumlahDinar = this.dinar.length;
+    // this.jumlahSouvenir = this.souvenir.length;
+    // this.jumlahBerlian = this.berlian.length;
+    // this.jumlahDinar = this.dinar.length;
 
     this.idTransaksi();
     this.getTransactionMethod(this.totalBelanja);
     this.getUnit();
+    this.getTransactionType();
 
-   }
+    console.debug(this.formData , "thisformdata")
 
-   getTransactionType() {
-    this.transactionTypeService.get("?_hash=1&code=b01").subscribe((response: any) => {
+  }
+  
+  getTransactionType() {
+    this.transactionTypeService.get("?_hash=1&code=b02").subscribe((response: any) => {
       if (response != false) {
         this.formData.patchValue({ 'transaction-type': response["_hash"] });
+        console.debug(response["_hash"] , "cekthGTT")
       }
     })
+
+    
   }
 
-   getClientData(val){
+  
+  getClientData(val){
     if (val != null) {
       this.isiClientData = val;
       
@@ -246,7 +253,7 @@ export class CheckoutBuybackComponent implements OnInit {
     const unitString = btoa(JSON.stringify(this.sessionService.getUnit()));
     this.formData.patchValue({ unit: unitString });
   }
-
+  
   storeTransaction(){
     let data = this.formData.getRawValue();
     data["kembali"] = this.kembali
@@ -254,10 +261,11 @@ export class CheckoutBuybackComponent implements OnInit {
     
     console.debug(this.kembali, "kembali")
 
-    data.product = btoa(JSON.stringify({ PERHIASAN, LM, BERLIAN, GS, DINAR }));
+    data.product = btoa(JSON.stringify({ LM }));
     data.product_encoded = "base64";
     let nomT = data["nominalTransaksi"]
     data["nominalTransaksi"] = nomT.replace(/,/g, '')
+    data["flag"] = "submitted"
     delete data["cif"];
     delete data["namaPemasar"];
     delete data["nik"];
@@ -267,36 +275,31 @@ export class CheckoutBuybackComponent implements OnInit {
     //     console.debug("product flag update failed", this.transactionFlagBuybackService.batchUpdate(btoa(JSON.stringify(this.sessionService.getUnit()))));
     //   } 
     // })
-    console.debug(this.berlian, "pantek")
-    if (this.perhiasan != null) {
-      let dataPerhiasan = this.transactionFlagBuybackService.batchUpdateTransaction(this.perhiasan, "perhiasan",btoa(JSON.stringify(this.sessionService.getUnit())))
-    } 
-    if(this.emasBatangan != null) {
-      let dataLM = this.transactionFlagBuybackService.batchUpdateTransaction(this.emasBatangan, "lm", btoa(JSON.stringify(this.sessionService.getUnit())))
-    }
-    if(this.berlian != null) {
-      let dataBerlian = this.transactionFlagBuybackService.batchUpdateTransaction(this.berlian, "berlian", btoa(JSON.stringify(this.sessionService.getUnit())))
-    }
-    if(this.souvenir != null) {
-      let dataSouvenir = this.transactionFlagBuybackService.batchUpdateTransaction(this.souvenir, "souvenir", btoa(JSON.stringify(this.sessionService.getUnit())))
-    }
-    if(this.dinar != null) {
-      let dataSouvenir = this.transactionFlagBuybackService.batchUpdateTransaction(this.dinar, "dinar", btoa(JSON.stringify(this.sessionService.getUnit())))
-    }
+    
+    // if (this.perhiasan != null) {
+    //   let dataPerhiasan = this.transactionFlagBuybackService.batchUpdateTransaction(this.perhiasan, "perhiasan",btoa(JSON.stringify(this.sessionService.getUnit())))
+    // } 
+    // if(this.emasBatangan != null) {
+    //   let dataLM = this.transactionFlagBuybackService.batchUpdateTransaction(this.emasBatangan, "lm", btoa(JSON.stringify(this.sessionService.getUnit())))
+    // }
+    // if(this.souvenir != null) {
+    //   let dataSouvenir = this.transactionFlagBuybackService.batchUpdateTransaction(this.souvenir, "souvenir", btoa(JSON.stringify(this.sessionService.getUnit())))
+    // }
 
+    console.debug(data , "data")
     this.buybackService.add(data).subscribe((response: any) => {
       if (response != false) {
         this.validModel = false;
         this.toastr.success(this.buybackService.message(), "Transaction Success");
         this.checkoutModal = false;
         // remove isi cart
-        PERHIASAN.splice(0);
-        BERLIAN.splice(0);
+        // PERHIASAN.splice(0);
+        // BERLIAN.splice(0);
         LM.splice(0);
-        DINAR.splice(0);
-        GS.splice(0);
+        // DINAR.splice(0);
+        // GS.splice(0);
         this.cartModal.emit(false);
-        this.ChangeContentArea('10009');
+        this.ChangeContentArea('10010');
       } else {
         this.toastr.error(this.buybackService.message(), "Transaction");
         this.idTransaksi()

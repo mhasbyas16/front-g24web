@@ -7,17 +7,19 @@ import { ToastrService } from 'ngx-toastr';
 
 // services
 import { BuybackTransactionService } from '../../../services/buyback/buyback-transaction.service';
+import { ProductService } from '../../../services/product/product.service';
 //Session
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
+import { ContentPage } from '../../../lib/helper/content-page';
 
 @Component({
-  selector: 'app-laporan-buyback',
-  templateUrl: './laporan-buyback.component.html',
-  styleUrls: ['./laporan-buyback.component.scss'],
+  selector: 'app-laporan-buyback-manual',
+  templateUrl: './laporan-buyback-manual.component.html',
+  styleUrls: ['./laporan-buyback-manual.component.scss'],
   providers:[DatePipe],
 })
-@DContent(LaporanBuybackComponent.key)
-export class LaporanBuybackComponent implements OnInit {
+@DContent(LaporanBuybackManualComponent.key)
+export class LaporanBuybackManualComponent implements OnInit {
 
   // ClrDatagrid
   loadingDg: boolean = false;
@@ -33,25 +35,35 @@ export class LaporanBuybackComponent implements OnInit {
   totalHargaGS=0
   totalHargaDinar=0
   listTotalHarga=[];
+  idTransaction : any
+  nikUser : any
 
   //
   transactions = [];
   fromPick:any;
-  
+
+  approveds: boolean = false
+  rejecteds: boolean = false
+
   constructor(
     private buybackTransactionService: BuybackTransactionService,
+    private productService: ProductService,
     
     private toastrService:ToastrService,
     //session
     private sessionService: SessionService,
     private datePipe: DatePipe,
+
   ) { }
 
   ngOnInit(): void {
     this.form();
     this.datepick();
     this.filterTransaction('id');
+    this.nikUser = this.sessionService.getUser();
+    this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser)),"role":this.nikUser.role.name} ;
   }
+
   totalHarga(val){
     this.totalP = this.totalP+Number(val);
   }
@@ -77,9 +89,10 @@ export class LaporanBuybackComponent implements OnInit {
   filterTransaction(val){
     // CLR Datagrid loading
     this.loadingDg = true;
-    let paramTransaction = "&transaction-type.code=b01"
+
     let data = this.search.getRawValue(); 
     let params = "";
+    let paramTransaction = "&transaction-type.code=b02"
 
     // Session
     const getUnit = this.sessionService.getUnit();
@@ -98,6 +111,7 @@ export class LaporanBuybackComponent implements OnInit {
         return;
       }else if(data.to != ""){
         params = params+paramTransaction+"&_between=makerDate&_start="+data.from+"&_end="+data.to;
+        
       }
     }
 
@@ -172,21 +186,21 @@ export class LaporanBuybackComponent implements OnInit {
         this.totalHargaLM=0;
         this.totalHargaGS=0;
         this.totalHargaDinar=0;
-        for (let hp of isi.product["PERHIASAN"]) {
-          this.totalP = this.totalP + hp.hargaBB;
-        }
-        for (let hb of isi.product["BERLIAN"]) {
-          this.totalBerlian = this.totalBerlian + hb.hargaBB;
-        }
+        // for (let hp of isi.product["PERHIASAN"]) {
+        //   this.totalP = this.totalP + hp.hargaBB;
+        // }
+        // for (let hb of isi.product["BERLIAN"]) {
+        //   this.totalBerlian = this.totalBerlian + hb.hargaBB;
+        // }
         for (let hLM of isi.product["LM"]) {
           this.totalHargaLM = this.totalHargaLM + hLM.hargaBB;
         }
-        for (let hGS of isi.product["GS"]) {
-          this.totalHargaGS = this.totalHargaGS + hGS.hargaBB;
-        }
-        for (let hDN of isi.product["DINAR"]) {
-          this.totalHargaDinar = this.totalHargaDinar + hDN.hargaBB;
-        }
+        // for (let hGS of isi.product["GS"]) {
+        //   this.totalHargaGS = this.totalHargaGS + hGS.hargaBB;
+        // }
+        // for (let hDN of isi.product["DINAR"]) {
+        //   this.totalHargaDinar = this.totalHargaDinar + hDN.hargaBB;
+        // }
         this.listTotalHarga.push({
           "idTransactionBB":isi.idTransactionBB,
           "hargaP":this.totalP,
@@ -196,7 +210,6 @@ export class LaporanBuybackComponent implements OnInit {
           "hargaDinar":this.totalHargaDinar
         });
       }
-     console.debug(this.listTotalHarga ,"alkjfdljajkladkljadkla")
     })
   }
 
@@ -204,5 +217,65 @@ export class LaporanBuybackComponent implements OnInit {
     this.totalP += 1;
   }
 
-  static key = EMenuID.LAPORAN_BUYBACK;
+  approvedFlag(idTransaction){
+    let data = {_id: idTransaction, flag: "approved" , approval: this.nikUser._hash, approval_encoded: "base64", approvalDate: this.datePipe.transform(Date.now(),'yyyy-MM-dd') }
+    let paramDetail = "?_id="+idTransaction
+    this.buybackTransactionService.update(data).subscribe((response:any)=>{
+      if (response == false) {
+        this.toastrService.error("Approve data Failed");
+        return;
+      }
+      this.buybackTransactionService.get(paramDetail).subscribe((response:any)=>{
+        let detailProductLM = response.product.LM
+        let dataDetail : any
+        let data = {batch_counter : detailProductLM.length }
+        for (let index = 0; index < detailProductLM.length; index++) {
+          dataDetail = btoa(JSON.stringify(detailProductLM[index].detail))
+          data[index+1] = dataDetail
+          data[index+1+"_encoded"] = "base64"
+        }
+        this.productService.batchAdd(data).subscribe((response:any)=>{
+        })
+      })
+    })  
+    this.toastrService.success("Approve data Success");
+    this.filterTransaction('id');
+    this.approveds = false
+    this.ChangeContentArea("10010")
+    
+  }
+
+  rejectedFlag(idTransaction){
+    let data = {_id: idTransaction, flag: "rejected" , approval: this.nikUser._hash, approval_encoded: "base64", approvalDate: this.datePipe.transform(Date.now(),'yyyy-MM-dd') }
+
+    this.buybackTransactionService.update(data).subscribe((response:any)=>{
+      if (response == false) {
+        this.toastrService.error("Approve data Failed");
+       
+        return;
+      }
+      this.toastrService.success("Approve data Success");
+      this.ChangeContentArea('10010');
+    })  
+
+  }
+
+  closeModal(){
+    this.approveds = false
+    this.rejecteds = false
+  }
+
+  approved(dataId){
+    this.approveds = true
+    this.idTransaction = dataId
+  }
+  rejected(dataId){
+    this.rejecteds = true
+    this.idTransaction = dataId
+  }
+  ChangeContentArea(pageId: string) {
+    if (pageId.startsWith("x")) return;
+    ContentPage.ChangeContent(pageId, true)
+  }
+  static key = EMenuID.LAPORAN_BUYBACK_MANUAL;
 }

@@ -111,6 +111,7 @@ export enum EMenuID {
     LAPORAN             = '10003',
     KORPORASI           = '10004',
     LAPORAN_BUYBACK     = '10009',
+    LAPORAN_BUYBACK_MANUAL = '10010',
     // promosi
     PENGATURAN_PROMO = '10004',
     DAFTAR_PROMO = '10005',
@@ -119,6 +120,7 @@ export enum EMenuID {
     PARAMETER_BUYBACK   = '11002',
     BUYBACKMANUAL   = '11003',
     PARAMETER_ACCEPT_BUYBACK = '11004',
+
 
     // LAPORAN KEUANGAN
     LAPORAN_KEUANGAN = '21000',

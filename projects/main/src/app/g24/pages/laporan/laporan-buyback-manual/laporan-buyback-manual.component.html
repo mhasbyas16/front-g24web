@@ -1,0 +1,243 @@
+<div class="clr-row">
+    <div class="card" style="margin-top: 0em;">
+        <div class="card-header">
+            Laporan Buyback
+        </div>
+        <div class="card-block">
+            <div class="card-text">
+                <form clrForm [formGroup]="search" (ngSubmit)="filterTransaction('id')">
+                    <div class="clr-row clr-align-items-center">
+                        <div class="clr-col-3">
+                            <clr-date-container>
+                                <input clrDate type="date" formControlName="from" min="{{fromPick}}">
+                            </clr-date-container>
+                        </div> 
+                        <div class="clr-col-3">
+                            <clr-date-container>
+                                <input clrDate type="date" formControlName="to">
+                            </clr-date-container>
+                        </div>
+                        <div class="clr-col-3">
+                            <clr-input-container>
+                                <input clrInput type="text" formControlName="text" placeholder="search" autofocus>
+                            </clr-input-container>
+                        </div>
+                        <div class="clr-col-2">
+                            <button type="submit" class="btn btn-icon btn-sm btn-success">Search</button>
+                        </div>
+                    </div>                   
+                </form>
+                <!-- Data Grid -->
+                <clr-datagrid [clrDgLoading]="loadingDg" [(clrDgSelected)]="selected">
+                    <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
+
+                    <clr-dg-column>Tanggal</clr-dg-column>
+                    <clr-dg-column>ID</clr-dg-column>
+                    <clr-dg-column>Nama Customer</clr-dg-column>
+                    <clr-dg-column>CIF Customer</clr-dg-column>
+                    <clr-dg-column>Total Penjualan</clr-dg-column>
+                    <clr-dg-column class="right">Aksi</clr-dg-column>
+                    <clr-dg-row *clrDgItems="let isi of transactions" [clrDgItem]="isi"> 
+                        <clr-dg-cell>{{isi.makerDate}}, {{isi.makerTime}}</clr-dg-cell>
+                        <clr-dg-cell>{{isi.idTransactionBB}}</clr-dg-cell>
+                        <clr-dg-cell>{{isi.client.name}}</clr-dg-cell>
+                        <clr-dg-cell>{{isi.client.cif}}</clr-dg-cell>
+                        <clr-dg-cell>Rp. {{isi.nominalTransaksi | number}}</clr-dg-cell>
+                        <clr-dg-cell>
+                            <ng-container *ngIf="isi.flag == 'submitted'" >
+                                <button type="button" class="btn btn-icon btn-sm btn-warning" aria-label="home" (click)="approved(isi._id)">
+                                    Approve
+                                </button>
+                                <button type="button" class="btn btn-icon btn-sm btn-primary" aria-label="home"  (click)="rejected(isi._id)">
+                                    Reject
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="isi.flag == 'approved'" > 
+                                <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home"  (click)="exportPDF.PDFData(isi.idTransactionBB)">
+                                    PDF
+                                </button>
+                            </ng-container>  
+                            <ng-container *ngIf="isi.flag == 'rejected'" > 
+                                <span class="label label-danger">Rejected</span>
+                            </ng-container>    
+                        </clr-dg-cell>
+                    </clr-dg-row>
+                    <clr-dg-detail *clrIfDetail="let detail">
+                        <clr-dg-detail-header><span style="font-size: 25px;"><b>LIST PRODUCT</b></span></clr-dg-detail-header>
+                        <clr-dg-detail-body>
+                            <!-- <ng-container *ngIf="detail.product.PERHIASAN.length != 0">
+                                <table class="table table-compact table-noborder remove-margin" >
+                                    <thead>
+                                        <tr>
+                                            <th class="left" colspan="7"><h3 class="remove-margin"><b>Perhiasan</b></h3></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let ip of detail.product.PERHIASAN | keyvalue">
+                                            <td class="left">{{ip.value.code}}</td>
+                                            <td class="left">{{ip.value.vendor}}</td>
+                                            <td class="left">{{ip.value.jenis}}</td>
+                                            <td class="left">{{ip.value.warna}}</td>
+                                            <td class="left">{{ip.value.kadar}}</td>
+                                            <td class="left">{{ip.value.berat}}</td>
+                                            <td class="left harga-kanan minColHarga">Rp. {{ip.value.hargaBB| number}}</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr *ngFor="let isi of listTotalHarga">
+                                            <ng-container *ngIf="isi.idTransactionBB == detail.idTransactionBB">
+                                                <td class="right" colspan="3" ></td>
+                                                <td class="text-kanan" colspan="3" ><b>TOTAL BUYBACK PERHIASAN</b></td>
+                                                <td class="left harga-kanan minColHarga">Rp. {{isi.hargaP | number}}</td>
+                                            </ng-container>
+                                        </tr>
+                                    </tfoot>                 
+                                </table>
+                            </ng-container> -->
+                            <ng-container *ngIf="detail.product.LM.length != 0">
+                                <table class="table table-compact table-noborder remove-margin" >
+                                    <thead>
+                                        <tr>
+                                            <th class="left" colspan="7"><h3 class="remove-margin"><b>Logam Mulia</b></h3></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let ip of detail.product.LM | keyvalue">
+                                            <td class="left">{{ip.value.code}}</td>
+                                            <td class="left">{{ip.value.vendor}}</td>
+                                            <td class="left" colspan="2">{{ip.value.denom}}</td>
+                                            <td class="left" colspan="2">{{ip.value.flag}}</td>
+                                            <td class="left harga-kanan minColHarga">Rp. {{ip.value.hargaBB| number}}</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr *ngFor="let isi of listTotalHarga">
+                                            <ng-container *ngIf="isi.idTransactionBB == detail.idTransactionBB">
+                                                <td class="right" colspan="3" ></td>
+                                                <td class="text-kanan" colspan="3" ><b>TOTAL BUYBACK LOGAM MULIA</b></td>
+                                                <td class="left harga-kanan minColHarga">Rp. {{isi.hargaLM | number}}</td>
+                                            </ng-container>
+                                        </tr>
+                                    </tfoot>                 
+                                </table>
+                            </ng-container>
+                            <!-- <ng-container *ngIf="detail.product.BERLIAN.length != 0">
+                                <table class="table table-compact table-noborder remove-margin" >
+                                    <thead>
+                                        <tr>
+                                            <th class="left" colspan="7"><h3 class="remove-margin"><b>Berlian</b></h3></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let ip of detail.product.BERLIAN | keyvalue">
+                                            <td class="left">{{ip.value.code}}</td>
+                                            <td class="left">{{ip.value.vendor}}</td>
+                                            <td class="left">{{ip.value.jenis}}</td>
+                                            <td class="left">{{ip.value.warna}}</td>
+                                            <td class="left">{{ip.value.kadar}}</td>
+                                            <td class="left">{{ip.value.berat}}</td>
+                                            <td class="left harga-kanan minColHarga">Rp. {{ip.value.hargaBB| number}}</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr *ngFor="let isi of listTotalHarga">
+                                            <ng-container *ngIf="isi.idTransactionBB == detail.idTransactionBB">
+                                                <td class="right" colspan="3" ></td>
+                                                <td class="text-kanan" colspan="3" ><b>TOTAL BUYBACK BERLIAN</b></td>
+                                                <td class="left harga-kanan minColHarga">Rp. {{isi.hargaB | number}}</td>
+                                            </ng-container>
+                                        </tr>
+                                    </tfoot>                 
+                                </table>
+                            </ng-container> -->
+                            <!-- souvenir -->
+                            <!-- <ng-container *ngIf="detail.product.GS.length != 0">
+                                <table class="table table-compact table-noborder remove-margin" >
+                                    <thead>
+                                        <tr>
+                                            <th class="left" colspan="7"><h3 class="remove-margin"><b>Souvenir dan Gift</b></h3></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let ip of detail.product.GS | keyvalue">
+                                            <td class="left">{{ip.value.code}}</td>
+                                            <td class="left">{{ip.value.vendor}}</td>
+                                            <td class="left" colspan="2">{{ip.value.denom}}</td>
+                                            <td class="left" colspan="2">{{ip.value.detail["product-series"].name}}</td>
+                                            <td class="left harga-kanan minColHarga">Rp. {{ip.value.hargaBB| number}}</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr *ngFor="let isi of listTotalHarga">
+                                            <ng-container *ngIf="isi.idTransactionBB == detail.idTransactionBB">
+                                                <td class="right" colspan="3" ></td>
+                                                <td class="text-kanan" colspan="3" ><b>TOTAL BUYBACK SOUVENIR</b></td>
+                                                <td class="left harga-kanan minColHarga">Rp. {{isi.hargaGS | number}}</td>
+                                            </ng-container>
+                                        </tr>
+                                    </tfoot>                 
+                                </table>
+                            </ng-container> -->
+                            <!-- DINAR -->
+                            <!-- <ng-container *ngIf="detail.product.DINAR.length != 0">
+                                <table class="table table-compact table-noborder remove-margin" >
+                                    <thead>
+                                        <tr>
+                                            <th class="left" colspan="7"><h3 class="remove-margin"><b>DINAR</b></h3></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let ip of detail.product.DINAR | keyvalue">
+                                            <td class="left">{{ip.value.code}}</td>
+                                            <td class="left">{{ip.value.vendor}}</td>
+                                            <td class="left" colspan="2">{{ip.value.denom}}</td>
+                                            <td class="left" colspan="2"></td>
+                                            <td class="left harga-kanan minColHarga">Rp. {{ip.value.hargaBB| number}}</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr *ngFor="let isi of listTotalHarga">
+                                            <ng-container *ngIf="isi.idTransactionBB == detail.idTransactionBB">
+                                                <td class="right" colspan="3" ></td>
+                                                <td class="text-kanan" colspan="3" ><b>TOTAL BUYBACK DINAR</b></td>
+                                                <td class="left harga-kanan minColHarga">Rp. {{isi.hargaDinar | number}}</td>
+                                            </ng-container>
+                                        </tr>
+                                    </tfoot>                 
+                                </table>
+                            </ng-container> -->
+                        </clr-dg-detail-body>
+                    </clr-dg-detail>
+                </clr-datagrid>
+            </div>
+        </div>
+    </div>
+</div>
+
+<clr-modal [(clrModalOpen)]="approveds" [clrModalSize]="'sm'">
+    <h3 class="modal-title">Confirmation</h3>
+    <div class="modal-body">
+        <p>Do You Want Approve This Transaction ?{{idTransaction}}</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger-outline" (click)="closeModal()" >Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="approvedFlag(idTransaction)" >Process</button>
+    </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="rejecteds" [clrModalSize]="'sm'">
+    <h3 class="modal-title">Confirmation</h3>
+    <div class="modal-body">
+        <p>Do You Want Reject This Transaction ?</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger-outline" (click)="closeModal()" >Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="rejectedFlag(idTransaction)">Process</button>
+    </div>
+</clr-modal>
+
+
+
+<app-export-laporan-buyback-manual #exportPDF></app-export-laporan-buyback-manual>
+<!-- 
+-->

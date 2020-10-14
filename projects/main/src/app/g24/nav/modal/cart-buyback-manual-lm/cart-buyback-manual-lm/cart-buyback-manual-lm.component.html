@@ -32,7 +32,7 @@
                                                 <span>Rp. {{ip.value.hargaBB | number}}</span>
                                             </div>
                                             <div class="clr-col-1">
-                                                <button type="button" class="btn btn-icon btn-sm btn-danger" aria-label="home" (click)="removeItemEmasBatangan(ip.key, ip.value.hargaBB )">
+                                                <button type="button" class="btn btn-icon btn-sm btn-danger" aria-label="home" (click)="removeItemEmasBatangan(ip.key, ip.value.hargaBB, ip.value.detail['product-denom'].value )">
                                                     <clr-icon shape="minus"></clr-icon>
                                                 </button>
                                             </div>
@@ -49,9 +49,9 @@
             <ng-container *ngIf="totalCart > 0">
                 <span>Total : Rp. {{ hargaTotalEmasBatangan | number}}</span>
             <button type="button" class="btn btn-warning" (click)="removeCart()">Clear</button>
-            <!-- <button type="button" class="btn btn-outline" (click)="cartModal = false">Cancel</button> -->
-                <!-- <button type="button" class="btn btn-primary" (click)="CO.openModal(hargaPerhiasan+hargaLogamMulia+hargaBerlian+hargaSouvenir+hargaDinar)">Check Out</button> -->
+            <button type="button" class="btn btn-primary" (click)="CO.openModal(hargaTotalEmasBatangan)">Check Out</button>
             </ng-container>            
         </div>
     </clr-modal>
 </ng-container>
+<app-checkout-buyback-manual #CO (cartModal)="modalView($event)" ></app-checkout-buyback-manual>

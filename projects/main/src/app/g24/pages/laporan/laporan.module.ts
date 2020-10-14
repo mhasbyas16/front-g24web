@@ -12,11 +12,13 @@ import { DatePipe } from '@angular/common';
 import { ExportLaporanComponent } from './export-laporan/export-laporan.component';
 import { ExportLaporanBuybackBycodeComponent } from './export-laporan-buyback-bycode/export-laporan-buyback-bycode.component';
 import { RekeningKoranComponent } from './rekening-koran/rekening-koran.component';
+import { LaporanBuybackManualComponent } from './laporan-buyback-manual/laporan-buyback-manual.component';
+import { ExportLaporanBuybackManualComponent } from './export-laporan-buyback-manual/export-laporan-buyback-manual.component';
 
 
 
 @NgModule({
-  declarations: [LaporanPenjualanComponent, ExportLaporanComponent, RekeningKoranComponent, LaporanBuybackComponent,ExportLaporanBuybackBycodeComponent ],
+  declarations: [LaporanPenjualanComponent, ExportLaporanComponent, RekeningKoranComponent, LaporanBuybackComponent,ExportLaporanBuybackBycodeComponent, LaporanBuybackManualComponent, ExportLaporanBuybackManualComponent ],
   imports: [
     CommonModule,
     FormsModule,

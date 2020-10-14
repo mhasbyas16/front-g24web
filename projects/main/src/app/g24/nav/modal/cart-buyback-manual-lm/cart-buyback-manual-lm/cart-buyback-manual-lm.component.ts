@@ -10,9 +10,11 @@ export class CartBuybackManualLmComponent implements OnInit {
 
   
   @Input() totalCart : any;
-  @Input() hargaTotalEmasBatangan : any 
+  @Input() hargaTotalEmasBatangan : any ;
+  @Input() maxGrDay : any ;
   @Output() clearEmasBatangan:any = new EventEmitter();
   @Output() clearParentCart:any = new EventEmitter();
+  @Output() cartTotalBerat:any = new EventEmitter();
   
   constructor() { }
 
@@ -40,13 +42,16 @@ export class CartBuybackManualLmComponent implements OnInit {
     this.clearEmasBatangan.emit({length:0,harga:0});
   }
   
-  removeItemEmasBatangan(key: any, harga:any ){
+  removeItemEmasBatangan(key: any, harga:any, denom: any ){
     //pengurangan jumlah item
     this.cartLogam.splice(key,1);
 
     //pengurangan jumlah cart
     this.totalCart-=1;
-    
+    this.maxGrDay = this.maxGrDay + Number(denom)
+    this.cartTotalBerat.emit(this.maxGrDay);
+
+    console.debug(this.maxGrDay, "this.maxGrDay")
     this.hargaTotalEmasBatangan = this.hargaTotalEmasBatangan - harga
     this.clearEmasBatangan.emit({length:this.cartLogam.length, harga:this.hargaTotalEmasBatangan });
 
