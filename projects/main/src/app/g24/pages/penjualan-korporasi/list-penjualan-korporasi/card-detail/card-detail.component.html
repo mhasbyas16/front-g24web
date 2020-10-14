@@ -1,0 +1,87 @@
+<clr-modal [(clrModalOpen)]="modal" [clrModalSize]="'xl'">
+    <h3 class="modal-title">I have a nice title</h3>
+    <div class="modal-body">
+        <div class="card">
+            <div class="card-header">
+                Detail
+            </div>
+            <div class="card-block">
+                <form clrForm>
+                    <div class="card-text">
+                        <clr-input-container>
+                            <label>ID Transaksi</label>
+                            <input clrInput type="text" [value]="idTransaksi" name="" id="" readonly >
+                        </clr-input-container>
+                        <clr-input-container>
+                            <label>Tanggal Pengajuan</label>
+                            <input clrInput type="text" [value]="tglPengajuan" name="" id="" readonly >
+                        </clr-input-container>
+                        <clr-input-container>
+                            <label>Akhir Periode</label>
+                            <input clrInput type="text" [value]="lastPeriode" name="" id="" readonly >
+                        </clr-input-container>
+                        <clr-input-container>
+                            <label>CIF Nasabah</label>
+                            <input clrInput type="text" [value]="cif" name="" id="" readonly >
+                        </clr-input-container>
+                        <clr-input-container>
+                            <label>Nama Nasabah</label>
+                            <input clrInput type="text" [value]="nama" name="" id="" readonly >
+                        </clr-input-container>
+                        <clr-input-container>
+                            <label>ID Penanggung Jawab</label>
+                            <input clrInput type="text" [value]="idPic" name="" id="" readonly >
+                        </clr-input-container>
+                        <clr-input-container>
+                            <label>Nama Penanggung Jawab</label>
+                            <input clrInput type="text" [value]="namaPic" name="" id="" readonly >
+                        </clr-input-container>
+                    </div>
+                </form>
+                
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                Product
+            </div>
+            <div class="card-block">
+                <div class="card-text">
+                    <clr-datagrid>
+                        <clr-dg-column>Nama Penerima</clr-dg-column>
+                        <clr-dg-column>ID Penerima</clr-dg-column>
+                        <clr-dg-column>Kode</clr-dg-column>
+                        <clr-dg-column>Vendor</clr-dg-column>
+                        <clr-dg-column>Denom</clr-dg-column>
+                        <clr-dg-column>harga</clr-dg-column>
+                    
+                        <clr-dg-row *ngFor="let list of product">
+                            <clr-dg-cell>{{list.name}}</clr-dg-cell>
+                            <clr-dg-cell>{{list.noId}}</clr-dg-cell>
+                            <clr-dg-cell>{{list.code}}</clr-dg-cell>
+                            <clr-dg-cell>{{list.vendor}}</clr-dg-cell>
+                            <clr-dg-cell>{{list.denom}}</clr-dg-cell>
+                            <clr-dg-cell>Rp. {{list.harga | number}}</clr-dg-cell>
+                        </clr-dg-row>
+                    
+                        <clr-dg-footer>
+                            Total keping : {{lengths}} Total Harga : Rp. {{totals | number}}&nbsp;&nbsp;&nbsp;
+                            <clr-dg-pagination #pagination [clrDgPageSize]="10">
+                                <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Data per page</clr-dg-page-size>
+                                {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                                of {{pagination.totalItems}} Data
+                            </clr-dg-pagination></clr-dg-footer>
+                    </clr-datagrid>
+                </div>                
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="modal = false">Cancel</button>
+        <ng-container *ngIf="type == 'action'">
+            <button type="button" class="btn btn-success" (click)="approveTr(list)" >Approve</button>
+            <button type="button" class="btn btn-danger" >Reject</button>
+        </ng-container>
+        
+    </div>
+</clr-modal>

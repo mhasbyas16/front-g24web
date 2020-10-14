@@ -73,7 +73,7 @@ export class TransactionFlagService {
     return data;
   }
 
-  batchUpdateOne(val = []) {
+  batchUpdateOne(val = [], flags) {
     let product = {};
     let no = 0;
     let batch = {batch_counter:val.length};
@@ -81,7 +81,7 @@ export class TransactionFlagService {
     if (val.length != 0) {
       for (let p of val) {
         no++;
-        let data = {_id: p.detail._id, flag: "bookingCorporate"}
+        let data = {_id: p.detail._id, flag: flags}
         this.productService.update(data).subscribe((response:any)=>{
           if (response == false) {
             console.debug("batch update failed");

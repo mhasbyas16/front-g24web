@@ -32,6 +32,7 @@ export class ListPenjualanKorporasiComponent implements OnInit {
 
   ngOnInit(): void {
     this.formFilter();
+    this.filterTransaction('id');
   }
 
   formFilter(){
@@ -113,7 +114,7 @@ export class ListPenjualanKorporasiComponent implements OnInit {
   }
 
   getTransaction(params){       
-    // this.listTotalHarga.splice(0);
+    this.listTotalHarga.splice(0);
     this.transactionBookingService.list("?"+params).subscribe((response:any)=>{
       if (response == false) {
         this.toastrService.error("Data Not Found", "Transaction");
@@ -134,6 +135,7 @@ export class ListPenjualanKorporasiComponent implements OnInit {
       let berat = 0;
       for (let index = 0; index < this.transactions.length; index++) {
         berat = 0;
+        
         const daa = this.transactions[index];
         for (let i of daa.product) {
           berat += Number(i.detail['product-denom'].value);

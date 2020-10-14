@@ -28,7 +28,7 @@
                     </div>                   
                 </form>
                 <!-- Data Grid -->
-                <clr-datagrid [clrDgLoading]="loadingDg" [(clrDgSelected)]="selected">
+                <clr-datagrid [clrDgLoading]="loadingDg">
                     <clr-dg-placeholder>{{placeholder}}</clr-dg-placeholder>
 
                     <clr-dg-column>ID Transaksi</clr-dg-column>                    
@@ -44,8 +44,8 @@
                     
                     <clr-dg-row *clrDgItems="let isi of transactions | keyvalue" [clrDgItem]="isi"> 
                         <clr-dg-action-overflow>
-                            <button class="action-item" >Detail</button>
-                            <button class="action-item">Action</button>
+                            <button class="action-item" (click)="detail.openModal(isi.value,isi.value.product.length,isi.value.totalHarga,'detail')">Detail</button>
+                            <button *ngIf="isi.value.flag == 'booking'" class="action-item" (click)="detail.openModal(isi.value,isi.value.product.length,isi.value.totalHarga,'action')">Action</button>
                         </clr-dg-action-overflow>
                         <clr-dg-cell></clr-dg-cell>
                         <clr-dg-cell>{{isi.value.tglPengajuan}}</clr-dg-cell>
@@ -64,5 +64,6 @@
     </div>
 
 </div>
+<app-card-detail #detail></app-card-detail>
 <!-- 
 -->
