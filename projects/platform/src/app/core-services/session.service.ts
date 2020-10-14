@@ -6,6 +6,11 @@ import * as CryptoJS from 'crypto-js';
 })
 export class SessionService {
 
+  /**
+   * NOTE :
+   * 
+   * JANGAN GANTI DISINI, CARI KE FILE ..src/assets/config/server-config.json
+   */
   // server: string = "http://localhost:8000";
   // server: string = "http://34.87.141.184:8000";
   server: string = "https://dev.g24sys.com";
