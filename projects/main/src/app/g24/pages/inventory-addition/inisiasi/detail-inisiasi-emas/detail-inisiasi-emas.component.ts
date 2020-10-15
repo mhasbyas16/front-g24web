@@ -637,6 +637,12 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
       return;
     }
 
+    if(this.validateItems())
+    {
+      this.spinner.Close();
+      return;
+    }
+
     if(this.input.items?.length <= 0)
     {
       this.spinner.Close();
@@ -777,6 +783,21 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
   onExportSelected()
   {
 
+  }
+
+  validateItems()
+  {
+    for(let i = 0; i < this.input.items.length; i++)
+    {
+      let item = this.input.items[i];
+      if(this.validateAdd(item))
+      {
+        // console.log(item, "tralala")
+        return true;
+      }
+    }
+
+    return false;
   }
 
   validateInput()

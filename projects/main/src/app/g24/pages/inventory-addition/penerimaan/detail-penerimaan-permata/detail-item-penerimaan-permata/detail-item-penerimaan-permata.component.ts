@@ -33,9 +33,6 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
     private dateService : ServerDateTimeService,
 
     private inisiasiService : InisiasiService,
-    private kadarService : ProductPurityService,
-    private jenisService : ProductJenisService,
-    private goldColorService : ProductGoldColorService,
     private productService : ProductService
   ) { }
 
@@ -58,7 +55,7 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
 
   LoadAllParameter()
   {
-    this.LoadJenis();
+    this.LoadDate();
   }
   
   async LoadDate()
@@ -77,35 +74,6 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
     let dtarr = dt.split("T");
     this.date = dtarr[0];
     this.time = dtarr[1].split("Z")[0];
-  }
-
-  async LoadJenis()
-  {
-    while(this.jeniss.length > 0)
-    {
-      this.jeniss.pop();
-    }
-
-    let jeniss = await this.jenisService.list("?product-category.code=c03").toPromise();
-    if(jeniss)
-    {
-      if(jeniss.length <= 0)
-      {
-        this.toastr.error("Gagal loading Parameter Jenis. Harap coba proses lagi. Apabila kegagalan terjadi lagi, harap hubungi IT Support/Helpdesk", "Load Jenis Failed");
-        this.doReset();
-        this.Close();
-        return;
-      }
-
-      this.toastr.success("Parameter 'Jenis Permata' loaded...");
-      this.jeniss.push(...jeniss);
-      this.jeniss.sort((a, b) => ('' + a.name).localeCompare(b.name));
-    } else {
-      this.toastr.error("Gagal loading Parameter Jenis. Harap coba proses lagi. Apabila kegagalan terjadi lagi, harap hubungi IT Support/Helpdesk", "Load Jenis Failed")
-      this.doReset();
-      this.Close();
-      return;
-    }
   }
 
   isOpened : boolean = false;
@@ -611,51 +579,11 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
     this.inisiasi.order_status = OrderStatus.TERIMA_FULL.code;
     this.inisiasi.update_time = this.time;
     this.inisiasi.update_date = this.date;
-    this.inisiasi.update_by = this.user.username;
+    this.inisiasi.update_by = this.user;
     this.inisiasi['tgl_terima'] = this.inisiasi.update_date;
-    this.inisiasi.terima_by = this.user.username;
-    // let items = this.inisiasi.items;
-    // let productNoId = [];
-    // let ids = [];
-    // console.log(items);
-    
-    // for(let i = 0; i < items.length; i++)
-    // {
-    //   let products = items[i].products;
-    //   productNoId.push(...products);
-    // }
-
-    // let itemProduct : Map<string, number> = new Map<string,number>();
-    
-    // console.log(productNoId);
-
-    // let failedIndex : any[] = [];
-    // let someFailed : boolean = false;
-    // for(let i =0; i < productNoId.length; i++)
-    // {
-    //   let product = productNoId[i];
-    //   let fail = {itemIndex : product.no_item_po, productIndex: product.no_index_products}
-    //   delete product._id;
-    //   DataTypeUtil.Encode(product);
-
-    //   itemProduct.set(fail.itemIndex + "," + fail.productIndex, product);
-
-      // let result = await this.productService.add(product).toPromise();
-      // if(result == false)
-      // {
-      //   this.toastr.error("Barang nomor: " + fail.productIndex + " dengan nomor Bulk: " + fail.itemIndex + " gagal masuk.");
-      //   continue;
-      // } else {
-      //   let product = itemProduct.get(fail.itemIndex + "," + fail.productIndex);
-      //   Object.assign(product, result);
-      //   itemProduct.set(fail.itemIndex + "," + fail.productIndex, result);
-      //   console.log(result);
-      // }
-    // }
-    let barcode 
+    this.inisiasi.terima_by = this.user;
 
     let product = {
-      code : "",
       tipe_stock : TipeStock.STOCK.code,
       unit : this.user.unit,
       flag : FlagProduct.STOCK.code,
@@ -697,8 +625,6 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
       'hpp_batu_inisiasi_encoded' : "double",
       'hpp_batu' : this.inisiasi.hpp_batu,
       'hpp_batu_encoded' : "double",
-
-      _log : "1"
     }
     DataTypeUtil.Encode(product);
     let result = await this.productService.add(product).toPromise();
@@ -731,7 +657,7 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
     // Object.assign(tempInisiasi, this.inisiasi);
     DataTypeUtil.Encode(tempInisiasi);
 
-    let inisiasi = await this.inisiasiService.update(tempInisiasi).toPromise();
+    let inisiasi = await this.inisiasiService.TerimaPermata(tempInisiasi).toPromise();
     if(inisiasi == false)
     {
       this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk.");

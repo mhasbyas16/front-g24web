@@ -36,7 +36,28 @@ export class AuthService {
     })
   }
 
+  async getServerConfig() {
+    let protocol = window.location.protocol;
+    let name = window.location.hostname;
+    let port = window.location.port;
+    port = port == "" || port == "0" ? "" : port;
+    let filePath = "/assets/config/server-config.json";
+    let url = protocol + "//" + name + ":" + port + filePath;
+    let file = await this.http.get(url).toPromise();
+    console.log(file);
+
+    this.sessionService.server = file['backend-url'];
+
+    console.log(this.sessionService.server)
+
+    return file;
+  }
+
   authCompany(params: string) {
+    this.getServerConfig();
+    // let json = 
+    // console.log(json);
+
     return new Observable(observer => {
       console.debug("environment", environment.server);
       const url: string = `${this.sessionService.server}/signin-api/client/get?code=` + params;

@@ -55,18 +55,22 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
 
   LoadAllParameter()
   {
-    this.LoadJenis();
+    this.LoadDate();
   }
 
   async LoadDate()
   {
-    let resp = await this.dateService.task("").toPromise();
+    let resp : any = false;
+    try {
+      resp = await this.dateService.task("").toPromise();
+    } catch(err) {
+      resp = false;
+    }
     if(resp == false)
     {
-      this.errorHappened = true;
-      this.doReset();
+      this.toastr.error("Gagal mengambil tanggal server.");
       this.Close();
-      this.toastr.info("Gagal mengambil tanggal server.");
+      this.doReset();
       return;
     }
 
@@ -242,17 +246,15 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
   {
     this.inisiasi = content;
 
-    if(this.inisiasi.order_status == OrderStatus.TERIMA_FULL.code && this.mode == EPriviledge.UPDATE)
+    if(this.inisiasi.order_status != OrderStatus.SUBMIT.code && this.mode == EPriviledge.UPDATE)
     {
       this.doReset();
       this.Close();
-      this.toastr.show("PO sudah di Terima Full.", "Terima says");
+      this.toastr.show("Status sudah diupdate.", "Terima says");
       return;
     }
     
-    //this.LoadAllParameter();
-
-    this.fillItemsWithProducts();
+    this.LoadAllParameter();
   }
 
   ts;
@@ -683,7 +685,7 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
     if(inisiasi == false)
     {
       if(msg == "") msg = this.inisiasiService.message();
-      this.toastr.error("Terjadi Error. Mohon check terlebih dahulu apakah PO sudah terproses atau belum. Jika belum, Harap hubungi IT Support/Helpdesk. Error: " + msg);
+      this.toastr.error("Terjadi Error. Mohon check terlebih dahulu apakah PO sudah terproses atau belum. Jika belum, Harap hubungi IT Support/Helpdesk. Error: " + msg, "Error", {disableTimeOut : true, closeButton : true});
       this.doReset();
       this.Close();
       return;

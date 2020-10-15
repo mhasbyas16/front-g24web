@@ -644,6 +644,12 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
       return;
     }
 
+    if(this.validateItems())
+    {
+      this.spinner.Close();
+      return;
+    }
+
     if(this.input.items?.length <= 0)
     {
       this.spinner.Close();
@@ -786,6 +792,21 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
   onExportSelected()
   {
 
+  }
+
+  validateItems()
+  {
+    for(let i = 0; i < this.input.items.length; i++)
+    {
+      let item = this.input.items[i];
+      if(this.validateAdd(item))
+      {
+        // console.log(item, "tralala")
+        return true;
+      }
+    }
+
+    return false;
   }
 
   validateInput()
@@ -1051,14 +1072,13 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
   }
 
   // pajakCounted : boolean = false;
-  countItemPajak(item? : any)
+  countItemTotalPajak(item? : any)
   {
     // this.pajakCounted = false;
     if(!item)
       item = this.Selected;
       
     let hpajak : number= this.input?.pajak;
-    let ongkos : number = item.ongkos_pieces;
 
     if(hpajak == null) return 0;
     
@@ -1084,37 +1104,28 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
     console.log(pajakItem);
     return this.selected.pajak;
   }
-  countItemTotalPajak(item? : any)
+
+  countItemPajak(item? : any)
   {
     // this.pajakCounted = false;
     if(!item)
       item = this.Selected;
       
     let hpajak : number= this.input?.pajak;
-    let ongkos : number = item.ongkos_pieces;
+    let ongkos : number = parseInt(item.ongkos_pieces);
 
     if(hpajak == null) return 0;
     
     let persenPajak = 2.00; // harusnya dari DB
+    persenPajak = 2 * 100;
 
     let pajakItem : number = 0;
-    pajakItem = ongkos * (persenPajak/100);
+    pajakItem = ongkos * (persenPajak/10000);
 
     if(this.input.tipe_bayar == PaymentType.UANG.code) pajakItem = 0;
     
-    // if(this.input.tipe_bayar == PaymentType.UANG.code)
-    //   pajakItem = (item.total_harga * persenPajak/100);
-    // else
-    //   pajakItem = ongkos * persenPajak/100;
-
-    // if(this.input.tipe_bayar == PaymentType.MAKLON.code && item.totalHarga != 0)
-    //   this.pajakCounted = true;
-    
-    // if(this.input.tipe_bayar == PaymentType.MAKLON.code && (ongkos != 0 || ongkos != null))
-    //   this.pajakCounted = true;
-    
     item.pajak_pieces = Math.round(pajakItem);
-    console.log(pajakItem);
+    console.log(pajakItem, item.pajak_pieces);
     return this.selected.pajak;
   }
 
@@ -1143,25 +1154,35 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
   {
     this.countItemHargaPiece();
     this.countItemTotalBerat();
+    this.countItemTotalHarga();
   }
 
   onOngkosChanged()
   {
     this.countItemTotalOngkos();
+    this.countItemPajak();
+    this.countItemTotalPajak();
     this.countItemHargaPiece();
     this.countItemTotalHarga();
   }
 
   onHargaBakuChanged()
   {
+    this.countItemTotalBerat();
+    this.countItemTotalOngkos();
+    this.countItemPajak();
+    this.countItemTotalPajak();
+    this.countItemHargaPiece();
+    this.countItemTotalHarga();
+
     for(let item in this.input['items'])
     {
-      this.countItemTotalBerat();
-      this.countItemTotalOngkos();
-      this.countItemHargaPiece();
-      this.countItemTotalHarga();
-      this.countItemPajak();
-      this.countItemTotalPajak();
+      this.countItemTotalBerat(item);
+      this.countItemTotalOngkos(item);
+      this.countItemHargaPiece(item);
+      this.countItemTotalHarga(item);
+      this.countItemPajak(item);
+      this.countItemTotalPajak(item);
     }
   }
 
@@ -1176,9 +1197,9 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
       item = this.Selected;
 
     let pieces = item['pieces'];
-    let ongkos_pieces = item['ongkos_pieces'];
+    let ongkos_pieces = parseInt(item['ongkos_pieces']);
   
-    item['total_ongkos'] = parseFloat(pieces) * parseFloat(ongkos_pieces);
+    item['total_ongkos'] = parseFloat(pieces) * ongkos_pieces;
   }
 
   countItemTotalBerat(item? : any)
@@ -1199,12 +1220,14 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
     let harga_baku = this.input['harga_baku'];
     let denom = item['product-denom']?.value;
     let ongkos_pieces = item['ongkos_pieces'];
-    let pajak_pieces = item['pajak_pieces'];
+    let pajak_pieces = parseFloat(item['pajak_pieces']);
 
     // console.log('harga_piece', denom, harga_baku, ongkos_pieces, pajak_pieces);
+    let h = parseFloat(denom) * parseFloat(harga_baku);
+    let harga_piece = (parseFloat(denom) * parseFloat(harga_baku)) +  parseFloat(ongkos_pieces) + (pajak_pieces);
 
-    item['harga_piece'] = ( (parseFloat(denom) * parseFloat(harga_baku)) +  parseFloat(ongkos_pieces) ) + (item['pajak_pieces'] * 10);
-    // console.log(item, item['pajak_pieces'], 'item harga piece');
+    item['harga_piece'] = (parseFloat(denom) * parseFloat(harga_baku)) +  parseFloat(ongkos_pieces) + (pajak_pieces);
+    // console.log(item, h, pajak_pieces, parseFloat(ongkos_pieces), harga_piece, item['harga_piece']);
   }
 
   countItemTotalHarga(item? : any)
@@ -1214,11 +1237,10 @@ export class DetailInisiasiSouvenirComponent extends BasePersistentFields implem
 
     let pieces = item['pieces'];
     let harga = item['harga_piece'];
+    let item_pajak = item['pajak'];
 
     item['total_harga'] = Math.round(parseInt(pieces) * parseInt(harga));
     console.log(item, 'item harga total', pieces, harga);
-    this.countItemTotalPajak(item);
-    this.countItemPajak(item);
   }
 
   
