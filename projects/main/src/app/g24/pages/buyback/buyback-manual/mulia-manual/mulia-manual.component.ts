@@ -15,8 +15,8 @@ import { DatePipe } from "@angular/common";
 // prm
 import { PrmJualService } from '../../../../services/parameter/prm-jual.service';
 
-import { LM } from '../../../../sample/cart-buyback-manual-lm';
-import { from } from 'rxjs';
+import { LM, GS } from '../../../../sample/cart-buyback-manual-lm';
+
 
 @Component({
   selector: 'app-mulia-manual',
@@ -52,6 +52,7 @@ export class MuliaManualComponent implements OnInit {
     this.onListDenom();
     this.namaProduct
     LM.splice(0)
+    GS.splice(0)
     this.totalCart
     this.onGetParameterMax();
     

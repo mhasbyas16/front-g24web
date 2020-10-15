@@ -1,5 +1,5 @@
 import { Component, OnInit , Output, EventEmitter} from '@angular/core';
-import { LM } from '../../../sample/cart-buyback-manual-lm';
+import { LM, GS } from '../../../sample/cart-buyback-manual-lm';
 
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
@@ -36,7 +36,7 @@ export class CheckoutBuybackManualComponent implements OnInit {
   //cart
   // perhiasan = PERHIASAN;
   emasBatangan = LM;
-  // souvenir = GS;
+  souvenir = GS;
   // berlian = BERLIAN;
   // dinar = DINAR;
 
@@ -106,7 +106,7 @@ export class CheckoutBuybackManualComponent implements OnInit {
     console.debug(LM, "sadsda")
     // this.jumlahPerhiasan = this.perhiasan.length;
     this.jumlahEmasBatangan = this.emasBatangan.length;
-    // this.jumlahSouvenir = this.souvenir.length;
+    this.jumlahSouvenir = this.souvenir.length;
     // this.jumlahBerlian = this.berlian.length;
     // this.jumlahDinar = this.dinar.length;
 
@@ -120,14 +120,19 @@ export class CheckoutBuybackManualComponent implements OnInit {
   }
   
   getTransactionType() {
-    this.transactionTypeService.get("?_hash=1&code=b02").subscribe((response: any) => {
-      if (response != false) {
-        this.formData.patchValue({ 'transaction-type': response["_hash"] });
-        console.debug(response["_hash"] , "cekthGTT")
-      }
-    })
-
-    
+    if (this.souvenir.length > 0) {
+      this.transactionTypeService.get("?_hash=1&code=b03").subscribe((response: any) => {
+        if (response != false) {
+          this.formData.patchValue({ 'transaction-type': response["_hash"] });
+        }
+      })
+    }else if (this.emasBatangan.length > 0) {
+      this.transactionTypeService.get("?_hash=1&code=b02").subscribe((response: any) => {
+        if (response != false) {
+          this.formData.patchValue({ 'transaction-type': response["_hash"] });
+        }
+      })
+    }
   }
 
   
@@ -261,7 +266,12 @@ export class CheckoutBuybackManualComponent implements OnInit {
     
     console.debug(this.kembali, "kembali")
 
-    data.product = btoa(JSON.stringify({ LM }));
+    if (this.jumlahEmasBatangan > 0) {
+      data.product = btoa(JSON.stringify({ LM }));
+    }else if(this.jumlahSouvenir > 0){
+      data.product = btoa(JSON.stringify({ GS }));
+    }
+    
     data.product_encoded = "base64";
     let nomT = data["nominalTransaksi"]
     data["nominalTransaksi"] = nomT.replace(/,/g, '')
@@ -297,7 +307,7 @@ export class CheckoutBuybackManualComponent implements OnInit {
         // BERLIAN.splice(0);
         LM.splice(0);
         // DINAR.splice(0);
-        // GS.splice(0);
+        GS.splice(0);
         this.cartModal.emit(false);
         this.ChangeContentArea('10010');
       } else {

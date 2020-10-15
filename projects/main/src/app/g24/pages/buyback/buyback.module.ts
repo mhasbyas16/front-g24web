@@ -19,11 +19,12 @@ import { BuybackManualComponent } from './buyback-manual/buyback-manual.componen
 
 import { MuliaManualComponent } from './buyback-manual/mulia-manual/mulia-manual.component';
 import { ParameterAcceptBuybackComponent } from './parameter-accept-buyback/parameter-accept-buyback.component';
+import { SouvenirManualComponent } from './buyback-manual/souvenir-manual/souvenir-manual.component';
 
 
 
 @NgModule({
-  declarations: [BuybackBycodeComponent, PerhiasanBycodeComponent, MuliaBycodeComponent, BerlianBycodeComponent, GiftBycodeComponent, SouvenirBycodeComponent, DinarBycodeComponent, ParameterBuybackComponent, BuybackManualComponent, MuliaManualComponent, ParameterAcceptBuybackComponent],
+  declarations: [BuybackBycodeComponent, PerhiasanBycodeComponent, MuliaBycodeComponent, BerlianBycodeComponent, GiftBycodeComponent, SouvenirBycodeComponent, DinarBycodeComponent, ParameterBuybackComponent, BuybackManualComponent, MuliaManualComponent, ParameterAcceptBuybackComponent, SouvenirManualComponent],
   imports: [
     CommonModule,
     BuybackRoutingModule,

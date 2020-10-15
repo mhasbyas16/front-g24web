@@ -3,4 +3,7 @@
     // { }
  ];
  
+ export const GS = [
+   // { }
+];
  

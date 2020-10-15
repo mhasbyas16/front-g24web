@@ -30,16 +30,15 @@
                 <!-- Data Grid -->
                 <clr-datagrid [clrDgLoading]="loadingDg" [(clrDgSelected)]="selected">
                     <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
-
-                    <clr-dg-column>Tanggal</clr-dg-column>
                     <clr-dg-column>ID</clr-dg-column>
+                    <clr-dg-column>Tanggal</clr-dg-column>
                     <clr-dg-column>Nama Customer</clr-dg-column>
                     <clr-dg-column>CIF Customer</clr-dg-column>
                     <clr-dg-column>Total Penjualan</clr-dg-column>
                     <clr-dg-column class="right">Aksi</clr-dg-column>
                     <clr-dg-row *clrDgItems="let isi of transactions" [clrDgItem]="isi"> 
-                        <clr-dg-cell>{{isi.makerDate}}, {{isi.makerTime}}</clr-dg-cell>
                         <clr-dg-cell>{{isi.idTransactionBB}}</clr-dg-cell>
+                        <clr-dg-cell>{{isi.makerDate}}, {{isi.makerTime}}</clr-dg-cell>
                         <clr-dg-cell>{{isi.client.name}}</clr-dg-cell>
                         <clr-dg-cell>{{isi.client.cif}}</clr-dg-cell>
                         <clr-dg-cell>Rp. {{isi.nominalTransaksi | number}}</clr-dg-cell>
@@ -94,7 +93,7 @@
                                     </tfoot>                 
                                 </table>
                             </ng-container> -->
-                            <ng-container *ngIf="detail.product.LM.length != 0">
+                            <ng-container *ngIf="detail.product.LM != null">
                                 <table class="table table-compact table-noborder remove-margin" >
                                     <thead>
                                         <tr>
@@ -151,7 +150,7 @@
                                 </table>
                             </ng-container> -->
                             <!-- souvenir -->
-                            <!-- <ng-container *ngIf="detail.product.GS.length != 0">
+                            <ng-container *ngIf="detail.product.GS != null">
                                 <table class="table table-compact table-noborder remove-margin" >
                                     <thead>
                                         <tr>
@@ -177,7 +176,7 @@
                                         </tr>
                                     </tfoot>                 
                                 </table>
-                            </ng-container> -->
+                            </ng-container>
                             <!-- DINAR -->
                             <!-- <ng-container *ngIf="detail.product.DINAR.length != 0">
                                 <table class="table table-compact table-noborder remove-margin" >
