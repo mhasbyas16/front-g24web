@@ -10,11 +10,12 @@ import { NavModule } from '../../nav/nav.module';
 import { DatePipe } from '@angular/common';
 import { ExportLaporanComponent } from './export-laporan/export-laporan.component';
 import { RekeningKoranComponent } from './rekening-koran/rekening-koran.component';
+import { ExportKorporasiProformaComponent } from './export-korporasi-proforma/export-korporasi-proforma.component';
 
 
 
 @NgModule({
-  declarations: [LaporanPenjualanComponent, ExportLaporanComponent, RekeningKoranComponent],
+  declarations: [LaporanPenjualanComponent, ExportLaporanComponent, RekeningKoranComponent, ExportKorporasiProformaComponent],
   imports: [
     CommonModule,
     FormsModule,

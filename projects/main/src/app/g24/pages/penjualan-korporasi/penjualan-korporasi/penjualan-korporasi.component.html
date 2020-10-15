@@ -169,14 +169,55 @@
                         </div>
                     </div>
                 </div>
-                
+                <!-- Pembayaran -->
+                <div class="card" style="margin-top: 0;">
+                    <div class="card-header">
+                      
+                    </div>
+                    <div class="card-block">
+                        <div class="card-text">
+                            <form clrForm class="clr-form-horizontal" [formGroup]="formPembayaran">
+                                <clr-input-container>
+                                    <label>Total Harga</label>
+                                    <input clrInput type="text" [value]="hargaLogamMulia | number" formControlName="totalHarga" id="" readonly>
+                                </clr-input-container>
+                                <clr-input-container>
+                                    <label>Dibayar</label>
+                                    <input clrInput type="text" formControlName="dibayar" id="" (keyup)="onDibayar($event.target.value)">
+                                </clr-input-container>
+                                <clr-input-container>
+                                    <label>Sisa Pembayaran</label>
+                                    <input clrInput type="text" [value]="sisaPembayaran | number" formControlName="sisaPembayaran" id="" readonly>
+                                </clr-input-container>
+                                <clr-select-container>
+                                    <label>Rekening Bank</label>
+      rekening: new FormControl ("", Validators.required), 
+                                    <select clrSelect formControlName="rekening" id="">
+                                        <option *ngFor="let t of bankList" [value]="t._hash">{{t['mata-anggaran']}} - {{t.name}}</option>
+                                    </select>
+                                </clr-select-container>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="card-footer">
-            <button class="btn btn-primary" (click)="storeTransaction()">Submit</button>
+            <button class="btn btn-primary" (click)="validation()">Submit</button>
         </div>
     </div>
 </div>
 
 <app-search-nasabah #searchNasabah (clientData)="getClientData($event)"></app-search-nasabah>
 <app-add-nasabah #addNasabah (clientData)="getClientData($event)"></app-add-nasabah>
+
+<clr-modal [(clrModalOpen)]="approval">
+    <h3 class="modal-title">Transaction</h3>
+    <div class="modal-body">
+        <p>Are You Sure Store This Transaction ?</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="approval = false">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="storeTransaction()">Ok</button>
+    </div>
+</clr-modal>

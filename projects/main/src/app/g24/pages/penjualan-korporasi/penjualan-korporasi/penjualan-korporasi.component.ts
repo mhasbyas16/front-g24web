@@ -14,6 +14,7 @@ import { TransactionBookingService } from '../../../services/transaction/transac
 import { TransactionFlagService } from '../../../services/transaction/transaction-flag.service';
 import { ProductService } from '../../../services/product/product.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
+import { BankService } from '../../../services/transaction/bank.service';
 @Component({
   selector: 'app-penjualan-korporasi',
   templateUrl: './penjualan-korporasi.component.html',
@@ -26,6 +27,8 @@ export class PenjualanKorporasiComponent implements OnInit {
 
   formData: FormGroup = null;
   pic: FormGroup = null;
+  formPembayaran:FormGroup = null;
+  approval:boolean = false;
   isiClientData:any;
   hargaLogamMulia:any;
   mulia:any;
@@ -36,6 +39,8 @@ export class PenjualanKorporasiComponent implements OnInit {
   prmMargin:any;
   dataMulia:any;
   idtransaksi:any;
+  sisaPembayaran:any;
+  bankList:any;
 
   muliaCategory = "?_hash=1&product-category.code=c05";
   channel = "channel.code=ch02";
@@ -50,13 +55,15 @@ export class PenjualanKorporasiComponent implements OnInit {
     private toastrService:ToastrService,
     private transactionFlagService:TransactionFlagService,
     private productService:ProductService,
-    private sessionService:SessionService
+    private sessionService:SessionService,
+    private bankService:BankService
   ) { }
 
   ngOnInit(): void {
     this.form();
     this.periodeList();
     this.prmMargin =0;
+    this.getBank();
   }
 
   form(){
@@ -76,11 +83,24 @@ export class PenjualanKorporasiComponent implements OnInit {
       typeId: new FormControl ("", Validators.required),
       numberId: new FormControl ("", [Validators.required, Validators.pattern(/^[0-9]\d*$/)]),
     })
+
+    this.formPembayaran = new FormGroup({
+      totalHarga : new FormControl (""),
+      dibayar : new FormControl (""),
+      sisaPembayaran : new FormControl(""),
+      rekening: new FormControl (""), 
+    }); 
   }
 
   periodeList(){
     this.prmMarginService.list(this.muliaCategory+"&"+this.channel+"&"+this.transactionType+"&"+this.flagApp).subscribe((response:any)=>{
       this.periodeData = response;
+    })
+  }
+
+  getBank(){
+    this.bankService.list("?_hash=1").subscribe((response:any)=>{
+      this.bankList = response;
     })
   }
   getAkhirPeriode(val){
@@ -105,6 +125,7 @@ export class PenjualanKorporasiComponent implements OnInit {
   }
   HMulia(harga: any){
     this.hargaLogamMulia = harga;
+    this.formPembayaran.patchValue({totalHarga:harga});
   }
   cartData(data: any){
     this.total = data;  
@@ -182,6 +203,19 @@ export class PenjualanKorporasiComponent implements OnInit {
 
   // }
 
+  validation(){
+    if (!this.formData.valid || !this.pic.valid || !this.formPembayaran.valid) {
+      this.toastrService.error("Form Not Valid !!");
+      return;
+    }
+    if (this.sisaPembayaran != 0) {
+      this.toastrService.error("Sisa Pembayaran Harus 0");
+      return;
+    }
+    
+    this.approval = true;
+  }
+
   storeTransaction(){
     if (!this.formData.valid || !this.pic.valid) {
       this.toastrService.error("Form Not Valid !!");
@@ -194,8 +228,10 @@ export class PenjualanKorporasiComponent implements OnInit {
     delete form.cif;
     delete form.name;
     let Pic = this.pic.getRawValue();
+    let harga = this.formPembayaran.getRawValue();
+    delete harga.sisaPembayaran;
 
-    let data = Object.assign(form,{'pic': btoa(JSON.stringify(Pic))}, {product:btoa(JSON.stringify(this.productData))}, {totalHarga:this.hargaLogamMulia});
+    let data = Object.assign(form,{'pic': btoa(JSON.stringify(Pic))}, {product:btoa(JSON.stringify(this.productData))}, harga);
 
     // this.transactionFlagService.batchUpdateOne(this.productData, 'bookingCorporate');
 
@@ -209,6 +245,10 @@ export class PenjualanKorporasiComponent implements OnInit {
       this.toastrService.success("Success Add Data !!");
       return;
     })
+  }
+
+  onDibayar(val){
+    this.sisaPembayaran = Number(this.hargaLogamMulia) - Number(val);
   }
 
   ChangeContentArea(pageId : string)
