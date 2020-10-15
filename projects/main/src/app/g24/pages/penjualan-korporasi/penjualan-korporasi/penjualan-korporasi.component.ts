@@ -205,7 +205,7 @@ export class PenjualanKorporasiComponent implements OnInit {
         return;
       }
       
-      this.ChangeContentArea('10004');
+      this.ChangeContentArea('30002');
       this.toastrService.success("Success Add Data !!");
       return;
     })

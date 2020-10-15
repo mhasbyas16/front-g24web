@@ -15,7 +15,9 @@ export const management = [
       // korporasi
       {_id: "0008", type: "menu", name : "Penjualan Korporasi", icons: "shopping-cart", color : "warna-warni", componentId : "S10022", parentId: "", module: "pjk"},
       {_id: "0008", type: "sub-menu", name : "Penjualan Korporasi", icons: "yang bagus", color : "warna-warni", componentId : "30001", parentId: "S10022", module: "pjk",menu : {_id: "0008"}},
+      {_id: "0008", type: "sub-menu", name : "Penjualan Berjangka", icons: "yang bagus", color : "warna-warni", componentId : "", parentId: "S10022", module: "pjk",menu : {_id: "0008"}},
       {_id: "0008", type: "sub-menu", name : "List Penjualan Korporasi", icons: "yang bagus", color : "warna-warni", componentId : "30002", parentId: "S10022", module: "pjk",menu : {_id: "0008"}},
+      
       // LAPORAN
       {_id: "0004", type: "menu", name : "Laporan", icons: "list", color : "warna-warni", componentId : "S10002", parentId: "", module: "lp"},
       {_id: "0004", type: "sub-menu", name : "Laporan Penjualan", icons: "yang bagus", color : "warna-warni", componentId : "10003", parentId: "S10002", module: "lp",menu : {_id: "0004"}},

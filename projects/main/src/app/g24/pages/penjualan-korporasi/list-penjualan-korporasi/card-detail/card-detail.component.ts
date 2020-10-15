@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { TransactionBookingService } from '../../../../services/transaction/transaction-booking.service';
 import { ToastrService } from 'ngx-toastr';
 import { TransactionFlagService } from '../../../../services/transaction/transaction-flag.service';
@@ -9,6 +9,8 @@ import { TransactionFlagService } from '../../../../services/transaction/transac
   styleUrls: ['./card-detail.component.scss']
 })
 export class CardDetailComponent implements OnInit {
+
+  @Output() refresh = new EventEmitter();
 
   modal: boolean = false;
   list = [];
@@ -54,21 +56,22 @@ export class CardDetailComponent implements OnInit {
     console.debug(val.product);
     let data = {"_id":val._id,"flag":"jual"}
 
-    // this.transactionFlagService.batchUpdateOne(val.product,"jual");
-    // this.transactionBookingService.update(data).subscribe((response:any)=>{
-    //   if (response == false) {
-    //     return;
-    //   }
-
-    //   this.toastrService.success("Succes Approve");
-    // })
+    this.transactionFlagService.batchUpdateOne(val.product,"jual");
+    this.transactionBookingService.update(data).subscribe((response:any)=>{
+      if (response == false) {
+        return;
+      }
+      this.modal = false;
+      this.refresh.emit("id");
+      this.toastrService.success("Succes Approve");
+    })
   }
 
   RejectTr(val){
     console.debug(val.product);
     let data = {"_id":val._id,"flag":"rejected"}
 
-    // this.transactionFlagService.batchUpdateOne(val.product,"stock");
+    this.transactionFlagService.batchUpdateOne(val.product,"stock");
     this.transactionBookingService.update(data).subscribe((response:any)=>{
       if (response == false) {
         return;

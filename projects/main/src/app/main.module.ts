@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 
 @NgModule({})
 export class MainModule{
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<AppModule> {
     return {
       ngModule: AppModule,
       providers: []

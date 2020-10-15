@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges } from '@angular/core';
 import { ContentPage } from '../../../lib/helper/content-page';
 import { EMenuID } from '../../../lib/enums/emenu-id.enum';
 import { DContent } from '../../../decorators/content/pages';
@@ -16,7 +16,7 @@ import { SplitDateServiceService } from '../../../services/split-date-service.se
 })
 
 @DContent(ListPenjualanKorporasiComponent.key)
-export class ListPenjualanKorporasiComponent implements OnInit {
+export class ListPenjualanKorporasiComponent implements OnInit, OnChanges {
 
   listTotalHarga = [];
   search: FormGroup = null;
@@ -30,6 +30,9 @@ export class ListPenjualanKorporasiComponent implements OnInit {
     private splitDateServiceService:SplitDateServiceService
   ) { }
 
+  ngOnChanges(): void{
+
+  }
   ngOnInit(): void {
     this.formFilter();
     this.filterTransaction('id');
@@ -148,6 +151,10 @@ export class ListPenjualanKorporasiComponent implements OnInit {
       this.toastrService.success("Load "+this.transactions.length+" Data", "Transaction");
      // console.debug(this.listTotalHarga ,"alkjfdljajkladkljadkla")
     })
+  }
+
+  refreshPage(val){
+    this.filterTransaction(val);
   }
 
 
