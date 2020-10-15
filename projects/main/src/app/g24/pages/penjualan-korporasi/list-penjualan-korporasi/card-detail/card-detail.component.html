@@ -53,7 +53,8 @@
                         <clr-dg-column>Kode</clr-dg-column>
                         <clr-dg-column>Vendor</clr-dg-column>
                         <clr-dg-column>Denom</clr-dg-column>
-                        <clr-dg-column>harga</clr-dg-column>
+                        <clr-dg-column>Harga</clr-dg-column>
+                        <clr-dg-column>Unit</clr-dg-column>
                     
                         <clr-dg-row *ngFor="let list of product">
                             <clr-dg-cell>{{list.name}}</clr-dg-cell>
@@ -62,6 +63,7 @@
                             <clr-dg-cell>{{list.vendor}}</clr-dg-cell>
                             <clr-dg-cell>{{list.denom}}</clr-dg-cell>
                             <clr-dg-cell>Rp. {{list.harga | number}}</clr-dg-cell>
+                            <clr-dg-cell>{{list.detail.unit.nama}}</clr-dg-cell>
                         </clr-dg-row>
                     
                         <clr-dg-footer>

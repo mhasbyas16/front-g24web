@@ -41,6 +41,7 @@ export class PenjualanKorporasiComponent implements OnInit {
   idtransaksi:any;
   sisaPembayaran:any;
   bankList:any;
+  maker:any;
 
   muliaCategory = "?_hash=1&product-category.code=c05";
   channel = "channel.code=ch02";
@@ -64,6 +65,8 @@ export class PenjualanKorporasiComponent implements OnInit {
     this.periodeList();
     this.prmMargin =0;
     this.getBank();
+    this.maker = {maker:btoa(JSON.stringify(this.sessionService.getUser())), maker_encoded:"base64"};
+    console.debug(this.maker)
   }
 
   form(){
@@ -231,7 +234,7 @@ export class PenjualanKorporasiComponent implements OnInit {
     let harga = this.formPembayaran.getRawValue();
     delete harga.sisaPembayaran;
 
-    let data = Object.assign(form,{'pic': btoa(JSON.stringify(Pic))}, {product:btoa(JSON.stringify(this.productData))}, harga);
+    let data = Object.assign(form,{'pic': btoa(JSON.stringify(Pic))}, {product:btoa(JSON.stringify(this.productData)),rekening_encoded:"base64"}, harga,this.maker);
 
     // this.transactionFlagService.batchUpdateOne(this.productData, 'bookingCorporate');
 
