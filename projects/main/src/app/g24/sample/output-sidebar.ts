@@ -1,6 +1,12 @@
 import { EMenuID } from '../lib/enums/emenu-id.enum';
 
 export const management = [
+    // ADMIN
+    {_id: "0013", type: "menu", name : "Admin", icons: "user", color : "warna-warni", componentId : "S1100", parentId: "", module: "adm"},
+    {_id: "0013", type: "sub-menu", name : "Manajemen Cabang", icons: "yang bagus", color : "warna-warni", componentId : "1102", parentId: "S1100", module: "adm",menu : {_id: "0013"}},
+    {_id: "0013", type: "sub-menu", name : "Manajemen Distro", icons: "yang bagus", color : "warna-warni", componentId : "1101", parentId: "S1100", module: "adm",menu : {_id: "0013"}},
+    {_id: "0013", type: "sub-menu", name : "Manajemen Padanan Distro", icons: "yang bagus", color : "warna-warni", componentId : "1103", parentId: "S1100", module: "adm",menu : {_id: "0013"}},
+    {_id: "0013", type: "sub-menu", name : "Manajemen Regional", icons: "yang bagus", color : "warna-warni", componentId : "1104", parentId: "S1100", module: "adm",menu : {_id: "0013"}},
     // ANGGARAN
     {_id: "0007", type: "menu", name : "Anggaran", icons: "dollar-bill", color : "warna-warni", componentId : "S30000", parentId: "", module: "ag"},
     {_id: "0007", type: "sub-menu", name : "Pengajuan Anggaran", icons: "", color : "warna-warni", componentId : "30001", parentId: "S30000", module: "ag",menu : {_id: "0007"}},
@@ -81,9 +87,9 @@ export const keuangan = [
      {_id: "0006", type: "sub-menu", name : "Parameter Harga", icons: "", color : "warna-warni", componentId : "20001", parentId: "S20000", module: "pr",menu : {_id: "0006"}},
      // TRANSAKSI-MOKER
      {_id: "0006", type: "menu", name : "Transaksi", icons: "nvme", color : "warna-warni", componentId : "S31000", parentId: "", module: "tm"},
+     {_id: "0006", type: "sub-menu", name : "Approval Kirim Modal", icons: "", color : "warna-warni", componentId : "31002", parentId: "S31000", module: "tm",menu : {_id: "0008"}},
      {_id: "0006", type: "sub-menu", name : "Approval Terima Moker", icons: "", color : "warna-warni", componentId : "31004", parentId: "S31000", module: "tm",menu : {_id: "0008"}},
-     {_id: "0006", type: "sub-menu", name : "Input Moker", icons: "", color : "warna-warni", componentId : "31001", parentId: "S31000", module: "tm",menu : {_id: "0008"}},
-     {_id: "0006", type: "sub-menu", name : "Otorisasi Moker", icons: "", color : "warna-warni", componentId : "31002", parentId: "S31000", module: "tm",menu : {_id: "0008"}},
+     {_id: "0006", type: "sub-menu", name : "Kirim Moker", icons: "", color : "warna-warni", componentId : "31001", parentId: "S31000", module: "tm",menu : {_id: "0008"}},
      {_id: "0006", type: "sub-menu", name : "Terima Moker", icons: "", color : "warna-warni", componentId : "31003", parentId: "S31000", module: "tm",menu : {_id: "0008"}},
 ];
 

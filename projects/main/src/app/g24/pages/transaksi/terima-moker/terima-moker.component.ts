@@ -25,7 +25,7 @@ export class TerimaMokerComponent implements OnInit {
   static key = EMenuID.TERIMA_MOKER
 
   //title
-  breadcrumb = "Input Moker"
+  breadcrumb = "Terima Modal Kerja"
   title = "Modal Kerja"
   // spinner 
   spinner = false;

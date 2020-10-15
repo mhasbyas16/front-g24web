@@ -28,7 +28,7 @@ export class OtorisasiMokerComponent implements OnInit {
   static key = EMenuID.OTORISASI_MOKER
 
   //title
-  breadcrumb = "Input Moker"
+  breadcrumb = "Approval Kirim Modal Kerja"
   title = "Modal Kerja"
   // spinner 
   spinner = false;

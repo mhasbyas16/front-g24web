@@ -1,7 +1,7 @@
 <div class="clr-row">
   <div class="card" style="margin-top: 0em;">
     <div class="card-header">
-      Input Modal Kerja
+      {{breadcrumb}}
     </div>
     <div class="card-block">
       <div class="card-text">
@@ -42,7 +42,8 @@
             <clr-dg-action-overflow>
               <button class="action-item" (click)="exportPDF.generatePdf(data)">Cetak PDF</button>
               <button class="action-item" (click)="mainDetail(data)">Detail</button>
-              <button class="action-item" *ngIf="data.flag == 'submit'&& myRole == 'Keuangan';" (click)="mainDelete(data)">Hapus</button>
+              <button class="action-item" *ngIf="data.flag == 'submit'&& myRole == 'Keuangan';"
+                (click)="mainDelete(data)">Hapus</button>
             </clr-dg-action-overflow>
             <clr-dg-cell hidden>{{data._id}}</clr-dg-cell>
             <clr-dg-cell class="width-1">{{data.id_transaksi}}</clr-dg-cell>
@@ -249,30 +250,30 @@
 
 <ng-container *ngIf="modalDeleteDialog">
   <form (ngSubmit)="mainDeleteSubmit();">
-      <clr-modal [clrModalSize]="'md'" [clrModalOpen]="modalDeleteDialog" [clrModalClosable]="false"
-          [clrModalStaticBackdrop]="false">
+    <clr-modal [clrModalSize]="'md'" [clrModalOpen]="modalDeleteDialog" [clrModalClosable]="false"
+      [clrModalStaticBackdrop]="false">
 
-          <h3 class="modal-title">Delete {{title}}</h3>
-          <div class="modal-body">
-              <p>Are you sure you want to permanently remove this item?</p>
-              <clr-input-container>
-                  <input clrInput type="hidden" [(ngModel)]="inputModel.id" name="id"/>
-              </clr-input-container>
-          </div>
-          <!-- hidden field put here-->
-          <div class="modal-footer">
-              <button type="button" class="btn btn-outline" (click)="modalDeleteDialog = false">Cancel</button>
-              <button type="submit" class="btn btn-danger">
-                  <span *ngIf="spinner==true" class="spinner spinner-inline">
-                      Deleting
-                  </span>
-                  <ng-container *ngIf="spinner==false">
-                      Delete
-                  </ng-container>
-              </button>
-          </div>
+      <h3 class="modal-title">Delete {{title}}</h3>
+      <div class="modal-body">
+        <p>Are you sure you want to permanently remove this item?</p>
+        <clr-input-container>
+          <input clrInput type="hidden" [(ngModel)]="inputModel.id" name="id" />
+        </clr-input-container>
+      </div>
+      <!-- hidden field put here-->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="modalDeleteDialog = false">Cancel</button>
+        <button type="submit" class="btn btn-danger">
+          <span *ngIf="spinner==true" class="spinner spinner-inline">
+            Deleting
+          </span>
+          <ng-container *ngIf="spinner==false">
+            Delete
+          </ng-container>
+        </button>
+      </div>
 
-      </clr-modal>
+    </clr-modal>
   </form>
 </ng-container>
 <app-export-pdf #exportPDF></app-export-pdf>

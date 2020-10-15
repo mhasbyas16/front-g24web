@@ -55,7 +55,9 @@ export class SetupMarginComponent implements OnInit {
   filterVendorProd = null;
   tempVendor = null;
   getProduct= null;
+  getTransaction = null;
   show = false;
+  showlm = false;
   allVendor = null;
   myRole = null;
   getDataold = null;
@@ -168,8 +170,13 @@ export class SetupMarginComponent implements OnInit {
     this.getProduct = data;
     if (data == '5ebba05bb980bd24b9201769' || data == '5efc0d5c592e3349d15f05a8') {
       this.show = true;
+      this.showlm = false;
+    }else if (this.getProduct == '5ebba095b980bd24b9201cca' && this.getTransaction == '5f49a587e7413dbd1a518fa9'){
+      this.showlm = true;
+      this.show = false;
     }else{
       this.show = false;
+      this.showlm = false;
     }
     // if (data == null) {
     //   this.toastrService.error(this.productCategoryService.message());
@@ -178,6 +185,15 @@ export class SetupMarginComponent implements OnInit {
     //   this.getProduct = data;
     //   this.loadVendors();
     // }
+  }
+
+  onChangeTransaction(data){
+    this.getTransaction = data;
+    if (this.getProduct == '5ebba095b980bd24b9201cca' && data == '5f49a587e7413dbd1a518fa9') {
+      this.showlm = true;
+    }else{
+      this.showlm = false;
+    }
   }
 
   loadVendors(){
@@ -323,9 +339,32 @@ export class SetupMarginComponent implements OnInit {
       "keterangan" : this.inputModel.keterangan,
     }
 
+    let margin2 = {
+      "channel" : ch,
+      "channel_encoded" : "base64",
+      "product-category" : prod,
+      "product-category_encoded" : "base64",
+      "transaction-type" : trans,
+      "transaction-type_encoded" : "base64",
+      "margin" : parseFloat(this.inputModel.margin),
+      "margin_encoded": "double",
+      "periode" : parseFloat(this.inputModel.periode),
+      "periode_encoded": "double",
+      // "vendor" : btoa(JSON.stringify(this.ven)),
+      // "vendor_encoded" : "base64array",
+      "create_by" : this.nikUser["_hash"],
+      "create_by_encoded" : "base64",
+      "create_date" : this.date_now,
+      "create_time" : this.time,
+      "flag" : "submit",
+      "keterangan" : this.inputModel.keterangan,
+    }
+
     let tempSave = null;
     if (this.getProduct == '5ebba05bb980bd24b9201769' || this.getProduct == '5efc0d5c592e3349d15f05a8'){
       tempSave = margin1;
+    } else if (this.getProduct == '5ebba095b980bd24b9201cca' && this.getTransaction == '5f49a587e7413dbd1a518fa9'){
+      tempSave = margin2;
     } else {
       tempSave = margin;
     }
@@ -505,6 +544,8 @@ export class SetupMarginComponent implements OnInit {
     this.inputModel.product_category = data['product-category'].name;
     this.inputModel.product = data['product-category']._id;
     this.onChangeProduct(this.inputModel.product);
+    this.getProduct = this.inputModel.product;
+    this.onChangeTransaction(data['transaction-type']._id);
     this.inputModel.transaction_type = data['transaction-type'].name;
     this.inputModel.mychannel = data.channel.name;
     this.inputModel.keterangan = data.keterangan;

@@ -28,7 +28,7 @@ export class InputMokerComponent implements OnInit {
   static key = EMenuID.INPUT_MOKER
 
   //title
-  breadcrumb = "Input Moker"
+  breadcrumb = "Kirim Modal Kerja"
   title = "Modal Kerja"
   // spinner 
   spinner = false;

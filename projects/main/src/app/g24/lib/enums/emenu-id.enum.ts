@@ -145,4 +145,11 @@ export enum EMenuID {
     OTORISASI_MOKER         = '31002',
     TERIMA_MOKER            = '31003',
     APPROVAL_TERIMA_MOKER   = '31004',
+
+    //admin
+    ADMIN                   = '1100',
+    ADMIN_ADD_DISTRO        = '1101',
+    ADMIN_ADD_CABANGINDUK   = '1102',
+    ADMIN_PADANAN_DISTRO    = '1103',
+    ADMIN_ADD_REGIONAL      = '1104',
 }

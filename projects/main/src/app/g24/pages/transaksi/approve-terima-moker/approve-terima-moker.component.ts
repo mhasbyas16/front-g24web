@@ -25,7 +25,7 @@ export class ApproveTerimaMokerComponent implements OnInit {
   static key = EMenuID.APPROVAL_TERIMA_MOKER
 
   //title
-  breadcrumb = "Input Moker"
+  breadcrumb = "Approval Terima Modal Kerja"
   title = "Modal Kerja"
   // spinner 
   spinner = false;
