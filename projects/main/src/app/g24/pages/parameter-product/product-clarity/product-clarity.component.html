@@ -9,12 +9,9 @@
             			<div class="clr-form-control">
             				<label class="clr-control-label">Kode</label>
             				<div class="clr-control-container">
-            				<select [(ngModel)]="search.code" #code clrSelect name="code">
-            					<option [ngValue]=""></option>
-            					<ng-container *ngFor="let data of dataclarity">
-            						<option [ngValue]="data">{{data.code}}</option>
-            					</ng-container>
-            				</select>
+								<clr-input-container>
+									<input clrInput [(ngModel)]="search.code" name="code">
+								</clr-input-container>
             				</div>
             			</div>
             		</div>
@@ -22,12 +19,9 @@
             			<div class="clr-form-control">
             				<label class="clr-control-label">Nama Clarity</label>
             				<div class="clr-control-container">
-            				<select [(ngModel)]="search.name" #name clrSelect name="name">
-            					<option [ngValue]=""></option>
-            					<ng-container *ngFor="let data of dataclarity">
-            						<option [ngValue]="data">{{data.name}}</option>
-            					</ng-container>
-            				</select>
+								<clr-input-container>
+									<input clrInput [(ngModel)]="search.name" name="name">
+								</clr-input-container>
             				</div>
             			</div>
             		</div>
@@ -154,3 +148,5 @@
         <button type="button" class="btn btn-primary" (click)="Update()">Update</button>
     </div>
 </clr-modal>
+
+<loading-spinner #spinner></loading-spinner>

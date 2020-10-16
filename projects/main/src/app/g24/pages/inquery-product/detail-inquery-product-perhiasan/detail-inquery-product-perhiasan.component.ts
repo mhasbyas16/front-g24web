@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { VendorService } from '../../../services/vendor.service';
 import { ClrLoadingState } from '@clr/angular';
 import { ProductCategoryService } from '../../../services/product/product-category.service';
@@ -7,9 +7,14 @@ import { ProductPurityService } from '../../../services/product/product-purity.s
 import { ProductJenisService } from '../../../services/product/product-jenis.service';
 import { ProductService } from '../../../services/product/product.service';
 import { TipeStock } from '../../../lib/enum/flag-product';
+import { PrmLookupService } from '../../../services/location/prm-lookup.service';
+import { SessionService } from 'projects/platform/src/app/core-services/session.service';
+import { UnitService } from '../../../services/system/unit.service';
 import { ToastrService } from 'ngx-toastr';
 import { DContent } from '../../../decorators/content/pages';
 import { EMenuID } from '../../../lib/enums/emenu-id.enum';
+
+import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'detail-inquery-product-perhiasan',
@@ -26,14 +31,24 @@ static key = EMenuID.DETAIL_INQUERY_PERHIASAN;
               private productgoldcolorservice : ProductGoldColorService,
               private productpurityservice : ProductPurityService,
               private productjenisservice : ProductJenisService,
+              private sessionService : SessionService,
+              private unitservice : UnitService,
+              private locationservice : PrmLookupService,
               private productservice : ProductService,
               private toastr : ToastrService) { }
+
+              @ViewChild('spinner',{static:false}) spinner : LoadingSpinnerComponent;
 
   inquery : any = {};
   vendor : any = [];
   warna : any = [];
   kadar : any = [];
   jenis : any = [];
+
+  lokasi : any = [];
+  unit : any = [];
+  showUnit : Boolean = false;
+
   Tipe = Object.values(TipeStock);
   outputdata : any[] = [];
 
@@ -52,6 +67,8 @@ static key = EMenuID.DETAIL_INQUERY_PERHIASAN;
     this.LoadWarna();
     this.LoadVendor();
     this.LoadJenis();
+    this.LoadUnit();
+    this.LocationProduct();
   }
 
   async LoadVendor(){
@@ -94,7 +111,39 @@ static key = EMenuID.DETAIL_INQUERY_PERHIASAN;
     this.jenis = data;
   }
 
+  async LocationProduct(){
+    let maping = await this.locationservice.list("?code=location-product").toPromise();
+    if(maping==false){
+      this.ErrorPage = true;
+      return;
+    }
+    this.lokasi = maping.map(datalokasi => datalokasi.value);
+  }
+
+  async LoadUnit(){
+    let cekUnit = this.sessionService.getUser().unit.code;
+    if(cekUnit=="00005"){
+    let data = await this.unitservice.list("?").toPromise();
+    if(data==false){
+      this.ErrorPage = true;
+      return;
+    }
+    let output = data;
+    this.unit = output.slice();
+
+    let userUnitCode = this.sessionService.getUser().unit.code;
+        for (let index = 0; index < this.unit.length; index++) {
+          const element = this.unit[index];
+          if(element.code == userUnitCode)
+            this.unit.splice(index, 1);
+        }
+    this.showUnit = true;
+    }
+  }
+
   async Search(){
+    this.spinner.SetSpinnerText("Mohon Tunggu...");
+    this.spinner.Open();
     this.LoadingSearch = ClrLoadingState.LOADING;
     let params = "?product-category.code=c00&";
     for(let key in this.inquery){
@@ -125,6 +174,14 @@ static key = EMenuID.DETAIL_INQUERY_PERHIASAN;
             params += "berat="+this.inquery[key]+"&";
             break;
 
+          case "unit" : 
+            params += "unit.code="+this.inquery[key].code+"&";
+            break;
+
+            case "location" :
+              params += "location="+this.inquery[key].code+"&";
+              break;
+
           case "tipe_stock" :
             params += "tipe_stock="+this.inquery[key].code+"&";
             break;
@@ -137,12 +194,14 @@ static key = EMenuID.DETAIL_INQUERY_PERHIASAN;
     }
     let data = await this.productservice.list(params).toPromise();
     if(data==false){
+      this.spinner.Close();
       this.toastr.info("Data tidak ditemukan","Informasi");
       this.LoadingSearch = ClrLoadingState.ERROR;
       this.Reset();
       this.outputdata = [];
       return;
     }
+    this.spinner.Close();
     this.outputdata = data;
     this.toastr.success("Data di temukan "+data.length, "Sukses");
     this.LoadingSearch = ClrLoadingState.SUCCESS;

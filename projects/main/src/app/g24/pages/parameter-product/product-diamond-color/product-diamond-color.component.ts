@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DContent } from '../../../decorators/content/pages';
 import { EMenuID } from '../../../lib/enums/emenu-id.enum';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
@@ -13,6 +13,7 @@ import { ToastrService } from 'ngx-toastr';
 
 //SERVICE
 import { ProductDiamondColorService } from '../../../services/product/product-diamond-color.service';
+import { LoadingSpinnerComponent } from '../../../nav/modal/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-product-diamond-color',
@@ -42,6 +43,7 @@ modalupdate : boolean = false;
 
   constructor(private diamondservice : ProductDiamondColorService, private toastr : ToastrService) { }
 
+  @ViewChild('spinner',{static:false}) spinner : LoadingSpinnerComponent;
   ngOnInit(): void {
   	let params = "?";
   	this.diamondservice.list(params).subscribe(data=>{
@@ -55,12 +57,14 @@ modalupdate : boolean = false;
   }
 
   SearchData(){
+	this.spinner.SetSpinnerText("Mohon Tunggu...");
+	this.spinner.Open();
   	let params = "?";
   	for(let key in this.search){
   		if(this.search[key]==""||this.search[key]==null)continue;
   			switch (key) {
   				case "code":
-  					params += "code="+this.search[key].code+"&code_encoded=int&";
+  					params += "code="+this.search[key]+"&code_encoded=int&";
 				break;
   				
   				default:
@@ -71,10 +75,13 @@ modalupdate : boolean = false;
   		this.diamondservice.list(params).subscribe(data=>{
   			if(data==false){
   				if(this.diamondservice.message()!=""){
-  					this.toastr.info("Data tidak ditemukan","Informasi");
+					  this.toastr.info("Data tidak ditemukan","Informasi");
+					  this.spinner.Close();
   					return;
   				}
-  			}
+			  }
+			this.toastr.success("Data ditemukan "+data.length,"Sukses");
+			this.spinner.Close();
   			this.listdiamond = data;
   		})
   }
@@ -85,6 +92,8 @@ modalupdate : boolean = false;
   }
 
   Simpan(){
+	this.spinner.SetSpinnerText("Mohon Tunggu...");
+	this.spinner.Open();
 	let name = this.input["name"];
 	let num = AlphaNumeric.Encode(this.datadiamond.length);  
 	if(num.length >= 1){
@@ -98,14 +107,18 @@ modalupdate : boolean = false;
 	  let ff = DataTypeUtil.Encode(data);
 	  if(!this.input["name"]){
 		  this.toastr.warning("Data name belum di isi","Peringatan");
+		  this.spinner.Close();
 		  return;
 	  }
   	this.diamondservice.add(ff).subscribe(data=>{
   		if(data==false){
   			if(this.diamondservice.message()!=""){
+				this.toastr.error("Data gagal disimpan","Gagal");
+				this.spinner.Close();
   				return;
   			}
-  		}
+		  }
+		this.spinner.Close();
   		this.toastr.success("Data berhasil ditambah","Sukses");
   		this.listdiamond = [];
   		this.loadData();
@@ -130,6 +143,8 @@ modalupdate : boolean = false;
   }
 
   Update(){
+	this.spinner.SetSpinnerText("Mohon Tunggu...");
+	this.spinner.Open();
   	for(let i = 0; i < this.uptodate.length; i++){
   		console.log(this.uptodate[i]._id);
   		let data = {
@@ -143,9 +158,12 @@ modalupdate : boolean = false;
   		this.diamondservice.update(upd).subscribe(data=>{
   			if(data==false){
   				if(this.diamondservice.message()!=""){
+					this.toastr.error("Data gagal dirubah","Gagal");
+					this.spinner.Close();
   					return;
   				}
-  			}
+			  }
+			this.spinner.Close();
   			this.toastr.success("Data berhasil diubah","Sukses");
   			this.listdiamond = [];
   			this.loadData();
@@ -155,11 +173,15 @@ modalupdate : boolean = false;
   }
 
   Hapus(){
+	this.spinner.SetSpinnerText("Mohon Tunggu...");
+	this.spinner.Open();
 	if(!this.data_view){
 		this.toastr.warning("Data belum dipilih","Peringatan");
+		this.spinner.Close();
 		return;
 	}else if(Object.keys(this.data_view).length==0){
 		this.toastr.warning("Data belum dipilih","Peringatan");
+		this.spinner.Close();
 		return;
 	}
   	this.delete = [];
@@ -170,9 +192,12 @@ modalupdate : boolean = false;
   		this.diamondservice.delete(dlt).subscribe(data=>{
   			if(data==false){
   				if(this.diamondservice.message()!=""){
+					this.spinner.Close();
+					this.toastr.error("Data gagal dihapus","Gagal");
   					return;
   				}
-  			}
+			  }
+			this.spinner.Close();
   			this.toastr.success("Data berhasil dihapus","Sukses");
   			this.listdiamond = [];
   			this.loadData();

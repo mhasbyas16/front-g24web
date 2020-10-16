@@ -1,9 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ClrLoadingState } from '@clr/angular';
 import { VendorService } from '../../../services/vendor.service';
 import { ProductService } from '../../../services/product/product.service';
 import { ProductDenomService } from '../../../services/product/product-denom.service';
+import { PrmLookupService } from '../../../services/location/prm-lookup.service';
+import { SessionService } from 'projects/platform/src/app/core-services/session.service';
+import { UnitService } from '../../../services/system/unit.service';
 import { ToastrService } from 'ngx-toastr';
+import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
+
 
 @Component({
   selector: 'detail-inquery-product-dinar',
@@ -15,12 +20,21 @@ export class DetailInqueryProductDinarComponent implements OnInit {
   constructor(private vendorservice : VendorService,
               private toastr : ToastrService,
               private denomservice : ProductDenomService,
+              private sessionService : SessionService,
+              private unitservice : UnitService,
+              private locationservice : PrmLookupService,
               private productservice : ProductService) { }
+
+              @ViewChild('spinner',{static:false}) spinner : LoadingSpinnerComponent;
 
   inquery : any = {};
   vendor : any = [];
   denom : any = [];
   outputdata : any = [];
+  lokasi : any = [];
+  unit : any = [];
+  showUnit : Boolean = false;
+
   ErrorPage : Boolean = false;
   LoadingSearch : ClrLoadingState = ClrLoadingState.DEFAULT;
   LoadingPage : ClrLoadingState = ClrLoadingState.DEFAULT;
@@ -32,6 +46,8 @@ export class DetailInqueryProductDinarComponent implements OnInit {
   async LoadData(){
     this.LoadVendor();
     this.LoadDenom();
+    this.LoadUnit();
+    this.LocationProduct();
   }
 
   async LoadVendor(){
@@ -52,7 +68,39 @@ export class DetailInqueryProductDinarComponent implements OnInit {
     this.denom = data;
   }
 
+  async LocationProduct(){
+    let maping = await this.locationservice.list("?code=location-product").toPromise();
+    if(maping==false){
+      this.ErrorPage = true;
+      return;
+    }
+    this.lokasi = maping.map(datalokasi => datalokasi.value);
+  }
+
+  async LoadUnit(){
+    let cekUnit = this.sessionService.getUser().unit.code;
+    if(cekUnit=="00005"){
+    let data = await this.unitservice.list("?").toPromise();
+    if(data==false){
+      this.ErrorPage = true;
+      return;
+    }
+    let output = data;
+    this.unit = output.slice();
+
+    let userUnitCode = this.sessionService.getUser().unit.code;
+        for (let index = 0; index < this.unit.length; index++) {
+          const element = this.unit[index];
+          if(element.code == userUnitCode)
+            this.unit.splice(index, 1);
+        }
+    this.showUnit = true;
+    }
+  }
+
   async Search(){
+    this.spinner.SetSpinnerText("Mohon Tunggu...");
+    this.spinner.Open();
     this.LoadingSearch = ClrLoadingState.LOADING;
     let params = "?product-category.code=c06&";
     for(let key in this.inquery){
@@ -77,12 +125,14 @@ export class DetailInqueryProductDinarComponent implements OnInit {
     }
     let data = await this.productservice.list(params).toPromise();
     if(data==false){
+      this.spinner.Close();
       this.toastr.info("Data tidak ditemukan","Informasi");
       this.LoadingSearch = ClrLoadingState.ERROR;
       this.Reset();
       this.outputdata = [];
       return;
     }
+    this.spinner.Close();
     this.LoadingSearch = ClrLoadingState.SUCCESS;
     this.toastr.success("Data ditemukan "+data.length);
     this.Reset();

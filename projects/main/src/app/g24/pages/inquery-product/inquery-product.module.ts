@@ -10,7 +10,7 @@ import { DetailInqueryProductPermataComponent } from './detail-inquery-product-p
 import { DetailInqueryProductGiftComponent } from './detail-inquery-product-gift/detail-inquery-product-gift.component';
 import { DetailInqueryProductEmasComponent } from './detail-inquery-product-emas/detail-inquery-product-emas.component';
 import { DetailInqueryProductDinarComponent } from './detail-inquery-product-dinar/detail-inquery-product-dinar.component';
-
+import { NavModule } from '../../nav/nav.module';
 
 @NgModule({
   declarations: [InqueryProductComponent, DetailInqueryProductPerhiasanComponent, DetailInqueryProductSouvenirComponent, DetailInqueryProductPermataComponent, DetailInqueryProductGiftComponent, DetailInqueryProductEmasComponent, DetailInqueryProductDinarComponent],
@@ -18,7 +18,8 @@ import { DetailInqueryProductDinarComponent } from './detail-inquery-product-din
     CommonModule,
     InqueryProductRoutingModule,
     ClarityModule,
-    FormsModule
+    FormsModule,
+    NavModule
   ]
 })
 export class InqueryProductModule { }

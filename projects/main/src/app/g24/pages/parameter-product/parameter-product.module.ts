@@ -17,6 +17,7 @@ import { ProductSeriesComponent } from './product-series/product-series.componen
 import { TokoPenyediaComponent } from './toko-penyedia/input-toko-penyedia.component';
 import { InputVendorComponent } from './input-vendor/input-vendor.component';
 import { NgSelect2Module } from 'ng-select2';
+import { NavModule } from '../../nav/nav.module';
 
 
 @NgModule({
@@ -24,6 +25,7 @@ import { NgSelect2Module } from 'ng-select2';
   imports: [
     CommonModule,
     FormsModule,
+    NavModule,
     ClarityModule,
     NgSelect2Module,
     ParameterProductRoutingModule

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DContent } from '../../../decorators/content/pages';
 import { EMenuID } from '../../../lib/enums/emenu-id.enum';
 import { DataTypeUtil } from '../../../lib/helper/data-type-util';
@@ -9,6 +9,8 @@ import { ToastrService } from 'ngx-toastr';
 //SERVICE
 import { VendorService } from '../../../services/vendor.service';
 import { ProductCategoryService } from '../../../services/product/product-category.service';
+import { AlphaNumeric } from '../../../lib/helper/alpha-numeric';
+import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-input-vendor',
@@ -52,6 +54,7 @@ listvendor : any[] = [];
 
   constructor(private toastr : ToastrService, private vendorservice : VendorService,
               private kategoriservice : ProductCategoryService) { }
+  @ViewChild('spinner',{static:false}) spinner : LoadingSpinnerComponent;
 
   ngOnInit(): void {
     let params = "?";
@@ -75,17 +78,19 @@ listvendor : any[] = [];
   }
 
   SearchData(){
+    this.spinner.SetSpinnerText("Mohon Tunggu...");
+    this.spinner.Open();
     let params = "?";
     if(!this.search["kategori"]){
     for(let key in this.search){
       if(this.search[key]==""||this.search[key]==null)continue;
         switch(key){
-          case 'kategori':
-            params += "product-category.code="+this.search[key].code+"&";
-            break; 
+          // case 'kategori':
+          //   params += "product-category.code="+this.search[key]+"&";
+          //   break; 
 
           case 'code':
-            params += "code="+this.search[key].code+"&";
+            params += "code="+this.search[key]+"&";
             break;
 
           default:
@@ -96,11 +101,14 @@ listvendor : any[] = [];
     this.vendorservice.list(params).subscribe(data=>{
       if(data==false){
         if(this.vendorservice.message()!=""){
+          this.spinner.Close();
           this.toastr.info("Data tidak ditemukan","Informasi");
           this.listvendor = [];
           return;
         }
       }
+      this.toastr.success("Data ditemukan "+data.length,"Sukses");
+      this.spinner.Close();
       this.listvendor = data;
     })
     return;
@@ -109,11 +117,14 @@ listvendor : any[] = [];
   this.vendorservice.list(params+"product-category.name_regex=1&product-category.name="+this.search["kategori"]).subscribe(data=>{
     if(data==false){
       if(this.vendorservice.message()!=""){
+        this.spinner.Close();
         this.toastr.info("Data tidak ditemukan","Informasi");
         this.listvendor = [];
         return;
       }
     }
+    this.toastr.success("Data ditemukan "+data.length,"Sukses");
+    this.spinner.Close();
     this.listvendor = data;
   })
   }
@@ -206,10 +217,14 @@ listvendor : any[] = [];
   }
 
   Simpan(){
+    this.spinner.SetSpinnerText("Mohon Tunggu...");
+    this.spinner.Open();
     this.listvendor = [];
-    let code = this.input["code"];
+    let code = AlphaNumeric.Encode(this.datavendor.length);
     let name = this.input["name"];
-
+    if(code.length <= 1){
+      code = "0"+code;
+    }
     let Objdata = {
       code : code,
       name : name,
@@ -221,10 +236,12 @@ listvendor : any[] = [];
     }
 
     if(this.addkategori.length <= 0){
+      this.spinner.Close();
       this.toastr.warning("Data kategori belum ditambah","Peringatan");
       return;
-    }else if(!code||!name){
-      this.toastr.warning("Kode atau name belum di isi","Peringatan");
+    }else if(!name){
+      this.spinner.Close();
+      this.toastr.warning("Name belum di isi","Peringatan");
       return;
     }
 
@@ -232,9 +249,12 @@ listvendor : any[] = [];
     this.vendorservice.add(addData).subscribe(data=>{
       if(data==false){
         if(this.vendorservice.message()!=""){
+          this.spinner.Close();
+          this.toastr.error("Data gagal disimpan","Gagal");
           return;
         }
       }
+      this.spinner.Close();
       this.toastr.success("Data berhasil disimpan","Sukses");
       this.modaltambah = false;
       this.loadData();
@@ -242,6 +262,8 @@ listvendor : any[] = [];
   }
 
   Update(){
+    this.spinner.SetSpinnerText("Mohon Tunggu...");
+    this.spinner.Open();
     for(let i = 0; i < this.uptodate.length; i++){
 
   		console.log(this.uptodate[i]._id);
@@ -253,7 +275,8 @@ listvendor : any[] = [];
   		}
 
 		if(this.dataupdatekategori.length <= 0){
-			this.toastr.warning("Produk kategori belum ditambah","Peringatan");
+      this.toastr.warning("Produk kategori belum ditambah","Peringatan");
+      this.spinner.Close();
 			return;
 		}
 		for(let r = 0; r < this.dataupdatekategori.length; r++){
@@ -263,9 +286,12 @@ listvendor : any[] = [];
   		this.vendorservice.update(upd).subscribe(data=>{
   			if(data==false){
   				if(this.vendorservice.message()!=""){
+            this.spinner.Close();
+            this.toastr.error("Data gagal dirubah","Gagal");
   					return;
   				}
-  			}
+        }
+        this.spinner.Close();
   			this.toastr.success("Data berhasil diubah","Sukses");
   			this.listvendor = [];
   			this.loadData();

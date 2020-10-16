@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DContent } from '../../../decorators/content/pages';
 import { EMenuID } from '../../../lib/enums/emenu-id.enum';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
@@ -7,6 +7,7 @@ import { AlphaNumeric } from '../../../lib/helper/alpha-numeric';
 import { environment } from 'src/environments/environment';
 import { Observable, config } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
 
 //SELECT2
 
@@ -78,6 +79,8 @@ modalview : boolean = false;
 			  private productkategori : ProductCategoryService, private productservice : ProductService,
 			  private prmjualservice : PrmJualService) { }
 
+	@ViewChild('spinner',{static:false}) spinner : LoadingSpinnerComponent;
+
   ngOnInit(): void {
   	let params = "?";
   	this.productdenom.list(params).subscribe(data=>{
@@ -117,6 +120,8 @@ modalview : boolean = false;
 
   SearchData(){
 	  let params = "?";
+	  this.spinner.SetSpinnerText("Mohon Tunggu...");
+	  this.spinner.Open();
 	  if(!this.search["kategori"]){
   		for(let key in this.search){
   		if(this.search[key]==""||this.search[key]==null)continue;
@@ -126,7 +131,7 @@ modalview : boolean = false;
 				// break;
 				
 				case "code":
-					params += "code="+this.search[key].code+"&";
+					params += "code="+this.search[key]+"&";
 			  	break;
   				
   				default:
@@ -137,12 +142,15 @@ modalview : boolean = false;
   		this.productdenom.list(params).subscribe(data=>{
   			if(data==false){
   				if(this.productdenom.message()!=""){
+					  this.spinner.Close();
 					  this.toastr.info("Data tidak ditemukan","Informasi");
 					  this.listdenom = [];
   					return;
   				}
   			}
-  			this.listdenom = data;
+			  this.listdenom = data;
+			  this.toastr.success("Data ditemukan "+data.length,"Sukses");
+			  this.spinner.Close();
 		  })
 
 		  return;
@@ -151,11 +159,14 @@ modalview : boolean = false;
 		this.productdenom.list(params+"product-category.name_regex=1&product-category.name="+this.search["kategori"]).subscribe(data=>{
 			if(data==false){
 				if(this.productdenom.message()!=""){
+					this.spinner.Close();
 					this.toastr.info("Data tidak ditemukan","Informasi");
 					this.listdenom = [];
 					return;
 				}
 			}
+			this.spinner.Close();
+			this.toastr.success("Data ditemukan "+data.length,"Sukses");
 			this.listdenom = data;
 		})
   }
@@ -180,6 +191,10 @@ modalview : boolean = false;
   TambahKategori(){
 	  
 	if(!this.select_kategori){
+		this.toastr.error("Produk kategori belum dipilih","Gagal");
+		return;
+	}
+	if(Object.keys(this.select_kategori).length==0){
 		this.toastr.error("Produk kategori belum dipilih","Gagal");
 		return;
 	}
@@ -219,6 +234,8 @@ modalview : boolean = false;
   }
 
   Simpan(){
+	this.spinner.SetSpinnerText("Mohon Tunggu...");
+	this.spinner.Open();
 	let code = AlphaNumeric.Encode(this.datadenom.length);
 	let name = this.input["name"];
 	let value = this.input["value"];
@@ -238,20 +255,25 @@ modalview : boolean = false;
 	  let ff = DataTypeUtil.Encode(data);
 	if(this.addkategori.length <= 0){
 		this.toastr.warning("Produk kategori belum ditambah","Peringatan");
+		this.spinner.Close();
 		return;
 	}
 	else if(!name || !value){
 		this.toastr.warning("Name atau value belum di isi","Peringatan");
+		this.spinner.Close();
 		return;
 	}
-	// this.toastr.success("Data berhasil","Sukses");
+	
   	this.productdenom.add(ff).subscribe(data=>{
   		if(data==false){
   			if(this.productdenom.message()!=""){
+				this.toastr.error("Data gagal disimpan","Gagal");
+				this.spinner.Close();
   				return;
   			}
   		}
-  		this.toastr.success("Data berhasil ditambah","Sukses");
+		  this.toastr.success("Data berhasil ditambah","Sukses");
+		  this.spinner.Close();
   		this.listdenom = [];
   		this.loadData();
   		this.modaltambah = false;
@@ -305,6 +327,8 @@ modalview : boolean = false;
 	// })
 
 
+	this.spinner.SetSpinnerText("Mohon Tunggu...");
+	this.spinner.Open();
   	for(let i = 0; i < this.uptodate.length; i++){
 
   		console.log(this.uptodate[i]._id);
@@ -320,6 +344,7 @@ modalview : boolean = false;
 		//   }
 		  console.log(data);
 		if(this.dataupdatekategori.length <= 0){
+			this.spinner.Close();
 			this.toastr.warning("Produk kategori belum ditambah","Peringatan");
 			return;
 		}
@@ -331,10 +356,13 @@ modalview : boolean = false;
   		this.productdenom.update(upd).subscribe(data=>{
   			if(data==false){
   				if(this.productdenom.message()!=""){
+					this.spinner.Close();
+					this.toastr.error("Data gagal disimpan","Gagal");
   					return;
   				}
   			}
-  			this.toastr.success("Data berhasil diubah","Sukses");
+			  this.toastr.success("Data berhasil diubah","Sukses");
+			  this.spinner.Close();
   			this.listdenom = [];
   			this.loadData();
   			this.modalupdate = false;

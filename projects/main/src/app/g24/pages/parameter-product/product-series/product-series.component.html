@@ -9,12 +9,9 @@
             			<div class="clr-form-control">
             				<label class="clr-control-label">Kode</label>
             				<div class="clr-control-container">
-            				<select [(ngModel)]="search.code" #code clrSelect name="code">
-            					<option [ngValue]=""></option>
-            					<ng-container *ngFor="let data of dataseries">
-            						<option [ngValue]="data">{{data.code}}</option>
-            					</ng-container>
-            				</select>
+								<clr-input-container>
+									<input clrInput [(ngModel)]="search.code" name="code">
+								</clr-input-container>
             				</div>
             			</div>
             		</div>
@@ -22,12 +19,9 @@
             			<div class="clr-form-control">
             				<label class="clr-control-label">Nama Series</label>
             				<div class="clr-control-container">
-            				<select [(ngModel)]="search.name" #name clrSelect name="name">
-            					<option [ngValue]=""></option>
-            					<ng-container *ngFor="let data of dataseries">
-            						<option [ngValue]="data">{{data.name}}</option>
-            					</ng-container>
-            				</select>
+								<clr-input-container>
+									<input clrInput [(ngModel)]="search.name" name="name">
+								</clr-input-container>
             				</div>
             			</div>
             		</div>
@@ -64,11 +58,15 @@
         </clr-dg-column>
         <clr-dg-column>
             Nama Series
-        </clr-dg-column>
+		</clr-dg-column>
+		<clr-dg-column>
+			Note
+		</clr-dg-column>
 
         <clr-dg-row *clrDgItems="let data of listseries" [clrDgItem]="data">
             <clr-dg-cell>{{data.code}}</clr-dg-cell>
             <clr-dg-cell>{{data.name}}</clr-dg-cell>
+            <clr-dg-cell>{{data.note}}</clr-dg-cell>
         </clr-dg-row>
 
         <clr-dg-footer>
@@ -177,3 +175,5 @@
         <button type="button" class="btn btn-primary" (click)="Update()">Update</button>
     </div>
 </clr-modal>
+
+<loading-spinner #spinner></loading-spinner>

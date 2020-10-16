@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { DContent } from '../../../decorators/content/pages';
 import { EMenuID } from '../../../lib/enums/emenu-id.enum';
@@ -10,6 +10,8 @@ import { ProductJenisService } from '../../../services/product/product-jenis.ser
 import { ServerDateTimeService } from '../../../services/system/server-date-time.service';
 import { ProductService } from '../../../services/product/product.service';
 import { FlagProduct } from '../../../lib/enum/flag-product';
+import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
+
 
 @Component({
   selector: 'app-approval-mutasi',
@@ -65,6 +67,8 @@ time : String;
     private productservice : ProductService
   ) { }
 
+  @ViewChild('spinner',{static:false}) spinner : LoadingSpinnerComponent;
+
 
   ngOnInit(): void {
 //    let waktu = (new Date()).getTimezoneOffset() * 60000;
@@ -116,6 +120,8 @@ time : String;
   }
 
   doSearch(){
+    this.spinner.SetSpinnerText("Mohon Tunggu...");
+    this.spinner.Open();
     this.listdt = [];
     let params = "?"; 
     for(let key in this.input){
@@ -152,11 +158,14 @@ time : String;
         if(this.mutasiservice.message()!=""){
           // this.modal = true;
           this.toastr.info("Data tidak ditemukan","Informasi");
+          this.spinner.Close();
           this.input = {};
           this.listdt = [];
           return;
         }
       }
+      this.spinner.Close();
+      this.toastr.success("Data ditemukan "+output.length,"Sukses");
       this.listflag = output;
 	  this.listdt = this.listflag;
 //      for(let i = 0; i < this.listflag.length; i++){
@@ -408,6 +417,8 @@ time : String;
   }
 
   approve(){
+    this.spinner.SetSpinnerText("Mohon Tunggu...");
+    this.spinner.Open();
     for(let i=0; i < this.listdt2.length; i++){
       if(this.listdt2[i].flag=="submit"){
       let data = {
@@ -428,12 +439,14 @@ time : String;
          console.log(output);
          this.modalshow = false;
          this.listdt = [];
+         this.spinner.Close();
          this.toastr.success("Data berhasil di approve","Sukses");
         }
       })
 
     }else if(this.listdt2[i].flag=="approved" || this.listdt2[i].flag=="accept" || this.listdt2[i].flag=="null"){
-		this.toastr.warning("Data Tersebut sudah disetujui / ditolak / diterima","Peringatan");
+    this.toastr.warning("Data Tersebut sudah disetujui / ditolak / diterima","Peringatan");
+    this.spinner.Close();
 	}
     }
 
@@ -441,6 +454,8 @@ time : String;
   }
 
   refuse(){
+    this.spinner.SetSpinnerText("Mohon Tunggu...");
+    this.spinner.Open();
     for(let i=0; i < this.listdt2.length; i++){
       if(this.listdt2[i].flag=="submit"){
       let data = {
@@ -470,16 +485,19 @@ time : String;
         this.productservice.update(encode).subscribe(data=>{
           if(data==false){
             if(this.productservice.message()!=""){
+              this.spinner.Close();
               return;
             }
           }
           this.mutasiservice.update(ecnd).subscribe(data=>{
             if(data==false){
               if(this.mutasiservice.message()!=""){
+                this.spinner.Close();
                 return;
               }
             }
           })
+          this.spinner.Close();
           this.toastr.success("Data berhasil di tolak","Sukses");
           this.modalshow = false;
         })
@@ -489,7 +507,8 @@ time : String;
 
       
     }else if(this.listdt2[i].flag=="null" || this.listdt2[i].flag=="accept" || this.listdt2[i].flag=="approved"){
-		this.toastr.warning("Data tersebut sudah ditolak / disetujui / diterima","Peringatan");
+    this.toastr.warning("Data tersebut sudah ditolak / disetujui / diterima","Peringatan");
+    this.spinner.Close();
 	}
     }
 

@@ -1,0 +1,311 @@
+<div class="clr-row">
+    <div class="clr-col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                Konversi Emas Batangan
+            </div>
+            <div class="card-block">
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Id Konversi</label>
+                            <clr-input-container>
+                                <input clrInput [(ngModel)]="konversi.id" name="id">
+                            </clr-input-container>
+                        </div>
+                    </div>
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Taggal Pengajuan</label>
+                            <clr-date-container>
+                                <input type="date" clrDate [(ngModel)]="konversi.tanggal" name="tanggal">
+                            </clr-date-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-icon btn-primary" (click)="searchKonversi()"><clr-icon shape="search"></clr-icon> Cari</button>
+                <button class="btn btn-icon"><clr-icon shape="refresh"></clr-icon> Reset</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="clr-row">
+    <div class="clr-col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                Hasil Pencarian
+            </div>
+            <div class="card-block">
+                <div class="clr-row">
+                    <div class="clr-col-md-12">
+                    <clr-datagrid [(clrDgSingleSelected)]="selected_data">
+                        <clr-dg-action-bar>
+                            <div class="btn-group">
+                                <button class="btn btn-icon btn-sm" (click)="Tambah()"><clr-icon shape="plus"></clr-icon> Tambah</button>
+                                <button class="btn btn-icon btn-sm" (click)="Lihat()"><clr-icon shape="eye"></clr-icon> Lihat</button>
+                            </div>
+                        </clr-dg-action-bar>
+                        <clr-dg-column>ID Konversi</clr-dg-column>
+                        <clr-dg-column>Tanggal Pengajuan</clr-dg-column>
+                        <clr-dg-column>Keterangan</clr-dg-column>
+                        <clr-dg-column>Status</clr-dg-column>
+
+                        <clr-dg-row *clrDgItems="let data of datas" [clrDgItem]="data">
+                            <clr-dg-cell>{{data._id}}</clr-dg-cell>
+                            <clr-dg-cell>{{data.tgl_pengajuan}}</clr-dg-cell>
+                            <clr-dg-cell>{{data.pengajuan_keterangan}}</clr-dg-cell>
+                            <clr-dg-cell>{{data.status_konversi}}</clr-dg-cell>
+                        </clr-dg-row>
+                    </clr-datagrid>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <clr-modal [(clrModalOpen)]="opened" [clrModalClosable]="false" [clrModalSize]="'xl'">
+        <h3 class="modal-title">Tambah</h3>
+            <div class="modal-body">
+                <div class="clr-row">
+                    <div class="clr-col-md-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Product Category</label>
+                            <clr-select-container>
+                                <select (change)="change_vendor()" clrSelect [(ngModel)]="tambah.kategori" name="kategori">
+                                    <ng-container *ngFor="let data of productCategory">
+                                        <option [ngValue]="data">{{data.name}}</option>
+                                    </ng-container>
+                                    <clr-control-error> Wajib dipilih</clr-control-error>
+                                </select>
+                            </clr-select-container>
+                        </div>
+                    </div>
+                    <div class="clr-col-md-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Vendor</label>
+                            <clr-select-container>
+                                <select (change)="change_data()" clrSelect [(ngModel)]="tambah.vendor" name="vendor">
+                                    <ng-container *ngFor="let data of vendors">
+                                        <option [ngValue]="data">{{data.name}}</option>
+                                    </ng-container>
+                                    <clr-control-error> Wajib dipilih</clr-control-error>
+                                </select>
+                            </clr-select-container>
+                        </div>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-md-6" style="margin-top: 25px;">
+                        <label class="clr-control-label">Keterangan</label>
+                        <clr-textarea-container>
+                            <textarea clrTextarea [(ngModel)]="tambah.keterangan" name="keterangan"></textarea>
+                            <clr-control-error> Wajib diisi</clr-control-error>
+                        </clr-textarea-container>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-md-6" style="margin-top: 25px;">
+                        <label class="clr-control-label">Pilih Item Cepat</label>
+                        <clr-input-container>
+                            <input clrInput type="number" [(ngModel)]="quick" name="quick" min="0">
+                        </clr-input-container>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                        <button class="btn btn-icon btn-sm" (click)="pick()"><clr-icon shape="check"></clr-icon> Ceklis Item</button>
+                    </div>
+                </div>
+
+                <clr-datagrid [(clrDgSelected)]="multiple_select">
+                    <clr-dg-action-bar>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-secondary" (click)="searchProduk()"><clr-icon shape="search"></clr-icon>Cari</button>
+                            <button type="button" class="btn btn-sm btn-secondary" (click)="tambahItem()"><clr-icon shape="plus"></clr-icon>Tambah</button>
+                            <button type="button" class="btn btn-sm btn-secondary" (click)="Reset()"><clr-icon shape="refresh"></clr-icon> Reset</button>
+                        </div>
+                        </clr-dg-action-bar>
+        
+                    <clr-dg-column>
+                        Kode
+                    </clr-dg-column>
+                    <clr-dg-column>
+                        SKU
+                    </clr-dg-column>
+                    <clr-dg-column>
+                        Vendor
+                    </clr-dg-column>
+                    <clr-dg-column>
+                        Branch
+                    </clr-dg-column>
+                    <clr-dg-row *clrDgItems="let data of produk" [clrDgItem]="data">
+                        <clr-dg-cell>{{data.code}}</clr-dg-cell>
+                        <clr-dg-cell>{{data.sku}}</clr-dg-cell>
+                        <clr-dg-cell>{{data.vendor == undefined ? "-" : data.vendor.name}}</clr-dg-cell>
+                        <clr-dg-cell>{{data.branch == undefined ? "-" : data.branch.name}}</clr-dg-cell>
+                    </clr-dg-row>
+                
+                    <clr-dg-detail *clrIfDetail="let data">
+                        <clr-dg-detail-header>Detail data</clr-dg-detail-header>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Attribut</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor = "let oj of Object.keys(data)">
+                                <tr *ngIf="except(oj)">
+                                    <td>{{GetDisplayName(oj)}}</td>
+                                    <td>{{GetDisplayValue(data[oj])}}</td>
+                                </tr>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </clr-dg-detail>
+                </clr-datagrid>
+                        
+                <clr-datagrid>
+                    <clr-dg-column>
+                        Kode
+                    </clr-dg-column>
+                    <clr-dg-column>
+                        SKU
+                    </clr-dg-column>
+                    <clr-dg-column>
+                        Vendor
+                    </clr-dg-column>
+                    <clr-dg-column>
+                        Branch
+                    </clr-dg-column>
+                    <clr-dg-row *clrDgItems="let data of Items" [clrDgItem]="data">
+                        <clr-dg-cell>{{data.code}}</clr-dg-cell>
+                        <clr-dg-cell>{{data.sku}}</clr-dg-cell>
+                        <clr-dg-cell>{{data.vendor == undefined ? "-" : data.vendor.name}}</clr-dg-cell>
+                        <clr-dg-cell>{{data.branch == undefined ? "-" : data.branch.name}}</clr-dg-cell>
+                    </clr-dg-row>
+                </clr-datagrid>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" (click)="opened = false">Cancel</button>
+                <button type="button" class="btn btn-primary" (click)="doSave()">Simpan</button>
+            </div>
+    </clr-modal>
+
+
+    <clr-modal [(clrModalOpen)]="modalview" [clrModalSize]="'xl'">
+        <h3 class="modal-title">Konversi</h3>
+            <div class="modal-body">
+                <div class="clr-row">
+                    <div class="clr-col-md-12">
+                        <div class="card">
+                            <div class="card-block">
+                                <div class="card-title">
+                                    Data Konversi
+                                </div>
+                                <div class="clr-row">
+                                    <div class="clr-col-md-3">
+                                        <label class="clr-control-label">Waktu Pengajuan :</label>
+                                    </div>
+                                    <div class="clr-col-md-3">
+                                        <label class="clr-control-label">{{dataoutput.create_time}}</label>
+                                    </div>
+                                </div>
+                                <div class="clr-row">
+                                    <div class="clr-col-md-3">
+                                        <label class="clr-control-label">Tanggal Pengajuan :</label>
+                                    </div>
+                                    <div class="clr-col-md-3">
+                                        <label class="clr-control-label"><u>{{dataoutput.tgl_pengajuan}}</u></label>
+                                    </div>
+                                    <div class="clr-col-md-3">
+                                        <label class="clr-control-label">Status Konversi :</label>
+                                    </div>
+                                    <div class="clr-col-md-3">
+                                        <label class="clr-control-label"><u>{{dataoutput.status_konversi?.toUpperCase()}}</u></label>
+                                    </div>
+                                </div>
+                                <div class="clr-row">
+                                    <div class="clr-col-md-3">
+                                        <label class="clr-control-label">Pengajuan Dari :</label>
+                                    </div>
+                                    <div class="clr-col-md-3">
+                                        <label class="clr-control-label"><u>{{dataoutput.pengajuan_by?.nama?.toUpperCase()}}</u></label>
+                                    </div>
+                                    <div class="clr-col-md-3">
+                                        <label class="clr-control-label">Jumlah Barang :</label>
+                                    </div>
+                                    <div class="clr-col-md-3">
+                                        <label class="clr-control-label"><u>{{dataoutput.jumlah_barang}}</u></label>
+                                    </div>
+                                </div>
+                                <div class="clr-row">
+                                    <div class="clr-col-md-3">
+                                        <label class="clr-control-label">Vendor :</label>
+                                    </div>
+                                    <div class="clr-col-md-3">
+                                        <label class="clr-control-label"><u>{{dataoutput.vendor?.name}}</u></label>
+                                    </div>
+                                </div>
+                                <div class="clr-row">
+                                    <div class="clr-col-md-3">
+                                        <label class="clr-control-label">Pengajuan Keterangan :</label>
+                                    </div>
+                                    <div class="clr-col-md-3">
+                                        <label class="clr-control-label"><u>{{dataoutput.pengajuan_keterangan?.toUpperCase()}}</u></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <clr-datagrid>
+                    <clr-dg-column>Kode</clr-dg-column>
+                            <clr-dg-column>SKU</clr-dg-column>
+                            <clr-dg-column>Vendor</clr-dg-column>
+                            <clr-dg-column>Branch</clr-dg-column>
+    
+                            <clr-dg-row *clrDgItems="let data of getdataKonversiItems" [clrDgItem]="data">
+                                <clr-dg-cell>{{data.kode ? data.kode : "-"}}</clr-dg-cell>
+                                <clr-dg-cell>{{data.sku}}</clr-dg-cell>
+                                <clr-dg-cell>{{data.vendor.name}}</clr-dg-cell>
+                                <clr-dg-cell>{{data.branch ? data.branch : "-"}}</clr-dg-cell>
+                            </clr-dg-row>
+    
+                            <clr-dg-detail *clrIfDetail="let data">
+                                <clr-dg-detail-header>Detail Items</clr-dg-detail-header>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Attribut</th>
+                                            <th>Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngFor = "let oj of Object.keys(data)">
+                                        <tr *ngIf="except(oj)">
+                                            <td>{{GetDisplayName(oj)}}</td>
+                                            <td>{{GetDisplayValue(data[oj])}}</td>
+                                        </tr>
+                                        </ng-container>
+                                    </tbody>
+                                </table>
+                            </clr-dg-detail>
+                
+                </clr-datagrid>
+        
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" (click)="modalview = false">Tutup</button>
+            </div>
+    </clr-modal>
+
+    
+<loading-spinner #spinner></loading-spinner>
