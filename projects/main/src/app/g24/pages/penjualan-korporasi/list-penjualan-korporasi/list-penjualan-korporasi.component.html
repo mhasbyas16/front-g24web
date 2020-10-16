@@ -41,6 +41,7 @@
                     <clr-dg-column>Total Berat</clr-dg-column>
                     <clr-dg-column>Total Penjualan</clr-dg-column>
                     <clr-dg-column class="right"></clr-dg-column>
+                    <clr-dg-column class="right"></clr-dg-column>
                     
                     <clr-dg-row *clrDgItems="let isi of transactions | keyvalue" [clrDgItem]="isi"> 
                         <clr-dg-action-overflow>
@@ -57,6 +58,7 @@
                         <clr-dg-cell>{{listTotalHarga[isi.key]}}</clr-dg-cell>
                         <clr-dg-cell>Rp. {{isi.value.totalHarga | number}}</clr-dg-cell>
                         <clr-dg-cell>{{isi.value.flag}}</clr-dg-cell>
+                        <clr-dg-cell><button class="btn btn-danger" (click)="export.PDFData(isi.value,listTotalHarga[isi.key])" >PDF</button></clr-dg-cell>
                     </clr-dg-row>
                 </clr-datagrid>
             </div>
@@ -65,5 +67,6 @@
 
 </div>
 <app-card-detail (refresh)="refreshPage($event)" #detail></app-card-detail>
+<app-export-korporasi-proforma #export></app-export-korporasi-proforma>
 <!-- 
 -->

@@ -26,9 +26,7 @@ import { ExportKorporasiProformaComponent } from './export-korporasi-proforma/ex
     NavModule
   ],
   exports:[
-  ],
-  providers:[
-    DatePipe
+    ExportKorporasiProformaComponent,
   ]
 })
 export class LaporanModule { }

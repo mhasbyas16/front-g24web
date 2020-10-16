@@ -1,5 +1,4 @@
 <clr-modal [(clrModalOpen)]="modal" [clrModalSize]="'xl'">
-    <h3 class="modal-title">I have a nice title</h3>
     <div class="modal-body">
         <div class="card">
             <div class="card-header">
@@ -12,30 +11,48 @@
                             <label>ID Transaksi</label>
                             <input clrInput type="text" [value]="idTransaksi" name="" id="" readonly >
                         </clr-input-container>
-                        <clr-input-container>
-                            <label>Tanggal Pengajuan</label>
-                            <input clrInput type="text" [value]="tglPengajuan" name="" id="" readonly >
-                        </clr-input-container>
-                        <clr-input-container>
-                            <label>Akhir Periode</label>
-                            <input clrInput type="text" [value]="lastPeriode" name="" id="" readonly >
-                        </clr-input-container>
-                        <clr-input-container>
-                            <label>CIF Nasabah</label>
-                            <input clrInput type="text" [value]="cif" name="" id="" readonly >
-                        </clr-input-container>
-                        <clr-input-container>
-                            <label>Nama Nasabah</label>
-                            <input clrInput type="text" [value]="nama" name="" id="" readonly >
-                        </clr-input-container>
-                        <clr-input-container>
-                            <label>ID Penanggung Jawab</label>
-                            <input clrInput type="text" [value]="idPic" name="" id="" readonly >
-                        </clr-input-container>
-                        <clr-input-container>
-                            <label>Nama Penanggung Jawab</label>
-                            <input clrInput type="text" [value]="namaPic" name="" id="" readonly >
-                        </clr-input-container>
+                        <div class="clr-row">
+                            <div class="clr-col-6">
+                                <clr-input-container>
+                                    <label class="clr-col-4">Tanggal Pengajuan</label>
+                                    <input class="clr-col-6" clrInput type="text" [value]="tglPengajuan" name="" id="" readonly >
+                                </clr-input-container>
+                            </div>
+                            <div class="clr-col-6">
+                                <clr-input-container>
+                                    <label class="clr-col-4">Akhir Periode</label>
+                                    <input class="clr-col-6" clrInput type="text" [value]="lastPeriode" name="" id="" readonly >
+                                </clr-input-container>
+                            </div>
+                        </div>
+                        <div class="clr-row">
+                            <div class="clr-col-6">
+                                <clr-input-container>
+                                    <label class="clr-col-4">CIF Nasabah</label>
+                                    <input class="clr-col-6" clrInput type="text" [value]="cif" name="" id="" readonly >
+                                </clr-input-container>
+                            </div>
+                            <div class="clr-col-6">
+                                <clr-input-container>
+                                    <label class="clr-col-4">Nama Nasabah</label>
+                                    <input class="clr-col-6" clrInput type="text" [value]="nama" name="" id="" readonly >
+                                </clr-input-container>
+                            </div>
+                        </div>                        
+                        <div class="clr-row">
+                            <div class="clr-col-6">
+                                <clr-input-container>
+                                    <label class="clr-col-4">ID Penanggung Jawab</label>
+                                    <input class="clr-col-6" clrInput type="text" [value]="idPic" name="" id="" readonly >
+                                </clr-input-container>
+                            </div>
+                            <div class="clr-col-6">
+                                <clr-input-container>
+                                    <label class="clr-col-4">Nama Penanggung Jawab</label>
+                                    <input class="clr-col-6" clrInput type="text" [value]="namaPic" name="" id="" readonly >
+                                </clr-input-container>
+                            </div>
+                        </div>                      
                     </div>
                 </form>
                 

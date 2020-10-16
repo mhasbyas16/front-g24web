@@ -10,6 +10,7 @@ declare let require: any;
 import { HargaTerbilangService } from '../../../lib/helper/harga-terbilang.service';
 import { TanggalService } from '../../../lib/helper/tanggal.service';
 
+
 @Component({
   selector: 'app-export-korporasi-proforma',
   templateUrl: './export-korporasi-proforma.component.html',
@@ -20,6 +21,7 @@ export class ExportKorporasiProformaComponent implements OnInit {
   innerDoc = {};
   transactionList = [];
   noItem = 0;
+  isiTable =[];
   constructor(
     private tanggalService:TanggalService,
     private hargaTerbilangService:HargaTerbilangService
@@ -28,19 +30,26 @@ export class ExportKorporasiProformaComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  PDFData(idTransaction){
-    
+  PDFData(idTransaction,totalGram){
+    // this.transactionService.list('?_hash=1&idTransaction='+idTransaction).subscribe((response:any)=>{
+    //   if (response != false) {
+    //     this.transactionList = response;
+    //     this.thisContent(this.transactionList[0]);
+    //   }
+    // })
+    console.log(idTransaction);
+    this.thisContent(idTransaction,totalGram);
   }
 
-  thisContent(data){
+  thisContent(data,gram){
     
-    // tanggal
-    let tgl =data.makerDate;
-    let tglSplit = tgl.split("/");
-    let bulan = Number(tglSplit["0"]);
-    let hari = tglSplit["1"];
-    let tahun = tglSplit["2"];
-    let bulanTerbilang = this.tanggalService.bulanGenerate(bulan);
+    // // tanggal
+    // let tgl =data.makerDate;
+    // let tglSplit = tgl.split("/");
+    // let bulan = Number(tglSplit["0"]);
+    // let hari = tglSplit["1"];
+    // let tahun = tglSplit["2"];
+    // let bulanTerbilang = this.tanggalService.bulanGenerate(bulan);
    // let hariTerbilang = this.tanggalService.hariGenerate(Number(hari));
     // // Barcode
     // const JsBarcode = require('jsbarcode');
@@ -50,27 +59,14 @@ export class ExportKorporasiProformaComponent implements OnInit {
 
     // Content
     delete this.innerDoc;
-    let hargaFormat = new Intl.NumberFormat(['ban', 'id']).format(data.jumlahTerima);
-    this.innerDoc ={pageSize: 'A5', pageOrientation: 'landscape',pageMargins: [ 20, 20, 20, 40 ],};
-    this.innerDoc['info'] = {title: data.client.cif+" - "+data.idTransaction }; 
-
-    let namaKasir = data.maker.name
-    let namaDistro = data.maker.unit.nama
-
-    let printAlamat : any;
-    let printnoHp : any;
-    if (data.client.tipeClient.code == 1) {
-      printAlamat = data.client.alamatSaatIni.alamat
-      printnoHp = data.client.noHP
-    } else if(data.client.tipeClient.code == 2) {
-      printAlamat = data.client.alamatSaatIni.alamat
-      printnoHp = data.client.hpPJ1
-    }
+    let hargaFormat = new Intl.NumberFormat(['ban', 'id']).format(data.totalHarga);
+    this.innerDoc ={pageSize: 'A4', pageOrientation: 'portrait',pageMargins: [ 38, 30, 38, 30 ],};
+    this.innerDoc['info'] = {title: "Penjualan Korporasi Proforma"}; 
 
     // footer    
     this.innerDoc['footer'] = function(currentPage, pageCount) {
       return {
-          margin:[0, 0, 0, 40],
+          margin:[0, 0, 0, 60],
           columns: [
           {
               fontSize: 9,
@@ -96,85 +92,134 @@ export class ExportKorporasiProformaComponent implements OnInit {
     // Head Content
     this.innerDoc['content'] = [
       {
-        
+        text: ['BUKTI PEMBAYARAN PELUNASAN\n\n',
+                'PEMBELIAN EMAS BATANGAN'],
         style: 'head',
-			  columns: [
-				  {text: 'ID Transaksi : '+data.idTransaction}
-				  // {image: jpegUrl}
-			  ]
-      },
-      '\n',
-      {
-        
-        style:'detail',
-        columns:[
-          {
-            columns:[
-              {width:88,bold:true,text:'Nama Unit'},{width:5,bold:true,text:': '},{width:'*',text:data.unit.nama}
-            ]
-          },
-          {
-            columns:[
-              {width:88,bold:true,text:'Nama Nasabah'},{width:5,bold:true,text:': '},{width:'*',text:data.client.name}
-            ]
-          }
-			  ]
-      },
-      {
-        style:'detail',
-        columns:[
-          {
-            columns:[
-              {width:88,bold:true,text:'Tanggal Pembelian'},{width:5,bold:true,text:': '},{width:'*',text:hari+' '+bulanTerbilang+' '+tahun}
-            ]
-          },
-          {
-            columns:[
-              {width:88,bold:true,text:'Alamat'},{width:5,bold:true,text:': '},{width:'*',text:printAlamat}
-            ]
-          }
-			  ]
-      },
-      {
-        style:'detail',
-        columns:[
-          {
-            columns:[
-              {width:88,bold:true,text:'CIF'},{width:5,bold:true,text:': '},{width:'*',text:data.client.cif}
-            ]
-          },
-          {
-            columns:[
-              {width:88,bold:true,text:'No. Hp'},{width:5,bold:true,text:': '},{width:'*',text:printnoHp}
-            ]
-          }
-			  ]
-      },'\n'  
+      },'\n'
     ];
+
+    // Detail Content
+    this.innerDoc['content'].push([
+      {
+        style: 'detail',
+        alignment: 'justify',
+        text: [
+                'Telah diterima pembayaran pelunasan atas pembelian emas batangan sebesar ',
+                'Rp. '+hargaFormat,
+                ' ( '+this.hargaTerbilangService.terbilang(Number(data.totalHarga))+' )',
+                ' melalui transfer ke nomor rekening '+data.rekening['mata-anggaran']+' - '+data.rekening.code+' atas nama '+'PT. PEGADAIAN GALERI DUA EMPAT ',
+                'pada tanggal '+data.tglPengajuan+', '+'dengan data transaksi sebagai berikut :'
+              ],        
+      },'\n\n\n',
+      {
+        style:'detail',
+        columns:[
+          {width:160,text:[
+            'Nama Nasabah\n\n',
+            'No. Perjanjian Jual Beli\n\n',
+            'Total Harga Pembelian\n\n',
+            'Total Gram Emas Batangan']
+          },
+          {width:10,text:[
+            ':\n\n',
+            ':\n\n',
+            ':\n\n',
+            ':']
+          },
+          {width:'*',text:[
+            ' '+data.client.name+'\n\n',
+            ' '+data._id+'\n\n',
+            ' Rp. '+hargaFormat+'\n\n',
+            ' '+gram+' Gram']}
+        ]
+      },'\n\n\n\n'
+    ]);
+
+    // Footer Content
+    this.innerDoc['content'].push([
+      {
+        style: 'footer',
+        columns: [
+          {
+            text:[
+              '\n',
+              'Mengetahui',
+              '\n\n\n\n\n',
+              '(........................................)'
+            ]
+          },
+          {
+            text:[
+              'Jakarta, '+'DATE NOW\n',
+              'Dibuat oleh,',
+              '\n\n\n\n\n',
+              'NAMA MENGETAHUI\n',
+              'NO ID'
+            ],
+            pageBreak: 'after'
+          }
+        ]
+      }
+    ]);
+
+    this.isiTable.push([
+      {text:'Nama Penerima',style:'tableDesignHeader'},
+      {text:'ID Penerima', style:'tableDesignHeader'},
+      {text:'Kode',style:'tableDesignHeader'},
+      {text:'Vendor', style:'tableDesignHeader'},
+      {text:'Denom', style:'tableDesignHeader'},
+      {text:'Harga', style:'tableDesignHeader'},
+      {text:'Unit', style:'tableDesignHeader'}]);
+    for (let o of data.product) {
+      this.isiTable.push([
+        {text:o.name , style:'tableDesign'},
+        {text:o.noId, style:'tableDesign'},
+        {text:o.code, style:'tableDesign'},
+        {text:o.vendor, style:'tableDesign'},
+        {text:o.denom, style:'tableDesign'},
+        {text:"Rp. "+new Intl.NumberFormat(['ban', 'id']).format(o.harga), style:'tableDesign'},
+        {text:o.detail.unit.nama, style:'tableDesign'}])
+    }
+
+    // Footer Content
+    this.innerDoc['content'].push([
+      {
+        style: 'table',
+        table: {
+          body : this.isiTable
+        }
+      }
+    ]);
+
+    
             
     // style
     this.innerDoc['styles']={
+      head:{
+        fontSize: 14,
+        bold: false,
+        alignment: 'center',
+      },
       detail: {
-        fontSize: 9,
+        fontSize: 12,
         bold: false,
         alignment: 'left',
-      },
-      head:{
-        fontSize: 9,
-        bold: true,
-        alignment: 'left',
-      },
+      },      
       footer:{
-        fontSize: 6,
-        alignment: 'left',
-        italics: true,
+        fontSize: 12,
+        alignment: 'center'
       },
-      kek:{
-        fontSize: 9,
-        alignment: 'center',
-       
+      table: {
+        alignment : 'center',
+        margin: [0, 5, 0, 15]
+      },
+      tableDesignHeader:{
+        fontSize : 10,
+        bold:true
+      },
+      tableDesign:{
+        fontSize : 9,
       }
-
     };
 
     // End Content

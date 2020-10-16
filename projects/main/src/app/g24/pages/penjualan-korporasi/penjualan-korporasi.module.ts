@@ -10,7 +10,7 @@ import { ListPenjualanKorporasiComponent } from './list-penjualan-korporasi/list
 import { CardDetailComponent } from './list-penjualan-korporasi/card-detail/card-detail.component';
 import { PenjualanProformaComponent } from './penjualan-korporasi/penjualan-proforma/penjualan-proforma.component';
 import { PenjualanBerjangkaComponent } from './penjualan-korporasi/penjualan-berjangka/penjualan-berjangka.component';
-
+import { LaporanModule } from '../laporan/laporan.module';
 
 @NgModule({
   declarations: [PenjualanKorporasiComponent, MuliaKorporasiComponent, ListPenjualanKorporasiComponent, CardDetailComponent, PenjualanProformaComponent, PenjualanBerjangkaComponent ],
@@ -20,7 +20,8 @@ import { PenjualanBerjangkaComponent } from './penjualan-korporasi/penjualan-ber
     ClarityModule,
     FormsModule,
     ReactiveFormsModule,
-    PenjualanKorporasiRoutingModule
+    PenjualanKorporasiRoutingModule,
+    LaporanModule
   ],
   exports :[
 
