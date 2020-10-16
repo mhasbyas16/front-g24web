@@ -1,9 +1,11 @@
 
- export const LM = [
+export const LM = [
     // { }
- ];
- 
- export const GS = [
-   // { }
 ];
  
+export const GS = [
+   // { }
+];
+export const PERHIASAN = [
+   // { }
+];

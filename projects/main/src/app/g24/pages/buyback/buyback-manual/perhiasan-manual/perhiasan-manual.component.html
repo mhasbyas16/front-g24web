@@ -1,0 +1,82 @@
+<div class="clr-row">
+    <div class="card" style="margin-top: 0em;">
+        <div class="card-header">
+            Terima Buyback Manual 
+            <div class="cart-style"> 
+            </div> 
+        </div>
+        <div class="card-block">
+            <div class="card-text">
+                <div class="clr-row">
+                    <div class="card" style="margin-top: 0;">
+                        <div class="card-header">
+                            Perhiasan
+                        </div>
+                        <div class="card-block" style="padding-top: 0px;">
+                            <div class="card-text">
+                                <!-- <form class="clr-form clr-form-horizontal"  [formGroup]="dataPerhiasan" (ngSubmit)="addCart"> -->
+                                <form #dataPerhiasan="ngForm" id="perhiasan" class="clr-form clr-form-compact" clrLayout="horizontal" (ngSubmit)="addCart(dataPerhiasan.value)" >    
+                                    <div class="clr-row">
+                                        <div class="clr-col-6">
+                                            <clr-select-container class="clr-form-control">
+                                                <label>Distro Transaksi Pembelian</label>
+                                                <select [(ngModel)]="searchModel.units" clrSelect name="input_unit_transaksi" >
+                                                    <option value="pilih" >Pilih Unit</option>
+                                                    <ng-container *ngFor="let unit of units">
+                                                        <option value="{{unit.code}}">{{unit.nama}}</option>
+                                                    </ng-container>
+                                                </select>
+                                            </clr-select-container>
+                                        </div>
+                                    </div>
+                                    <div class="clr-row">
+                                        <div class="clr-col-6">
+                                            <clr-date-container>
+                                                <label>Tanggal Transaksi Pembelian</label>
+                                                <input clrDate type="date" [(ngModel)]="searchModel.tanggalTransaksiPembelian" name="input_tanggalTransaksiPembelian">
+                                            </clr-date-container>
+                                        </div>
+                                    </div>
+                                    <div class="clr-row">
+                                        <div class="clr-col-6">
+                                            <clr-input-container>
+                                                <label>Nama Nasabah Pembelian</label>
+                                                <input type="text" clrInput [(ngModel)]="searchModel.namaNasabahPembelian" name="input_namaNasabahPembelian">
+                                            </clr-input-container>
+                                        </div>
+                                    </div>
+                                    <div class="clr-row">
+                                        <div class="clr-col-6">
+                                            <clr-input-container>
+                                                <label>Alamat Nasabah Pembelian</label>
+                                                <input type="text" clrInput [(ngModel)]="searchModel.alamatTransaksiPembelian" name="input_alamatTransaksiPembelian">
+                                            </clr-input-container>
+                                        </div>
+                                    </div>
+                                    <div class="clr-row">
+                                        <div class="clr-col-6">
+                                            <clr-select-container class="clr-form-control">
+                                                <label>Kadar Perhiasan</label>
+                                                <select [(ngModel)]="searchModel.kadars" clrSelect name="input_kadar_product" >
+                                                    <option value="pilih" >Pilih Kadar</option>
+                                                    <ng-container *ngFor="let kadar of kadars">
+                                                        <option value="{{kadar.name}}">{{kadar.name}}</option>
+                                                    </ng-container>
+                                                </select>
+                                            </clr-select-container>
+                                        </div>
+                                    </div>
+                                    <div class="clr-col-4">
+                                        <clr-control-container>
+                                            <button class="btn btn-info-outline btn-sm btn-block float-right">Tampil Harga</button>
+                                        </clr-control-container>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

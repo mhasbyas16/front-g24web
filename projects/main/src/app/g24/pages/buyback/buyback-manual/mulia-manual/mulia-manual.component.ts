@@ -15,7 +15,7 @@ import { DatePipe } from "@angular/common";
 // prm
 import { PrmJualService } from '../../../../services/parameter/prm-jual.service';
 
-import { LM, GS } from '../../../../sample/cart-buyback-manual-lm';
+import { LM, GS, PERHIASAN } from '../../../../sample/cart-buyback-manual-lm';
 
 
 @Component({
