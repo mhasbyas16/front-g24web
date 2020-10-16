@@ -45,9 +45,9 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
 
   series : any[] = [];
 
-  LoadAllParameter()
+  async LoadAllParameter()
   {
-
+    await this.LoadDate();
   }
   
   async LoadDate()
@@ -141,6 +141,9 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
 
   public setId(id : string)
   {
+    this.inisiasi = null;
+    this.items = [];
+
     if(id == null || id == "")
     {
       this.toastr.error("No ID is set.");
@@ -150,7 +153,7 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
 
     this.spinner.Open();
 
-    this.inisiasiService.list("?_or=product-category.code=c05&no_po="+id).subscribe(output => 
+    this.inisiasiService.list("?_or=product-category.code=c05&no_po="+id).subscribe(async output => 
     {
       this.spinner.Close();
 
@@ -171,7 +174,7 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
           return;
         }
 
-        this.onContentFound(output[0]);
+        await this.onContentFound(output[0]);
 
         this.Open();
         this.toastr.info("Load success...!")
@@ -244,10 +247,9 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
     this.mode = mode;
   }
 
-  onContentFound(content : any)
+  async onContentFound(content : any)
   {
     this.inisiasi = content;
-    this.LoadDate();
     this.resetDetailTerima(this.inisiasi.items);
 
     if(this.inisiasi.order_status == OrderStatus.TERIMA_FULL.code && this.mode == EPriviledge.UPDATE)
@@ -257,9 +259,9 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
       this.toastr.show("PO sudah di Terima Full.", "Terima says");
       return;
     }
-    this.LoadAllParameter();
+    await this.LoadAllParameter();
 
-    this.fillItemsWithProducts();
+    // this.fillItemsWithProducts();
     this.fillItemTerima();
   }
 
@@ -643,10 +645,11 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
 
     this.verifyInisiasiPartial();
 
+    this.inisiasi.update_time = this.time;
     this.inisiasi.update_date = this.date;
-    this.inisiasi.update_by = this.user.username;
-    this.inisiasi['tgl_terima'] = this.inisiasi.update_date;
-    this.inisiasi.terima_by = this.user.username;
+    this.inisiasi.update_by = this.user;
+    this.inisiasi['tgl_terima'] = this.date;
+    this.inisiasi.terima_by = this.user;
 
     console.log(this.inisiasi);
     let tempInisiasi = {}
@@ -654,7 +657,7 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
     
     DataTypeUtil.Encode(tempInisiasi);
 
-    let inisiasi;
+    let inisiasi : any = false;
     let msg = "";
     try {
       inisiasi = await this.inisiasiService.TerimaEmas(tempInisiasi).toPromise();
@@ -678,31 +681,6 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
         this.Close();
         return;
       }
-    // .subscribe(inisiasi => {
-    //   if(inisiasi == false)
-    //   {
-    //     let msg = this.inisiasiService.message();
-    //     this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk. Error:  " + msg);
-    //     this.doReset();
-    //     this.Close();
-    //     return;
-    //   } else {
-    //     Object.assign(this.inisiasi, tempInisiasi);
-    //     console.log(this.inisiasi);
-    //     this.parentListener.onAfterUpdate(this.inisiasi._id);
-    //     this.toastr.success("PO berhasil diterima.");
-    //     this.doReset();
-    //     this.Close();
-    //     return;
-    //   }
-    // }, error => {
-    //   console.log(error);
-    //   this.toastr.error("Error: " + error);
-    //   this.doReset();
-    //   this.Close();
-    //   return;
-    // }); // kalau semua diterima flag == "terima_full"
-    
   }
 
   async doTolak(){

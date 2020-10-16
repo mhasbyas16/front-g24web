@@ -96,20 +96,20 @@
                 <div class="btn-group">
                     <button type="button" class="btn btn-sm btn-secondary" (click)="onApprove()" *ngIf="Selected?.order_status == OrderStatus.SUBMIT.code && Selected?.order_status != null"><clr-icon shape="pencil"></clr-icon>Approve</button>
                     <button type="button" class="btn btn-sm btn-secondary" (click)="onLihat()" *ngIf="Selected?._id != ''"><clr-icon shape="view-list"></clr-icon>Lihat</button>
-                    <button type="button" class="btn btn-sm btn-secondary" (click)="Debug()"><clr-icon shape="bug"></clr-icon>Debug</button>
+                    <!-- <button type="button" class="btn btn-sm btn-secondary" (click)="Debug()"><clr-icon shape="bug"></clr-icon>Debug</button> -->
                 </div>
-                <div class="btn-group">
+                <!-- <div class="btn-group">
                     <clr-dropdown>
                         <button type="button" class="btn btn-sm btn-secondary" clrDropdownTrigger>
                             Export
                             <clr-icon shape="caret down"></clr-icon>
                         </button>
                         <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
-                            <!-- <button type="button" (click)="onExportAll()" clrDropdownItem>Export All</button>
-                            <button type="button" (click)="onExportSelected()" [disabled]="selected.length === 0" clrDropdownItem>Export Selected Items</button> -->
+                            <button type="button" (click)="onExportAll()" clrDropdownItem>Export All</button>
+                            <button type="button" (click)="onExportSelected()" [disabled]="selected.length === 0" clrDropdownItem>Export Selected Items</button>
                         </clr-dropdown-menu>
                     </clr-dropdown>
-                </div>
+                </div> -->
             </clr-dg-action-bar>
             
             <!-- 10 Kolom -->

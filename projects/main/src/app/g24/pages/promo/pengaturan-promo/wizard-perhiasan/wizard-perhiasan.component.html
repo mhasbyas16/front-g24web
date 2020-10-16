@@ -107,27 +107,50 @@
                 
                 <clr-select-container>
                     <label class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">Parameter Promo</label>
-                    <select class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrSelect formControlName="prmPromotion">
+                    <select class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrSelect formControlName="prmPromotion" (click)="selectPrmPromo($event.target.value)">
                         <option disabled selected value="">-- select one --</option>
                         <option value="rh">Range Harga</option>
                         <option value="rb">Range Berat</option>
                     </select>
                 </clr-select-container>
-                <div class="clr-row">
-                    <div class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3"></div>
-                    <div class="clr-col-sm-4 clr-col-md-3 clr-col-lg-4">
-                        <clr-input-container>
-                            <label ></label>
-                            <input clrInput formControlName="minPrmPromotion" type="text">
-                        </clr-input-container>
-                    </div>
-                    <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
-                        <clr-input-container>
-                            <label ></label>
-                            <input clrInput formControlName="maxPrmPromotion" type="text">
-                        </clr-input-container>
-                    </div>   
-                </div>  
+                <ng-container *ngIf="prmPromoView">
+                    <ng-container *ngIf="prmPromo; else prm">
+                        <div class="clr-row">
+                            <div class="clr-col-sm-3 clr-col-md-3 clr-col-lg-3"></div>
+                            <div class="clr-col-sm-4 clr-col-md-3 clr-col-lg-4">
+                                <clr-input-container>
+                                    <label ></label>
+                                    <input clrInput formControlName="minPrmPromotion" type="text">
+                                </clr-input-container>
+                            </div>
+                            <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
+                                <clr-input-container>
+                                    <label ></label>
+                                    <input clrInput formControlName="maxPrmPromotion" type="text">
+                                </clr-input-container>
+                            </div>   
+                        </div>  
+                    </ng-container>
+                    <ng-template #prm>
+                        <div class="clr-row">
+                            <div class="clr-col-sm-2 clr-col-md-3 clr-col-lg-2"></div>
+                            <div class="clr-col-sm-5 clr-col-md-5 clr-col-lg-5">
+                                <clr-input-container>
+                                    <label >1 Gr</label>
+                                    <input clrInput formControlName="perGram" type="text">
+                                </clr-input-container>
+                            </div>
+                            <div class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">
+                                <clr-input-container>
+                                    <label ></label>
+                                    <input clrInput formControlName="maxPrmPromotion" type="text">
+                                </clr-input-container>
+                            </div>   
+                        </div> 
+                    </ng-template>
+                </ng-container>
+                
+
                 <clr-select-container>
                     <label class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4">Jenis Promo</label>
                     <select class="clr-col-sm-4 clr-col-md-4 clr-col-lg-4" clrSelect formControlName="typePromotion">

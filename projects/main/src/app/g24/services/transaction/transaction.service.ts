@@ -36,4 +36,12 @@ export class TransactionService {
   delete(data) {
     return this.commonService.delete(this.key, data);
   }
+
+  batchUpdate(data){
+    return this.commonService.batchUpdate(this.key, data);
+  }
+
+  batchAdd(data){
+    return this.commonService.batchUpdate(this.key, data);
+  }
 }

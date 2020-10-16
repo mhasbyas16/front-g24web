@@ -637,6 +637,12 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
       return;
     }
 
+    if(this.validateItems())
+    {
+      this.spinner.Close();
+      return;
+    }
+
     if(this.input.items?.length <= 0)
     {
       this.spinner.Close();
@@ -682,7 +688,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
     }
 
     let st = StringHelper.LeftZeroPad(Number(seq.value).toString(), 5);
-    let PO = "PO" + this.session.getUnit()?.code + date_split[0].substring(1, 3) + date_split[1] + st;
+    let PO = "PO" + this.session.getUnit()?.code + date_split[0].substring(2, 4) + date_split[1] + date_split[2] + st;
 
     let def =
     {
@@ -777,6 +783,21 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
   onExportSelected()
   {
 
+  }
+
+  validateItems()
+  {
+    for(let i = 0; i < this.input.items.length; i++)
+    {
+      let item = this.input.items[i];
+      if(this.validateAdd(item))
+      {
+        // console.log(item, "tralala")
+        return true;
+      }
+    }
+
+    return false;
   }
 
   validateInput()

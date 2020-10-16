@@ -42,8 +42,28 @@ export class InisiasiService {
     return this.commonService.task("master-api/inisiasi/approval-inisiasi-emas", data);
   }
 
+  TerimaPerhiasan(data) {
+    return this.commonService.task("master-api/inisiasi/terima-perhiasan", data);
+  }
+
+  TerimaSouvenir(data) {
+    return this.commonService.task("master-api/inisiasi/terima-souvenir", data);
+  }
+
+  TerimaGift(data) {
+    return this.commonService.task("master-api/inisiasi/terima-gift", data);
+  }
+
+  TerimaDinar(data) {
+    return this.commonService.task("master-api/inisiasi/terima-dinar", data);
+  }
+
   TerimaEmas(data) {
     return this.commonService.task("master-api/inisiasi/terima-emas", data);
+  }
+
+  TerimaPermata(data) {
+    return this.commonService.task("master-api/inisiasi/terima-permata", data);
   }
 
 }

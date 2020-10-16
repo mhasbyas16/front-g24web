@@ -39,6 +39,9 @@ export class ModuleLoader
             console.log("Module: " + id + " already loaded.");
             return;
         }
+        if (!this._modules.get(id)) {
+            return;
+        }
         this._modules.get(id)();
         this._loadedModules.add(id);
     }

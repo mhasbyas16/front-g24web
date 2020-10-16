@@ -78,6 +78,19 @@
                         </b>
                     </div>
                 </div>
+                <div class="clr-row" *ngIf="inisiasi?.asal_uang == 'bank'">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Bank &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{GetDisplayName(inisiasi?.bank)}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                &nbsp;
                 <div class="clr-row">
                     <div class="clr-col-3">
                         <b>
@@ -96,7 +109,7 @@
                     </div>
                     <div class="clr-col-3">
                         <b>
-                            <u><span>{{inisiasi?.total_pajak}}</span></u>
+                            <u><span>{{inisiasi?.total_pajak | mask : 'separator' : ','}}</span></u>
                         </b>
                     </div>
                 </div>
@@ -118,7 +131,7 @@
                     </div>
                     <div class="clr-col-3">
                         <b>
-                            <u><span>{{inisiasi?.total_piece}}</span></u>
+                            <u><span>{{inisiasi?.total_piece | mask : 'separator' : ','}}</span></u>
                         </b>
                     </div>
                 </div>
@@ -169,10 +182,10 @@
                     <clr-dg-cell>{{data?.sku}} </clr-dg-cell>
                     <clr-dg-cell>{{GetDisplayValue(data['product-denom'])}}</clr-dg-cell>
                     <clr-dg-cell>{{GetDisplayValue(data['product-series'])}}</clr-dg-cell>
-                    <clr-dg-cell>{{data?.pieces}}</clr-dg-cell>
-                    <clr-dg-cell>{{data?.ongkos_pieces}}</clr-dg-cell>
+                    <clr-dg-cell>{{data?.pieces | mask : 'separator' : ','}}</clr-dg-cell>
+                    <clr-dg-cell>{{data?.ongkos_pieces | mask : 'separator' : ','}}</clr-dg-cell>
                     <!-- <clr-dg-cell>{{data.gram_tukar}}</clr-dg-cell><input readonly type="number" class="clr-input" [ngModel]="input.items[i]['pajak'] = 0" [ngModelOptions]="{standalone:true}"> -->
-                    <clr-dg-cell>{{data?.pajak}} </clr-dg-cell>
+                    <clr-dg-cell>{{data?.pajak | mask : 'separator' : ','}} </clr-dg-cell>
                     
                     <clr-dg-row-detail *clrIfExpanded="false" (clrIfExpandedChange)="onExpand(itemsIndex)">
                         <table class="table table-compact">
@@ -201,8 +214,8 @@
                                         <td>{{GetDisplayValue(product.vendor)}}</td>
                                         <td>{{GetDisplayValue(product['product-denom'])}}</td>
                                         <td>{{GetDisplayValue(product['product-series'])}}</td>
-                                        <td>{{product?.ongkos_pieces}}</td>
-                                        <td>{{product?.hpp_inisiasi}}</td>
+                                        <td>{{product?.ongkos_pieces | mask : 'separator' : ','}}</td>
+                                        <td>{{product?.hpp_inisiasi | mask : 'separator' : ','}}</td>
                                     </tr>
                                 </ng-container>
                             </tbody>
@@ -226,6 +239,10 @@
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" [disabled]="mode == EPriviledge.READ" (click)="doTerima()">Terima</button>
-        <button class="btn btn-danger" [disabled]="mode == EPriviledge.READ" (click)="doTolak()">Tolak</button>
+        <!-- <button class="btn btn-danger" [disabled]="mode == EPriviledge.READ" (click)="doTolak()">Tolak</button> -->
     </div>
 </clr-modal>
+
+<loading-spinner #spinner>
+
+</loading-spinner>

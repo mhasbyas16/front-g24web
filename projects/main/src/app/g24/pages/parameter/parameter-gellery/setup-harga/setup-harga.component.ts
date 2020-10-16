@@ -225,6 +225,8 @@ export class SetupHargaComponent implements OnInit {
       "potongan_bb_batu_encoded": "int",
       "potongan_bb_berlian": parseInt(this.inputModel.potongan_berlian),
       "potongan_bb_berlian_encoded": "int",
+      "potongan_ongkos": parseInt(this.inputModel.potongan_ongkos),
+      "potongan_ongkos_berlian_encoded": "int",
       "keterangan": this.inputModel.keterangan,
       "create_by" : this.nikUser["_hash"],
       "create_by_encoded" : "base64",
@@ -354,6 +356,7 @@ export class SetupHargaComponent implements OnInit {
     this.onChangeProduct(this.inputModel.productS);
     this.inputModel.potongan_batu = data.potongan_bb_batu;
     this.inputModel.potongan_berlian = data.potongan_bb_berlian;
+    this.inputModel.potongan_ongkos = data.potongan_ongkos;
     this.inputModel.harga_buyback = data.harga_buyback;
     this.inputModel.harga_baku = data.harga_baku;
     this.inputModel.keterangnan = data.keterangan;

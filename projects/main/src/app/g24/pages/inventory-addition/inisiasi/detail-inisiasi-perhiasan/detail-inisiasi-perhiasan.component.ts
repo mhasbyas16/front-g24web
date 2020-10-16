@@ -671,6 +671,12 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
       return;
     }
 
+    if(this.validateItems())
+    {
+      this.spinner.Close();
+      return;
+    }
+
     if(this.input.items?.length <= 0) {
       this.spinner.Close();
       this.toastr.warning("Tidak ada item pada Tabel Input Detail.", "Peringatan!");
@@ -716,7 +722,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
 
     console.log(seq);
     let st = StringHelper.LeftZeroPad(Number(seq.value).toString(), 5);
-    let PO = "PO" + this.session.getUnit()?.code + date_split[0].substring(1, 3) + date_split[1] + st;
+    let PO = "PO" + this.session.getUnit()?.code + date_split[0].substring(2, 4) + date_split[1] + date_split[2] + st;
 
     let def = 
     {
@@ -814,6 +820,21 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
 
   }
 
+  validateItems()
+  {
+    for(let i = 0; i < this.input.items.length; i++)
+    {
+      let item = this.input.items[i];
+      if(this.validateAdd(item))
+      {
+        // console.log(item, "tralala")
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   validateInput()
   {
     for(let key in this.input)
@@ -863,10 +884,15 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     // console.log("tgt", target, target.value);
   }
 
+  /**
+   * true = invalid
+   * 
+   */
   validateAdd(item : any)
   {
     for(let key in item)
     {
+      // console.log(item[key], key);
       if(key == 'pajak' && this.input.tipe_bayar == PaymentType.UANG.code)
       {
         continue;
@@ -909,9 +935,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
 
     for(let i = 0; i < this.input.items.length; i++)
     {
-      let ass = {no : i};
       let item = this.input.items[i];
-      Object.assign(item, ass);
       console.log(item)
     }
 

@@ -115,12 +115,15 @@ export enum EMenuID {
     DISTRO              = '10001',
     ROLE                = '10002',
     LAPORAN             = '10003',
-
+    KORPORASI           = '10004',
+    LAPORAN_BUYBACK     = '10009',
     // promosi
     PENGATURAN_PROMO = '10004',
     DAFTAR_PROMO = '10005',
     // offline buyback
     BUYBACK             = '11001',
+    PARAMETER_BUYBACK   = '11002',
+    PARAMETER_ACCEPT_BUYBACK = '11003',
 
     // LAPORAN KEUANGAN
     LAPORAN_KEUANGAN = '21000',
@@ -135,4 +138,18 @@ export enum EMenuID {
      ANGGARAN               = '30000',
      PENGAJUAN_ANGGARAN     = '30001',
      PERGESERAN_ANGGARAN    = '30002',
- }
+
+    //transaksi moker
+    TRANSAKSI_MOKER         = '31000',
+    INPUT_MOKER             = '31001',
+    OTORISASI_MOKER         = '31002',
+    TERIMA_MOKER            = '31003',
+    APPROVAL_TERIMA_MOKER   = '31004',
+
+    //admin
+    ADMIN                   = '1100',
+    ADMIN_ADD_DISTRO        = '1101',
+    ADMIN_ADD_CABANGINDUK   = '1102',
+    ADMIN_PADANAN_DISTRO    = '1103',
+    ADMIN_ADD_REGIONAL      = '1104',
+}

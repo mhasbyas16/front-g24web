@@ -130,7 +130,19 @@
                             </div>
                         </div>
                     </div>
-                    <div class="clr-col-12">
+                    <div class="clr-col-6 animate-show-hide" *ngIf="show" [@slideInOut]>
+                        <div class="clr-form-control">
+                            <label for="basic" class="clr-control-label">Potongan Ongkos</label>
+                            <div class="clr-control-container">
+                            <div class="clr-input-wrapper">
+                                <input [(ngModel)]="inputModel.potongan_ongkos" name="potongan_ongkos" type="number" class="clr-input" placeholder="0" min="0" max="100"/>
+                                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                            </div>
+                            <span class="clr-subtext"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clr-col-6">
                         <clr-textarea-container>
                             <label>Keterangan</label>
                             <textarea clrTextarea [(ngModel)]="inputModel.keterangan" name="keterangan" required></textarea>
@@ -217,7 +229,19 @@
                             </div>
                         </div>
                     </div>
-                    <div class="clr-col-12">
+                    <div class="clr-col-6 animate-show-hide" *ngIf="show" [@slideInOut]>
+                        <div class="clr-form-control">
+                            <label for="basic" class="clr-control-label">Potongan Ongkos</label>
+                            <div class="clr-control-container">
+                            <div class="clr-input-wrapper">
+                                <input [(ngModel)]="inputModel.potongan_ongkos" name="potongan_ongkos" type="number" class="clr-input" placeholder="0" min="0" max="100"/>
+                                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                            </div>
+                            <span class="clr-subtext"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clr-col-6">
                         <clr-textarea-container>
                             <label>Keterangan</label>
                             <textarea clrTextarea name="keterangan" [(ngModel)]="inputModel.keterangan" required></textarea>
@@ -282,7 +306,10 @@
                         <label class="clr-control-label">Potongan BB Berlian</label>
                         <label>{{inputModel.potongan_berlian}}</label>
                     </div>
-                    <div class="clr-col-12"><br></div>
+                    <div class="clr-col-6 animate-show-hide" *ngIf="show" [@slideInOut]>
+                        <label class="clr-control-label">Potongan Ongkos</label>
+                        <label>{{inputModel.potongan_ongkos}}</label>
+                    </div>
                     <div class="clr-col-6">
                         <label class="clr-control-label">Keterangan</label>
                         <label>{{inputModel.keterangan}}</label>

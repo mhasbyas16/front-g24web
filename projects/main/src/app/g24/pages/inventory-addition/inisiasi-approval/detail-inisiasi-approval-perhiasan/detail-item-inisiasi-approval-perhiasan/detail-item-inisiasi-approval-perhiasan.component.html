@@ -54,17 +54,30 @@
                         </b>
                     </div>
                 </div>
+                <div class="clr-row" *ngIf="inisiasi?.asal_uang == 'bank'">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Bank &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{GetDisplayName(inisiasi?.bank)}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                &nbsp;
                 <div class="clr-row">
                     <div class="clr-col-6">
                         <b>
                             <span>Harga Baku &#58; </span>
-                            <u><span>{{inisiasi?.harga_baku}}</span></u>
+                            <u><span>{{inisiasi?.harga_baku | mask : 'separator' : ','}}</span></u>
                         </b>
                     </div>
                     <div class="clr-col-6">
                         <b>
                             <span>Harga Pajak &#58; </span>
-                            <u><span>{{ inisiasi?.pajak}}</span></u>
+                            <u><span>{{ inisiasi?.pajak | mask : 'separator' : ','}}</span></u>
                         </b>
                     </div>
                 </div>
@@ -78,7 +91,7 @@
                     <div class="clr-col-6">
                         <b>
                             <span>Total Pieces &#58; </span>
-                            <u><span>{{ inisiasi?.total_piece}}</span></u>
+                            <u><span>{{ inisiasi?.total_piece | mask : 'separator' : ','}}</span></u>
                         </b>
                     </div>
                 </div>
@@ -124,42 +137,35 @@
                     <clr-dg-cell>{{GetDisplayValue(data['product-purity'])}}</clr-dg-cell>
                     <clr-dg-cell>{{GetDisplayValue(data['product-jenis'])}}</clr-dg-cell>
                     <clr-dg-cell>{{GetDisplayValue(data['product-gold-color'])}}</clr-dg-cell>
-                    <clr-dg-cell>{{data?.pieces}}</clr-dg-cell>
+                    <clr-dg-cell>{{data?.pieces | mask : 'separator' : ','}}</clr-dg-cell>
                     <clr-dg-cell>{{data?.baku_tukar}}</clr-dg-cell>
-                    <clr-dg-cell>{{data?.ongkos}}</clr-dg-cell>
+                    <clr-dg-cell>{{data?.ongkos | mask : 'separator' : ','}}</clr-dg-cell>
                     <!-- <clr-dg-cell>{{data.gram_tukar}}</clr-dg-cell><input readonly type="number" class="clr-input" [ngModel]="input.items[i]['pajak'] = 0" [ngModelOptions]="{standalone:true}"> -->
-                    <clr-dg-cell>{{data?.pajak}} </clr-dg-cell>
+                    <clr-dg-cell>{{data?.pajak | mask : 'separator' : ','}} </clr-dg-cell>
                 </clr-dg-row>
     
                 
                 <clr-dg-footer>
                     <div class="clr-row">
                         <div class="clr-col-1">Total Berat: </div>
-                        <div class="clr-col-2"><p>{{getBeratFromItems()}} gram.</p></div>
-                        <div class="clr-col-1">Total DPP: </div>
-                        <div class="clr-col-2"><p>Rp. <span></span>{{totalDPP()}}</p></div>
-                        <div class="clr-col-1">Total Pieces: </div>
-                        <div class="clr-col-2"><p>{{getPiecesFromItems()}} piece.</p></div>
-                        <div class="clr-col-1">Total Baku Tukar: </div>
-                        <div class="clr-col-2"><p>{{getBakuTukarFromItems()}}.</p></div>
+                        <div class="clr-col-2"><p>{{getBeratFromItems() | mask : 'separator' : ','}} gram.</p></div>
                         <div class="clr-col-1">Total Gram Tukar: </div>
                         <div class="clr-col-2"><p>{{getGramTukarFromItems()}} gram.</p></div>
+                        <div class="clr-col-1">Total Pieces: </div>
+                        <div class="clr-col-2"><p>{{getPiecesFromItems() | mask : 'separator' : ','}} piece.</p></div>
+                        <div class="clr-col-1">Total Baku Tukar: </div>
+                        <div class="clr-col-2"><p>{{inisiasi?.total_baku_tukar}}.</p></div>
+                        <div class="clr-col-1">Total Pajak: </div>
+                        <div class="clr-col-2"><p><span [ngStyle]="{'float' : 'left'}">Rp.</span><span>{{inisiasi?.total_pajak | mask : 'separator' : ','}}.</span></p></div>
                     </div>
                     <div class="clr-row">
-                        <div class="clr-col-1">Total Ongkos: </div>
-                        <div class="clr-col-2"><p>Rp. <span></span>{{getOngkosFromItems()}}.</p></div>
-                        <div class="clr-col-1">Total Pajak: </div>
-                        <div class="clr-col-2"><p><span [ngStyle]="{'float' : 'left'}">Rp.</span><span>{{getPajakFromItems()}}.</span></p></div>
+                        <div class="clr-col-1">Total DPP: </div>
+                        <div class="clr-col-2"><p><span [ngStyle]="{'float' : 'left'}">Rp.</span><span>{{inisiasi?.total_dpp | mask : 'separator' : ','}}.</span></p></div>
                         <div class="clr-col-6"></div>
                     </div>
                     <div class="clr-row">
                         <div class="clr-col-1">Total Harga : </div>
-                        <div class="clr-col-2">
-                            <p><span>Rp.</span>
-                                <span>{{hitungTotalHarga()}}</span>
-                                <!-- <span><input readonly min=0 class="clr-input" type="number" [(ngModel)]="input.total_harga" [ngModelOptions]="{standalone : true}"></span> -->
-                            </p>
-                        </div>
+                        <div class="clr-col-2"><p><span [ngStyle]="{'float' : 'left'}">Rp.</span><span>{{inisiasi?.total_harga | mask : 'separator' : ','}}.</span></p></div>
                     </div>
                     <div>
                         <clr-dg-pagination #pagination [clrDgPageSize]="10">
@@ -177,3 +183,7 @@
         <button class="btn btn-primary" [disabled]="mode == EPriviledge.READ" (click)="doSave()">Simpan</button>
     </div>
 </clr-modal>
+
+<loading-spinner #spinner>
+
+</loading-spinner>

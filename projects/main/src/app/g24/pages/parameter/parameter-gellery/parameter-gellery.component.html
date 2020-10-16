@@ -188,18 +188,10 @@
                 <button type="button" class="btn btn-outline" (click)="modalAddDialog = false">Cancel</button>
                 <button type="submit" class="btn btn-primary">
                     <span *ngIf="spinner==true" class="spinner spinner-inline">
-                        Declined
+                        Saving
                     </span>
                     <ng-container *ngIf="spinner==false">
-                        Decline
-                    </ng-container>
-                </button>
-                <button type="submit" class="btn btn-primary"  (click)="mainApproveSubmit()">
-                    <span *ngIf="spinner==true" class="spinner spinner-inline">
-                        Approved
-                    </span>
-                    <ng-container *ngIf="spinner==false">
-                        Approve
+                        Save
                     </ng-container>
                 </button>
             </div>

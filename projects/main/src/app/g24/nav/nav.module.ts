@@ -34,6 +34,8 @@ import { LoadingSpinnerComponent } from './modal/loading-spinner/loading-spinner
     ContentComponent,
     CartComponent,
     CartBuybackComponent,
+    SearchNasabahComponent,
+    AddNasabahComponent,
     LoadingSpinnerComponent
   ],
 })

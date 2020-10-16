@@ -60,14 +60,16 @@ export class BerlianBycodeComponent implements OnInit {
    this.loadingDg = false
   }
 
-  addToCart(code, jenis, berat, kadar, hargaTbb ){
+  addToCart(code, jenis, berat, kadar, hargaTbb, detail, idTransaction ){
     this.cartList.push({
       "code" : code,
       "jenis" : jenis,
       "berat" : berat,
       "kadar" : kadar,
       "kondisi" : this.tampilKondisi,
-      "hargaBB" : hargaTbb
+      'detail': detail,
+      "hargaBB" : hargaTbb,
+      "idTransaction" : idTransaction
     })
     console.debug(this.cartList, "isi cart")
     this.totalIsiCartBerlian.emit(this.cartList.length)

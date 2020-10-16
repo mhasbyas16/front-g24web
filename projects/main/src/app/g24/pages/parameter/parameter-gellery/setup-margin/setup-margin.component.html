@@ -119,7 +119,7 @@
                     <div class="clr-col-6">
                         <clr-select-container class="clr-form-control">
                             <label class="clr-control-label">Transaction Tpye</label>
-                            <select [(ngModel)]="inputModel.transaction_type" clrSelect name="transaction_type">
+                            <select [(ngModel)]="inputModel.transaction_type" clrSelect name="transaction_type" (change)="onChangeTransaction($event.target.value)">
                                 <ng-container *ngFor="let transaction of transactionType">
                                     <option value="{{transaction._id}}">{{transaction.name}}</option>
                                 </ng-container>
@@ -156,6 +156,19 @@
                             <div class="clr-control-container">
                             <div class="clr-input-wrapper">
                                 <input [(ngModel)]="inputModel.margin_berlian" name="margin_berlian" type="number" class="clr-input" [value]=0/>
+                                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                            </div>
+                            <span class="clr-subtext"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clr-col-6 animate-show-hide" *ngIf="showlm" [@slideInOut]>
+                        <div class="clr-form-control">
+                            <label for="basic" class="clr-control-label">Periode</label>
+                            <div class="clr-control-container">
+                            <div class="clr-input-wrapper">
+                                <input [(ngModel)]="inputModel.periode" name="periode" type="number" class="clr-input" placeholder="0"/>
+                                <clr-control-helper>Hari</clr-control-helper>
                                 <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                             </div>
                             <span class="clr-subtext"></span>
@@ -214,7 +227,7 @@
                                     <option *ngFor="let prod of productCat" value="{{prod._id}}">{{prod.name}}</option>
                                 </ng-container>
                             </select>
-                        </clr-select-container>
+                        </clr-select-container> -->
                     </div>
                     <!-- <div class="clr-col-6">
                         <label class="clr-control-label">Vendor</label>
@@ -264,6 +277,19 @@
                             <div class="clr-control-container">
                             <div class="clr-input-wrapper">
                                 <input [(ngModel)]="inputModel.margin_berlian" name="margin_berlian" type="number" class="clr-input" [value]=0/>
+                                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                            </div>
+                            <span class="clr-subtext"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clr-col-6 animate-show-hide" *ngIf="showlm" [@slideInOut]>
+                        <div class="clr-form-control">
+                            <label for="basic" class="clr-control-label">Periode</label>
+                            <div class="clr-control-container">
+                            <div class="clr-input-wrapper">
+                                <input [(ngModel)]="inputModel.periode" name="periode" type="number" class="clr-input" placeholder="0"/>
+                                <clr-control-helper>Hari</clr-control-helper>
                                 <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                             </div>
                             <span class="clr-subtext"></span>
@@ -337,6 +363,10 @@
                     <div class="clr-col-6 animate-show-hide" *ngIf="show" [@slideInOut]>
                         <label class="clr-control-label">Margin Berlian</label>
                         <label>{{inputModel.margin_berlian}}</label>
+                    </div>
+                    <div class="clr-col-6 animate-show-hide" *ngIf="showlm" [@slideInOut]>
+                        <label class="clr-control-label">Periode</label>
+                        <label>{{inputModel.periode}}</label>
                     </div>
                     <div class="clr-col-12 animate-show-hide" *ngIf="show" [@slideInOut]><br></div>
                     <div class="clr-col-6">
