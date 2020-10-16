@@ -5,7 +5,6 @@
         </div>
         <div class="card-block">
             <clr-datagrid [clrDgLoading]="loadingDg">
-                
                 <clr-dg-column>Kode</clr-dg-column>
                 <clr-dg-column>Vendor</clr-dg-column>
                 <clr-dg-column>Jenis</clr-dg-column>
@@ -16,36 +15,52 @@
                 <clr-dg-column>Harga</clr-dg-column>
                 <clr-dg-column class="right"></clr-dg-column>
                 <clr-dg-row *clrDgItems="let d of isiPerhiasan.data">
-                    <clr-dg-cell>{{d.detail.code}}</clr-dg-cell>
-                    <clr-dg-cell>{{d.detail.vendor.name}}</clr-dg-cell>
-                    <clr-dg-cell>{{d.detail['product-jenis'].name}}</clr-dg-cell>
-                    <clr-dg-cell>{{d.detail.berat}}</clr-dg-cell>
-                    <clr-dg-cell>{{d.detail['product-purity'].name}}</clr-dg-cell>
-                    <clr-dg-cell>{{d.detail['product-gold-color'].name}}</clr-dg-cell>
+                    <clr-dg-cell [class.buyback-yes]="d.buyback === 'yes'">{{d.detail.code}}</clr-dg-cell>
+                    <clr-dg-cell [class.buyback-yes]="d.buyback === 'yes'">{{d.detail.vendor.name}}</clr-dg-cell>
+                    <clr-dg-cell [class.buyback-yes]="d.buyback === 'yes'">{{d.detail['product-jenis'].name}}</clr-dg-cell>
+                    <clr-dg-cell [class.buyback-yes]="d.buyback === 'yes'">{{d.detail.berat}}</clr-dg-cell>
+                    <clr-dg-cell [class.buyback-yes]="d.buyback === 'yes'">{{d.detail['product-purity'].name}}</clr-dg-cell>
+                    <clr-dg-cell [class.buyback-yes]="d.buyback === 'yes'">{{d.detail['product-gold-color'].name}}</clr-dg-cell>
                     <clr-dg-cell style="padding-top: 0px;">
-                        <div class="clr-select-wrapper">
-                            <select id="select-error"  class="clr-select" (click)="hitungHargaBB($event.target.value,d.code,d.detail['product-purity'].name, d.detail.berat)">
-                                <option value="0">Pilih Kondisi</option>
-                                <option value="1">Baik</option>
-                                <option value="2">Rusak</option>
-                            </select>
-                        </div>
+                        <ng-container *ngIf="d.buyback == 'yes'; else default">
+                            <span class="label label-danger" style="margin-top: 6%;">Buyback</span>
+                        </ng-container>
+                        <ng-template #default>
+                            <div class="clr-select-wrapper">
+                                <select id="select-error"  class="clr-select" (click)="hitungHargaBB($event.target.value,d.code,d.detail['product-purity'].name, d.detail.berat)">
+                                    <option value="0">Pilih Kondisi</option>
+                                    <option value="1">Baik</option>
+                                    <option value="2">Rusak</option>
+                                </select>
+                            </div>
+                        </ng-template>
                     </clr-dg-cell>
                     <clr-dg-cell>
-                        Rp. {{d.hargaBB | number}}
-                    </clr-dg-cell>
-                    <clr-dg-cell><span style="float: right;">
-                        <ng-container *ngIf="cekHitungHarga(d.hargaBB) == 0 || cekItemArray(d.detail.code) == true; else plus">
-                            <button type="button" class="btn btn-icon btn-sm  disabled" aria-label="home" >
-                                <clr-icon shape="minus"></clr-icon>
-                            </button>                
+                        <ng-container *ngIf="d.buyback == 'yes'; else defaultHarga">
+                            <span class="label label-danger" >Buyback</span>
                         </ng-container>
-                        <ng-template #plus >
-                            <button type="button" class="btn btn-icon btn-sm btn-success" (click)="addToCart(d.detail.code, d.detail['product-jenis'].name, d.detail.berat, d.detail['product-purity'].name, d.hargaBB, d.detail, isiPerhiasan.id)" aria-label="home" >
-                                <clr-icon shape="plus"></clr-icon>
-                            </button>       
+                        <ng-template #defaultHarga>
+                            Rp. {{d.hargaBB | number}}
                         </ng-template>
-                    </span>
+                    </clr-dg-cell>
+                    <clr-dg-cell>
+                        <ng-container *ngIf="d.buyback == 'yes'; else defaultPlus">
+                            <span class="label label-danger" >Buyback</span>
+                        </ng-container>
+                        <ng-template #defaultPlus>
+                            <span style="float: right;">
+                                <ng-container *ngIf="cekHitungHarga(d.hargaBB) == 0 || cekItemArray(d.detail.code) == true; else plus">
+                                    <button type="button" class="btn btn-icon btn-sm  disabled" aria-label="home" >
+                                        <clr-icon shape="minus"></clr-icon>
+                                    </button>                
+                                </ng-container>
+                                <ng-template #plus >
+                                    <button type="button" class="btn btn-icon btn-sm btn-success" (click)="addToCart(d.detail.code, d.detail['product-jenis'].name, d.detail.berat, d.detail['product-purity'].name, d.hargaBB, d.detail, isiPerhiasan.id)" aria-label="home" >
+                                        <clr-icon shape="plus"></clr-icon>
+                                    </button>       
+                                </ng-template>
+                            </span>
+                        </ng-template>
                     </clr-dg-cell>
                 </clr-dg-row>
             </clr-datagrid>

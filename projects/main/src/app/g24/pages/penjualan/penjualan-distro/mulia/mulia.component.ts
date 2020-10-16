@@ -183,6 +183,7 @@ export class MuliaComponent implements OnInit {
                   
                 });
                   this.datamulias = cariMulia;
+                  console.debug(this.datamulias, "kamu")
                   this.loadingDg = false;
               });
             });

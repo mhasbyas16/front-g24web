@@ -14,6 +14,7 @@ import { DatePipe } from '@angular/common';
 import { ProductService } from '../../../services/product/product.service';
 import { TransactionFlagBuybackService } from '../../../services/transaction/transaction-flag-buyback.service';
 import { TransactionService } from "../../../services/transaction/transaction.service";
+import { TransactionTypeService } from '../../../services/transaction/transaction-type.service';
 
 import { UserService } from 'projects/platform/src/app/services/security/user.service';
 import { ContentPage } from '../../../lib/helper/content-page';
@@ -69,7 +70,8 @@ export class CheckoutBuybackComponent implements OnInit {
     private toastr: ToastrService,
     private productService: ProductService,
     private transactionFlagBuybackService:TransactionFlagBuybackService,
-    private transactionService : TransactionService
+    private transactionService : TransactionService,
+    private transactionTypeService: TransactionTypeService,
   ) { }
 
   ngOnInit(): void {
@@ -113,6 +115,14 @@ export class CheckoutBuybackComponent implements OnInit {
     this.getUnit();
 
    }
+
+   getTransactionType() {
+    this.transactionTypeService.get("?_hash=1&code=b01").subscribe((response: any) => {
+      if (response != false) {
+        this.formData.patchValue({ 'transaction-type': response["_hash"] });
+      }
+    })
+  }
 
    getClientData(val){
     if (val != null) {
@@ -162,7 +172,7 @@ export class CheckoutBuybackComponent implements OnInit {
     
     let params="?_between=makerDate&_start="+d1+"&_end="+d2;
   
-    this.buybackService.list(params+'&_sortby=idAi:0&_rows=1').subscribe((response:any)=>{  
+    this.buybackService.list(params+'&_sortby=_id:0&_rows=1').subscribe((response:any)=>{  
       console.debug(response, "idAI")
       // if (response == false) {
       //   this.incId = 0
@@ -225,9 +235,7 @@ export class CheckoutBuybackComponent implements OnInit {
     }
      console.debug(this.formData.getRawValue(), "we" )
     this.validModel = true;
-    console.debug(this.incId, " this.incId")
-    console.debug(this.emasBatangan,"pteantan")
-    console.debug(this.perhiasan,"pteantan")
+    
   }
 
   refreshId(){
@@ -259,17 +267,22 @@ export class CheckoutBuybackComponent implements OnInit {
     //     console.debug("product flag update failed", this.transactionFlagBuybackService.batchUpdate(btoa(JSON.stringify(this.sessionService.getUnit()))));
     //   } 
     // })
-
+    console.debug(this.berlian, "pantek")
     if (this.perhiasan != null) {
       let dataPerhiasan = this.transactionFlagBuybackService.batchUpdateTransaction(this.perhiasan, "perhiasan",btoa(JSON.stringify(this.sessionService.getUnit())))
     } 
     if(this.emasBatangan != null) {
       let dataLM = this.transactionFlagBuybackService.batchUpdateTransaction(this.emasBatangan, "lm", btoa(JSON.stringify(this.sessionService.getUnit())))
     }
-    
-    
-    
-
+    if(this.berlian != null) {
+      let dataBerlian = this.transactionFlagBuybackService.batchUpdateTransaction(this.berlian, "berlian", btoa(JSON.stringify(this.sessionService.getUnit())))
+    }
+    if(this.souvenir != null) {
+      let dataSouvenir = this.transactionFlagBuybackService.batchUpdateTransaction(this.souvenir, "souvenir", btoa(JSON.stringify(this.sessionService.getUnit())))
+    }
+    if(this.dinar != null) {
+      let dataSouvenir = this.transactionFlagBuybackService.batchUpdateTransaction(this.dinar, "dinar", btoa(JSON.stringify(this.sessionService.getUnit())))
+    }
 
     this.buybackService.add(data).subscribe((response: any) => {
       if (response != false) {
@@ -283,12 +296,17 @@ export class CheckoutBuybackComponent implements OnInit {
         DINAR.splice(0);
         GS.splice(0);
         this.cartModal.emit(false);
-        // this.ChangeContentArea('10003');
+        this.ChangeContentArea('10009');
       } else {
         this.toastr.error(this.buybackService.message(), "Transaction");
         this.idTransaksi()
         return;
       }
     })
+  }
+
+  ChangeContentArea(pageId: string) {
+    if (pageId.startsWith("x")) return;
+    ContentPage.ChangeContent(pageId, true)
   }
 }

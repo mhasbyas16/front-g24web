@@ -110,13 +110,13 @@ export class CheckoutComponent implements OnInit {
     let unit = this.sessionService.getUnit();
 
     let params = "?_between=makerDate&_start=" + d1 + "&_end=" + d2;
-
     this.transactionService.list(params + '&_sortby=_id:0&_rows=1').subscribe((response: any) => {
       let count = null;
       if (response["0"]["idAi"] == null) {
         count = JSON.stringify(1);
       }else{
         count = JSON.stringify(Number(response["0"]["idAi"]) + 1);
+
       }
       switch (count.length) {
         case 1:
@@ -143,6 +143,7 @@ export class CheckoutComponent implements OnInit {
         default:
           break;
       }
+      // this.idtransaksi = "5502906200000054"
       this.idtransaksi = unit.code + "06" + d3 + inc;
       this.formData.patchValue({ idTransaction: this.idtransaksi, idAi: Number(response["0"]["idAi"]) + 1 });
     });

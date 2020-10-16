@@ -70,5 +70,6 @@ export class AppRoutingModule
     ModuleLoader.register('kl', () => import('./pages/keuangan/laporan/laporan.module').then(m => m.LaporanKeuanganModule))
     ModuleLoader.register('promo',() => import('./pages/promo/promo.module').then(m => m.PromoModule))
     ModuleLoader.register('bb', () => import('./pages/buyback/buyback.module').then(m => m.BuybackModule))
+    // ModuleLoader.register('bblmnon', () => import('./pages/buyback/buyback.module').then(m => m.BuybackModule))
   }
 }
