@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DContent } from '../../../decorators/content/pages';
 import { EMenuID } from '../../../lib/enums/emenu-id.enum';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
@@ -7,6 +7,7 @@ import { AlphaNumeric } from '../../../lib/helper/alpha-numeric';
 import { environment } from 'src/environments/environment';
 import { Observable, config } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
 
 //ALERT
 import { ToastrService } from 'ngx-toastr';
@@ -42,7 +43,7 @@ listdata : any[] = [];
 
 
   constructor(private productclarity : ProductClarityService, private toastr : ToastrService) { }
-
+  @ViewChild('spinner',{static:false}) spinner : LoadingSpinnerComponent;
   ngOnInit(): void {
   	let params = "?";
   	this.productclarity.list(params).subscribe(data=>{
@@ -57,16 +58,18 @@ listdata : any[] = [];
   }
 
   SearchData(){
+	  this.spinner.SetSpinnerText("Mohon Tunggu...");
+	  this.spinner.Open();
   	let params = "?";
   	for(let key in this.search){
   		if(this.search[key]==""||this.search[key]==null)continue;
   			switch (key) {
   				case "code":
-  					params += "code="+this.search[key].code+"&";
+  					params += "code="+this.search[key]+"&";
 				break;
 
 				case "name":
-					params += "name="+this.search[key].name+"&";
+					params += "name="+this.search[key]+"&";
 				break;
   				
   				default:
@@ -77,11 +80,14 @@ listdata : any[] = [];
   		this.productclarity.list(params).subscribe(data=>{
   			if(data==false){
   				if(this.productclarity.message()!=""){
-  					this.toastr.info("Data tidak ditemukan","Informasi");
+					  this.toastr.info("Data tidak ditemukan","Informasi");
+					  this.spinner.Close();
   					return;
   				}
   			}
-  			this.listclarity = data;
+			  this.listclarity = data;
+			  this.toastr.success("Data ditemuka "+data.length,"Sukses");
+			  this.spinner.Close();
   		})
   }
 
@@ -91,6 +97,8 @@ listdata : any[] = [];
   }
 
   Simpan(){
+	this.spinner.SetSpinnerText("Mohon Tunggu...");
+	this.spinner.Open();
   	let code = this.input["code"];
 	let name = this.input["name"];
 	let value = AlphaNumeric.Encode(this.dataclarity.length);
@@ -119,10 +127,12 @@ listdata : any[] = [];
 	  for(let i = 0; i < this.dataclarity.length; i++){
 		  if(this.dataclarity[i].code==code){
 			this.toastr.warning("Data code sama","Peringatan");
+			this.spinner.Close();
 			return;
 		  }
 		  else if(!code || !name){
 			  this.toastr.warning("Kode atau Nama Clarity belum diisi");
+			  this.spinner.Close();
 			  return;
 		  }
 	  }
@@ -132,10 +142,13 @@ listdata : any[] = [];
 		this.productclarity.add(ff).subscribe(data=>{
 			if(data==false){
 				if(this.productclarity.message()!=""){
+					this.toastr.error("Data gagal disimpan","Gagal");
+					this.spinner.Close();
 					return;
 				}
 			}
 
+			this.spinner.Close();
 			this.toastr.success("Data berhasil ditambah","Sukses");
 			this.listclarity = [];
 			this.loadData();
@@ -160,6 +173,8 @@ listdata : any[] = [];
   }
 
   Update(){
+	this.spinner.SetSpinnerText("Mohon Tunggu...");
+	this.spinner.Open();
   	for(let i = 0; i < this.uptodate.length; i++){
   		console.log(this.uptodate[i]._id);
   		let data = {
@@ -173,9 +188,12 @@ listdata : any[] = [];
   		this.productclarity.update(upd).subscribe(data=>{
   			if(data==false){
   				if(this.productclarity.message()!=""){
+					this.toastr.error("Data gagal diubah","Gagal");
+					this.spinner.Close();
   					return;
   				}
-  			}
+			  }
+			  this.spinner.Close();
   			this.toastr.success("Data berhasil diubah","Sukses");
   			this.listclarity = [];
   			this.loadData();
@@ -185,11 +203,15 @@ listdata : any[] = [];
   }
 
   Hapus(){
+	this.spinner.SetSpinnerText("Mohon Tunggu...");
+	this.spinner.Open();
 	if(!this.data_view){
 		this.toastr.warning("Data belum dipilih","Peringatan");
+		this.spinner.Close();
 		return;
 	}else if(Object.keys(this.data_view).length==0){
 		  this.toastr.warning("Data belum dipilih","Peringatan");
+		  this.spinner.Close();
 		  return;
 	  }
   	this.delete = [];
@@ -200,9 +222,12 @@ listdata : any[] = [];
       this.productclarity.delete(dlt).subscribe(data=>{
         if(data==false){
           if(this.productclarity.message()!=""){
+			this.toastr.error("Data gagal dihapus","Gagal");
+			this.spinner.Close();
             return;
           }
-        }
+		}
+		this.spinner.Close();
         this.toastr.success("Data berhasil dihapus","Sukses");
         this.listclarity = [];
         this.loadData();

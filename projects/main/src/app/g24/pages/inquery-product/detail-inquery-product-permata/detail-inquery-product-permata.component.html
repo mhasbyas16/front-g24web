@@ -28,11 +28,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="card-header">
-                Attribut Permata
-            </div>
-            <div class="card-block">
                 <div class="clr-row">
                     <div class="clr-col-6">
                         <div class="clr-form-control">
@@ -75,13 +70,41 @@
                             </clr-select-container>
                         </div>
                     </div>
+                        <div class="clr-col-md-6">
+                            <div class="clr-form-control">
+                                <label class="clr-control-label">Location</label>
+                            </div>
+                            <clr-select-container>
+                                <select clrSelect [(ngModel)]="inquery.location" name="location">
+                                    <option [ngValue]=""></option>
+                                    <ng-container *ngFor="let data of lokasi">
+                                        <option [ngValue]="data">{{data.code}}</option>
+                                    </ng-container>
+                                </select>
+                        </clr-select-container>                        
+                        </div>
+                    </div>
+                        <div class="clr-row">
+                        <div class="clr-col-md-6" style="margin-top: 20px;" *ngIf="showUnit">
+                            <div class="clr-from-control">
+                                <label class="clr-control-label">Unit</label>
+                                <clr-select-container>
+                                    <select clrSelect [(ngModel)]="inquery.unit" name="unit">
+                                        <option [ngValue]=""></option>
+                                        <ng-container *ngFor="let data of unit">
+                                            <option [ngValue]="data">{{data.nama}}</option>
+                                        </ng-container>
+                                    </select>
+                                </clr-select-container>
+                            </div>
+                        </div>
                     <div class="clr-col-6">
                         <div class="clr-form-control">
                             <label class="clr-control-label">Tipe Stock</label>
                             <clr-select-container>
                                 <select clrSelect [(ngModel)]="inquery.tipe_stock" name="tipe_stock">
                                     <ng-container *ngFor="let data of Tipe">
-                                        <option [ngValue]="data">{{data.name}}</option>
+                                        <option [ngValue]="data">{{data.code}}</option>
                                     </ng-container>
                                 </select>
                             </clr-select-container>
@@ -107,6 +130,10 @@
             <clr-dg-column>Warna</clr-dg-column>
             <clr-dg-column>Jenis</clr-dg-column>
             <clr-dg-column>Hpp Batu</clr-dg-column>
+            <clr-dg-column>Hpp Inisiasi</clr-dg-column>
+            <clr-dg-column>Hpp Berlian</clr-dg-column>
+            <clr-dg-column>Jumlah Butir</clr-dg-column>
+            <clr-dg-column>Flag</clr-dg-column>
             <clr-dg-column>Tipe Stock</clr-dg-column>
 
             <clr-dg-row *ngFor="let data of outputdata">
@@ -117,8 +144,14 @@
                 <clr-dg-cell>{{data["product-gold-color"].name}}</clr-dg-cell>
                 <clr-dg-cell>{{data["product-jenis"].name}}</clr-dg-cell>
                 <clr-dg-cell>{{data.hpp_batu}}</clr-dg-cell>
+                <clr-dg-cell>{{data.hpp_inisiasi}}</clr-dg-cell>
+                <clr-dg-cell>{{data.hpp_berlian}}</clr-dg-cell>
+                <clr-dg-cell>{{data.jumlah_butir}}</clr-dg-cell>
+                <clr-dg-cell>{{data.flag}}</clr-dg-cell>
                 <clr-dg-cell>{{data.tipe_stock ? data.tipe_stock : "-"}}</clr-dg-cell>
             </clr-dg-row>
         </clr-datagrid>
     </div>
 </div>
+
+<loading-spinner #spinner></loading-spinner>

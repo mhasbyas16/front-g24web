@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DContent } from '../../../decorators/content/pages';
 import { EMenuID } from '../../../lib/enums/emenu-id.enum';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
@@ -6,12 +6,14 @@ import { DataTypeUtil } from '../../../lib/helper/data-type-util';
 import { environment } from 'src/environments/environment';
 import { Observable, config } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
 
 //ALERT
 import { ToastrService } from 'ngx-toastr';
 
 //SERVICE
 import { ProductGoldColorService } from '../../../services/product/product-gold-color.service';
+import { AlphaNumeric } from '../../../lib/helper/alpha-numeric';
 
 @Component({
   selector: 'app-product-gold-color',
@@ -41,6 +43,7 @@ modalupdate : boolean = false;
 
 
   constructor(private goldservice : ProductGoldColorService, private toastr : ToastrService) { }
+  @ViewChild('spinner',{static:false}) spinner : LoadingSpinnerComponent;
 
   ngOnInit(): void {
   	let params = "?";
@@ -55,16 +58,22 @@ modalupdate : boolean = false;
   }
 
   SearchData(){
+	this.spinner.SetSpinnerText("Mohon Tunggu...");
+	this.spinner.Open();
   	let params = "?";
   	for(let key in this.search){
   		if(this.search[key]==""||this.search[key]==null)continue;
   			switch (key) {
   				case "code":
-  					params += "code="+this.search[key].code+"&code_encoded=int&";
+  					params += "code="+this.search[key]+"&code_encoded=int&code_encoded=string";
+				break;
+
+				case "code" : 
+					params += "code="+this.search[key]+"&";
 				break;
 
 				case "name":
-					params += "name="+this.search[key].name+"&";
+					params += "name="+this.search[key]+"&";
 				break;
   				
   				default:
@@ -75,10 +84,13 @@ modalupdate : boolean = false;
   		this.goldservice.list(params).subscribe(data=>{
   			if(data==false){
   				if(this.goldservice.message()!=""){
+					this.spinner.Close();
   					this.toastr.info("Data tidak ditemukan","Informasi");
   					return;
   				}
-  			}
+			  }
+			this.toastr.success("Data ditemukan "+data.length,"Sukses");
+			this.spinner.Close();
   			this.listgold = data;
   		})
   }
@@ -89,25 +101,34 @@ modalupdate : boolean = false;
   }
 
   Simpan(){
-  	let code = this.input["code"];
+	this.spinner.SetSpinnerText("Mohon Tunggu...");
+	this.spinner.Open();
+	let num = AlphaNumeric.Encode(this.datagold.length);  
+	if(num.length >= 1){
+		num = "0"+num;
+	}
   	let name = this.input["name"];
   	let data = {
-  		code : code,
+  		code : num,
   		name : name,
   		category : "product-color"
   	}
 	  let ff = DataTypeUtil.Encode(data);
-	  if(!code || !name){
-		  this.toastr.warning("Kode atau nama gold color belum diisi","Peringatan");
+	  if(!name){
+		  this.toastr.warning("Nama gold color belum diisi","Peringatan");
+		  this.spinner.Close();
 		  return;
 	  }
   	this.goldservice.add(ff).subscribe(data=>{
   		if(data==false){
   			if(this.goldservice.message()!=""){
+				this.toastr.error("Data gagal disimpan","Gagal");
+				this.spinner.Close();
   				return;
   			}
   		}
-  		this.toastr.success("Data berhasil ditambah","Sukses");
+		  this.toastr.success("Data berhasil ditambah","Sukses");
+		  this.spinner.Close();
   		this.listgold = [];
   		this.loadData();
   		this.modaltambah = false;
@@ -131,6 +152,8 @@ modalupdate : boolean = false;
   }
 
   Update(){
+	this.spinner.SetSpinnerText("Mohon Tunggu...");
+	this.spinner.Open();
   	for(let i = 0; i < this.uptodate.length; i++){
   		console.log(this.uptodate[i]._id);
   		let data = {
@@ -145,9 +168,12 @@ modalupdate : boolean = false;
   		this.goldservice.update(upd).subscribe(data=>{
   			if(data==false){
   				if(this.goldservice.message()!=""){
+					this.toastr.error("Data gagal dirubah","Gagal");
+					this.spinner.Close();
   					return;
   				}
-  			}
+			  }
+			this.spinner.Close();
   			this.toastr.success("Data berhasil diubah","Sukses");
   			this.listgold = [];
   			this.loadData();
@@ -157,11 +183,15 @@ modalupdate : boolean = false;
   }
 
   Hapus(){
+	this.spinner.SetSpinnerText("Mohon Tunggu...");
+	this.spinner.Open();
 	if(!this.data_view){
 		this.toastr.warning("Data belum dipilih","Peringatan");
+		this.spinner.Close();
 		return;
 	}else if(Object.keys(this.data_view).length==0){
 		this.toastr.warning("Data belum dipilih","Peringatan");
+		this.spinner.Close();
 		return;
 	}
   	this.delete = [];
@@ -172,10 +202,13 @@ modalupdate : boolean = false;
   		this.goldservice.delete(dlt).subscribe(data=>{
   			if(data==false){
   				if(this.goldservice.message()!=""){
+					this.toastr.error("Data gagal dihapus","Gagal");
+					this.spinner.Close();
   					return;
   				}
   			}
-  			this.toastr.success("Data berhasil dihapus","Sukses");
+			  this.toastr.success("Data berhasil dihapus","Sukses");
+			  this.spinner.Close();
   			this.listgold = [];
   			this.loadData();
   		})

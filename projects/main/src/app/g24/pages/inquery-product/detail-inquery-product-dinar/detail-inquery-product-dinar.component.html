@@ -2,7 +2,7 @@
     <div class="clr-col-lg-12">
         <div class="card">
             <div class="card-header">
-                Dinar <span *ngIf="ErrorPage" class="label label-danger" style="text-align: center;">Gagal Load Page, Silahkan klik button refresh dibawah</span>
+                Dinar <span *ngIf="ErrorPage" class="label label-danger" style="text-align: center;"><strong>Gagal Load Page, Silahkan klik button refresh dibawah</strong></span>
             </div>
             <div class="card-block">
                 <div class="clr-row">
@@ -28,11 +28,34 @@
                     </div>
                 </div>
                 </div>
-            </div>
-            <div class="card-header">
-                Attribut Dinar
-            </div>
-            <div class="card-block">
+                <div class="clr-row">
+                    <div class="clr-col-md-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Location</label>
+                        </div>
+                        <clr-select-container>
+                            <select clrSelect [(ngModel)]="inquery.location" name="location">
+                                <option [ngValue]=""></option>
+                                <ng-container *ngFor="let data of lokasi">
+                                    <option [ngValue]="data">{{data.code}}</option>
+                                </ng-container>
+                            </select>
+                    </clr-select-container>                        
+                    </div>
+                    <div class="clr-col-md-6" style="margin-top: 20px;" *ngIf="showUnit">
+                        <div class="clr-from-control">
+                            <label class="clr-control-label">Unit</label>
+                            <clr-select-container>
+                                <select clrSelect [(ngModel)]="inquery.unit" name="unit">
+                                    <option [ngValue]=""></option>
+                                    <ng-container *ngFor="let data of unit">
+                                        <option [ngValue]="data">{{data.nama}}</option>
+                                    </ng-container>
+                                </select>
+                            </clr-select-container>
+                        </div>
+                    </div>
+                </div>
                 <div class="clr-row">
                     <div class="clr-col-6">
                         <div class="clr-form-control">
@@ -60,19 +83,29 @@
 <div class="clr-row">
     <div class="clr-col-md-12">
         <clr-datagrid>
+            <clr-dg-column>No PO</clr-dg-column>
             <clr-dg-column>Code</clr-dg-column>
             <clr-dg-column>Vendor</clr-dg-column>
             <clr-dg-column>Denom</clr-dg-column>
             <clr-dg-column>HPP</clr-dg-column>
+            <clr-dg-column>Hpp Inisiasi</clr-dg-column>
+            <clr-dg-column>Flag</clr-dg-column>
+            <clr-dg-column>Lokasi</clr-dg-column>
             <clr-dg-column>Tipe Stock</clr-dg-column>
 
             <clr-dg-row *ngFor="let data of outputdata">
+                <clr-dg-cell>{{data.no_po ? data.no_po : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data.code}}</clr-dg-cell>
                 <clr-dg-cell>{{data.vendor.name}}</clr-dg-cell>
                 <clr-dg-cell>{{data["product-denom"].name}}</clr-dg-cell>
                 <clr-dg-cell>{{data.hpp}}</clr-dg-cell>
+                <clr-dg-cell>{{data.hpp_inisiasi}}</clr-dg-cell>
+                <clr-dg-cell>{{data.flag}}</clr-dg-cell>
+                <clr-dg-cell>{{data.location ? data.location : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data.tipe_stock}}</clr-dg-cell>
             </clr-dg-row>
         </clr-datagrid>
     </div>
 </div>
+
+<loading-spinner #spinner></loading-spinner>

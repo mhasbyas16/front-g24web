@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DContent } from '../../../decorators/content/pages';
 import { EMenuID } from '../../../lib/enums/emenu-id.enum';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
@@ -6,6 +6,7 @@ import { DataTypeUtil } from '../../../lib/helper/data-type-util';
 import { environment } from 'src/environments/environment';
 import { Observable, config } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
 
 //ALERT
 import { ToastrService } from 'ngx-toastr';
@@ -56,7 +57,9 @@ modalview : boolean = false;
 
 
   constructor(private jenisservice : ProductJenisService, private toastr : ToastrService,
-  			  private kategoriservice : ProductCategoryService) { }
+				private kategoriservice : ProductCategoryService) { }
+
+   @ViewChild('spinner',{static:false})spinner : LoadingSpinnerComponent;
 
   ngOnInit(): void {
   	let params = "?";
@@ -80,13 +83,15 @@ modalview : boolean = false;
   }
 
   SearchData(){
+	  this.spinner.SetSpinnerText("Mohon Tunggu...");
+	  this.spinner.Open();
 	  let params = "?";
 	if(!this.search["kategori"]){
   	for(let key in this.search){
   		if(this.search[key]==""||this.search[key]==null)continue;
   			switch (key) {
   				case "code":
-  					params += "code="+this.search[key].code+"&";
+  					params += "code="+this.search.code.toUpperCase()+"&";
 				break;
 
 				// case "kategori":
@@ -102,11 +107,14 @@ modalview : boolean = false;
   			if(data==false){
   				if(this.jenisservice.message()!=""){
 					  this.toastr.info("Data tidak ditemukan","Informasi");
+					  this.spinner.Close();
 					  this.listjenis = [];
   					return;
   				}
-  			}
-  			this.listjenis = data;
+			  }
+			this.spinner.Close();
+			  this.listjenis = data;
+			  this.toastr.success("Data ditemukan "+data.length,"Sukses");
 			for(let i =0; i < this.listjenis.length; i++){
 			this.detailkategori = this.listjenis[i];
 			console.log(this.detailkategori["product-category"]);
@@ -119,12 +127,15 @@ modalview : boolean = false;
 		this.jenisservice.list(params+"product-category.name_regex=1&product-category.name="+this.search["kategori"]).subscribe(data=>{
 			if(data==false){
 				if(this.jenisservice.message()!=""){
+					this.spinner.Close();
 					this.toastr.info("Data tidak ditemukan","Informasi");
 					this.listjenis = [];
 					return;
 				}
 			}
 			this.listjenis = data;
+			this.toastr.success("Data ditemukan "+data.length,"Sukses");
+			this.spinner.Close();
 			for(let i =0; i < this.listjenis.length; i++){
 			this.detailkategori = this.listjenis[i];
 			console.log(this.detailkategori["product-category"]);
@@ -190,6 +201,8 @@ modalview : boolean = false;
   }
 
   Simpan(){
+	this.spinner.SetSpinnerText("Mohon Tunggu...");
+	this.spinner.Open();
   	let code = this.input["code"];
 	let name = this.input["name"];
 	let validate = /^[a-zA-Z ]+$/;  
@@ -198,12 +211,15 @@ modalview : boolean = false;
 	  
 	  if(!code || !name){
 		  this.toastr.warning("Kode atau nama belum di isi","Peringatan");
+		  this.spinner.Close();
 		  return;
 	  }else if(this.addkategori.length <= 0){
 		  this.toastr.warning("Produk kategori belum ditambahkan","Peringatan");
+		  this.spinner.Close();
 		  return;
 	  }else if(!code.match(validate)){
 		this.toastr.info("Input harus huruf","Informasi");
+		this.spinner.Close();
 		return;
 	  }
 	  
@@ -220,6 +236,7 @@ modalview : boolean = false;
 	 
 	for(let i = 0; i < this.datajenis.length; i++){
 		if(this.datajenis[i].code==code.toUpperCase()){
+			this.spinner.Close();
 			this.toastr.warning("Data code sama","Peringatan");
 			return;
 		}
@@ -228,9 +245,12 @@ modalview : boolean = false;
   	this.jenisservice.add(ff).subscribe(data=>{
   		if(data==false){
   			if(this.jenisservice.message()!=""){
+				this.spinner.Close();
+				this.toastr.error("Data gagal disimpan","Gagal");
   				return;
   			}
-  		}
+		  }
+		this.spinner.Close();
   		this.toastr.success("Data berhasil ditambah","Sukses");
   		this.listjenis = [];
   		this.loadData();
@@ -265,6 +285,8 @@ modalview : boolean = false;
   }
 
   Update(){
+	this.spinner.SetSpinnerText("Mohon Tunggu...");
+	this.spinner.Open();
   	for(let i = 0; i < this.uptodate.length; i++){
   		console.log(this.uptodate[i]._id);
   		let data = {
@@ -276,6 +298,7 @@ modalview : boolean = false;
 		  console.log(data);
 		  if(this.dataupdatekategori.length <= 0){
 			  this.toastr.warning("Produk kategori belum ditambah","Peringatan");
+			  this.spinner.Close();
 			  return;
 		  }
 
@@ -286,9 +309,12 @@ modalview : boolean = false;
   		this.jenisservice.update(upd).subscribe(data=>{
   			if(data==false){
   				if(this.jenisservice.message()!=""){
+					this.toastr.error("Data gagal dirubah","Gagal");
+					this.spinner.Close();
   					return;
   				}
-  			}
+			  }
+			this.spinner.Close();
   			this.toastr.success("Data berhasil diubah","Sukses");
   			this.listjenis = [];
   			this.loadData();
@@ -298,6 +324,8 @@ modalview : boolean = false;
   }
 
   Hapus(){
+	this.spinner.SetSpinnerText("Mohon Tunggu...");
+	this.spinner.Open();
   	this.delete = [];
   	this.delete.push(this.data_view);
   	for(let i = 0; i < this.delete.length; i++){
@@ -306,9 +334,12 @@ modalview : boolean = false;
   		this.jenisservice.delete(dlt).subscribe(data=>{
   			if(data==false){
   				if(this.jenisservice.message()!=""){
+					this.spinner.Close();
+					this.toastr.error("Data gagal dihapus","Gagal");
   					return;
   				}
-  			}
+			  }
+			this.spinner.Close();
   			this.toastr.success("Data berhasil dihapus","Sukses");
   			this.listjenis = [];
   			this.loadData();

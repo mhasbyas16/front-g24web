@@ -9,12 +9,7 @@
             			<div class="clr-form-control">
             				<label class="clr-control-label">Id Toko</label>
             				<div class="clr-control-container">
-            				<select [(ngModel)]="search.id" clrSelect name="id">
-            					<option [ngValue]=""></option>
-            					<ng-container *ngFor="let data of idToko">
-            						<option [ngValue]="data">{{data.id_toko}}</option>
-            					</ng-container>
-            				</select>
+								<input clrInput [(ngModel)]="search.id_toko" name="id_toko">
             				</div>
             			</div>
             		</div>
@@ -145,3 +140,5 @@
         <button type="button" class="btn btn-primary" (click)="Update()">Update</button>
     </div>
 </clr-modal>
+
+<loading-spinner #spinner></loading-spinner>

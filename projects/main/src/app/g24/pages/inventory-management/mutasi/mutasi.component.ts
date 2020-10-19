@@ -23,6 +23,8 @@ import { ServerDateTimeService } from '../../../services/system/server-date-time
 import { ProductSeriesService } from '../../../services/product/product-series.service';
 import { TipeStock } from '../../../lib/enum/flag-product';
 import { FlagProduct } from '../../../lib/enum/flag-product';
+import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
+import { CetakMutasiComponent } from './cetak-mutasi/cetak-mutasi.component';
 
 @Component({
   selector: 'app-mutasi',
@@ -44,6 +46,10 @@ static key = EMenuID.MUTASI;
   @ViewChild('Souvenir', {static: false}) souvenirInput : TemplateRef<any>;
   @ViewChild('Gift', {static: false}) giftInput : TemplateRef<any>;
   @ViewChild('Dinar', {static: false}) dinarInput : TemplateRef<any>;
+
+  @ViewChild('spinner',{static:false}) spinner : LoadingSpinnerComponent;
+
+  @ViewChild('exportPDF',{static:false}) pdf : CetakMutasiComponent;
 
 
   selected : any[] = [];
@@ -183,10 +189,16 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     console.log(this.searchModel[data]);
   }
 
+  onPrint(){
+    
+  }
+
 
   doSearch(){
 
     let params = "?";
+    this.spinner.SetSpinnerText("Mohon Tunggu...");
+    this.spinner.Open();
     for(let key in this.input){
       if(this.input[key] == null)continue;
 
@@ -218,14 +230,16 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
       if(output==false){
         if(this.mutasiservice.message() != ""){
           console.log(output);
-	  this.toastr.info('Data tidak ditemukan','Informasi');
-//          this.modal = true;
+          this.toastr.info('Data tidak ditemukan','Informasi');
+          this.spinner.Close();
           this.input = {};
           this.listdt = [];
           return
         }
       }
+      this.toastr.success("Data ditemukan "+output.length,"Sukses");
       this.listdt = output;
+      this.spinner.Close();
     });
 
 
@@ -254,6 +268,10 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
 
   }
 
+  cetakdata(){
+    this.pdf.Makepdf(this.itemsdata);
+  }
+
   reset(){
     this.searchModel = {};
     this.input = {};
@@ -261,17 +279,22 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
   }
 
   oncekUnitCode(){
+    this.spinner.SetSpinnerText("Mencari Unit, Mohon Tunggu...");
+    this.spinner.Open();
     this.unitnya = {};
     let unit = this.searchCode["code"];
 
     if(unit == this.sessionservice.getUser().unit.code){
       this.toastr.info("Anda saat ini berada pada unit tsb","Informasi");
-      // this.unitnya = {};
+      this.spinner.Close();
+      this.addinput['unit_tujuan'] = "";
       return;
     }
 
     if(!unit){
       this.toastr.warning("Harap masukan kode unit","Peringatan");
+      this.addinput['unit_tujuan'] = "";
+      this.spinner.Close();
       return;
     }
 
@@ -279,16 +302,20 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     this.UnitService.list(params).subscribe(data=>{
       if(data==false){
         if(this.UnitService.message()!=""){
-          // this.unitnya = {};
+          this.toastr.warning("Unit tidak ditemukan","Peringatan");
+          this.addinput['unit_tujuan'] = "";
+          this.spinner.Close();
           return;
         }
       } else if(data.length == 0)
       {
+        this.spinner.Close();
         this.toastr.warning("Unit tidak ditemukan","Peringatan");
         return;
       }
 
       this.addinput['unit_tujuan'] = data[0];
+      this.spinner.Close();
       // console.log(this.addinput["unit_tujuan"]);
     })
   }
@@ -427,6 +454,8 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
 
   Add(){
 
+    this.spinner.SetSpinnerText("Mohon Tunggu...");
+    this.spinner.Open();
     let tujuan = this.addinput['unit_tujuan'];
 	  let ktr = this.addinput['keterangan'];
     let vdr = this.addinput['vndr'];
@@ -495,6 +524,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     console.log(cfg);
 
     if(this.itemsdata.length <= 0 || tujuan == null || tujuan == "" || ktr == "" || ktr == null){
+      this.spinner.Close();
       this.toastr.warning("Field Unit Tujuan belum dipilih atau data barang yang dimutasi belum di tambah. Dan cek kembali field keterangan","Peringatan");
       // this.itemsdata = [];
       this.berat = 0;
@@ -503,6 +533,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     }
     this.mutasiservice.add(cfg).subscribe(output => {
       if(output!=false){
+        this.spinner.Close();
         this.modalshow = false;
         this.products = [];
         this.listdt = [];
@@ -524,11 +555,13 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
         this.productservice.update(encode).subscribe(data=>{
           if(data==false){
             if(this.productservice.message()!=""){
+              this.spinner.Close();
               return;
             }
           }
         })
       }
+      this.spinner.Close();
       this.toastr.success("Data berhasil di mutasi","Berhasil");
     })
 
@@ -555,8 +588,11 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
 
 
   searchProduct(){
+    this.spinner.SetSpinnerText("Sedang melakukan pencarian Produk...");
+    this.spinner.Open();
     if(!this.searchModel["product-category"]||!this.searchModel.vndr){
       this.toastr.warning("Produk kategori atau vendor belum dipilih","Peringatan");
+      this.spinner.Close();
       return;
     }
     this.products = [];
@@ -622,11 +658,14 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     console.log(this.searchModel);
     this.productservice.list(params).subscribe(output => {
       if(output != false){
+        this.spinner.Close();
+        this.toastr.success("Data ditemukan "+output.length,"Sukses");
         this.products = output;
         // this.searchModel = {};
         this.formInput = null;
       }else{
         // this.modal = true;
+        this.spinner.Close();
         this.toastr.info("Data Produk tidak ditemukan","Informasi");
       }
     })
@@ -691,11 +730,15 @@ refresh(){
 }
 
 onView(){
+  this.spinner.SetSpinnerText("Mohon Tunggu...");
+  this.spinner.Open();
   if(!this.data_view){
-		this.toastr.warning("Data belum dipilih","Peringatan");
+    this.toastr.warning("Data belum dipilih","Peringatan");
+    this.spinner.Close();
 		return;
 	}else if(Object.keys(this.data_view).length==0){
     this.toastr.warning("Data belum dipilih","Peringatan");
+    this.spinner.Close();
     return;
   }
   this.details = [];
@@ -703,6 +746,7 @@ onView(){
     for(let i = 0; i < this.details.length; i++){
       console.log(this.details[i].items);
       this.itemsview = this.details[i].items;
+      this.spinner.Close();
       this.modalview = true;
     }
     console.log(this.itemsview); 
