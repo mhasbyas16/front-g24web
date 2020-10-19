@@ -1,0 +1,142 @@
+<div class="clr-row">
+    <div class="card" style="margin-top: 0em;">
+        <div class="card-header">
+            Terima Buyback Manual
+            <div class="cart-style"> 
+            </div> 
+        </div>
+        <div class="card-block">
+            <div class="card-text">
+                <div class="clr-row">
+                    <div class="card" style="margin-top: 0;">
+                        <div class="card-header">
+                            Logam Mulia Non Pegadaian <span style="color: red;">(Max {{maxGrDay}}gr)</span> 
+                            <div class="cart-style"> <!-- total isi cart              total harga cart                           -->
+                                <app-cart-buyback-manual-lm
+                                [totalCart]="totalCart"
+                                [maxGrDay] = "maxGrDay"
+                                (clearEmasBatangan)="clearEmasBatangan($event)"
+                                [hargaTotalEmasBatangan]="hargaTotalEmasBatangan"
+                                (cartTotalBerat)="refreshTotalBerat($event)"
+                                >
+                                </app-cart-buyback-manual-lm>
+                            </div>
+                        </div>
+                        <div class="card-block">
+                            <form #searchMulia="ngForm" id="mulia" class="clr-form clr-form-compact" (ngSubmit)="onCariMulia(searchMulia.value)" >
+                                <div class="clr-row">
+                                    <div class="clr-col-4">
+                                        <clr-input-container >
+                                            <label>Unit Kerja</label>
+                                            <input clrInput type="text" [value]="unitDetail.nama" readonly >
+                                        </clr-input-container>
+                                    </div>
+                                    <div class="clr-col-4">
+                                        <clr-input-container>
+                                            <label>Kode Distro</label>
+                                            <input clrInput type="text" [value]="unitDetail.code" readonly >
+                                        </clr-input-container>
+                                    </div>
+                                    <div class="clr-col-4">
+                                        <clr-input-container >
+                                            <label>Jenis Unit</label>
+                                            <input clrInput type="text" [value]="unitDetail.jenis_unit" readonly style="text-transform: capitalize ;">
+                                        </clr-input-container>
+                                    </div>
+                                </div>
+                                <div class="clr-row">
+                                    <div class="clr-col-4">
+                                        <clr-input-container>
+                                            <label>Nama Petugas</label>
+                                            <input clrInput type="text" [value]="userDetail.name" readonly >
+                                        </clr-input-container>
+                                    </div>
+                                    <div class="clr-col-4">
+                                        <clr-input-container>
+                                            <label>NIK Petugas</label>
+                                            <input clrInput type="text" [value]="userDetail.username" readonly  >
+                                        </clr-input-container>
+                                    </div>
+                                    <div class="clr-col-4">
+                                        <clr-input-container>
+                                            <label>Role</label>
+                                            <input clrInput type="text" [value]="userDetail.role.name" readonly style="text-transform: capitalize ;">
+                                        </clr-input-container>
+                                    </div>
+                                </div>
+                                <div class="clr-row">
+                                    <div class="clr-col-4">
+                                        <clr-select-container class="clr-form-control">
+                                            <label class="clr-control-label">Vendor</label>
+                                            <select [(ngModel)]="searchModel.vendors" clrSelect name="input_vendor_mulia" >
+                                                <option  value="pilih" >Pilih Vendor</option>
+                                                <ng-container *ngFor="let vendor of vendors">
+                                                    <option value="{{vendor.code}}">{{vendor.name}}</option>
+                                                </ng-container>
+                                            </select>
+                                        </clr-select-container>
+                                    </div>
+                                    <div class="clr-col-4">
+                                        <clr-select-container class="clr-form-control">
+                                            <label class="clr-control-label">Denom</label>
+                                            <select [(ngModel)]="searchModel.denoms" clrSelect name="input_denom_mulia" >
+                                                <option value="pilih">Pilih Denom</option>
+                                                <ng-container *ngFor="let denom of denoms">
+                                                    <option value="{{denom.code}}">{{denom.name}}</option>
+                                                </ng-container>
+                                            </select>
+                                        </clr-select-container>
+                                    </div>
+                                    <div class="clr-col-4">
+                                        <clr-control-container>
+                                            <button class="btn btn-info-outline btn-sm btn-block float-right">Tampil Harga</button>
+                                        </clr-control-container>
+                                    </div>
+                                </div>
+                            </form>
+                            <clr-datagrid  [clrDgLoading]="loadingDg">
+                                <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
+                                <!-- <clr-dg-column>Product Id</clr-dg-column> -->
+                                
+                                <clr-dg-column>Vendor</clr-dg-column>
+                                <clr-dg-column>Denom</clr-dg-column>
+                                <clr-dg-column>Harga</clr-dg-column>
+                                <clr-dg-column>Jumlah Buyback</clr-dg-column>
+                            
+                                <clr-dg-row *clrDgItems="let d of datamulias" [clrDgItem]="d">
+                                    <!-- <clr-dg-cell>{{d.id}}</clr-dg-cell> -->
+                                    <clr-dg-cell>{{d.vendor}}</clr-dg-cell>
+                                    <clr-dg-cell>{{d.denom}}</clr-dg-cell>
+                                    <clr-dg-cell>{{d.harga | number}} </clr-dg-cell>
+                                    <clr-dg-cell style="width: 20%;">
+                                        <div class="clr-row" style="text-align: center;">
+                                            <div class="clr-col">
+                                                <clr-input-container style="margin-top: 0; margin-left: 10%; margin-right: 10%;" >
+                                                        <input clrInput type="text" style=" width: 50%;" name="jumlah" [(ngModel)]="jumlahLM">
+                                                </clr-input-container>
+                                            </div>
+                                            <div class="clr-col">
+                                                <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.vendor, d.denom, d.harga, d.denomCodes, d.denomValues)">
+                                                    <clr-icon shape="plus"></clr-icon>
+                                                </button> 
+                                            </div>
+                                        </div>
+                                    </clr-dg-cell>
+                                </clr-dg-row>
+                                
+                                <clr-dg-footer>
+                                    <clr-dg-pagination #pagination [clrDgPageSize]="5">
+                                      <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Users per page</clr-dg-page-size>
+                                      {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                                      of {{pagination.totalItems}} Produk
+                                    </clr-dg-pagination>
+                                </clr-dg-footer>
+                            </clr-datagrid>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

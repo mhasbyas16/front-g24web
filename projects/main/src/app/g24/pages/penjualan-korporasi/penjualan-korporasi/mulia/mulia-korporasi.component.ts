@@ -15,7 +15,7 @@ import { PricingService }  from '../../../../services/pricing.service';
 
 // import { LM } from '../../../../sample/cart';
 import { CountCartService } from '../../../../services/count-cart.service';
-
+import { UnitService } from '../../../../services/system/unit.service';
 
 @Component({
   selector: 'app-mulia-korporasi',
@@ -34,6 +34,8 @@ export class MuliaKorporasiComponent implements OnInit {
   vendors = null;
   jenis = null;
   denoms = null;
+  distro = null;
+  distroList:any;
   flags = null;
   loadingDg = null; 
   mulias = null;
@@ -82,15 +84,16 @@ export class MuliaKorporasiComponent implements OnInit {
   
   //pricing 
   private pricingService: PricingService,
-  
+  private unitService:UnitService,
 
 
   ) { }
-  searchModel : any = {vendors:"pilih", denoms: "pilih", flags: "pilih"};
+  searchModel : any = {vendors:"pilih", denoms: "pilih", flags: "pilih", distro:"pilih"};
   
   ngOnInit(): void {
     this.onListVendor();
     this.onListDenom();
+    this.onListDistro();
     // this.checkProduct();
   }
   onListVendor(){
@@ -104,6 +107,12 @@ export class MuliaKorporasiComponent implements OnInit {
         })
       }      
     });
+  }
+
+  onListDistro(){
+    this.unitService.list("?_sortby=nama:1").subscribe((response:any)=>{
+      this.distroList = response;
+    })
   }
 
   onListDenom(){
@@ -133,6 +142,7 @@ export class MuliaKorporasiComponent implements OnInit {
     let vendor = data.input_vendor_mulia;
     let denom = data.input_denom_mulia;
     let flag = data.input_flag_mulia;
+    let distro = data.input_distro_mulia;
     // let jumlah = data.input_jumlah ;
     let cariMulia : any[] = [];
     this.hargaBaku = 0
@@ -141,15 +151,18 @@ export class MuliaKorporasiComponent implements OnInit {
     const urlVendor = "vendor.code="+vendor;
     const urlDenom = "product-denom.code="+denom;
     const urlFlag = "flag="+flag;
+    const urlDistro = "unit.code="+distro;
     // const urlQty = "_rows="+jumlah;
 
     this.params = this.category;
-    if (vendor == "pilih" || denom == "pilih" || flag == "pilih") {
+    if (vendor == "pilih" || denom == "pilih" || flag == "pilih" || distro == "pilih") {
       this.toastrService.error("Pilih Vendor , Denom dan Flag Barang Terlebih Dahulu");
       this.loadingDg = false;
     } else {
+
         this.params = this.params+"&"+urlVendor;
         this.params = this.params+"&"+urlDenom;
+        this.params = this.params+"&"+urlDistro;
         // this.params = this.params+"&"+urlFlag;
 
         //cari product

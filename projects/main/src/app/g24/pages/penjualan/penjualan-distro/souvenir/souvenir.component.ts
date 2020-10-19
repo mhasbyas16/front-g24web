@@ -184,6 +184,13 @@ export class SouvenirComponent implements OnInit {
                   let ppn = PPNresponse
                   
                   let hargaSouvenir = this.pricingService.priceSouvenir((prmJual['harga_baku']), Number(prmMargin.margin), Number(this.souvenirs[0]['product-denom'].value), Number(ppn[0].ppn), Number(this.souvenirs[0].ongkos_pieces));
+                  
+                  console.debug(prmJual['harga_baku'], "harga_baku")
+                  console.debug(prmMargin.margin, "margin")
+                  console.debug(this.souvenirs[0]['product-denom'].value, "denom")
+                  console.debug(ppn[0].ppn, "ppn")
+                  console.debug(this.souvenirs[0].ongkos_pieces, "souvenirs")
+                  
                   hargaSouvenir =  Math.ceil(hargaSouvenir/1000)*1000;
                   console.debug( hargaSouvenir,'hargaSouvenir')
                   cariSouvenir.push({

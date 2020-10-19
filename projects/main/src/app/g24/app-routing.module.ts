@@ -65,6 +65,7 @@ export class AppRoutingModule
     ModuleLoader.register('promo',() => import('./pages/promo/promo.module').then(m => m.PromoModule))
     ModuleLoader.register('bb', () => import('./pages/buyback/buyback.module').then(m => m.BuybackModule))
     ModuleLoader.register('pj', () => import('./pages/penjualan/penjualan.module').then(m => m.PenjualanModule))
+    ModuleLoader.register('pjk', () => import('./pages/penjualan-korporasi/penjualan-korporasi.module').then(m => m.PenjualanKorporasiModule))
     ModuleLoader.register('lp', () => import('./pages/laporan/laporan.module').then(m => m.LaporanModule))  
     ModuleLoader.register('rl', () => import('./pages/security/security.module').then(m => m.SecurityModule))
     ModuleLoader.register('pr', () => import('./pages/parameter/parameter.module').then(m => m.ParameterModule))
@@ -74,5 +75,7 @@ export class AppRoutingModule
     ModuleLoader.register('ag', () => import('./pages/anggaran/anggaran.module').then(m => m.AnggaranModule))
     ModuleLoader.register('tm', () => import('./pages/transaksi/transaksi.module').then(m => m.TransaksiModule))
     ModuleLoader.register('adm', () => import('./pages/admin/admin.module').then(m => m.AdminModule))
+    ModuleLoader.register('kl', () => import('./pages/keuangan/laporan/laporan.module').then(m => m.LaporanKeuanganModule))
+    // ModuleLoader.register('bblmnon', () => import('./pages/buyback/buyback.module').then(m => m.BuybackModule))
   }
 }
