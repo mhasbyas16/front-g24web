@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { DatePipe } from '@angular/common';
 // pdfmake
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
@@ -9,12 +9,14 @@ declare let require: any;
 // rupiah terbilang
 import { HargaTerbilangService } from '../../../lib/helper/harga-terbilang.service';
 import { TanggalService } from '../../../lib/helper/tanggal.service';
-
+import { SplitDateServiceService } from '../../../services/split-date-service.service';
+import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 
 @Component({
   selector: 'app-export-korporasi-proforma',
   templateUrl: './export-korporasi-proforma.component.html',
-  styleUrls: ['./export-korporasi-proforma.component.scss']
+  styleUrls: ['./export-korporasi-proforma.component.scss'],
+  providers: [DatePipe]
 })
 export class ExportKorporasiProformaComponent implements OnInit {
 
@@ -22,9 +24,13 @@ export class ExportKorporasiProformaComponent implements OnInit {
   transactionList = [];
   noItem = 0;
   isiTable =[];
+  dateNow:any;
   constructor(
     private tanggalService:TanggalService,
-    private hargaTerbilangService:HargaTerbilangService
+    private hargaTerbilangService:HargaTerbilangService,
+    private splitDateServiceService:SplitDateServiceService,
+    private datePipe:DatePipe,
+    private sessionService:SessionService
   ) { }
 
   ngOnInit(): void {
@@ -43,6 +49,9 @@ export class ExportKorporasiProformaComponent implements OnInit {
 
   thisContent(data,gram){
     
+    let user = this.sessionService.getUser();
+    let nameUser = user.name;
+    let codeUser = user.username;
     // // tanggal
     // let tgl =data.makerDate;
     // let tglSplit = tgl.split("/");
@@ -58,6 +67,7 @@ export class ExportKorporasiProformaComponent implements OnInit {
     // const jpegUrl = canvas.toDataURL('image/jpeg');
 
     // Content
+    this.dateNow = this.splitDateServiceService.splitBulanTerbilang(this.datePipe.transform(Date.now(), 'yyyy-MM-dd'));
     delete this.innerDoc;
     let hargaFormat = new Intl.NumberFormat(['ban', 'id']).format(data.totalHarga);
     this.innerDoc ={pageSize: 'A4', pageOrientation: 'portrait',pageMargins: [ 38, 30, 38, 30 ],};
@@ -108,7 +118,7 @@ export class ExportKorporasiProformaComponent implements OnInit {
                 'Rp. '+hargaFormat,
                 ' ( '+this.hargaTerbilangService.terbilang(Number(data.totalHarga))+' )',
                 ' melalui transfer ke nomor rekening '+data.rekening['mata-anggaran']+' - '+data.rekening.code+' atas nama '+'PT. PEGADAIAN GALERI DUA EMPAT ',
-                'pada tanggal '+data.tglPengajuan+', '+'dengan data transaksi sebagai berikut :'
+                'pada tanggal '+this.splitDateServiceService.splitBulanTerbilang(data.tglPengajuan)+', '+'dengan data transaksi sebagai berikut :'
               ],        
       },'\n\n\n',
       {
@@ -150,11 +160,11 @@ export class ExportKorporasiProformaComponent implements OnInit {
           },
           {
             text:[
-              'Jakarta, '+'DATE NOW\n',
-              'Dibuat oleh,',
+              'Jakarta, '+this.dateNow,
+              '\nDibuat oleh,',
               '\n\n\n\n\n',
-              'NAMA MENGETAHUI\n',
-              'NO ID'
+              nameUser+'\n',
+              codeUser
             ],
             pageBreak: 'after'
           }
