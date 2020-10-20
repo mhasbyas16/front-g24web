@@ -675,7 +675,7 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
     let msg = "";
     let inisiasi : any = null; 
     try{
-      await this.inisiasiService.ApprovalInisiasiEmas(tempInisiasi).toPromise();
+      inisiasi = await this.inisiasiService.ApprovalInisiasiEmas(tempInisiasi).toPromise();
     } catch (err) {
       msg = err.message;
       inisiasi = false;
