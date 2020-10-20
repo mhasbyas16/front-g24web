@@ -166,7 +166,7 @@ export class DetailItemPenerimaanDinarComponent implements OnInit {
   public setParentListener(listener : IDetailCallbackListener)
   {
     this.parentListener = listener;
-    console.log(listener);
+    console.debug(listener);
   }
 
   private Open() {
@@ -189,7 +189,7 @@ export class DetailItemPenerimaanDinarComponent implements OnInit {
   
   GetDisplayValue(object : any) : string
   {
-    // console.log(typeof object)
+    // console.debug(typeof object)
     if(object == null) return "null";
     if(typeof object == 'string' || typeof object == 'number' || typeof object == 'undefined') return object.toString();
 
@@ -477,7 +477,7 @@ export class DetailItemPenerimaanDinarComponent implements OnInit {
 
     this.inisiasi.order_status = OrderStatus.TERIMA_FULL.code;
 
-    console.log(this.inisiasi);
+    console.debug(this.inisiasi);
     let tempInisiasi = {}
     Object.assign(tempInisiasi, this.inisiasi);
     DataTypeUtil.Encode(tempInisiasi);
@@ -503,7 +503,7 @@ export class DetailItemPenerimaanDinarComponent implements OnInit {
       return;
     } else {
       Object.assign(this.inisiasi, tempInisiasi);
-      console.log(this.inisiasi);
+      console.debug(this.inisiasi);
       this.parentListener.onAfterUpdate(this.inisiasi._id);
       this.toastr.success("PO berhasil diterima.");
       this.doReset();
@@ -544,7 +544,7 @@ export class DetailItemPenerimaanDinarComponent implements OnInit {
       return;
     } else {
       Object.assign(this.inisiasi, tempInisiasi);
-      console.log(this.inisiasi);
+      console.debug(this.inisiasi);
       this.parentListener.onAfterUpdate(this.inisiasi._id);
       this.toastr.success("PO berhasil ditolak");
       this.doReset();
@@ -556,8 +556,8 @@ export class DetailItemPenerimaanDinarComponent implements OnInit {
   idTerima : Map<String,any>  = new Map<String,boolean>();
   onCheckAll(data)
   {
-    console.log(data)
-    console.log(this.idTerima)
+    console.debug(data)
+    console.debug(this.idTerima)
     let products = data.products;
     let cekNum = this.checkNumber;
     let checked = 0;
@@ -591,7 +591,7 @@ export class DetailItemPenerimaanDinarComponent implements OnInit {
 
     if(this.idTerima.has(key))
     {
-      console.log(key, "key");
+      console.debug(key, "key");
       return true;
     }
 

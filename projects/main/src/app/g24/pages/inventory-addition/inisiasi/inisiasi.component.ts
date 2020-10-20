@@ -119,7 +119,7 @@ export class InisiasiComponent extends BasePersistentFields implements OnInit, A
     }
     let products = await this.productCatService.list("?").toPromise();
 
-    console.log(products);
+    console.debug(products);
 
     for(let i = 0; i < products.length; i++)
     {
@@ -127,7 +127,7 @@ export class InisiasiComponent extends BasePersistentFields implements OnInit, A
       // if(this.products[i].code.includes('00'))
       // {
       //   this.input['product-category'] = this.products[i];
-      //   console.log(this.input);
+      //   console.debug(this.input);
       // }
     }
     this.products.sort((a, b) => ('' + a.name).localeCompare(b.name));
@@ -150,7 +150,7 @@ export class InisiasiComponent extends BasePersistentFields implements OnInit, A
   {
     this.input = this.defaultInput();
     form2reset.reset();
-    console.log(form2reset.valid, this.input)
+    console.debug(form2reset.valid, this.input)
   }
 
   onProductChanged()

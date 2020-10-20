@@ -40,7 +40,7 @@ export class InisiasiApprovalBahanBakuComponent implements OnInit {
     this.bahan_baku["nama_bank"] = cek[0].name;
     this.bahan_baku["getCodeBankMa"] = cek;
     this.toastr.success("Kode MA Bank di temukan","Sukses");
-    console.log(this.bahan_baku["getCodeBankMa"]);
+    console.debug(this.bahan_baku["getCodeBankMa"]);
   }
 
   Search(){

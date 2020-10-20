@@ -21,8 +21,8 @@ export class AutoLogoutService {
 
     // const passReq : any = JSON.parse(sessionStorage.getItem("pass_req_hr"));
     // this.MINUTES_UNITL_AUTO_LOGOUT = passReq.sess_lifetime;
-    console.log("passReq");
-    console.log(this.MINUTES_UNITL_AUTO_LOGOUT);
+    console.debug("passReq");
+    console.debug(this.MINUTES_UNITL_AUTO_LOGOUT);
     sessionStorage.setItem(this.STORE_KEY, Date.now().toString());
   }
 

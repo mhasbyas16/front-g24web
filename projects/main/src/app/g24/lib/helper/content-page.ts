@@ -29,7 +29,7 @@ export class ContentPage {
     public static ChangeContent(newContent : string, render : boolean = false, embed : boolean = false)
     {
         this._activeContent = newContent;
-        console.log(this.Component)
+        console.debug(this.Component)
 
         if(!embed) this._component.ClearContent();
 

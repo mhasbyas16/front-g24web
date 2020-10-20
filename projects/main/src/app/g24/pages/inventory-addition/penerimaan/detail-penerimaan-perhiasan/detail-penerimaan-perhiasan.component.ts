@@ -219,7 +219,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
 
   GetDisplayValue(object : any) : string
   {
-    // console.log(typeof object)
+    // console.debug(typeof object)
     if(object == null) return "null";
     if(typeof object == 'string' || typeof object == 'number' || typeof object == 'undefined') return object.toString();
 
@@ -272,7 +272,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
     this.input = this.defaultInput();
     this.user = this.session.getUser();
     window['slc'] = this.selected
-    // console.log("user",this.user);
+    // console.debug("user",this.user);
     
     // window['perhiasan'] = this.perhiasanInput;
 
@@ -295,7 +295,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
     }
     let products = await this.productCatService.list("?code=c00").toPromise();
 
-    console.log(products);
+    console.debug(products);
 
     for(let i = 0; i < products.length; i++)
     {
@@ -361,7 +361,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
     this.input = this.defaultInput();
     this.searchFG.reset();
     // form2reset.reset();
-    console.log(form2reset, this.input)
+    console.debug(form2reset, this.input)
   }
 
   onProductChanged()
@@ -385,7 +385,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
     // console.dir(JSON.stringify(this.searchModel))
     window['fg'] = this.searchFG;
     window['ctrl'] = this.searchFG.controls;
-    console.log(this.searchFG.controls)
+    console.debug(this.searchFG.controls)
     if(!this.searchFG.get("order_status").valid || !this.searchFG.get("create_date_start").valid)
     {
       this.toastr.warning("Mohon isi semua data yang mandatory !!", "Form incomplete!");
@@ -394,7 +394,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
 
     let create_start = this.searchFG.get("create_date_start").value;
     create_start = StringHelper.StandardFormatDate("/", create_start, "MM/dd/yyyy");
-    console.log(create_start)
+    console.debug(create_start)
 
     let create_end = this.searchFG.get("create_date_end").value;
     
@@ -441,7 +441,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
     }
 
     let order_status = this.searchFG.get("order_status").value;
-    console.log(order_status);
+    console.debug(order_status);
     let order_status_p = "";
     switch(order_status)
     {
@@ -517,7 +517,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
 
   Debug()
   {
-    console.log(this.input, "model", this.selected);
+    console.debug(this.input, "model", this.selected);
   }
 
   onDelete()
@@ -560,7 +560,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
     for(let key in this.input)
     {
       let value = this.input[key];
-      console.log(value, key, 'key')
+      console.debug(value, key, 'key')
       if(value == null || value == "null" || value == 0 || (typeof value === 'number' && value === 0))
       {
         this.toastr.warning(this.GetDisplayName(key) + " belum diisi / sama dengan 0 ");
@@ -581,14 +581,14 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
 
   ModelChange(key : string, event : any)
   {
-    console.log("event", event);
+    console.debug("event", event);
     // this.searchModel[key] = event.
   }
 
   OnSelectedChange(event : any)
   {
     // let target = event;
-    // console.log("tgt", target, target.value);
+    // console.debug("tgt", target, target.value);
   }
 
   validateAdd(item : any)
@@ -632,7 +632,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
       let ass = {no : i};
       let item = this.input.items[i];
       Object.assign(item, ass);
-      console.log(item)
+      console.debug(item)
     }
 
     // this.onResetItem();
@@ -641,7 +641,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
   onDeleteItem()
   {
     let i = this.input['items'].indexOf(this.selected);
-    console.log(i)
+    console.debug(i)
     this.input['items']?.splice(this.selectedId, 1);
     this.onResetItem();
   }
@@ -791,7 +791,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
       let item = this.input.items[i];
 
       this.hitungPajak(item);
-      console.log(item)
+      console.debug(item)
     }
     
     this.hitungPajak();
@@ -810,7 +810,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
 
     let pajakItem : number = (ongkos/1000) * berat * hpajak * persenPajak / 100; 
     item.pajak = Math.trunc(pajakItem);
-    console.log(pajakItem)
+    console.debug(pajakItem)
     return this.selected.pajak;
   }
 
@@ -858,7 +858,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
 
   onLihat()
   {
-    console.log(this.selected)
+    console.debug(this.selected)
     if(this.selected == null || Object.keys(this.selected).length === 0)
     {
       this.toastr.warning("Mohon pilih Item.");

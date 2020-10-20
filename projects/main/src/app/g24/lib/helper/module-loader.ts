@@ -36,7 +36,7 @@ export class ModuleLoader
     {
         if(this._loadedModules.has(id))
         {
-            console.log("Module: " + id + " already loaded.");
+            console.debug("Module: " + id + " already loaded.");
             return;
         }
         if (!this._modules.get(id)) {
@@ -53,7 +53,7 @@ export class ModuleLoader
 
     public static log()
     {
-        console.log(ModuleLoader._modules)
+        console.debug(ModuleLoader._modules)
     }
 }
 

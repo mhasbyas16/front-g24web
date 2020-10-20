@@ -243,7 +243,7 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
 
   GetDisplayValue(object : any) : string
   {
-    // console.log(typeof object)
+    // console.debug(typeof object)
     if(object == null) return "null";
     if(typeof object == 'string' || typeof object == 'number' || typeof object == 'undefined') return object.toString();
 
@@ -274,12 +274,12 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
   async ngOnInit(): Promise<void>
   {
     this.errorHappened = false;
-    // console.log("user",this.user);
+    // console.debug("user",this.user);
     
     // window['perhiasan'] = this.perhiasanInput;
     await this.LoadDate();
     await this.LoadAllParameter();
-    console.log("dt", this.date);
+    console.debug("dt", this.date);
 
     this.input = this.defaultInput();
     this.user = this.session.getUser();
@@ -313,7 +313,7 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
       return;
     }
 
-    console.log(products);
+    console.debug(products);
 
     for(let i = 0; i < products.length; i++)
     {
@@ -487,7 +487,7 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
     await this.LoadAllParameter();
     await this.LoadDate();
     this.input = this.defaultInput();
-    // console.log(this.input);
+    // console.debug(this.input);
   }
 
   onProductChanged()
@@ -511,7 +511,7 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
 
     for(let d in this.InitiationType)
     {
-      console.log(d)
+      console.debug(d)
     }
     // console.dir(JSON.stringify(this.searchModel))
     if(!this.searchValid(this.input))
@@ -581,8 +581,8 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
     // params = DataTypeUtil.Encode(this.searchModel);
     // this.searchModel.items = {warna : "01"}
 
-    // console.log('tes', btoa(JSON.stringify(this.searchModel['product'])));
-    console.log('model', this.input);
+    // console.debug('tes', btoa(JSON.stringify(this.searchModel['product'])));
+    console.debug('model', this.input);
 
     params.endsWith("&") ? params = params.substring(0, params.length-1) : null;
     // this.sear
@@ -653,7 +653,7 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
     let time = this.time;
 
     let no = this.input['no_po'];
-    console.log(no, "no")
+    console.debug(no, "no")
 
     if(this.user?.unit == null)
     {
@@ -735,7 +735,7 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
   //     {
   //       let msg = this.jurnalInisiasi.message();
   //       this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg, "Error!", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
-  //       // console.log()
+  //       // console.debug()
   //       return;
   //     } else {
   //       this.toastr.success("Jurnal berhasil.")
@@ -745,7 +745,7 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
   // }
   Debug()
   {
-    console.log(this.input, "model", this.selected);
+    console.debug(this.input, "model", this.selected);
   }
 
   onDelete()
@@ -790,7 +790,7 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
       let item = this.input.items[i];
       if(this.validateAdd(item))
       {
-        // console.log(item, "tralala")
+        // console.debug(item, "tralala")
         return true;
       }
     }
@@ -805,7 +805,7 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
       if(key == 'total_pajak' && this.input.tipe_bayar == PaymentType.UANG.code) continue;
 
       let value = this.input[key];
-      console.log(value, key, 'key')
+      console.debug(value, key, 'key')
       if(value == null || value == "null" || value == 0 || (typeof value === 'number' && value === 0))
       {
         this.toastr.warning(this.GetDisplayName(key) + " belum diisi / sama dengan 0 ");
@@ -891,7 +891,7 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
     //   let ass = {no : i};
     //   let item = this.input.items[i];
     //   Object.assign(item, ass);
-    //   console.log(item)
+    //   console.debug(item)
     // }
 
     // this.onResetItem();
@@ -900,7 +900,7 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
   onDeleteItem()
   {
     let i = this.input['items'].indexOf(this.selected);
-    console.log(i)
+    console.debug(i)
     this.input['items']?.splice(i, 1);
     this.onResetItem();
   }
@@ -1053,7 +1053,7 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
       let item = this.input.items[i];
 
       this.countItemPajak(item);
-      console.log(item)
+      console.debug(item)
     }
     
     this.countItemPajak();
@@ -1105,7 +1105,7 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
     //   this.pajakCounted = true;
     
     item['pajak'] = Math.trunc(pajakItem);
-    console.log(pajakItem, 'pajak');
+    console.debug(pajakItem, 'pajak');
     return this.selected.pajak;
   }
 
@@ -1196,7 +1196,7 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
     let persenPajak = 2;
 
     item['harga_piece'] = ( (parseFloat(denom) * parseFloat(harga_baku)) +  parseFloat(ongkos_pieces) ) * ( (100 + persenPajak)/100 );
-    console.log(item, 'item harga piece');
+    console.debug(item, 'item harga piece');
   }
 
   countItemTotalHarga(item? : any)
@@ -1208,7 +1208,7 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
     let harga = item['harga_piece'];
 
     item['total_harga'] = parseInt(pieces) * parseInt(harga);
-    console.log(item, 'item harga total', pieces, harga);
+    console.debug(item, 'item harga total', pieces, harga);
     this.countItemPajak(item);
   }
 

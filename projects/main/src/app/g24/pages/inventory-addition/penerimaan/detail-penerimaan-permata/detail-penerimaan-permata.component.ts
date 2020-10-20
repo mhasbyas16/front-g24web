@@ -227,7 +227,7 @@ export class DetailPenerimaanPermataComponent extends BasePersistentFields imple
 
   GetDisplayValue(object : any) : string
   {
-    // console.log(typeof object)
+    // console.debug(typeof object)
     if(object == null) return "null";
     if(typeof object == 'string' || typeof object == 'number' || typeof object == 'undefined') return object.toString();
 
@@ -281,7 +281,7 @@ export class DetailPenerimaanPermataComponent extends BasePersistentFields imple
     this.input = this.defaultInput();
     this.user = this.session.getUser();
     window['slc'] = this.selected
-    // console.log("user",this.user);
+    // console.debug("user",this.user);
     
     // window['perhiasan'] = this.perhiasanInput;
 
@@ -310,7 +310,7 @@ export class DetailPenerimaanPermataComponent extends BasePersistentFields imple
       this.toastr.error("Gagal Loading 'Jenis Produk'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
       return;
     }
-    console.log(products);
+    console.debug(products);
 
     for(let i = 0; i < products.length; i++)
     {
@@ -440,7 +440,7 @@ export class DetailPenerimaanPermataComponent extends BasePersistentFields imple
     await this.LoadAllParameter();
     await this.LoadDate();
     this.input = this.defaultInput();
-    // console.log(form2reset, this.input)
+    // console.debug(form2reset, this.input)
   }
 
   onProductChanged()
@@ -470,7 +470,7 @@ export class DetailPenerimaanPermataComponent extends BasePersistentFields imple
     // console.dir(JSON.stringify(this.searchModel))
     window['fg'] = this.searchFG;
     window['ctrl'] = this.searchFG.controls;
-    console.log(this.searchFG.controls)
+    console.debug(this.searchFG.controls)
     if(!this.searchFG.get("order_status").valid || !this.searchFG.get("create_date_start").valid)
     {
       this.toastr.warning("Mohon isi semua data yang mandatory !!", "Form incomplete!");
@@ -479,7 +479,7 @@ export class DetailPenerimaanPermataComponent extends BasePersistentFields imple
 
     let create_start = this.searchFG.get("create_date_start").value;
     create_start = StringHelper.StandardFormatDate("/", create_start, "MM/dd/yyyy");
-    console.log(create_start)
+    console.debug(create_start)
 
     let create_end = this.searchFG.get("create_date_end").value;
     
@@ -526,7 +526,7 @@ export class DetailPenerimaanPermataComponent extends BasePersistentFields imple
     }
 
     let order_status = this.searchFG.get("order_status").value;
-    console.log(order_status);
+    console.debug(order_status);
     let order_status_p = "";
     switch(order_status)
     {
@@ -602,7 +602,7 @@ export class DetailPenerimaanPermataComponent extends BasePersistentFields imple
 
   Debug()
   {
-    console.log(this.input, "model", this.selected);
+    console.debug(this.input, "model", this.selected);
   }
 
   onDelete()
@@ -645,7 +645,7 @@ export class DetailPenerimaanPermataComponent extends BasePersistentFields imple
     for(let key in this.input)
     {
       let value = this.input[key];
-      console.log(value, key, 'key')
+      console.debug(value, key, 'key')
       if(value == null || value == "null" || value == 0 || (typeof value === 'number' && value === 0))
       {
         this.toastr.warning(this.GetDisplayName(key) + " belum diisi / sama dengan 0 ");
@@ -666,14 +666,14 @@ export class DetailPenerimaanPermataComponent extends BasePersistentFields imple
 
   ModelChange(key : string, event : any)
   {
-    console.log("event", event);
+    console.debug("event", event);
     // this.searchModel[key] = event.
   }
 
   OnSelectedChange(event : any)
   {
     // let target = event;
-    // console.log("tgt", target, target.value);
+    // console.debug("tgt", target, target.value);
   }
 
   validateAdd(item : any)
@@ -717,7 +717,7 @@ export class DetailPenerimaanPermataComponent extends BasePersistentFields imple
       let ass = {no : i};
       let item = this.input.items[i];
       Object.assign(item, ass);
-      console.log(item)
+      console.debug(item)
     }
 
     // this.onResetItem();
@@ -726,7 +726,7 @@ export class DetailPenerimaanPermataComponent extends BasePersistentFields imple
   onDeleteItem()
   {
     let i = this.input['items'].indexOf(this.selected);
-    console.log(i)
+    console.debug(i)
     this.input['items']?.splice(this.selectedId, 1);
     this.onResetItem();
   }
@@ -876,7 +876,7 @@ export class DetailPenerimaanPermataComponent extends BasePersistentFields imple
       let item = this.input.items[i];
 
       this.hitungPajak(item);
-      console.log(item)
+      console.debug(item)
     }
     
     this.hitungPajak();
@@ -895,7 +895,7 @@ export class DetailPenerimaanPermataComponent extends BasePersistentFields imple
 
     let pajakItem : number = (ongkos/1000) * berat * hpajak * persenPajak / 100; 
     item.pajak = Math.trunc(pajakItem);
-    console.log(pajakItem)
+    console.debug(pajakItem)
     return this.selected.pajak;
   }
 
@@ -943,7 +943,7 @@ export class DetailPenerimaanPermataComponent extends BasePersistentFields imple
 
   onLihat()
   {
-    console.log(this.selected)
+    console.debug(this.selected)
     if(this.selected == null || Object.keys(this.selected).length === 0)
     {
       this.toastr.warning("Mohon pilih Item.");

@@ -75,9 +75,9 @@ static key = EMenuID.PEMBUATAN;
     this.codeBankFound = true;
     this.bahan_baku["name_bank"] = code[0].name;
     this.bahan_baku["get_bank"] = code[0];
-      console.log(params);
-      console.log(this.bahan_baku["name_bank"]);
-      console.log(code);
+      console.debug(params);
+      console.debug(this.bahan_baku["name_bank"]);
+      console.debug(code);
   }
 
   doSave(){
@@ -108,7 +108,7 @@ static key = EMenuID.PEMBUATAN;
       "product-category" : this.bahan_baku["jenis_product"],
       toko_penyedia : this.bahan_baku["toko_penyedia"]
     };
-    console.log(data);
+    console.debug(data);
   }
 
 

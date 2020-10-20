@@ -72,7 +72,7 @@ export class DetailInisiasiPermataComponent implements OnInit {
     let margin_batu = this.margin.margin_batu;
     let margin_berlian = this.margin.margin_berlian;
 
-console.log(this.hbeli);
+console.debug(this.hbeli);
     return {
       nomor_nota : null, tgl_inisiasi : this.date,  id_harga : id_harga, harga_beli : Number(harga_beli), 
       id_margin : id_margin, persen_margin : Number(margin),
@@ -177,7 +177,7 @@ console.log(this.hbeli);
       return;
     }
 
-    console.log(hbeli);
+    console.debug(hbeli);
     if(hbeli.length == 0)
     {
       this.errorHappened = true;
@@ -200,7 +200,7 @@ console.log(this.hbeli);
       return;
     }
 
-    console.log(margins);
+    console.debug(margins);
     if(margins.length == 0)
     {
       this.errorHappened = true;
@@ -255,7 +255,7 @@ console.log(this.hbeli);
       return;
     }
 
-    console.log(banks);
+    console.debug(banks);
 
     for(let i = 0; i < banks.length; i++)
     {
@@ -288,7 +288,7 @@ console.log(this.hbeli);
       return;
     }
 
-    console.log(products);
+    console.debug(products);
 
     for(let i = 0; i < products.length; i++)
     {
@@ -417,7 +417,7 @@ console.log(this.hbeli);
 
     let hpp_emas = kadar * berat_emas * hbuy / 1000;
     hpp_emas = Math.round(hpp_emas);
-console.log(hpp_emas, kadar,berat_emas,hbuy)
+console.debug(hpp_emas, kadar,berat_emas,hbuy)
     this.input.hpp_emas = hpp_emas;
     return this.input.hpp_emas;
   }
@@ -496,7 +496,7 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
       (input['dimensi_batu'] != "0x0x0")
     )
     {
-      console.log((input['carat_batu'] != 0), (input['dimensi_batu'] != "0x0x0"),
+      console.debug((input['carat_batu'] != 0), (input['dimensi_batu'] != "0x0x0"),
       input['warna_batu'] != "", input['jenis_batu'] != "");
       if(
         input['jenis_batu'] == "" || input['jenis_batu'] == null ||
@@ -525,7 +525,7 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
       (input['total_carat_berlian'] != 0)
     )
     {
-      console.log((input['carat_berlian'] != 0),input['carat_berlian'] ,
+      console.debug((input['carat_berlian'] != 0),input['carat_berlian'] ,
       input['warna_berlian'] != "", input['warna_berlian'], input['jenis_berlian'] != "", input['jenis_berlian']);
       if(
         input['warna_berlian'] == "" || input['warna_berlian'] == null ||
@@ -595,7 +595,7 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
     // for(let key in this.input)
     // {
     //   let value = this.input[key];
-    //   console.log(value, key, 'key')
+    //   console.debug(value, key, 'key')
     //   if(value == null || value == "null" || value == 0 || (typeof value === 'number' && value === 0))
     //   {
     //     this.toastr.warning(this.GetDisplayName(key) + " belum diisi / sama dengan 0 ");
@@ -804,7 +804,7 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
         return;
       } else {
         this.toastr.success("Inisiasi Berhasil. Harap hubungi Kepala Departemen untuk melakukan Approval. No. PO : " + output.no_po, "Info", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
-        if(!environment.production)console.log(output,'ts');
+        if(!environment.production)console.debug(output,'ts');
         this.ResetAll();
       }
     }, err => {
@@ -860,7 +860,7 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
     let margin_berlian = hpp_berlian * persen_margin_berlian / 100;
     margin_berlian = Math.round(margin_berlian);
 
-    console.log(this.hbeli, this.input, this.hbeli, margin_berlian, hpp_berlian, persen_margin_berlian);
+    console.debug(this.hbeli, this.input, this.hbeli, margin_berlian, hpp_berlian, persen_margin_berlian);
     this.input.margin_berlian = margin_berlian;
     return this.input.margin_berlian;
   }
@@ -869,14 +869,14 @@ console.log(hpp_emas, kadar,berat_emas,hbuy)
   {
     // if(this.input == null) return;
     // if(this.hbeli == null) return;
-console.log(this.input.margin_batu)
+console.debug(this.input.margin_batu)
     let hpp_batu = Number(this.input.hpp_batu);
     let persen_margin_batu = Number(this.input.persen_margin_batu);
 
     let margin_batu = hpp_batu * persen_margin_batu / 100;
     margin_batu = Math.round(margin_batu);
     
-    if(!environment.production) console.log(margin_batu);
+    if(!environment.production) console.debug(margin_batu);
 
     this.input.margin_batu = margin_batu;
     return this.input.margin_batu;
@@ -922,12 +922,12 @@ console.log(this.input.margin_batu)
   RestrictInputOnModel(value : string, pattern : RegExp)
   {
     let nVal = value.replace(pattern, '');
-    if(!environment.production)console.log(nVal)
+    if(!environment.production)console.debug(nVal)
     return nVal;
   }
 
   debug()
   {
-    console.log(this.input);
+    console.debug(this.input);
   }
 }

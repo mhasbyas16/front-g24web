@@ -390,7 +390,7 @@ export class CommonResourceService {
       formBody.push(encodedKey + '=' + encodedValue);
     }
 
-    console.log("getFormUrlEncoded", formBody);
+    console.debug("getFormUrlEncoded", formBody);
     return formBody.join('&');
   }
 

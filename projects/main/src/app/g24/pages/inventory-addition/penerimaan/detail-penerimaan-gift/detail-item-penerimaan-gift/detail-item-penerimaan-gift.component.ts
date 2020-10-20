@@ -175,7 +175,7 @@ export class DetailItemPenerimaanGiftComponent implements OnInit {
   public setParentListener(listener : IDetailCallbackListener)
   {
     this.parentListener = listener;
-    console.log(listener);
+    console.debug(listener);
   }
 
   private Open() {
@@ -198,7 +198,7 @@ export class DetailItemPenerimaanGiftComponent implements OnInit {
   
   GetDisplayValue(object : any) : string
   {
-    // console.log(typeof object)
+    // console.debug(typeof object)
     if(object == null) return "null";
     if(typeof object == 'string' || typeof object == 'number' || typeof object == 'undefined') return object.toString();
 
@@ -466,7 +466,7 @@ export class DetailItemPenerimaanGiftComponent implements OnInit {
     this.inisiasi['tgl_terima'] = this.date;
     this.inisiasi.terima_by = this.user;
 
-    console.log(this.inisiasi);
+    console.debug(this.inisiasi);
     let tempInisiasi = {}
     Object.assign(tempInisiasi, this.inisiasi);
     DataTypeUtil.Encode(tempInisiasi);
@@ -490,7 +490,7 @@ export class DetailItemPenerimaanGiftComponent implements OnInit {
       return;
     } else {
       Object.assign(this.inisiasi, tempInisiasi);
-      console.log(this.inisiasi);
+      console.debug(this.inisiasi);
       this.parentListener.onAfterUpdate(this.inisiasi._id);
       this.toastr.success("PO berhasil diterima.");
       this.doReset();
@@ -507,10 +507,10 @@ export class DetailItemPenerimaanGiftComponent implements OnInit {
     // }
 
     // DataTypeUtil.Encode(enc);
-    // console.log('enc', enc);
+    // console.debug('enc', enc);
 
     // let result = await this.productService.batchAdd(enc).toPromise();
-    // console.log(result);
+    // console.debug(result);
     
     // for(let i = 0; i < result.length; i++)
     // {
@@ -553,7 +553,7 @@ export class DetailItemPenerimaanGiftComponent implements OnInit {
       return;
     } else {
       Object.assign(this.inisiasi, tempInisiasi);
-      console.log(this.inisiasi);
+      console.debug(this.inisiasi);
       this.parentListener.onAfterUpdate(this.inisiasi._id);
       this.toastr.success("PO berhasil diterima.");
       this.doReset();
