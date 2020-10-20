@@ -2,11 +2,12 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { TransactionBookingService } from '../../../../services/transaction/transaction-booking.service';
 import { ToastrService } from 'ngx-toastr';
 import { TransactionFlagService } from '../../../../services/transaction/transaction-flag.service';
-
+import { DatePipe } from '@angular/common';
 @Component({
   selector: 'app-card-detail',
   templateUrl: './card-detail.component.html',
-  styleUrls: ['./card-detail.component.scss']
+  styleUrls: ['./card-detail.component.scss'],
+  providers: [DatePipe]
 })
 export class CardDetailComponent implements OnInit {
 
@@ -26,10 +27,12 @@ export class CardDetailComponent implements OnInit {
   idTransaksi:any;
   tglPengajuan:any;
   lastPeriode:any;
+  dateNow:any;
   constructor(
     private transactionBookingService:TransactionBookingService,
     private toastrService:ToastrService,
-    private transactionFlagService:TransactionFlagService
+    private transactionFlagService:TransactionFlagService,
+    private datePipe:DatePipe
   ) { }
 
   ngOnInit(): void {
@@ -53,8 +56,9 @@ export class CardDetailComponent implements OnInit {
   }
 
   approveTr(val){
+    this.dateNow = this.datePipe.transform(Date.now(), 'yyyy-MM-dd');
     console.debug(val.product);
-    let data = {"_id":val._id,"flag":"jual"}
+    let data = {"_id":val._id,"flag":"jual", tglApprove:this.dateNow}
 
     this.transactionFlagService.batchUpdateOne(val.product,"jual");
     this.transactionBookingService.update(data).subscribe((response:any)=>{
