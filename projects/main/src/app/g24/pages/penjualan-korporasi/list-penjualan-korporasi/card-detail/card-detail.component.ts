@@ -70,10 +70,10 @@ export class CardDetailComponent implements OnInit {
   }
 
   approveTr(val){
-    let dataForm = this.splitDateServiceService.split(this.formPembayaran.getRawValue());
+    let dataForm = this.formPembayaran.getRawValue();
     this.dateNow = this.datePipe.transform(Date.now(), 'yyyy-MM-dd');
     console.debug(val.product);
-    let data = {"_id":val._id,"flag":"jual", tglApprove:this.dateNow, tglPembayaran: dataForm}
+    let data = {"_id":val._id,"flag":"jual", tglApprove:this.dateNow, tglPembayaran: this.splitDateServiceService.split(dataForm.tglPembayaran)}
 
     this.transactionFlagService.batchUpdateOne(val.product,"jual");
     this.transactionBookingService.update(data).subscribe((response:any)=>{
@@ -88,10 +88,10 @@ export class CardDetailComponent implements OnInit {
   }
 
   RejectTr(val){
-    let dataForm = this.splitDateServiceService.split(this.formPembayaran.getRawValue());
+    let dataForm = this.formPembayaran.getRawValue();
     this.dateNow = this.datePipe.transform(Date.now(), 'yyyy-MM-dd');
     console.debug(val.product);
-    let data = {"_id":val._id,"flag":"rejected", tglApprove:this.dateNow, tglPembayaran: dataForm}
+    let data = {"_id":val._id,"flag":"rejected", tglApprove:this.dateNow, tglPembayaran: this.splitDateServiceService.split(dataForm.tglPembayaran)}
 
     this.transactionFlagService.batchUpdateOne(val.product,"stock");
     this.transactionBookingService.update(data).subscribe((response:any)=>{
