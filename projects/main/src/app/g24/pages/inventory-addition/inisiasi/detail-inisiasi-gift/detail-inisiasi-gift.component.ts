@@ -1,6 +1,7 @@
 import { Component, OnInit, ComponentFactoryResolver, ViewChild, Input, ElementRef, AfterViewInit, TemplateRef, ChangeDetectionStrategy, ViewContainerRef, Output } from '@angular/core';
 import { NgForm, Form, FormGroup, FormBuilder } from '@angular/forms';
 
+import { isArray } from 'util';
 import { ToastrService } from 'ngx-toastr';
 import { InitiationType } from '../../../../lib/enums/initiation-type';
 import { PaymentType } from '../../../../lib/enums/payment-type';
@@ -15,6 +16,12 @@ import { ProductCategoryService } from '../../../../services/product/product-cat
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
 import { BasePersistentFields } from '../../../../lib/base/base-persistent-fields';
+import { ServerDateTimeService } from '../../../../services/system/server-date-time.service';
+import { JurnalInisiasiService } from '../../../../services/keuangan/jurnal/stock/jurnal-inisiasi.service';
+import { BankService } from '../../../../services/transaction/bank.service';
+import { LoadingSpinnerComponent } from '../../../../nav/modal/loading-spinner/loading-spinner.component';
+import { StringHelper } from '../../../../lib/helper/string-helper';
+import { SequenceService } from '../../../../services/system/sequence.service';
  
 @Component({
   selector: 'detail-inisiasi-gift',
@@ -31,30 +38,28 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
   // @ViewChild('inisiasi', {static: false}) inisiasi : NgForm;
   @ViewChild('product') product : ElementRef;
 
-  @ViewChild('Berlian', {static: false}) berlianInput : TemplateRef<any>;
-  @ViewChild('Adiratna', {static: false}) adiratnaInput : TemplateRef<any>;
-  @ViewChild('Gift', {static: false}) giftInput : TemplateRef<any>;
-  @ViewChild('Dinar', {static: false}) dinarInput : TemplateRef<any>;
+  @ViewChild('Gift', {static: false}) souvenirInput : TemplateRef<any>;
+  
+  @ViewChild('spinner', {static: false}) spinner : LoadingSpinnerComponent;
 
   btoa = btoa;
   parseInt = parseInt;
   console = console;
   Object = Object;
 
+  errorHappened : boolean = false;
+
   user : any = {};
 
   datas : any[] = [];
+  date : string = "";
+  time : string = "";
 
   products : any[] = [];
   vendors : any[] = [];
-  jeniss : any[] = [];
-  kadars : any[] = [];
-  warnas : any[] = [];
   denoms : any[] = [];
   series : any[] = [];
-  colors : any[] = [];
-  shapes : any[] = [];
-  claritys : any[] = [];
+  banks : any[] = [];
 
   parentPage : number = 0;
 
@@ -77,9 +82,10 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
   input : any = {items : []};
   defaultInput() : any
   {
-    let dt = new Date().toISOString().split("T")[0];
+    let dt = this.date;
+    let tm = this.time;
     return {
-      nomor_nota : null, tgl_inisiasi : dt, create_date : dt,
+      nomor_nota : null, tgl_inisiasi : dt, create_date : dt, create_time : tm,
       harga_baku : 0, pajak : 0, 
       'product-category' : null, vendor : null, tipe_bayar : null,
       total_berat : 0, total_piece : 0,
@@ -93,13 +99,14 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
     return {
       sku : null, 'product-series' : null, 'product-denom' : null, 
       total_berat : 0,
-      pieces : 0, ongkos_pieces : 0, total_ongkos : 0, pajak : 0,
+      pieces : 0, ongkos_pieces : 0, total_ongkos : 0, pajak : 0, pajak_pieces : 0,
       harga_piece : 0, total_harga : 0
     }
   }
 
   InitiationType = Object.values(InitiationType);
-  PaymentType = Object.values(PaymentType);
+  PaymentTypeValues = Object.values(PaymentType);
+  PaymentType = PaymentType;
   DocumentStatus = Object.values(DocumentStatus);
   ErrorType = ModalErrorType;
 
@@ -118,6 +125,10 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
 
     switch(key)
     {
+      case 'pajak_pieces':
+        name="Pajak per Piece";
+        break;
+
       case 'ongkos_pieces':
         name = "Ongkos per Piece";
         break;
@@ -233,7 +244,7 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
 
   GetDisplayValue(object : any) : string
   {
-    // console.log(typeof object)
+    // console.debug(typeof object)
     if(object == null) return "null";
     if(typeof object == 'string' || typeof object == 'number' || typeof object == 'undefined') return object.toString();
 
@@ -242,6 +253,11 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
 
   constructor(
     private resolver : ComponentFactoryResolver,
+    private dateService : ServerDateTimeService,
+    private jurnalInisiasi : JurnalInisiasiService,
+    private bankService : BankService,
+    private sequencer : SequenceService,
+
     // private unitService : UnitService,
     private seriesService : ProductSeriesService,
     private vendorService : VendorService,
@@ -258,9 +274,11 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
 
   async ngOnInit(): Promise<void>
   {
+    await this.LoadDate();
+
     this.input = this.defaultInput();
     this.user = this.session.getUser();
-    // console.log("user",this.user);
+    // console.debug("user",this.user);
     
     // window['perhiasan'] = this.perhiasanInput;
 
@@ -273,15 +291,50 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
     this.onProductChanged();
   }
 
+  async LoadDate()
+  {
+    let resp : any = false;
+    try {
+      resp = await this.dateService.task("").toPromise();
+    } catch(err) {
+      resp = false;
+    }
+    if(resp == false)
+    {
+      this.errorHappened = true;
+      return;
+    }
+
+    let dtarr = resp.split("T");
+    this.date = dtarr[0];
+    this.time = dtarr[0].split("Z")[0];
+  }
+
   async LoadProductCategory()
   {
     while(this.products.length > 0)
     {
       this.products.pop();
     }
-    let products = await this.productCatService.list("?code=c04").toPromise();
 
-    console.log(products);
+    let msg = "";
+    let products : any = false;
+    try {
+      products = await this.productCatService.list("?code=c04").toPromise();
+    } catch(err) {
+      products = false;
+      msg = err.message;
+    }
+    
+    if(products == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.productCatService.message();
+      this.toastr.error("Gagal Loading 'Jenis Produk'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
+      return;
+    }
+
+    console.debug(products);
 
     for(let i = 0; i < products.length; i++)
     {
@@ -292,7 +345,28 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
 
   async LoadVendor()
   {
-    let vendors = await this.vendorService.list("?product-category.code=c04").toPromise();
+    while(this.vendors.length > 0)
+    {
+      this.vendors.pop();
+    }
+
+    let msg = "";
+    let vendors : any = false;
+    try {
+      vendors = await this.vendorService.list("?product-category.code=c04").toPromise();
+    } catch(err) {
+      vendors = false;
+      msg = err.message;
+    }
+    
+    if(vendors == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.vendorService.message();
+      this.toastr.error("Gagal Loading 'Vendor'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
+      return;
+    }
+
     for(let i = 0; i < vendors.length; i++)
     {
       this.vendors.push(vendors[i]);
@@ -302,7 +376,28 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
 
   async LoadDenom()
   {
-    let denoms = await this.denomService.list("?product-category.code=c04").toPromise();
+    while(this.denoms.length > 0)
+    {
+      this.denoms.pop();
+    }
+    
+    let msg = "";
+    let denoms : any = false;
+    try {
+      denoms = await this.denomService.list("?product-category.code=c04").toPromise();
+    } catch(err) {
+      denoms = false;
+      msg = err.message;
+    }
+    
+    if(denoms == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.denomService.message();
+      this.toastr.error("Gagal Loading 'Denom'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
+      return;
+    }
+
     for(let i = 0; i < denoms.length; i++)
     {
       this.denoms.push(denoms[i]);
@@ -312,12 +407,66 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
   
   async LoadSeries()
   {
-    let series = await this.seriesService.list("?").toPromise();
+    while(this.series.length > 0)
+    {
+      this.series.pop();
+    }
+    
+    let msg = "";
+    let series : any = false;
+    try {
+      series = await this.seriesService.list("?").toPromise();
+    } catch(err) {
+      series = false;
+      msg = err.message;
+    }
+    
+    if(series == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.seriesService.message();
+      this.toastr.error("Gagal Loading 'Series'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
+      return;
+    }
+
     for(let i = 0; i < series.length; i++)
     {
       this.series.push(series[i]);
     }
     this.series.sort((a,b) => ('' + a.name).localeCompare(b.name))
+  }
+  
+  async LoadBanks()
+  {
+    while(this.banks.length > 0)
+    {
+      this.banks.pop();
+    }
+    
+    let msg = "";
+    let banks : any = false;
+    try {
+      banks = await this.bankService.list("?").toPromise();
+    } catch(err) {
+      banks = false;
+      msg = err.message;
+    }
+
+    if(banks == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.bankService.message();
+      this.toastr.error("Gagal Loading 'Bank'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
+      return;
+    }
+
+    console.debug(banks);
+
+    for(let i = 0; i < banks.length; i++)
+    {
+      this.banks.push(banks[i]);
+    }
+    this.banks.sort((a, b) => ('' + a.name).localeCompare(b.name));
   }
 
   async LoadAllParameter()
@@ -326,6 +475,7 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
     this.LoadVendor();
     this.LoadDenom();
     this.LoadSeries();
+    this.LoadBanks();
     
     this.onProductChanged();
   }
@@ -335,27 +485,26 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
 
   }
 
-  ResetAll(form2reset : NgForm)
+  async ResetAll()
   {
-    this.formInput = null;
+    this.errorHappened = false;
+    await this.LoadAllParameter();
+    await this.LoadDate();
+
     this.input = this.defaultInput();
-    form2reset.reset();
-    console.log(form2reset.valid, this.input)
   }
 
   onProductChanged()
   {
-    this.input['create_date'] = new Date().toISOString().split("T")[0];
+    
+  }
+  
+  onTipeBayarChanged()
+  {
+    this.input.bank = null;
+    this.input.asal_uang = "";
 
-    for(let i = 0; i < this.products.length; i++)
-    {
-      let perhiasan = this.products[i];
-      if(perhiasan.code == "c00")
-      {
-        this.input['product-category'] = perhiasan;
-        break;
-      }
-    }
+    this.hitungAllPajak();
   }
 
   loading = false;
@@ -366,7 +515,7 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
 
     for(let d in this.InitiationType)
     {
-      console.log(d)
+      console.debug(d)
     }
     // console.dir(JSON.stringify(this.searchModel))
     if(!this.searchValid(this.input))
@@ -436,8 +585,8 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
     // params = DataTypeUtil.Encode(this.searchModel);
     // this.searchModel.items = {warna : "01"}
 
-    // console.log('tes', btoa(JSON.stringify(this.searchModel['product'])));
-    console.log('model', this.input);
+    // console.debug('tes', btoa(JSON.stringify(this.searchModel['product'])));
+    console.debug('model', this.input);
 
     params.endsWith("&") ? params = params.substring(0, params.length-1) : null;
     // this.sear
@@ -482,34 +631,77 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
 
   async doSave()
   {
-    if(this.validateInput()) return;
+    this.spinner.Open();
+    if(this.errorHappened)
+    {
+      this.spinner.Close();
+      this.toastr.error("Sebelumnya ada error terjadi. Harap Refresh halaman, apabila masih terjadi harap hubungi IT Support/Helpdesk");
+      return;
+    }
 
-    if(this.input.items?.length <= 0) {
+    if(this.validateInput())
+    {
+      this.spinner.Close();
+      return;
+    }
+
+    if(this.validateItems())
+    {
+      this.spinner.Close();
+      return;
+    }
+
+    if(this.input.items?.length <= 0)
+    {
+      this.spinner.Close();
       this.toastr.warning("Tidak ada item pada Tabel Input Detail.", "Peringatan!");
       return;
     }
 
-    let now : Date = new Date;
-    let sNow = now.toISOString().split("T");
-    let date = sNow[0];
+    let date = this.date;
     let date_split = date.split("-");
-    let time = sNow[1].split(".")[0];
+    let time = this.time;
 
     let no = this.input['no_po'];
-    console.log(no, "no")
+    console.debug(no, "no")
 
     if(this.user?.unit == null)
     {
+      this.spinner.Close();
       this.toastr.warning("Unit dari User belum di-Assign. Harap hubungi IT Support/Helpdesk.", "Error!");
       return;
     }
 
-    let PO = "PO" + this.user.unit.code + date_split[0].substring(1, 3) + date_split[1] + "[0,5]";
+    let unitCode = this.session.getUnit()?.code;
+    let key = {key : "PO-" + unitCode + "-" + this.date }
+    let seq : any = "";
+    let msg = "";
+    try
+    {
+      seq = await this.sequencer.use(key).toPromise();
+
+    } catch(err)
+    {
+      msg = err.message;
+      seq = false;
+    }
+
+    if(seq == false)
+    {
+      if(msg == "") msg = this.sequencer.message();
+      this.toastr.error("Gagal membentuk Format Nomor PO. Error: " + msg);
+      this.spinner.Close();
+      this.ResetAll();
+      return;
+    }
+
+    let st = StringHelper.LeftZeroPad(Number(seq.value).toString(), 5);
+    let PO = "PO" + this.session.getUnit()?.code + date_split[0].substring(2, 4) + date_split[1] + date_split[2] + st;
 
     let def =
     {
       no_po : PO,
-      __format : "no_po:inc",
+      // __format : "no_po:inc",
       create_date : this.input['create_date'],
       create_time : time,
       create_by : this.user.username,
@@ -518,29 +710,53 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
       status_bayar : '1',
       __version : new Date().getMilliseconds(),
       __version_d : "0",
-      items : this.input['items']
+      items : this.input['items'],
+      _log : 1
       // vendor : null,
       // 'product-category' : null,
     };
     Object.assign(def, this.input);
     let init = DataTypeUtil.Encode(def);
 
-    this.inisiasiService.add(init).subscribe(output => {
+    this.inisiasiService.add(init).subscribe(async output => {
+      this.spinner.Close();
       if(output == false)
       {
-        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + this.inisiasiService.message);
+        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + this.inisiasiService.message(), "Error!", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
         return;
       } else {
-        this.toastr.success("Inisiasi Berhasil. Harap hubungi Kepala Departemen untuk melakukan Approval. No. PO : " + output.no_po, "Info", {disableTimeOut : true, closeButton : true, tapToDismiss : false});
-        this.input = this.defaultInput();
+        this.toastr.success("Inisiasi Berhasil. Harap hubungi Kepala Departemen untuk melakukan Approval. No. PO : " + output.no_po, "Info", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
+        console.debug(output,'ts');
+        this.ResetAll();
+        // this.doAccounting(output._id); // pindah ke Approval Inisiasi
       }
+    }, err => {
+      this.spinner.Close();
+      this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + err.message, "Error!", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
+      return;
     });
-    // console.log(output);
+    // console.debug(output);
   }
+
+  // doAccounting(idInisiasi :string)
+  // {
+  //   this.jurnalInisiasi.bayar(idInisiasi).subscribe(output => {
+  //     if(output == false)
+  //     {
+  //       let msg = this.jurnalInisiasi.message();
+  //       this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg, "Error!", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
+  //       // console.debug()
+  //       return;
+  //     } else {
+  //       this.toastr.success("Jurnal berhasil.")
+  //       return;
+  //     }
+  //   });
+  // }
 
   Debug()
   {
-    console.log(this.input, "model", this.selected);
+    console.debug(this.input, "model", this.selected);
   }
 
   onDelete()
@@ -578,12 +794,37 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
 
   }
 
+  validateItems()
+  {
+    for(let i = 0; i < this.input.items.length; i++)
+    {
+      let item = this.input.items[i];
+      if(this.validateAdd(item))
+      {
+        // console.debug(item, "tralala")
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   validateInput()
   {
     for(let key in this.input)
     {
+      if(key == 'total_pajak' && this.input.tipe_bayar == PaymentType.UANG.code) continue;
+      
+      if(key == 'bank' && this.input.tipe_bayar == PaymentType.MAKLON.code) continue;
+
+      if(key == 'bank' && this.input.asal_uang == 'kas') continue;
+
+      if(key == 'asal_uang' && this.input.tipe_bayar == PaymentType.MAKLON.code) continue;
+
+      if(key == 'asal_uang' && this.input.tipe_bayar == PaymentType.MAKLON.code) continue;
+
       let value = this.input[key];
-      console.log(value, key, 'key')
+      console.debug(value, key, 'key')
       if(value == null || value == "null" || value == 0 || (typeof value === 'number' && value === 0))
       {
         this.toastr.warning(this.GetDisplayName(key) + " belum diisi / sama dengan 0 ");
@@ -598,6 +839,9 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
   {
     for(let key in item)
     {
+      if(key == 'pajak_pieces' && this.input.tipe_bayar == PaymentType.UANG.code) continue;
+      if(key == 'pajak' && this.input.tipe_bayar == PaymentType.UANG.code) continue;
+
       if(item[key] == null || item[key] == "null")
       {
         this.toastr.warning(this.GetDisplayName(key) + ' belum diisi.', "Peringatan!");
@@ -633,7 +877,7 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
       let ass = {no : i};
       let item = this.input.items[i];
       Object.assign(item, ass);
-      console.log(item)
+      console.debug(item)
     }
 
     // this.onResetItem();
@@ -642,7 +886,7 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
   onDeleteItem()
   {
     let i = this.input['items'].indexOf(this.selected);
-    console.log(i)
+    console.debug(i)
     this.input['items']?.splice(i, 1);
     this.onResetItem();
   }
@@ -654,7 +898,6 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
 
   getBeratFromItems()
   {
-    if(this.input == null) return 0;
     let berat = 0.0;
     let item = {};
     for(let i = 0; i < this.input.items.length; i++)
@@ -671,7 +914,6 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
 
   getPiecesFromItems()
   {
-    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -686,7 +928,6 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
   
   getBakuTukarFromItems()
   {
-    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -701,13 +942,12 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
   
   getGramTukarFromItems()
   {
-    if(this.input == null) return 0;
-    let value = 0;
+    let value : number = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
       if(this.input.items[i]?.gram_tukar == null || this.input.items[i]?.gram_tukar == "null")
         continue;
-        value += parseInt(this.input.items[i].gram_tukar);
+        value += Math.round(parseInt(this.input.items[i].gram_tukar) * 100) / 100;
     }
 
     this.input['total_gram_tukar'] = Number(value.toFixed(2));
@@ -716,7 +956,6 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
   
   getOngkosFromItems()
   {
-    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -731,7 +970,6 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
   
   getPajakFromItems()
   {
-    if(this.input == null) return 0;
     let value = 0;
     for(let i = 0; i < this.input.items.length; i++)
     {
@@ -740,7 +978,7 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
         value += parseInt(this.input.items[i].pajak);
     }
 
-    this.input['total_pajak'] = value;
+    this.input['total_pajak'] = Math.round(value);
     return value;
   }
 
@@ -785,7 +1023,37 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
   {
     if(this.getPajakFromItems() > 0) return {};
 
+    if(this.input.tipe_bayar == PaymentType.UANG.code) return {};
+
     return {'text-decoration': 'underline','text-decoration-color': 'red', 'color' : 'red'};
+  }
+
+  totalDPPStyleValid()
+  {
+    if(this.hitungTotalDPP() > 0) return {};
+    
+    return {'text-decoration': 'underline','text-decoration-color': 'red', 'color' : 'red'};
+  }
+
+  hitungTotalDPP()
+  {
+    if(this.input == null)
+    {
+      return 0;
+    }
+
+    let total_harga = Math.round(Number(this.input['total_harga']));
+    if(total_harga == 0)
+    {
+      return 0;
+    }
+
+    let total_pajak = Math.round(this.input['total_pajak']);
+
+    total_harga -= total_pajak;
+
+    this.input['total_dpp'] = Math.round(total_harga);
+    return this.input['total_dpp'];
   }
 
   hitungAllPajak()
@@ -795,41 +1063,57 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
       let item = this.input.items[i];
 
       this.countItemPajak(item);
-      console.log(item)
+      this.countItemTotalPajak(item);
+      console.debug(item)
     }
     
     this.countItemPajak();
+    this.countItemTotalPajak();
   }
 
-  pajakCounted : boolean = false;
-  countItemPajak(item? : any)
+  // pajakCounted : boolean = false;
+  countItemTotalPajak(item? : any)
   {
-    this.pajakCounted = false;
+    // this.pajakCounted = false;
     if(!item)
       item = this.Selected;
       
     let hpajak : number= this.input?.pajak;
-    let ongkos : number = this.input?.ongkos_pieces;
+    let ongkos : number = item.ongkos_pieces;
 
     if(hpajak == null) return 0;
     
     let persenPajak = 2.00; // harusnya dari DB
 
     let pajakItem : number = 0;
-    
-    if(this.input.tipe_bayar == PaymentType.UANG.code)
-      pajakItem = (item.total_harga * persenPajak/100);
-    else
-      pajakItem = ongkos * persenPajak/100;
+    pajakItem = (item.total_ongkos * persenPajak/100);
 
-    if(this.input.tipe_bayar == PaymentType.MAKLON.code && item.totalHarga != 0)
-      this.pajakCounted = true;
+    if(this.input.tipe_bayar == PaymentType.UANG.code) pajakItem = 0;
     
-    if(this.input.tipe_bayar == PaymentType.MAKLON.code && (ongkos != 0 || ongkos != null))
-      this.pajakCounted = true;
+    item.pajak = Math.round(pajakItem);
+    console.debug(pajakItem);
+    return this.selected.pajak;
+  }
+  countItemPajak(item? : any)
+  {
+    // this.pajakCounted = false;
+    if(!item)
+      item = this.Selected;
+      
+    let hpajak : number= this.input?.pajak;
+    let ongkos : number = item.ongkos_pieces;
+
+    if(hpajak == null) return 0;
     
-    item.pajak = Math.trunc(pajakItem);
-    console.log(pajakItem);
+    let persenPajak = 2.00; // harusnya dari DB
+
+    let pajakItem : number = 0;
+    pajakItem = ongkos * (persenPajak/100);
+
+    if(this.input.tipe_bayar == PaymentType.UANG.code) pajakItem = 0;
+    
+    item.pajak_pieces = Math.round(pajakItem);
+    console.debug(pajakItem);
     return this.selected.pajak;
   }
 
@@ -858,24 +1142,35 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
   {
     this.countItemHargaPiece();
     this.countItemTotalBerat();
+    this.countItemTotalHarga();
   }
 
   onOngkosChanged()
   {
     this.countItemTotalOngkos();
+    this.countItemPajak();
+    this.countItemTotalPajak();
     this.countItemHargaPiece();
     this.countItemTotalHarga();
   }
 
   onHargaBakuChanged()
   {
+    this.countItemTotalBerat();
+    this.countItemTotalOngkos();
+    this.countItemPajak();
+    this.countItemTotalPajak();
+    this.countItemHargaPiece();
+    this.countItemTotalHarga();
+
     for(let item in this.input['items'])
     {
-      this.countItemTotalBerat();
-      this.countItemTotalOngkos();
-      this.countItemHargaPiece();
-      this.countItemTotalHarga();
-      this.countItemPajak();
+      this.countItemTotalBerat(item);
+      this.countItemTotalOngkos(item);
+      this.countItemHargaPiece(item);
+      this.countItemTotalHarga(item);
+      this.countItemPajak(item);
+      this.countItemTotalPajak(item);
     }
   }
 
@@ -902,7 +1197,7 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
     let pieces = item['pieces'];
     let denom = item['product-denom']?.value;
 
-    item['total_berat'] = Number((parseFloat(pieces) * parseFloat(denom)).toFixed(2));
+    item['total_berat'] = Math.round(Number((parseFloat(pieces) * parseFloat(denom)).toFixed(2)) * 100) / 100;
   }
 
   countItemHargaPiece(item? : any)
@@ -913,10 +1208,14 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
     let harga_baku = this.input['harga_baku'];
     let denom = item['product-denom']?.value;
     let ongkos_pieces = item['ongkos_pieces'];
-    let persenPajak = 2;
+    let pajak_pieces = parseFloat(item['pajak_pieces']);
 
-    item['harga_piece'] = ( (parseFloat(denom) * parseFloat(harga_baku)) +  parseFloat(ongkos_pieces) ) * ( (100 + persenPajak)/100 );
-    console.log(item, 'item harga piece');
+    // console.debug('harga_piece', denom, harga_baku, ongkos_pieces, pajak_pieces);
+    // let h = parseFloat(denom) * parseFloat(harga_baku);
+    // let harga_piece = (parseFloat(denom) * parseFloat(harga_baku)) +  parseFloat(ongkos_pieces) + (pajak_pieces);
+
+    item['harga_piece'] = (parseFloat(denom) * parseFloat(harga_baku)) +  parseFloat(ongkos_pieces) + (pajak_pieces);
+    // console.debug(item, h, pajak_pieces, parseFloat(ongkos_pieces), harga_piece, item['harga_piece']);
   }
 
   countItemTotalHarga(item? : any)
@@ -927,9 +1226,8 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
     let pieces = item['pieces'];
     let harga = item['harga_piece'];
 
-    item['total_harga'] = parseInt(pieces) * parseInt(harga);
-    console.log(item, 'item harga total', pieces, harga);
-    this.countItemPajak(item);
+    item['total_harga'] = Math.round(parseInt(pieces) * parseInt(harga));
+    console.debug(item, 'item harga total', pieces, harga);
   }
 
   
@@ -949,7 +1247,7 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
     {
       value += Number(items[i].total_harga);
     }
-    this.input['total_harga'] = value;
+    this.input['total_harga'] = Math.round(value);
 
     return this.input['total_harga'];
   }

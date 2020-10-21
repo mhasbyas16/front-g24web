@@ -17,6 +17,12 @@ import { SessionService } from 'projects/platform/src/app/core-services/session.
 import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
 import { BasePersistentFields } from '../../../../lib/base/base-persistent-fields';
 import { ServerDateTimeService } from '../../../../services/system/server-date-time.service';
+import { JurnalInisiasiService } from '../../../../services/keuangan/jurnal/stock/jurnal-inisiasi.service';
+import { BankService } from '../../../../services/transaction/bank.service';
+import { OrderStatus } from '../../../../lib/enum/order-status';
+import { LoadingSpinnerComponent } from '../../../../nav/modal/loading-spinner/loading-spinner.component';
+import { SequenceService } from '../../../../services/system/sequence.service';
+import { StringHelper } from '../../../../lib/helper/string-helper';
  
 @Component({
   selector: 'detail-inisiasi-emas',
@@ -33,10 +39,9 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
   // @ViewChild('inisiasi', {static: false}) inisiasi : NgForm;
   @ViewChild('product') product : ElementRef;
 
-  @ViewChild('Berlian', {static: false}) berlianInput : TemplateRef<any>;
-  @ViewChild('Adiratna', {static: false}) adiratnaInput : TemplateRef<any>;
-  @ViewChild('Gift', {static: false}) giftInput : TemplateRef<any>;
-  @ViewChild('Dinar', {static: false}) dinarInput : TemplateRef<any>;
+  @ViewChild('Emas', {static: false}) emasInput : TemplateRef<any>;
+  
+  @ViewChild('spinner', {static: false}) spinner : LoadingSpinnerComponent;
 
   btoa = btoa;
   parseInt = parseInt;
@@ -49,15 +54,12 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
 
   products : any[] = [];
   vendors : any[] = [];
-  jeniss : any[] = [];
-  kadars : any[] = [];
-  warnas : any[] = [];
   denoms : any[] = [];
   series : any[] = [];
-  colors : any[] = [];
-  shapes : any[] = [];
-  claritys : any[] = [];
+  banks : any[] = [];
+
   date : string = "";
+  time : string = "";
 
   errorHappened : boolean = false;
 
@@ -82,9 +84,8 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
   input : any = {items : []};
   defaultInput() : any
   {
-    let dt = new Date().toISOString().split("T")[0];
     return {
-      nomor_nota : null, tgl_inisiasi : dt, create_date : dt,
+      nomor_nota : null, tgl_inisiasi : this.date, create_date : this.date, create_time : this.time,
       // harga_baku : 0, pajak : 0,
       'product-category' : null, vendor : null, tipe_bayar : null,
       total_berat : 0, total_piece : 0,
@@ -98,6 +99,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
   {
     return {
       sku : null, 'product-denom' : null, 
+      total_terima : 0, detail_terima : 0,
       total_berat : 0,
       pieces : 0, pajak : 0,
       harga_piece : 0, total_harga : 0
@@ -105,7 +107,8 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
   }
 
   InitiationType = Object.values(InitiationType);
-  PaymentType = Object.values(PaymentType);
+  PaymentTypeValues = Object.values(PaymentType);
+  PaymentType = PaymentType;
   DocumentStatus = Object.values(DocumentStatus);
   ErrorType = ModalErrorType;
 
@@ -242,7 +245,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
 
   GetDisplayValue(object : any) : string
   {
-    // console.log(typeof object)
+    // console.debug(typeof object)
     if(object == null) return "null";
     if(typeof object == 'string' || typeof object == 'number' || typeof object == 'undefined') return object.toString();
 
@@ -251,6 +254,9 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
 
   constructor(
     private resolver : ComponentFactoryResolver,
+    private jurnalInisiasi : JurnalInisiasiService,
+    private sequencer : SequenceService,
+    
     // private unitService : UnitService,
     private seriesService : ProductSeriesService,
     private vendorService : VendorService,
@@ -258,6 +264,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
     private inisiasiService : InisiasiService,
     private productCatService : ProductCategoryService,
     private dateService : ServerDateTimeService,
+    private bankService : BankService,
     // private logService : LogService,
 
     private toastr : ToastrService,
@@ -268,18 +275,52 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
 
   async ngOnInit(): Promise<void>
   {
-    this.input = this.defaultInput();
-    this.user = this.session.getUser();
     this.errorHappened = false;
-    // console.log("user",this.user);
+    // console.debug("user",this.user);
     
     // window['perhiasan'] = this.perhiasanInput;
-
+    await this.LoadDate();
     await this.LoadAllParameter();
+    console.debug("dt", this.date);
+
+    this.input = this.defaultInput();
+    this.user = this.session.getUser();
 
     // NotificationUtil.Show(Notification.ERROR("fade", NotificationSize.DEFAULT))
 
     // ModalOutlet.AddModal('inisiasi-detail');
+  }
+  
+  async LoadBanks()
+  {
+    while(this.banks.length > 0)
+    {
+      this.banks.pop();
+    }
+
+    let msg = "";
+    let banks : any = false;
+    try {
+      banks = await this.bankService.list("?").toPromise();
+    } catch(err) {
+      banks = false;
+      msg = err.message;
+      this.errorHappened = true;
+    }
+    
+    if(banks == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.bankService.message();
+      this.toastr.error("Gagal Loading 'Bank'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
+      return;
+    }
+
+    for(let i = 0; i < banks.length; i++)
+    {
+      this.banks.push(banks[i]);
+    }
+    this.banks.sort((a,b) => ('' + a.name).localeCompare(b.name))
   }
 
   async LoadProductCategory()
@@ -288,9 +329,25 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
     {
       this.products.pop();
     }
-    let products = await this.productCatService.list("?code=c05").toPromise();
 
-    console.log(products);
+    let msg = "";
+    let products : any = false;
+    try {
+      products = await this.productCatService.list("?code=c05").toPromise();
+    } catch(err) {
+      products = false;
+      msg = err.message;
+    }
+    
+    if(products == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.productCatService.message();
+      this.toastr.error("Gagal Loading 'Jenis Produk'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
+      return;
+    }
+
+    console.debug(products);
 
     for(let i = 0; i < products.length; i++)
     {
@@ -301,7 +358,28 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
 
   async LoadVendor()
   {
-    let vendors = await this.vendorService.list("?product-category.code=c05").toPromise();
+    while(this.vendors.length > 0)
+    {
+      this.vendors.pop();
+    }
+
+    let msg = "";
+    let vendors : any = false;
+    try {
+      vendors = await this.vendorService.list("?product-category.code=c05").toPromise();
+    } catch(err) {
+      vendors = false;
+      msg = err.message;
+    }
+    
+    if(vendors == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.vendorService.message();
+      this.toastr.error("Gagal Loading 'Vendor'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
+      return;
+    }
+
     for(let i = 0; i < vendors.length; i++)
     {
       this.vendors.push(vendors[i]);
@@ -311,7 +389,28 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
 
   async LoadDenom()
   {
-    let denoms = await this.denomService.list("?product-category.code=c05").toPromise();
+    while(this.denoms.length > 0)
+    {
+      this.denoms.pop();
+    }
+    
+    let msg = "";
+    let denoms : any = false;
+    try {
+      denoms = await this.denomService.list("?product-category.code=c05").toPromise();
+    } catch(err) {
+      denoms = false;
+      msg = err.message;
+    }
+    
+    if(denoms == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.denomService.message();
+      this.toastr.error("Gagal Loading 'Denom'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
+      return;
+    }
+
     for(let i = 0; i < denoms.length; i++)
     {
       this.denoms.push(denoms[i]);
@@ -321,7 +420,27 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
   
   async LoadSeries()
   {
-    let series = await this.seriesService.list("?").toPromise();
+    while(this.series.length > 0)
+    {
+      this.series.pop();
+    }
+
+    let msg = "";
+    let series : any = false;
+    try {
+      series = await this.seriesService.list("?").toPromise();
+    } catch(err) {
+      series = false;
+      msg = err.message;
+    }
+    
+    if(series == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.seriesService.message();
+      this.toastr.error("Gagal Loading 'Denom'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
+      return;
+    }
     for(let i = 0; i < series.length; i++)
     {
       this.series.push(series[i]);
@@ -331,16 +450,22 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
 
   async LoadDate()
   {
-    let dt = await this.dateService.task().toPromise();
-    if(dt == false)
+    let resp : any = false;
+    try {
+      resp = await this.dateService.task("").toPromise();
+    } catch(err) {
+      resp = false;
+    }
+
+    if(resp == false)
     {
-      this.toastr.error("Date gagal load.");
       this.errorHappened = true;
       return;
     }
 
-    this.date = dt;
-    this.onProductChanged();
+    let dtarr = resp.split("T");
+    this.date = dtarr[0];
+    this.time = dtarr[0].split("Z")[0];
   }
 
   async LoadAllParameter()
@@ -348,8 +473,8 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
     this.LoadProductCategory();
     this.LoadVendor();
     this.LoadDenom();
-    this.LoadSeries();
-    this.LoadDate();
+    // this.LoadSeries();
+    this.LoadBanks();
     
     this.onProductChanged();
   }
@@ -359,27 +484,26 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
 
   }
 
-  ResetAll(form2reset : NgForm)
+  async ResetAll()
   {
-    this.formInput = null;
+    this.errorHappened = false;
+    await this.LoadAllParameter();
+    await this.LoadDate();
     this.input = this.defaultInput();
-    form2reset.reset();
-    console.log(form2reset.valid, this.input)
+    console.debug(this.input);
   }
 
   onProductChanged()
   {
-    this.input['create_date'] = this.date.split("T")[0];
+    
+  }
+  
+  onTipeBayarChanged()
+  {
+    this.input.bank = null;
+    this.input.asal_uang = "";
 
-    // for(let i = 0; i < this.products.length; i++)
-    // {
-    //   let perhiasan = this.products[i];
-    //   // if(perhiasan.code == "c00")
-    //   // {
-    //   //   this.input['product-category'] = perhiasan;
-    //   //   break;
-    //   // }
-    // }
+    this.hitungAllPajak();
   }
 
   loading = false;
@@ -390,7 +514,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
 
     for(let d in this.InitiationType)
     {
-      console.log(d)
+      console.debug(d)
     }
     // console.dir(JSON.stringify(this.searchModel))
     if(!this.searchValid(this.input))
@@ -460,8 +584,8 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
     // params = DataTypeUtil.Encode(this.searchModel);
     // this.searchModel.items = {warna : "01"}
 
-    // console.log('tes', btoa(JSON.stringify(this.searchModel['product'])));
-    console.log('model', this.input);
+    // console.debug('tes', btoa(JSON.stringify(this.searchModel['product'])));
+    console.debug('model', this.input);
 
     params.endsWith("&") ? params = params.substring(0, params.length-1) : null;
     // this.sear
@@ -506,43 +630,80 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
 
   async doSave()
   {
-    if(this.validateInput()) return;
+    this.spinner.Open();
+    if(this.validateInput())
+    {
+      this.spinner.Close();
+      return;
+    }
 
-    if(this.input.items?.length <= 0) {
+    if(this.validateItems())
+    {
+      this.spinner.Close();
+      return;
+    }
+
+    if(this.input.items?.length <= 0)
+    {
+      this.spinner.Close();
       this.toastr.warning("Tidak ada item pada Tabel Input Detail.", "Peringatan!");
       return;
     }
 
-    let now : Date = new Date;
-    let sNow = now.toISOString().split("T");
-    let date = sNow[0];
+    let date = this.date;
     let date_split = date.split("-");
-    let time = sNow[1].split(".")[0];
+    let time = this.time;
 
     let no = this.input['no_po'];
-    console.log(no, "no")
+    console.debug(no, "no")
 
     if(this.user?.unit == null)
     {
+      this.spinner.Close();
       this.toastr.warning("Unit dari User belum di-Assign. Harap hubungi IT Support/Helpdesk.", "Error!");
       return;
     }
 
-    let PO = "PO" + this.user.unit.code + date_split[0].substring(1, 3) + date_split[1] + "[0,5]";
+    let unitCode = this.session.getUnit()?.code;
+    let key = {key : "PO-" + unitCode + "-" + this.date }
+    let seq : any = "";
+    let msg = "";
+    try
+    {
+      seq = await this.sequencer.use(key).toPromise();
+
+    } catch(err)
+    {
+      msg = err.message;
+      seq = false;
+    }
+
+    if(seq == false)
+    {
+      if(msg == "") msg = this.sequencer.message();
+      this.toastr.error("Gagal membentuk Format Nomor PO. Error: " + msg);
+      this.spinner.Close();
+      this.ResetAll();
+      return;
+    }
+
+    let st = StringHelper.LeftZeroPad(Number(seq.value).toString(), 5);
+    let PO = "PO" + this.session.getUnit()?.code + date_split[0].substring(2, 4) + date_split[1] + date_split[2] + st;
 
     let def =
     {
       no_po : PO,
-      __format : "no_po:inc",
+      // __format : "no_po:inc",
       create_date : this.input['create_date'],
       create_time : time,
       create_by : this.user.username,
       unit : this.user.unit.code,
-      order_status : "submit",
+      order_status : OrderStatus.SUBMIT.code,
       status_bayar : '1',
       __version : new Date().getMilliseconds(),
       __version_d : "0",
-      items : this.input['items']
+      items : this.input['items'],
+      _log : 1
       // vendor : null,
       // 'product-category' : null,
     };
@@ -550,21 +711,43 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
     let init = DataTypeUtil.Encode(def);
 
     this.inisiasiService.add(init).subscribe(output => {
+      this.spinner.Close();
       if(output == false)
       {
-        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + this.inisiasiService.message);
+        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + this.inisiasiService.message());
+        this.ResetAll();
         return;
       } else {
         this.toastr.success("Inisiasi Berhasil. Harap hubungi Kepala Departemen untuk melakukan Approval. No. PO : " + output.no_po, "Info", {disableTimeOut : true, closeButton : true, tapToDismiss : false});
-        this.input = this.defaultInput();
+        this.ResetAll();
+        // this.doAccounting(output._id);
       }
+    }, err => {
+      this.spinner.Close();
+      this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + err.message, "Error!", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
+      return;
     });
-    // console.log(output);
+    // console.debug(output);
   }
 
+  // doAccounting(idInisiasi :string)
+  // {
+  //   this.jurnalInisiasi.bayar(idInisiasi).subscribe(output => {
+  //     if(output == false)
+  //     {
+  //       let msg = this.jurnalInisiasi.message();
+  //       this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg, "Error!", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
+  //       // console.debug()
+  //       return;
+  //     } else {
+  //       this.toastr.success("Jurnal berhasil.")
+  //       return;
+  //     }
+  //   });
+  // }
   Debug()
   {
-    console.log(this.input, "model", this.selected);
+    console.debug(this.input, "model", this.selected);
   }
 
   onDelete()
@@ -602,12 +785,38 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
 
   }
 
+  validateItems()
+  {
+    for(let i = 0; i < this.input.items.length; i++)
+    {
+      let item = this.input.items[i];
+      if(this.validateAdd(item))
+      {
+        // console.debug(item, "tralala")
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   validateInput()
   {
     for(let key in this.input)
     {
+
+      if(key == 'total_pajak' && this.input.tipe_bayar == PaymentType.UANG.code) continue;
+      
+      if(key == 'bank' && this.input.tipe_bayar == PaymentType.MAKLON.code) continue;
+
+      if(key == 'bank' && this.input.asal_uang == 'kas') continue;
+
+      if(key == 'asal_uang' && this.input.tipe_bayar == PaymentType.MAKLON.code) continue;
+
+      if(key == 'asal_uang' && this.input.tipe_bayar == PaymentType.MAKLON.code) continue;
+
       let value = this.input[key];
-      console.log(value, key, 'key')
+      console.debug(value, key, 'key')
       if(value == null || value == "null" || value == 0 || (typeof value === 'number' && value === 0))
       {
         this.toastr.warning(this.GetDisplayName(key) + " belum diisi / sama dengan 0 ");
@@ -620,8 +829,49 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
 
   validateAdd(item : any)
   {
+
+    if(this.input['tipe_bayar'] == PaymentType.UANG.code && this.input['asal_uang'] == "")
+    {
+      this.toastr.warning("Asal Uang belum diisi", "Peringatan!");
+      return true;
+    }
+
+    if(this.input.asal_uang == 'bank' && this.input.bank == null)
+    {
+      this.toastr.warning('Bank belum diisi.', "Peringatan!");
+      return true;
+    }
+
+    if(this.input.nomor_nota == null || this.input.nomor_nota == "")
+    {
+      this.toastr.warning("Nomor nota belum diisi", "Peringatan!");
+      return true;
+    }
+
+    if(this.input['product-category'] == null)
+    {
+      this.toastr.warning("Jenis Produk belum diisi", "Peringatan!");
+      return true;
+    }
+
+    if(this.input['vendor'] == null)
+    {
+      this.toastr.warning("Vendor belum diisi", "Peringatan!");
+      return true;
+    }
+
+    if(this.input['tipe_bayar'] == null)
+    {
+      this.toastr.warning("Tipe bayar belum diisi", "Peringatan!");
+      return true;
+    }
+
     for(let key in item)
     {
+      if(key == 'total_terima') continue;
+      
+      if(key == 'detail_terima') continue;
+      
       if(item[key] == null || item[key] == "null")
       {
         this.toastr.warning(this.GetDisplayName(key) + ' belum diisi.', "Peringatan!");
@@ -652,13 +902,13 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
     
     this.input['items'].push(tempItem);
 
-    for(let i = 0; i < this.input.length; i++)
-    {
-      let ass = {no : i};
-      let item = this.input.items[i];
-      Object.assign(item, ass);
-      console.log(item)
-    }
+    // for(let i = 0; i < this.input.items.length; i++)
+    // {
+    //   let ass = {no : i};
+    //   let item = this.input.items[i];
+    //   Object.assign(item, ass);
+    //   console.debug(item)
+    // }
 
     // this.onResetItem();
   }
@@ -666,7 +916,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
   onDeleteItem()
   {
     let i = this.input['items'].indexOf(this.selected);
-    console.log(i)
+    console.debug(i)
     this.input['items']?.splice(i, 1);
     this.onResetItem();
   }
@@ -764,7 +1014,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
         value += parseInt(this.input.items[i].pajak);
     }
 
-    this.input['total_pajak'] = value;
+    this.input['total_pajak'] = Math.round(value);
     return value;
   }
 
@@ -819,10 +1069,31 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
       let item = this.input.items[i];
 
       this.countItemPajak(item);
-      console.log(item)
+      console.debug(item)
     }
     
     this.countItemPajak();
+  }
+  
+  hitungTotalDPP()
+  {
+    if(this.input == null)
+    {
+      return 0;
+    }
+
+    let total_harga = Math.round(Number(this.input['total_harga']));
+    if(total_harga == 0)
+    {
+      return 0;
+    }
+
+    let total_pajak = Math.round(this.input['total_pajak']);
+
+    total_harga -= total_pajak;
+
+    this.input['total_dpp'] = total_harga;
+    return this.input['total_dpp'];
   }
 
   // pajakCounted : boolean = false;
@@ -850,7 +1121,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
     //   this.pajakCounted = true;
     
     item['pajak'] = Math.trunc(pajakItem);
-    console.log(pajakItem, 'pajak');
+    console.debug(pajakItem, 'pajak');
     return this.selected.pajak;
   }
 
@@ -941,7 +1212,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
     let persenPajak = 2;
 
     item['harga_piece'] = ( (parseFloat(denom) * parseFloat(harga_baku)) +  parseFloat(ongkos_pieces) ) * ( (100 + persenPajak)/100 );
-    console.log(item, 'item harga piece');
+    console.debug(item, 'item harga piece');
   }
 
   countItemTotalHarga(item? : any)
@@ -953,7 +1224,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
     let harga = item['harga_piece'];
 
     item['total_harga'] = parseInt(pieces) * parseInt(harga);
-    console.log(item, 'item harga total', pieces, harga);
+    console.debug(item, 'item harga total', pieces, harga);
     this.countItemPajak(item);
   }
 
@@ -962,6 +1233,13 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
   {
     if(this.hitungTotalHarga() > 0) return {};
 
+    return {'text-decoration': 'underline','text-decoration-color': 'red', 'color' : 'red'};
+  }
+  
+  totalDPPStyleValid()
+  {
+    if(this.hitungTotalDPP() > 0) return {};
+    
     return {'text-decoration': 'underline','text-decoration-color': 'red', 'color' : 'red'};
   }
   

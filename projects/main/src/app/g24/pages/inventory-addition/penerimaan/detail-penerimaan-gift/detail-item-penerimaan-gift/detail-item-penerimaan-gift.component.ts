@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { InisiasiService } from 'projects/main/src/app/g24/services/stock/inisiasi.service';
 import { ProductPurityService } from 'projects/main/src/app/g24/services/product/product-purity.service';
 import { ProductJenisService } from 'projects/main/src/app/g24/services/product/product-jenis.service';
@@ -13,7 +13,10 @@ import { DataTypeUtil } from 'projects/main/src/app/g24/lib/helper/data-type-uti
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { IDetailCallbackListener } from 'projects/main/src/app/g24/lib/base/idetail-callback-listener';
 import { OrdersModule } from '../../../../orders/orders.module';
+import { PaymentType } from 'projects/main/src/app/g24/lib/enums/payment-type';
 import { ProductSeriesService } from 'projects/main/src/app/g24/services/product/product-series.service';
+import { LoadingSpinnerComponent } from 'projects/main/src/app/g24/nav/modal/loading-spinner/loading-spinner.component';
+import { ServerDateTimeService } from 'projects/main/src/app/g24/services/system/server-date-time.service';
 
 /**
  * Penerimaan gift baru isi ke stock/product
@@ -29,6 +32,7 @@ export class DetailItemPenerimaanGiftComponent implements OnInit {
   (
     private toastr : ToastrService,
     private session : SessionService,
+    private dateService :ServerDateTimeService,
 
     private inisiasiService : InisiasiService,
     private kadarService : ProductPurityService,
@@ -37,10 +41,16 @@ export class DetailItemPenerimaanGiftComponent implements OnInit {
     private productService : ProductService
   ) { }
 
+  @ViewChild('spinner', {static: false}) spinner : LoadingSpinnerComponent;
+
   parentListener : IDetailCallbackListener;
   
   user : any = this.session.getUser();
   unit : any = this.session.getUnit();
+  date : string = "";
+  time : string = "";
+
+  errorHappened : boolean = false;
 
   EPriviledge = EPriviledge;
 
@@ -49,6 +59,32 @@ export class DetailItemPenerimaanGiftComponent implements OnInit {
   LoadAllParameter()
   {
 
+  }
+  
+  async LoadDate()
+  {
+    let resp;
+    let msg = "";
+    try{
+      resp = await this.dateService.task("").toPromise();
+    } catch (err) {
+      resp = false;
+      msg = err.message;
+    }
+
+    if(resp == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.dateService.message();
+      this.doReset();
+      this.Close();
+      this.toastr.info("Gagal mengambil tanggal server. Error: " + msg);
+      return;
+    }
+
+    let dtarr = resp.split("T");
+    this.date = dtarr[0];
+    this.time = dtarr[0].split("Z")[0];
   }
 
   isOpened : boolean = false;
@@ -67,6 +103,25 @@ export class DetailItemPenerimaanGiftComponent implements OnInit {
     return this.title;
   }
 
+  GetDisplayName(key : string) : string
+  {
+    let name = "";
+    switch(key)
+    {
+      case PaymentType.UANG.code:
+        name = PaymentType.UANG.name;
+        break;
+
+      case PaymentType.MAKLON.code:
+        name = PaymentType.MAKLON.name;
+        break;
+
+        default:
+
+    }
+    return name;
+  }
+
   // input
   inisiasi : any = null;
   public getItemsOfInisiasi() : any[]
@@ -77,6 +132,7 @@ export class DetailItemPenerimaanGiftComponent implements OnInit {
 
   public setId(id : string)
   {
+    this.spinner.Open();
     if(id == null || id == "")
     {
       this.toastr.error("No ID is set.");
@@ -86,6 +142,7 @@ export class DetailItemPenerimaanGiftComponent implements OnInit {
 
     this.inisiasiService.list("?_or=product-category.code=c04&no_po="+id).subscribe(output => 
     {
+      this.spinner.Close();
       if(output != false)
       {
         if(output.length > 1)
@@ -118,7 +175,7 @@ export class DetailItemPenerimaanGiftComponent implements OnInit {
   public setParentListener(listener : IDetailCallbackListener)
   {
     this.parentListener = listener;
-    console.log(listener);
+    console.debug(listener);
   }
 
   private Open() {
@@ -141,7 +198,7 @@ export class DetailItemPenerimaanGiftComponent implements OnInit {
   
   GetDisplayValue(object : any) : string
   {
-    // console.log(typeof object)
+    // console.debug(typeof object)
     if(object == null) return "null";
     if(typeof object == 'string' || typeof object == 'number' || typeof object == 'undefined') return object.toString();
 
@@ -383,8 +440,9 @@ export class DetailItemPenerimaanGiftComponent implements OnInit {
     return true;
   }
 
-  async doSave()
+  async doTerima()
   {
+    this.spinner.Open();
     if(this.mode == EPriviledge.READ)
     {
       this.toastr.info("Mode 'READ' only.");
@@ -402,59 +460,37 @@ export class DetailItemPenerimaanGiftComponent implements OnInit {
     }
 
     this.inisiasi.order_status = OrderStatus.TERIMA_FULL.code;
-    this.inisiasi.update_date = new Date().toISOString().split("T")[0];
-    this.inisiasi.update_by = this.user.username;
-    this.inisiasi['tgl_terima'] = this.inisiasi.update_date;
-    this.inisiasi.terima_by = this.user.username;
-    let items = this.inisiasi.items;
-    let productNoId = [];
-    console.log(items);
-    
-    for(let i = 0; i < items.length; i++)
-    {
-      let products = items[i].products;
-      productNoId.push(...products);
-    }
+    this.inisiasi.update_time = this.time;
+    this.inisiasi.update_date = this.date;
+    this.inisiasi.update_by = this.user;
+    this.inisiasi['tgl_terima'] = this.date;
+    this.inisiasi.terima_by = this.user;
 
-    let itemProduct : Map<string, number> = new Map<string,number>();
-    
-    console.log(productNoId);
-
-    for(let i =0; i < productNoId.length; i++)
-    {
-      let product = productNoId[i];
-      let fail = {itemIndex : product.no_item_po, productIndex: product.no_index_products}
-      delete product._id;
-      DataTypeUtil.Encode(product);
-
-      itemProduct.set(fail.itemIndex + "," + fail.productIndex, product);
-
-      let result = await this.productService.add(product).toPromise();
-      if(result == false)
-      {
-        this.toastr.error("Barang nomor: " + fail.productIndex + " dengan nomor Bulk: " + fail.itemIndex + " gagal masuk.");
-        continue;
-      } else {
-        let product = itemProduct.get(fail.itemIndex + "," + fail.productIndex);
-        Object.assign(product, result);
-        itemProduct.set(fail.itemIndex + "," + fail.productIndex, result);
-        console.log(result);
-      }
-    }
-
-    console.log(this.inisiasi);
+    console.debug(this.inisiasi);
     let tempInisiasi = {}
     Object.assign(tempInisiasi, this.inisiasi);
     DataTypeUtil.Encode(tempInisiasi);
 
-    let inisiasi = await this.inisiasiService.update(tempInisiasi).toPromise();
+    let msg = "";
+    let inisiasi = false;
+    try {
+      inisiasi = await this.inisiasiService.TerimaGift(tempInisiasi).toPromise();
+    } catch(err) {
+      inisiasi = false;
+      msg = err.message;
+    }
+    this.spinner.Close();
     if(inisiasi == false)
     {
-      this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk.");
+      if(msg == "") msg = this.inisiasiService.message();
+      this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk. Error : " + msg, "Error", {disableTimeOut : true, closeButton : true});
+      this.parentListener.onAfterUpdate(this.inisiasi._id);
+      this.doReset();
+      this.Close();
       return;
     } else {
       Object.assign(this.inisiasi, tempInisiasi);
-      console.log(this.inisiasi);
+      console.debug(this.inisiasi);
       this.parentListener.onAfterUpdate(this.inisiasi._id);
       this.toastr.success("PO berhasil diterima.");
       this.doReset();
@@ -471,15 +507,57 @@ export class DetailItemPenerimaanGiftComponent implements OnInit {
     // }
 
     // DataTypeUtil.Encode(enc);
-    // console.log('enc', enc);
+    // console.debug('enc', enc);
 
     // let result = await this.productService.batchAdd(enc).toPromise();
-    // console.log(result);
+    // console.debug(result);
     
     // for(let i = 0; i < result.length; i++)
     // {
     //   let product = result[i];
       
     // }
+  }
+
+  async doTolak(){
+    if(this.mode == EPriviledge.READ)
+    {
+      this.toastr.info("Mode 'READ' only.");
+      return;
+    }
+
+    if(!this.validateItems())
+    {
+      return;
+    }
+
+    if(!this.validateInisiasi())
+    {
+      return;
+    }
+
+    this.inisiasi.order_status = OrderStatus.TOLAK.code;
+    this.inisiasi.update_date = new Date().toISOString().split("T")[0];
+    this.inisiasi.update_by = this.user.username;
+    this.inisiasi['tgl_tolak'] = this.inisiasi.update_date;
+    this.inisiasi.tolak_by = this.user.username;
+
+    let tempInisiasi = {}
+    Object.assign(tempInisiasi, this.inisiasi);
+    DataTypeUtil.Encode(tempInisiasi);
+
+    let inisiasi = await this.inisiasiService.update(tempInisiasi).toPromise();
+    if(inisiasi == false)
+    {
+      this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk.");
+      return;
+    } else {
+      Object.assign(this.inisiasi, tempInisiasi);
+      console.debug(this.inisiasi);
+      this.parentListener.onAfterUpdate(this.inisiasi._id);
+      this.toastr.success("PO berhasil diterima.");
+      this.doReset();
+      this.Close();
+    }
   }
 }

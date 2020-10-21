@@ -1,0 +1,290 @@
+
+<clr-modal #modalMsg [(clrModalOpen)]="isOpened" [clrModalSize]="'xl'" [clrModalStaticBackdrop]="true">
+    <h3 class="modal-title">{{Title}}</h3>
+    <div class="modal-body">
+        <div class="card">
+            <div class="card-header">
+                List Item pada Inisiasi/PO: {{inisiasi?.no_po}}
+            </div>
+            <div class="card-block">
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span><label>Nomor PO &#58; </label></span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b> 
+                            <span><u>{{inisiasi?.no_po}}</u></span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Nomor Nota &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b> 
+                            <u><span>{{inisiasi?.nomor_nota}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Tanggal Inisiasi &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b> 
+                            <u><span><input readonly value="{{inisiasi?.tgl_inisiasi}}" type="date" class="clr-input" ></span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Jenis Produk &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b> 
+                            <u><span>{{inisiasi?.nomor_nota}}</span></u>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Vendor &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b> 
+                            <u><span>{{ inisiasi ? GetDisplayValue(inisiasi['vendor']) : ""}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    &nbsp;
+                </div>
+                &nbsp;
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Tipe Bayar &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{GetDisplayName(inisiasi?.tipe_bayar)}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row" *ngIf="inisiasi?.asal_uang == 'bank'">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Bank &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{GetDisplayName(inisiasi?.bank)}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                &nbsp;
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Asal Uang &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{GetDisplayName(inisiasi?.tipe_bayar)}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                &nbsp;
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Harga Beli &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{inisiasi?.harga_beli | mask : 'separator' : ','}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Margin Emas &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span> <label class="label">{{inisiasi?.persen_margin}}%</label></span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Margin Batu &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span><label class="label">{{inisiasi?.persen_margin_batu}}%</label></span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Margin Berlian &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span><label class="label">{{inisiasi?.persen_margin_berlian }}%</label></span></u>
+                        </b>
+                    </div>
+                </div>
+                <br>
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Ongkos Pembuatan &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{inisiasi?.ongkos | mask : 'separator' : ','}}</span></u>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Total Berat &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{ inisiasi?.berat}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-12">
+                        <clr-stack-view>
+                            <clr-stack-header><label class="label">Atribut Permata</label></clr-stack-header>
+
+                            <!-- Emas -->
+                            <clr-stack-block [clrStackViewLevel]="1" [clrStackViewSetsize]="5" [clrStackViewPosinset]="1">
+
+                                <clr-stack-label><label class="label label-yellow">Emas</label></clr-stack-label>
+                                
+                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="1">
+                                    <clr-stack-label>Kadar</clr-stack-label>
+                                    <clr-stack-content>{{inisiasi ? GetDisplayValue(inisiasi['product-purity']) : null}}</clr-stack-content>
+                                </clr-stack-block>
+                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="2">
+                                    <clr-stack-label>Jenis</clr-stack-label>
+                                    <clr-stack-content>{{inisiasi ? GetDisplayValue(inisiasi['product-jenis']) : null}}</clr-stack-content>
+                                </clr-stack-block>
+                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="3">
+                                    <clr-stack-label>Warna</clr-stack-label>
+                                    <clr-stack-content>{{inisiasi ? GetDisplayValue(inisiasi['product-gold-color']) : null}}</clr-stack-content>
+                                </clr-stack-block>
+                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="4">
+                                    <clr-stack-label>Berat</clr-stack-label>
+                                    <clr-stack-content>{{inisiasi?.berat_emas}}</clr-stack-content>
+                                </clr-stack-block>
+                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="5">
+                                    <clr-stack-label>HPP Emas</clr-stack-label>
+                                    <clr-stack-content>{{inisiasi?.hpp_emas | mask : 'separator' : ','}}</clr-stack-content>
+                                </clr-stack-block>
+                            </clr-stack-block>
+                            <!-- Emas -->
+
+                            <!-- Batu -->
+                            <clr-stack-block *ngIf="batu_empty" [clrStackViewLevel]="1" [clrStackViewSetsize]="7" [clrStackViewPosinset]="2">
+                                <clr-stack-label><label class="label label-yellow">Batu</label></clr-stack-label>
+                                    
+                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="1">
+                                    <clr-stack-label>Jenis Batu</clr-stack-label>
+                                    <clr-stack-content>{{inisiasi?.jenis_batu}}</clr-stack-content>
+                                </clr-stack-block>
+                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="2">
+                                    <clr-stack-label>Warna Batu</clr-stack-label>
+                                    <clr-stack-content>{{inisiasi?.warna_batu}}</clr-stack-content>
+                                </clr-stack-block>
+                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="3">
+                                    <clr-stack-label>Carat Batu</clr-stack-label>
+                                    <clr-stack-content>{{inisiasi?.carat_batu}}</clr-stack-content>
+                                </clr-stack-block>
+                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="4">
+                                    <clr-stack-label>Dimensi Batu</clr-stack-label>
+                                    <clr-stack-content>{{inisiasi?.dimensi_batu}}</clr-stack-content>
+                                </clr-stack-block>
+                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="5">
+                                    <clr-stack-label>HPP Batu</clr-stack-label>
+                                    <clr-stack-content>{{inisiasi?.hpp_batu | mask : 'separator' : ','}}</clr-stack-content>
+                                </clr-stack-block>
+                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="6">
+                                    <clr-stack-label>Margin Batu</clr-stack-label>
+                                    <clr-stack-content>{{inisiasi?.margin_batu | mask : 'separator' : ','}}</clr-stack-content>
+                                </clr-stack-block>
+                            </clr-stack-block>
+                            <!-- Batu -->
+
+                            <!-- Berlian -->
+                            <clr-stack-block *ngIf="berlian_empty" [clrStackViewLevel]="1" [clrStackViewSetsize]="7" [clrStackViewPosinset]="3">
+                                <clr-stack-label><label class="label label-yellow">Berlian</label></clr-stack-label>
+                                    
+                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="1">
+                                    <clr-stack-label>Clarity Berlian</clr-stack-label>
+                                    <clr-stack-content>{{inisiasi?.clarity_berlian}}</clr-stack-content>
+                                </clr-stack-block>
+                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="2">
+                                    <clr-stack-label>Cutting Berlian</clr-stack-label>
+                                    <clr-stack-content>{{inisiasi?.cutting_berlian}}</clr-stack-content>
+                                </clr-stack-block>
+                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="3">
+                                    <clr-stack-label>Warna Berlian</clr-stack-label>
+                                    <clr-stack-content>{{inisiasi?.warna_berlian}}</clr-stack-content>
+                                </clr-stack-block>
+                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="4">
+                                    <clr-stack-label>Total Jumlah Butir Berlian</clr-stack-label>
+                                    <clr-stack-content>{{inisiasi?.total_butir_berlian}}</clr-stack-content>
+                                </clr-stack-block>
+                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="5">
+                                    <clr-stack-label>Total Jumlah Carat Berlian</clr-stack-label>
+                                    <clr-stack-content>{{inisiasi?.total_carat_berlian}}</clr-stack-content>
+                                </clr-stack-block>
+                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="6">
+                                    <clr-stack-label>HPP Berlian</clr-stack-label>
+                                    <clr-stack-content>{{inisiasi?.hpp_berlian | mask : 'separator' : ','}}</clr-stack-content>
+                                </clr-stack-block>
+                                <clr-stack-block [clrStackViewLevel]="2" [clrStackViewSetsize]="3" [clrStackViewPosinset]="7">
+                                    <clr-stack-label>Margin Berlian</clr-stack-label>
+                                    <clr-stack-content>{{inisiasi?.margin_berlian | mask : 'separator' : ','}}</clr-stack-content>
+                                </clr-stack-block>
+                            </clr-stack-block>
+                            <!-- Berlian -->
+                        </clr-stack-view>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" [disabled]="mode == EPriviledge.READ" (click)="doSave()">Simpan</button>
+    </div>
+</clr-modal>
+
+<loading-spinner #spinner>
+
+</loading-spinner>

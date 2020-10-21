@@ -6,8 +6,13 @@ import * as CryptoJS from 'crypto-js';
 })
 export class SessionService {
 
+  /**
+   * NOTE :
+   * 
+   * JANGAN GANTI DISINI, CARI KE FILE ..src/assets/config/server-config.json
+   */
   // server: string = "http://localhost:8000";
-  // server: string = "http://188.166.247.233:8000";
+  // server: string = "http://34.87.141.184:8000";
   server: string = "https://dev.g24sys.com";
   pasphrase = "";
 
@@ -89,8 +94,15 @@ export class SessionService {
     sessionStorage.clear();
   }
 
-  public postHeader() {
-    if (this.getLoginId() != null) {
+  public postHeader(isJSON? : boolean) {
+    if(this.getLoginId() != null && isJSON)
+    {
+      return {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + this.getBearer()
+      };
+    } else if (this.getLoginId() != null) {
       return {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Accept': 'application/json',

@@ -32,6 +32,8 @@ export class RekeningKoranComponent implements OnInit {
   transactions = [];
   fromPick:any;
 
+  maxDate = null;
+  minDate = null;
   // Total Amount
   amountD=0;
   amountK=0;
@@ -56,6 +58,11 @@ export class RekeningKoranComponent implements OnInit {
     this.datepick();
     this.head();
     
+  }
+
+  startDate(data){
+    this.maxDate = new Date(data.getFullYear(), data.getMonth() + 3, data.getDate()) ;
+    this.minDate = data;
   }
 
   // modal detail 
@@ -109,6 +116,8 @@ export class RekeningKoranComponent implements OnInit {
     let data = this.search.getRawValue(); 
     let params = "";
 
+    let mulai = this.datePipe.transform(data.from, 'yyyy-MM-dd');
+    let selesai = this.datePipe.transform(data.to, 'yyyy-MM-dd');
     // Session
     const getUnit = this.sessionService.getUnit();
     params = params+"&unit="+getUnit["code"];
@@ -125,15 +134,15 @@ export class RekeningKoranComponent implements OnInit {
         this.loadingDg = false;
         return;
       }else if(data.to != ""){
-        params = params+"&_between=createDate&_start="+data.from+"&_end="+data.to;
+        params = params+"&_between=createDate&_start="+mulai+"&_end="+selesai;
       }
     }
 
     if (data.text != "") {
       if (val == 'noRek') {
-        this.rekeningKoranService.list("?"+params+"&detail.noRek_regex=1&detail.noRek="+data.text).subscribe((response:any)=>{
+        this.rekeningKoranService.list("?"+params+"&detail.noRek="+data.text).subscribe((response:any)=>{
           if (response["length"] != 0) {
-            params = params+"&detail.noRek_regex=1&detail.noRek="+data.text;
+            params = params+"&detail.noRek="+data.text;
             this.getJurnal(params);
             this.datatext = data.text;
             return

@@ -1,0 +1,144 @@
+<div class="clr-row">
+	<div class="card">
+            <div class="card-header">
+                Toko Penyedia
+            </div>
+            <div class="card-block">
+            	<div class="clr-row">
+            		<div class="clr-col-6">
+            			<div class="clr-form-control">
+            				<label class="clr-control-label">Id Toko</label>
+            				<div class="clr-control-container">
+								<input clrInput [(ngModel)]="search.id_toko" name="id_toko">
+            				</div>
+            			</div>
+            		</div>
+            	</div>
+            </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-icon" aria-label="search" (click)="SearchData()">
+				    Cari<clr-icon shape="search"></clr-icon>
+				</button>
+            </div>
+        </div>
+</div>
+
+
+<!--DATAGRID-->
+<div class="clr-row">
+        <div class="card">
+            <div class="card-header">
+                Hasil Pencarian
+            </div>
+            <div class="card-block">
+            	<clr-datagrid [(clrDgSingleSelected)]="data_view">  
+        <clr-dg-action-bar>
+            <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-secondary" (click)="Tambah()" ><clr-icon shape="plus"></clr-icon>Tambah</button>
+                <button type="button" class="btn btn-sm btn-secondary" (click)="Ubah()" ><clr-icon shape="sync"></clr-icon>Ubah</button>
+                <button type="button" class="btn btn-sm btn-secondary" (click)="Hapus()" ><clr-icon shape="trash"></clr-icon>Hapus</button>
+            </div>
+        </clr-dg-action-bar>
+        
+
+        <clr-dg-column>
+            Name
+        </clr-dg-column>
+        <clr-dg-column>
+            Keterangan
+        </clr-dg-column>
+
+        <clr-dg-row *clrDgItems="let data of showSearch" [clrDgItem]="data">
+            <clr-dg-cell>{{data.name}}</clr-dg-cell>
+            <clr-dg-cell>{{data.keterangan}}</clr-dg-cell>
+        </clr-dg-row>
+
+        <clr-dg-footer>
+             {{showSearch.length}} data
+        </clr-dg-footer>
+    </clr-datagrid>
+            </div>
+            <div class="card-footer">
+
+            </div>
+        </div>
+</div>
+
+
+<!--MODAL TAMBAH DATA-->
+<clr-modal [(clrModalOpen)]="modaltambah">
+    <h3 class="modal-title">Tambah Toko Penyedia</h3>
+    <div class="modal-body">
+    	<div class="clr-row">
+    		<div class="clr-col-6">
+    			<div class="clr-form-control">
+    				<clr-input-container>
+				    <label>Name</label>
+				    <input clrInput [(ngModel)]="input.name" name="name" required />
+				    <clr-control-error>Wajib di isi</clr-control-error>
+				  </clr-input-container>
+    			</div>
+    		</div>
+    	</div>
+    	<div class="clr-row">
+    		<div class="clr-col-6">
+    			<div class="clr-form-control">
+    				<clr-textarea-container>
+					    <label>Keterangan</label>
+					    <textarea clrTextarea [(ngModel)]="input.ket" name="ket" required></textarea>
+					    <clr-control-error>Wajib di isi</clr-control-error>
+					 </clr-textarea-container>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="modaltambah = false">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="save()">Simpan</button>
+    </div>
+</clr-modal>
+
+
+<!--MODAL UPDATE DATA-->
+<clr-modal [(clrModalOpen)]="modalupdate">
+    <h3 class="modal-title">Update Toko Penyedia</h3>
+    <div class="modal-body">
+    	<div class="clr-row">
+    		<div class="clr-col-6">
+    			<div class="clr-form-control">
+    				<clr-input-container>
+				    <label>Id Toko</label>
+				    <input [(ngModel)]="update.id_toko" clrInput name="id_toko_upd" value="{{update.id_toko}}" readonly />
+				    <clr-control-error>Wajib di isi</clr-control-error>
+				  </clr-input-container>
+    			</div>
+    		</div>
+    		<div class="clr-col-6">
+    			<div class="clr-form-control">
+    				<clr-input-container>
+				    <label>Name</label>
+				    <input [(ngModel)]="update.name_upd" clrInput name="name_upd" value="{{update.name}}" required />
+				    <clr-control-error>Wajib di isi</clr-control-error>
+				  </clr-input-container>
+    			</div>
+    		</div>
+    	</div>
+    	<div class="clr-row">
+    		<div class="clr-col-6">
+    			<div class="clr-form-control">
+						<clr-textarea-container>
+					    <label>Keterangan</label>
+					    <textarea [(ngModel)]="update.ket_upd" clrTextarea name="ket_upd" required>{{update.keterangan}} </textarea>
+						<clr-control-error>Wajib di isi</clr-control-error>
+						</clr-textarea-container>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="modalupdate = false">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="Update()">Update</button>
+    </div>
+</clr-modal>
+
+<loading-spinner #spinner></loading-spinner>

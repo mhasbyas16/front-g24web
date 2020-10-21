@@ -8,7 +8,7 @@ import { DetailInisiasiPerhiasanComponent } from './inisiasi/detail-inisiasi-per
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PenerimaanComponent } from './penerimaan/penerimaan.component';
 import { ToastrModule } from 'ngx-toastr';
-import { DetailInisiasiBerlianComponent } from './inisiasi/detail-inisiasi-berlian/detail-inisiasi-berlian.component';
+import { NgxMaskModule } from 'ngx-mask';
 import { DetailInisiasiEmasComponent } from './inisiasi/detail-inisiasi-emas/detail-inisiasi-emas.component';
 import { DetailInisiasiSouvenirComponent } from './inisiasi/detail-inisiasi-souvenir/detail-inisiasi-souvenir.component';
 import { ClarityModule } from '@clr/angular';
@@ -24,6 +24,23 @@ import { DetailItemPenerimaanEmasComponent } from './penerimaan/detail-penerimaa
 import { InisiasiApprovalComponent } from './inisiasi-approval/inisiasi-approval.component';
 import { DetailInisiasiApprovalPerhiasanComponent } from './inisiasi-approval/detail-inisiasi-approval-perhiasan/detail-inisiasi-approval-perhiasan.component';
 import { DetailItemInisiasiApprovalPerhiasanComponent } from './inisiasi-approval/detail-inisiasi-approval-perhiasan/detail-item-inisiasi-approval-perhiasan/detail-item-inisiasi-approval-perhiasan.component';
+import { DetailInisiasiPermataComponent } from './inisiasi/detail-inisiasi-permata/detail-inisiasi-permata.component';
+import { DetailInisiasiDinarComponent } from './inisiasi/detail-inisiasi-dinar/detail-inisiasi-dinar.component';
+import { DetailPenerimaanDinarComponent } from './penerimaan/detail-penerimaan-dinar/detail-penerimaan-dinar.component';
+import { DetailItemPenerimaanDinarComponent } from './penerimaan/detail-penerimaan-dinar/detail-item-penerimaan-dinar/detail-item-penerimaan-dinar.component';
+import { DetailInisiasiApprovalSouvenirComponent } from './inisiasi-approval/detail-inisiasi-approval-souvenir/detail-inisiasi-approval-souvenir.component';
+import { DetailItemInisiasiApprovalSouvenirComponent } from './inisiasi-approval/detail-inisiasi-approval-souvenir/detail-item-inisiasi-approval-souvenir/detail-item-inisiasi-approval-souvenir.component';
+import { DetailInisiasiApprovalGiftComponent } from './inisiasi-approval/detail-inisiasi-approval-gift/detail-inisiasi-approval-gift.component';
+import { DetailItemInisiasiApprovalGiftComponent } from './inisiasi-approval/detail-inisiasi-approval-gift/detail-item-inisiasi-approval-gift/detail-item-inisiasi-approval-gift.component';
+import { DetailInisiasiApprovalEmasBatanganComponent } from './inisiasi-approval/detail-inisiasi-approval-emas-batangan/detail-inisiasi-approval-emas-batangan.component';
+import { DetailItemInisiasiApprovalEmasBatanganComponent } from './inisiasi-approval/detail-inisiasi-approval-emas-batangan/detail-item-inisiasi-approval-emas-batangan/detail-item-inisiasi-approval-emas-batangan.component';
+import { DetailInisiasiApprovalDinarComponent } from './inisiasi-approval/detail-inisiasi-approval-dinar/detail-inisiasi-approval-dinar.component';
+import { DetailItemInisiasiApprovalDinarComponent } from './inisiasi-approval/detail-inisiasi-approval-dinar/detail-item-inisiasi-approval-dinar/detail-item-inisiasi-approval-dinar.component';
+import { DetailInisiasiApprovalPermataComponent } from './inisiasi-approval/detail-inisiasi-approval-permata/detail-inisiasi-approval-permata.component';
+import { DetailItemInisiasiApprovalPermataComponent } from './inisiasi-approval/detail-inisiasi-approval-permata/detail-item-inisiasi-approval-permata/detail-item-inisiasi-approval-permata.component';
+import { DetailPenerimaanPermataComponent } from './penerimaan/detail-penerimaan-permata/detail-penerimaan-permata.component';
+import { DetailItemPenerimaanPermataComponent } from './penerimaan/detail-penerimaan-permata/detail-item-penerimaan-permata/detail-item-penerimaan-permata.component';
+import { NavModule } from '../../nav/nav.module';
 
 @NgModule({
   declarations: 
@@ -31,8 +48,7 @@ import { DetailItemInisiasiApprovalPerhiasanComponent } from './inisiasi-approva
     InisiasiComponent,
     PemesananComponent,
     DetailInisiasiPerhiasanComponent,
-    PenerimaanComponent, 
-    DetailInisiasiBerlianComponent, 
+    PenerimaanComponent,
     DetailInisiasiEmasComponent, 
     DetailInisiasiSouvenirComponent, 
     DetailInisiasiPerhiasanComponent,
@@ -47,15 +63,33 @@ import { DetailItemInisiasiApprovalPerhiasanComponent } from './inisiasi-approva
     DetailItemPenerimaanEmasComponent,
     InisiasiApprovalComponent,
     DetailInisiasiApprovalPerhiasanComponent,
-    DetailItemInisiasiApprovalPerhiasanComponent], 
+    DetailItemInisiasiApprovalPerhiasanComponent,
+    DetailInisiasiPermataComponent,
+    DetailInisiasiDinarComponent,
+    DetailPenerimaanDinarComponent,
+    DetailItemPenerimaanDinarComponent,
+    DetailInisiasiApprovalSouvenirComponent,
+    DetailItemInisiasiApprovalSouvenirComponent,
+    DetailInisiasiApprovalGiftComponent,
+    DetailItemInisiasiApprovalGiftComponent,
+    DetailInisiasiApprovalEmasBatanganComponent,
+    DetailItemInisiasiApprovalEmasBatanganComponent,
+    DetailInisiasiApprovalDinarComponent,
+    DetailItemInisiasiApprovalDinarComponent,
+    DetailInisiasiApprovalPermataComponent,
+    DetailItemInisiasiApprovalPermataComponent,
+    DetailPenerimaanPermataComponent,
+    DetailItemPenerimaanPermataComponent
+  ], 
   imports: [
     CommonModule,
+    NavModule,
     InventoryAdditionRoutingModule,
     ClarityModule,
     ReactiveFormsModule,
     FormsModule,
     ToastrModule,
-    
+    NgxMaskModule.forRoot()
   ],
   exports: [InisiasiComponent, PemesananComponent],
   entryComponents: [InisiasiComponent, PemesananComponent],

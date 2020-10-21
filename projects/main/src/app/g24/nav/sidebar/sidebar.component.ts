@@ -4,7 +4,7 @@ import { ModuleLoader } from '../../lib/helper/module-loader';
 import { Router } from '@angular/router';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 //list side bar
-import { management, kasir, stock, kadetRetail, staffRetail } from '../../sample/output-sidebar';
+import { management, kasir, stock, kadetRetail, staffRetail, keuangan } from '../../sample/output-sidebar';
 
 @Component({
   selector: 'app-sidebar',
@@ -25,6 +25,7 @@ export class SidebarComponent implements OnInit {
   output =[];
 
   //LIST
+  listKeuangan = keuangan;
   listManagement = management;
   listKasir = kasir;
   stock = stock;
@@ -52,6 +53,9 @@ export class SidebarComponent implements OnInit {
       case "Management":
           this.output = this.output.concat(this.listManagement);
           break;
+      case "Keuangan":
+        this.output = this.output.concat(this.listKeuangan);
+        break;
       case "kasir":
         this.output = this.output.concat(this.listKasir);
           break;

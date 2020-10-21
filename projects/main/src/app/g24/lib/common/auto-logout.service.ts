@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Router } from '@angular/router'
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
@@ -10,16 +11,18 @@ export class AutoLogoutService {
   MINUTES_UNITL_AUTO_LOGOUT = .5 // in mins
   CHECK_INTERVAL = 1000 // in ms
   STORE_KEY = 'lastAction';
+  
+  intervalHandler : NodeJS.Timeout = null;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private toastr : ToastrService) {
     this.check();
     this.initListener();
     this.initInterval();
 
-    const passReq : any = JSON.parse(sessionStorage.getItem("pass_req_hr"));
-    this.MINUTES_UNITL_AUTO_LOGOUT = passReq.sess_lifetime;
-    console.log("passReq");
-    console.log(this.MINUTES_UNITL_AUTO_LOGOUT);
+    // const passReq : any = JSON.parse(sessionStorage.getItem("pass_req_hr"));
+    // this.MINUTES_UNITL_AUTO_LOGOUT = passReq.sess_lifetime;
+    console.debug("passReq");
+    console.debug(this.MINUTES_UNITL_AUTO_LOGOUT);
     sessionStorage.setItem(this.STORE_KEY, Date.now().toString());
   }
 
@@ -46,7 +49,7 @@ export class AutoLogoutService {
   }
 
   initInterval() {
-    setInterval(() => {
+    this.intervalHandler = setInterval(() => {
       this.check();
     }, this.CHECK_INTERVAL);
   }
@@ -58,10 +61,13 @@ export class AutoLogoutService {
     const isTimeout = diff < 0;
 
     if (isTimeout) {
+      clearInterval(this.intervalHandler);
+      this.toastr.error("Tidak ada aktifitas lebih dari " + this.MINUTES_UNITL_AUTO_LOGOUT * 60 + " detik", "Auto-Logout!", { closeButton : true, disableTimeOut : true});
       sessionStorage.clear();
       this.router.navigate(['/auth/sign-in']);
     }
   }
+
   storageEvt() {
     sessionStorage.getItem(this.STORE_KEY);
   }

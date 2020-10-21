@@ -208,7 +208,7 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
 
   GetDisplayValue(object : any) : string
   {
-    // console.log(typeof object)
+    // console.debug(typeof object)
     if(object == null) return "null";
     if(typeof object == 'string' || typeof object == 'number' || typeof object == 'undefined') return object.toString();
 
@@ -263,7 +263,7 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
     }
     let products = await this.productCatService.list("?code=c05").toPromise();
 
-    console.log(products);
+    console.debug(products);
 
     for(let i = 0; i < products.length; i++)
     {
@@ -285,7 +285,7 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
     this.input = this.defaultInput();
     this.searchFG.reset();
     // form2reset.reset();
-    console.log(form2reset, this.input)
+    console.debug(form2reset, this.input)
   }
 
   onProductChanged()
@@ -309,7 +309,7 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
     // console.dir(JSON.stringify(this.searchModel))
     // window['fg'] = this.searchFG;
     // window['ctrl'] = this.searchFG.controls;
-    // console.log(this.searchFG.controls)
+    // console.debug(this.searchFG.controls)
     if(!this.searchFG.get("order_status").valid || !this.searchFG.get("create_date_start").valid)
     {
       this.toastr.warning("Mohon isi semua data yang mandatory !!", "Form incomplete!");
@@ -318,7 +318,7 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
 
     let create_start = this.searchFG.get("create_date_start").value;
     create_start = StringHelper.StandardFormatDate("/", create_start, "MM/dd/yyyy");
-    // console.log(create_start)
+    // console.debug(create_start)
 
     let create_end = this.searchFG.get("create_date_end").value;
     
@@ -365,12 +365,12 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
     }
 
     let order_status = this.searchFG.get("order_status").value;
-    // console.log(order_status);
+    // console.debug(order_status);
     let order_status_p = "";
     switch(order_status)
     {
       case '0':
-        order_status_p = "&order_status="+ OrderStatus.SUBMIT.code;
+        order_status_p = "&order_status="+ OrderStatus.APPROVAL.code;
         break;
 
       case '1':
@@ -400,6 +400,7 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
     this.loading = true;
     this.inisiasiService.list(params).subscribe(output =>
     {
+        this.loading = false;
         if(output != false)
         {
           // for(let data in output)
@@ -417,15 +418,18 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
         } else {
           this.toastr.error("Terjadi kesalahan. Harap hubungi IT Support/Helpdesk. " + this.inisiasiService.message(), "Error")
         }
-
-        this.loading = false;
+        
+    }, err => {
+      this.loading = false;
+      this.toastr.error("Terjadi Kesalahan. Error: " + err.message);
+      return;
     })
 
   }
 
   Debug()
   {
-    console.log(this.input, "model", this.selected);
+    console.debug(this.input, "model", this.selected);
   }
 
   onDelete()
@@ -445,7 +449,7 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
     for(let key in this.input)
     {
       let value = this.input[key];
-      console.log(value, key, 'key')
+      console.debug(value, key, 'key')
       if(value == null || value == "null" || value == 0 || (typeof value === 'number' && value === 0))
       {
         this.toastr.warning(this.GetDisplayName(key) + " belum diisi / sama dengan 0 ");
@@ -601,7 +605,7 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
       let item = this.input.items[i];
 
       this.hitungPajak(item);
-      console.log(item)
+      console.debug(item)
     }
     
     this.hitungPajak();
@@ -620,7 +624,7 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
 
     let pajakItem : number = (ongkos/1000) * berat * hpajak * persenPajak / 100; 
     item.pajak = Math.trunc(pajakItem);
-    console.log(pajakItem)
+    console.debug(pajakItem)
     return this.selected.pajak;
   }
 
@@ -663,7 +667,7 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
 
   onLihat()
   {
-    console.log(this.selected)
+    console.debug(this.selected)
     if(this.selected == null || Object.keys(this.selected).length === 0)
     {
       this.toastr.warning("Mohon pilih Item.");

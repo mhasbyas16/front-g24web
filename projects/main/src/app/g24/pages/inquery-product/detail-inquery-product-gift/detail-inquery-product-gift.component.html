@@ -1,0 +1,134 @@
+<div class="clr-row">
+    <div class="clr-col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                Gift<span *ngIf="ErrorPage" class="label label-danger" style="text-align: center;"><strong>Page Gagal Load, Silahkan klik button refresh dibawah</strong></span>
+            </div>
+            <div class="card-block">
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">No PO</label>
+                            <clr-input-container>
+                                <input clrInput [(ngModel)]="inquery.nopo" name="nopo">
+                            </clr-input-container>
+                        </div>
+                    </div>
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Vendor</label>
+                            <clr-select-container>
+                                <select clrSelect [(ngModel)]="inquery.vendor" name="vendor">
+                                    <option [ngValue]=""></option>
+                                    <ng-container *ngFor="let data of vendor">
+                                        <option [ngValue]="data">{{data.name}}</option>
+                                    </ng-container>
+                                </select>
+                            </clr-select-container>
+                        </div>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                    <div class="clr-form-control">
+                        <label class="clr-control-label">Series</label>
+                        <clr-select-container>
+                            <select clrSelect [(ngModel)]="inquery.series" name="series">
+                                <option [ngValue]=""></option>
+                                <ng-container *ngFor="let data of series">
+                                    <option [ngValue]="data">{{data.name}}</option>
+                                </ng-container>
+                            </select>
+                        </clr-select-container>
+                    </div>
+                    </div>
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Denom</label>
+                            <clr-select-container>
+                                <select clrSelect [(ngModel)]="inquery.denom" name="denom">
+                                    <option [ngValue]=""></option>
+                                    <ng-container *ngFor="let data of denom">
+                                        <option [ngValue]="data">{{data.name}}</option>
+                                    </ng-container>
+                                </select>
+                            </clr-select-container>
+                        </div>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-md-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Location</label>
+                        </div>
+                        <clr-select-container>
+                            <select clrSelect [(ngModel)]="inquery.location" name="location">
+                                <option [ngValue]=""></option>
+                                <ng-container *ngFor="let data of lokasi">
+                                    <option [ngValue]="data">{{data.code}}</option>
+                                </ng-container>
+                            </select>
+                    </clr-select-container>                        
+                    </div>
+                    <div class="clr-col-md-6" style="margin-top: 20px;" *ngIf="showUnit">
+                        <div class="clr-from-control">
+                            <label class="clr-control-label">Unit</label>
+                            <clr-select-container>
+                                <select clrSelect [(ngModel)]="inquery.unit" name="unit">
+                                    <option [ngValue]=""></option>
+                                    <ng-container *ngFor="let data of unit">
+                                        <option [ngValue]="data">{{data.nama}}</option>
+                                    </ng-container>
+                                </select>
+                            </clr-select-container>
+                        </div>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Tipe Stock</label>
+                        </div>
+                        <clr-select-container>
+                            <select clrSelect [(ngModel)]="inquery.tipe_stock" name="tipe_stock">
+                                <ng-container *ngFor="let data of Tipe">
+                                    <option [ngValue]="data">{{data.code}}</option>
+                                </ng-container>
+                            </select>
+                        </clr-select-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <div class="card-footer">
+                <button class="btn btn-icon" [clrLoading]="LoadingSearch" (click)="Search()"><clr-icon shape="search"></clr-icon> Cari</button>
+                <button class="btn btn-icon" [clrLoading]="LoadingPage" (click)="Refresh()"><clr-icon shape="refresh"></clr-icon> Refresh</button>
+            </div>            
+        </div>
+    </div>
+
+<div class="clr-row">
+    <div class="clr-col-lg-12">
+        <clr-datagrid>
+            <clr-dg-column>No PO</clr-dg-column>
+            <clr-dg-column>SKU</clr-dg-column>
+            <clr-dg-column>Vendor</clr-dg-column>
+            <clr-dg-column>Series</clr-dg-column>
+            <clr-dg-column>Denom</clr-dg-column>
+            <clr-dg-column>Berat</clr-dg-column>
+            <clr-dg-column>Tipe Stock</clr-dg-column>
+
+            <clr-dg-row *ngFor="let data of outputdata">
+                <clr-dg-cell>{{data.no_po}}</clr-dg-cell>
+                <clr-dg-cell>{{data.sku}}</clr-dg-cell>
+                <clr-dg-cell>{{data.vendor.name}}</clr-dg-cell>
+                <clr-dg-cell>{{data["product-series"].name}}</clr-dg-cell>
+                <clr-dg-cell>{{data["product-denom"].name}}</clr-dg-cell>
+                <clr-dg-cell>{{data.berat}}</clr-dg-cell>
+                <clr-dg-cell>{{data.tipe_stock}}</clr-dg-cell>
+            </clr-dg-row>
+        </clr-datagrid>
+    </div>
+</div>
+
+<loading-spinner #spinner></loading-spinner>

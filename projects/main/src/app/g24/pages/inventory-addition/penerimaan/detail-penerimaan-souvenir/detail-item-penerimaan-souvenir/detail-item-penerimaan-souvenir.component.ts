@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { InisiasiService } from 'projects/main/src/app/g24/services/stock/inisiasi.service';
 import { ProductPurityService } from 'projects/main/src/app/g24/services/product/product-purity.service';
 import { ProductJenisService } from 'projects/main/src/app/g24/services/product/product-jenis.service';
@@ -12,7 +12,10 @@ import { ProductService } from 'projects/main/src/app/g24/services/product/produ
 import { DataTypeUtil } from 'projects/main/src/app/g24/lib/helper/data-type-util';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { IDetailCallbackListener } from 'projects/main/src/app/g24/lib/base/idetail-callback-listener';
+import { PaymentType } from 'projects/main/src/app/g24/lib/enums/payment-type';
 import { OrdersModule } from '../../../../orders/orders.module';
+import { LoadingSpinnerComponent } from 'projects/main/src/app/g24/nav/modal/loading-spinner/loading-spinner.component';
+import { ServerDateTimeService } from 'projects/main/src/app/g24/services/system/server-date-time.service';
 
 /**
  * Penerimaan perhiasan baru isi ke stock/product
@@ -28,51 +31,48 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
   (
     private toastr : ToastrService,
     private session : SessionService,
+    private dateService : ServerDateTimeService,
 
     private inisiasiService : InisiasiService,
-    private kadarService : ProductPurityService,
     private jenisService : ProductJenisService,
-    private goldColorService : ProductGoldColorService,
     private productService : ProductService
   ) { }
+
+  @ViewChild('spinner', {static: false}) spinner : LoadingSpinnerComponent;
 
   parentListener : IDetailCallbackListener;
   
   user : any = this.session.getUser();
   unit : any = this.session.getUnit();
 
-  EPriviledge = EPriviledge;
+  date : string = "";
+  time : string = "";
 
-  jeniss : any[] = [];
+  errorHappened : boolean = false;
+
+  EPriviledge = EPriviledge;
 
   LoadAllParameter()
   {
-    // this.LoadJenis();
+    this.LoadDate();
   }
-
-  async LoadJenis()
+  
+  async LoadDate()
   {
-    this.jeniss = [];
-    let jeniss = await this.jenisService.list("?product-category.code=c02").toPromise();
-    if(jeniss)
+    this.date = "";
+    this.time = "";
+    let dt = await this.dateService.task("").toPromise();
+    if(dt == false)
     {
-      if(jeniss.length <= 0)
-      {
-        this.toastr.error("Gagal loading Parameter Jenis. Harap coba proses lagi. Apabila kegagalan terjadi lagi, harap hubungi IT Support/Helpdesk", "Load Jenis Failed");
-        this.doReset();
-        this.Close();
-        return;
-      }
-
-      this.toastr.success("Parameter 'Jenis Perhiasan' loaded...");
-      this.jeniss.push(...jeniss);
-      this.jeniss.sort((a, b) => ('' + a.name).localeCompare(b.name));
-    } else {
-      this.toastr.error("Gagal loading Parameter Jenis. Harap coba proses lagi. Apabila kegagalan terjadi lagi, harap hubungi IT Support/Helpdesk", "Load Jenis Failed")
+      this.errorHappened = true;
       this.doReset();
       this.Close();
+      this.toastr.info("Gagal mengambil tanggal server.");
       return;
     }
+    let dtarr = dt.split("T");
+    this.date = dtarr[0];
+    this.time = dtarr[1].split("Z")[0];
   }
 
   isOpened : boolean = false;
@@ -85,10 +85,29 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
     this.isOpened = open
   }
 
-  private title : string = "Detail Penerimaan Perhiasan";
+  private title : string = "Detail Penerimaan Souvenir";
   public get Title()
   {
     return this.title;
+  }
+
+  GetDisplayName(key : string) : string
+  {
+    let name = "";
+    switch(key)
+    {
+      case PaymentType.UANG.code:
+        name = PaymentType.UANG.name;
+        break;
+
+      case PaymentType.MAKLON.code:
+        name = PaymentType.MAKLON.name;
+        break;
+
+        default:
+
+    }
+    return name;
   }
 
   // input
@@ -101,6 +120,7 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
 
   public setId(id : string)
   {
+    this.spinner.Open();
     if(id == null || id == "")
     {
       this.toastr.error("No ID is set.");
@@ -110,6 +130,8 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
 
     this.inisiasiService.list("?_or=product-category.code=c02&no_po="+id).subscribe(output => 
     {
+      this.spinner.Close();
+      
       if(output != false)
       {
         if(output.length > 1)
@@ -177,7 +199,7 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
   {
     return {
       _id : "", code : "", sku : "",
-      "product-jenis" : null, "product-category" : null, "product-denom" : null, "product-series" : null,
+      "product-category" : null, "product-denom" : null, "product-series" : null,
       berat : 0.00, ongkos_pieces : 0.0, unit : null,
       tipe_stock : "stock", vendor : null, flag : "stock", location : "",
       no_po : "", no_item_po : 0, no_index_products : 0,
@@ -407,8 +429,10 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
     return true;
   }
 
-  async doSave()
+  async doTerima()
   {
+    this.spinner.Open();
+
     if(this.mode == EPriviledge.READ)
     {
       this.toastr.info("Mode 'READ' only.");
@@ -426,57 +450,35 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
     }
 
     this.inisiasi.order_status = OrderStatus.TERIMA_FULL.code;
-    this.inisiasi.update_date = new Date().toISOString().split("T")[0];
-    this.inisiasi.update_by = this.user.username;
-    this.inisiasi['tgl_terima'] = this.inisiasi.update_date;
-    this.inisiasi.terima_by = this.user.username;
-    let items = this.inisiasi.items;
-    let productNoId = [];
-    console.log(items);
-    
-    for(let i = 0; i < items.length; i++)
-    {
-      let products = items[i].products;
-      productNoId.push(...products);
-    }
-
-    let itemProduct : Map<string, number> = new Map<string,number>();
-    
-    console.log(productNoId);
-
-    let failedIndex : any[] = [];
-    let someFailed : boolean = false;
-    for(let i =0; i < productNoId.length; i++)
-    {
-      let product = productNoId[i];
-      let fail = {itemIndex : product.no_item_po, productIndex: product.no_index_products}
-      delete product._id;
-      DataTypeUtil.Encode(product);
-
-      itemProduct.set(fail.itemIndex + "," + fail.productIndex, product);
-
-      let result = await this.productService.add(product).toPromise();
-      if(result == false)
-      {
-        this.toastr.error("Barang nomor: " + fail.productIndex + " dengan nomor Bulk: " + fail.itemIndex + " gagal masuk.");
-        continue;
-      } else {
-        let product = itemProduct.get(fail.itemIndex + "," + fail.productIndex);
-        Object.assign(product, result);
-        itemProduct.set(fail.itemIndex + "," + fail.productIndex, result);
-        console.log(result);
-      }
-    }
+    this.inisiasi.update_time = this.time;
+    this.inisiasi.update_date = this.date;
+    this.inisiasi.update_by = this.user;
+    this.inisiasi['tgl_terima'] = this.date;
+    this.inisiasi.terima_by = this.user;
 
     console.log(this.inisiasi);
     let tempInisiasi = {}
     Object.assign(tempInisiasi, this.inisiasi);
     DataTypeUtil.Encode(tempInisiasi);
 
-    let inisiasi = await this.inisiasiService.update(tempInisiasi).toPromise();
+    let msg = "";
+    let inisiasi : any = false;
+    try
+    {
+      inisiasi = await this.inisiasiService.TerimaSouvenir(tempInisiasi).toPromise();
+    } catch(err) {
+      msg = err.message;
+      inisiasi = false;
+    }
+    
+    this.spinner.Close();
     if(inisiasi == false)
     {
-      this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk.");
+      if(msg == "") msg = this.inisiasiService.message();
+      this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk. Error: " + msg , "Error", {closeButton : true, disableTimeOut : true});
+      this.parentListener.onAfterUpdate(this.inisiasi._id);
+      this.doReset();
+      this.Close();
       return;
     } else {
       Object.assign(this.inisiasi, tempInisiasi);
@@ -486,26 +488,49 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
       this.doReset();
       this.Close();
     }
+  }
 
-    // HERE BATCH_ADD
-    // let counter : number = this.inisiasi.total_piece;
-    // let enc = {batch_counter : counter};
-    // for(let i = 0; i < counter; i++)
+  async doTolak(){
+    if(this.mode == EPriviledge.READ)
+    {
+      this.toastr.info("Mode 'READ' only.");
+      return;
+    }
+
+    if(!this.validateItems())
+    {
+      return;
+    }
+
+    if(!this.validateInisiasi())
+    {
+      return;
+    }
+
+    this.inisiasi.order_status = OrderStatus.TOLAK.code;
+    this.inisiasi.update_date = new Date().toISOString().split("T")[0];
+    this.inisiasi.update_by = this.user.username;
+    this.inisiasi['tgl_tolak'] = this.inisiasi.update_date;
+    this.inisiasi.tolak_by = this.user.username;
+
+    console.log(this.inisiasi);
+    let tempInisiasi = {}
+    Object.assign(tempInisiasi, this.inisiasi);
+    DataTypeUtil.Encode(tempInisiasi);
+
+    // let inisiasi = await this.inisiasiService.update(tempInisiasi).toPromise();
+    // if(inisiasi == false)
     // {
-    //   delete productNoId[i]._id;
-    //   enc[i+1] = productNoId[i];
+    //   this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk.");
+    //   return;
+    // } else {
+    //   Object.assign(this.inisiasi, tempInisiasi);
+    //   console.log(this.inisiasi);
+    //   this.parentListener.onAfterUpdate(this.inisiasi._id);
+    //   this.toastr.success("PO berhasil ditolak.");
+    //   this.doReset();
+    //   this.Close();
     // }
 
-    // DataTypeUtil.Encode(enc);
-    // console.log('enc', enc);
-
-    // let result = await this.productService.batchAdd(enc).toPromise();
-    // console.log(result);
-    
-    // for(let i = 0; i < result.length; i++)
-    // {
-    //   let product = result[i];
-      
-    // }
   }
 }

@@ -22,6 +22,12 @@ import { ProductDenomService } from '../../../../services/product/product-denom.
 import { ProductClarityService } from '../../../../services/product/product-clarity.service';
 import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
 import { OrderStatus } from '../../../../lib/enum/order-status';
+import { ServerDateTimeService } from '../../../../services/system/server-date-time.service';
+import { JurnalInisiasiService } from '../../../../services/keuangan/jurnal/stock/jurnal-inisiasi.service';
+import { BankService } from '../../../../services/transaction/bank.service';
+import { LoadingSpinnerComponent } from '../../../../nav/modal/loading-spinner/loading-spinner.component';
+import { SequenceService } from '../../../../services/system/sequence.service';
+import { StringHelper } from '../../../../lib/helper/string-helper';
 
 @Component({
   selector: 'detail-inisiasi-perhiasan',
@@ -39,12 +45,8 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   @ViewChild('product') product : ElementRef;
 
   @ViewChild('Perhiasan', {static:false}) perhiasanInput : TemplateRef<any>;
-  @ViewChild('Mulia', {static:false}) muliaInput : TemplateRef<any>;
-  @ViewChild('Berlian', {static: false}) berlianInput : TemplateRef<any>;
-  @ViewChild('Adiratna', {static: false}) adiratnaInput : TemplateRef<any>;
-  @ViewChild('Souvenir', {static: false}) souvenirInput : TemplateRef<any>;
-  @ViewChild('Gift', {static: false}) giftInput : TemplateRef<any>;
-  @ViewChild('Dinar', {static: false}) dinarInput : TemplateRef<any>;
+  
+  @ViewChild('spinner', {static: false}) spinner : LoadingSpinnerComponent;
 
   btoa = btoa;
   parseInt = parseInt;
@@ -52,6 +54,9 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   Object = Object;
 
   user : any = {};
+  unit : any = {};
+  date : string = "";
+  time : string = "";
 
   datas : any[] = [];
 
@@ -60,11 +65,8 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   jeniss : any[] = [];
   kadars : any[] = [];
   warnas : any[] = [];
-  denoms : any[] = [];
-  series : any[] = [];
-  colors : any[] = [];
-  shapes : any[] = [];
-  claritys : any[] = [];
+
+  banks : any[] = [];
 
   parentPage : number = 0;
 
@@ -88,8 +90,8 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   defaultInput() : any
   {
     return {
-      nomor_nota : null, tgl_inisiasi : new Date().toISOString().split("T")[0],  harga_baku : 0, pajak : 0, 
-      create_date : new Date().toISOString().split("T")[0],
+      nomor_nota : null, tgl_inisiasi : this.date,  harga_baku : 0, pajak : 0, 
+      create_date : this.date, create_time : this.time,
       'product-category' : null, vendor : null, tipe_bayar : null,
       total_berat : 0, total_piece : 0, total_baku_tukar : 0, total_gram_tukar : 0,
       total_ongkos : 0, total_pajak : 0, total_harga : 0,
@@ -101,19 +103,23 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   {
     return {
       sku : null, 'product-purity' : null, 'product-gold-color' : null,
-      'product-jenis' : null,
+      'product-jenis' : null, pieces : 0,
       berat : 0, baku_tukar : 0, gram_tukar : 0, ongkos : 0, pajak : 0 }
   }
 
   InitiationType = Object.values(InitiationType);
-  PaymentType = Object.values(PaymentType);
+  PaymentTypeValues = Object.values(PaymentType);
+  PaymentType = PaymentType;
   DocumentStatus = Object.values(DocumentStatus);
   ErrorType = ModalErrorType;
+
 
   modalOpen = false;
   errorTitle = "";
   errorType = "";
   errorMessage = "";
+
+  errorHappened : boolean = false;
 
   static key = EMenuID.INISIASI;
 
@@ -125,6 +131,10 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
 
     switch(key)
     {
+      case 'pajak':
+        name = "Pajak";
+        break;
+
       case 'total_ongkos':
         name = "Total Ongkos";
         break;
@@ -224,7 +234,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
 
   GetDisplayValue(object : any) : string
   {
-    // console.log(typeof object)
+    // console.debug(typeof object)
     if(object == null) return "null";
     if(typeof object == 'string' || typeof object == 'number' || typeof object == 'undefined') return object.toString();
 
@@ -232,31 +242,38 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   }
 
   constructor(
-    private resolver : ComponentFactoryResolver,
+    // private resolver : ComponentFactoryResolver,
+    private dateService : ServerDateTimeService,
+
     // private unitService : UnitService,
     private jenisService : ProductJenisService,
     private kadarService : ProductPurityService,
     private gColorService : ProductGoldColorService,
-    private dColorService : ProductDiamondColorService,
     private vendorService : VendorService,
-    private denomService : ProductDenomService,
-    // private shapeService : ShapeService,
-    private clarityService : ProductClarityService,
     private inisiasiService : InisiasiService,
     private productCatService : ProductCategoryService,
     // private logService : LogService,
 
+    private bankService : BankService,
+    private jurnalInisiasi : JurnalInisiasiService,
     private toastr : ToastrService,
-    private session : SessionService)
+    private session : SessionService,
+    private sequencer : SequenceService,
+  )
   {
     super();
   }
 
   async ngOnInit(): Promise<void>
   {
+    await this.LoadDate();
+
     this.input = this.defaultInput();
+    this.selected = this.defaultItem();
     this.user = this.session.getUser();
-    // console.log("user",this.user);
+    this.unit = this.session.getUnit();
+    // this.selected = this.defaultInput();
+    // console.debug("user",this.user);
     
     // window['perhiasan'] = this.perhiasanInput;
 
@@ -269,15 +286,50 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     this.onProductChanged();
   }
 
+  async LoadDate()
+  {
+    let resp : any = false;
+    try {
+      resp = await this.dateService.task("").toPromise();
+    } catch(err) {
+      resp = false;
+    }
+    if(resp == false)
+    {
+      this.errorHappened = true;
+      return;
+    }
+
+    let dtarr = resp.split("T");
+    this.date = dtarr[0];
+    this.time = dtarr[0].split("Z")[0];
+  }
+
   async LoadProductCategory()
   {
     while(this.products.length > 0)
     {
       this.products.pop();
     }
-    let products = await this.productCatService.list("?code=c00").toPromise();
 
-    console.log(products);
+    let msg = "";
+    let products : any = false;
+    try {
+      products = await this.productCatService.list("?code=c00").toPromise();
+    } catch(err) {
+      products = false;
+      msg = err.message;
+    }
+    
+    if(products == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.productCatService.message();
+      this.toastr.error("Gagal Loading 'Jenis Produk'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
+      return;
+    }
+
+    console.debug(products);
 
     for(let i = 0; i < products.length; i++)
     {
@@ -288,7 +340,28 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
 
   async LoadJenis()
   {
-    let jeniss = await this.jenisService.list("?").toPromise();
+    while(this.jeniss.length > 0)
+    {
+      this.jeniss.pop();
+    }
+
+    let msg = "";
+    let jeniss : any = false;
+    try {
+      jeniss = await this.jenisService.list("?product-category.code=c00").toPromise();
+    } catch(err) {
+      jeniss = false;
+      msg = err.message;
+    }
+
+    if(jeniss == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.jenisService.message();
+      this.toastr.error("Gagal Loading 'Jenis Perhiasan'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
+      return;
+    }
+
     for(let i = 0; i < jeniss.length; i++)
     {
       this.jeniss.push(jeniss[i]);
@@ -298,17 +371,58 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
 
   async LoadKadar()
   {
-    let kadars = await this.kadarService.list("?").toPromise();
+    while(this.kadars.length > 0)
+    {
+      this.kadars.pop();
+    }
+
+    let msg = "";
+    let kadars : any = false;
+    try {
+      kadars = await this.kadarService.list("?").toPromise();
+    } catch(err) {
+      kadars = false;
+      msg = err.message;
+    }
+
+    if(kadars == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.kadarService.message();
+      this.toastr.error("Gagal Loading 'Kadar Perhiasan'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
+      return;
+    }
     for(let i = 0; i < kadars.length; i++)
     {
       this.kadars.push(kadars[i]);
     }
-    this.kadars.sort((a,b) => parseInt(a.name) - parseInt(b.name))
+    this.kadars.sort((a,b) => parseInt(a.name) - parseInt(b.name));
   }
 
   async LoadGWarna()
   {
-    let warnas = await this.gColorService.list("?").toPromise();
+    while(this.warnas.length > 0)
+    {
+      this.warnas.pop();
+    }
+
+    let msg = "";
+    let warnas : any = false;
+    try {
+      warnas = await this.gColorService.list("?").toPromise();
+    } catch(err) {
+      warnas = false;
+      msg = err.message;
+    }
+
+    if(warnas == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.gColorService.message();
+      this.toastr.error("Gagal Loading 'Kadar Perhiasan'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
+      return;
+    }
+
     for(let i = 0; i < warnas.length; i++)
     {
       this.warnas.push(warnas[i]);
@@ -318,12 +432,66 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
 
   async LoadVendor()
   {
-    let vendors = await this.vendorService.list("?product-category.code=c00").toPromise();
+    while(this.vendors.length > 0)
+    {
+      this.vendors.pop();
+    }
+
+    let msg = "";
+    let vendors : any = false;
+    try {
+      vendors = await this.vendorService.list("?product-category.code=c00").toPromise();
+    } catch(err) {
+      vendors = false;
+      msg = err.message;
+    }
+    
+    if(vendors == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.vendorService.message();
+      this.toastr.error("Gagal Loading 'Vendor'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
+      return;
+    }
+
     for(let i = 0; i < vendors.length; i++)
     {
       this.vendors.push(vendors[i]);
     }
     this.vendors.sort((a,b) => ('' + a.name).localeCompare(b.name))
+  }
+
+  async LoadBanks()
+  {
+    while(this.banks.length > 0)
+    {
+      this.banks.pop();
+    }
+    
+    let msg = "";
+    let banks : any = false;
+    try {
+      banks = await this.bankService.list("?").toPromise();
+    } catch(err) {
+      banks = false;
+      msg = err.message;
+    }
+
+    if(banks == false)
+    {
+      this.errorHappened = true;
+      if(msg == "") msg = this.bankService.message();
+      this.toastr.error("Gagal Loading 'Bank'. Harap Refresh halaman/Klik RESET di bawah, apabila kegagalan masih terjadi hubungi IT Support/Helpdesk. error:" + msg);
+      return;
+    }
+
+    console.debug(banks);
+
+    for(let i = 0; i < banks.length; i++)
+    {
+      this.banks.push(banks[i]);
+    }
+    this.banks.sort((a, b) => ('' + a.name).localeCompare(b.name));
   }
 
   async LoadAllParameter()
@@ -333,6 +501,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     this.LoadJenis();
     this.LoadKadar();
     this.LoadGWarna();
+    this.LoadBanks();
     // this.LoadShape();
     
     this.onProductChanged();
@@ -343,27 +512,25 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     window['perhiasan'] = this.perhiasanInput;
   }
 
-  ResetAll(form2reset : NgForm)
+  async ResetAll()
   {
-    this.formInput = null;
+    this.errorHappened = false;
+    await this.LoadAllParameter();
+    await this.LoadDate();
     this.input = this.defaultInput();
-    form2reset.reset();
-    console.log(form2reset.valid, this.input)
   }
 
   onProductChanged()
   {
-    this.input['create_date'] = new Date().toISOString().split("T")[0];
+    
+  }
 
-    for(let i = 0; i < this.products.length; i++)
-    {
-      let perhiasan = this.products[i];
-      if(perhiasan.code == "c00")
-      {
-        this.input['product-category'] = perhiasan;
-        break;
-      }
-    }
+  onTipeBayarChanged()
+  {
+    this.input.bank = null;
+    this.input.asal_uang = "";
+
+    this.hitungAllPajak();
   }
 
   loading = false;
@@ -374,7 +541,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
 
     for(let d in this.InitiationType)
     {
-      console.log(d)
+      console.debug(d)
     }
     // console.dir(JSON.stringify(this.searchModel))
     if(!this.searchValid(this.input))
@@ -444,8 +611,8 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     // params = DataTypeUtil.Encode(this.searchModel);
     // this.searchModel.items = {warna : "01"}
 
-    // console.log('tes', btoa(JSON.stringify(this.searchModel['product'])));
-    console.log('model', this.input);
+    // console.debug('tes', btoa(JSON.stringify(this.searchModel['product'])));
+    console.debug('model', this.input);
 
     params.endsWith("&") ? params = params.substring(0, params.length-1) : null;
     // this.sear
@@ -490,35 +657,77 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
 
   async doSave()
   {
-    if(this.validateInput()) return;
+    this.spinner.Open();
+    if(this.errorHappened)
+    {
+      this.spinner.Close();
+      this.toastr.error("Sebelumnya ada error terjadi. Harap Refresh halaman, apabila masih terjadi harap hubungi IT Support/Helpdesk");
+      return;
+    }
+
+    if(this.validateInput())
+    {
+      this.spinner.Close();
+      return;
+    }
+
+    if(this.validateItems())
+    {
+      this.spinner.Close();
+      return;
+    }
 
     if(this.input.items?.length <= 0) {
+      this.spinner.Close();
       this.toastr.warning("Tidak ada item pada Tabel Input Detail.", "Peringatan!");
       return;
     }
 
 
-    let now : Date = new Date;
-    let sNow = now.toISOString().split("T");
-    let date = sNow[0];
+    let date = this.date;
     let date_split = date.split("-");
-    let time = sNow[1].split(".")[0];
+    let time = this.time;
 
     let no = this.input['no_po'];
-    console.log(no, "no")
+    console.debug(no, "no")
 
     if(this.user?.unit == null)
     {
+      this.spinner.Close();
       this.toastr.warning("Unit dari User belum di-Assign. Harap hubungi IT Support/Helpdesk.", "Error!");
       return;
     }
 
-    let PO = "PO" + this.user.unit.code + date_split[0].substring(1, 3) + date_split[1] + "[0,5]";
+    let unitCode = this.session.getUnit()?.code;
+    let key = {key : "PO-" + unitCode + "-" + this.date }
+    let seq : any = "";
+    let msg = "";
+    try
+    {
+      seq = await this.sequencer.use(key).toPromise();
+
+    } catch(err)
+    {
+      msg = err.message;
+      seq = false;
+    }
+
+    if(seq == false)
+    {
+      if(msg == "") msg = this.sequencer.message();
+      this.toastr.error("Gagal membentuk Format Nomor PO. Error: " + msg);
+      this.spinner.Close();
+      return;
+    }
+
+    console.debug(seq);
+    let st = StringHelper.LeftZeroPad(Number(seq.value).toString(), 5);
+    let PO = "PO" + this.session.getUnit()?.code + date_split[0].substring(2, 4) + date_split[1] + date_split[2] + st;
 
     let def = 
     {
       no_po : PO,
-      __format : "no_po:inc",
+      // __format : "no_po:inc",
       create_date : this.input['create_date'],
       create_time : time,
       create_by : this.user.username,
@@ -527,30 +736,53 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
       status_bayar : '1',
       __version : new Date().getMilliseconds(),
       __version_d : "0",
-      items : this.input['items']
+      items : this.input['items'],
+      _log : 1
       // vendor : null,
       // 'product-category' : null,
     };
     Object.assign(def, this.input);
     let init = DataTypeUtil.Encode(def);
     
-    this.inisiasiService.add(init).subscribe(output => {
+    this.inisiasiService.add(init).subscribe(async output => {
+      this.spinner.Close();
       if(output == false)
       {
         this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + this.inisiasiService.message());
+        return;
       } else {
         this.toastr.success("Inisiasi Berhasil. Harap hubungi Kepala Departemen untuk melakukan Approval. No. PO : " + output.no_po, "Info", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
-        console.log(output,'ts');
-        this.input = this.defaultInput();
-        this.input.create_date = new Date().toISOString().split("T")[0];
+        console.debug(output,'ts');
+        this.ResetAll();
+        // this.doAccounting(output._id);
       }
+    }, err => {
+      this.spinner.Close();
+      this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + err.message, "Error!", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
+      return;
     });
-    // console.log(output);
+    // console.debug(output);
   }
+
+  // doAccounting(idInisiasi :string)
+  // {
+  //   this.jurnalInisiasi.bayar(idInisiasi).subscribe(output => {
+  //     if(output == false)
+  //     {
+  //       let msg = this.jurnalInisiasi.message();
+  //       this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg, "Error!", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
+  //       // console.debug()
+  //       return;
+  //     } else {
+  //       this.toastr.success("Jurnal berhasil.")
+  //       return;
+  //     }
+  //   });
+  // }
 
   Debug()
   {
-    console.log(this.input, "model", this.selected);
+    console.debug(this.input, "model", this.selected);
   }
 
   onDelete()
@@ -588,13 +820,41 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
 
   }
 
+  validateItems()
+  {
+    for(let i = 0; i < this.input.items.length; i++)
+    {
+      let item = this.input.items[i];
+      if(this.validateAdd(item))
+      {
+        // console.debug(item, "tralala")
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   validateInput()
   {
     for(let key in this.input)
     {
+      if(key == 'total_pajak' && this.input['tipe_bayar'] == PaymentType.UANG.code)
+      {
+        continue;
+      }
+
+      if(key == 'bank' && this.input.tipe_bayar == PaymentType.MAKLON.code) continue;
+
+      if(key == 'bank' && this.input.asal_uang == 'kas') continue;
+
+      if(key == 'asal_uang' && this.input.tipe_bayar == PaymentType.MAKLON.code) continue;
+
+      if(key == 'asal_uang' && this.input.tipe_bayar == PaymentType.MAKLON.code) continue;
+
       let value = this.input[key];
-      console.log(value, key, 'key')
-      if(value == null || value == "null" || value == 0 || (typeof value === 'number' && value === 0))
+      console.debug(value, key, 'key')
+      if(value == null || value == "null" || value <= 0 || (typeof value === 'number' && value <= 0))
       {
         this.toastr.warning(this.GetDisplayName(key) + " belum diisi / sama dengan 0 ");
         return true
@@ -614,29 +874,39 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
 
   ModelChange(key : string, event : any)
   {
-    console.log("event", event);
+    console.debug("event", event);
     // this.searchModel[key] = event.
   }
 
   OnSelectedChange(event : any)
   {
     // let target = event;
-    // console.log("tgt", target, target.value);
+    // console.debug("tgt", target, target.value);
   }
 
+  /**
+   * true = invalid
+   * 
+   */
   validateAdd(item : any)
   {
     for(let key in item)
     {
+      // console.debug(item[key], key);
+      if(key == 'pajak' && this.input.tipe_bayar == PaymentType.UANG.code)
+      {
+        continue;
+      }
+
       if(item[key] == null || item[key] == "null")
       {
         this.toastr.warning(this.GetDisplayName(key) + ' belum diisi.', "Peringatan!");
         return true;
       }
 
-      if(item[key] == 0)
+      if(item[key] <= 0)
       {
-        this.toastr.warning(this.GetDisplayName(key) + ' masih 0', "Peringatan!");
+        this.toastr.warning(this.GetDisplayName(key) + ' kurang dari atau sama dengan 0', "Peringatan!");
         return true;
       }
     }
@@ -652,11 +922,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
       return;
     }
 
-    let tempItem = {
-      sku : null, 'product-purity' : null, 'product-gold-color' : null,
-      'product-jenis' : null,
-      berat : 0, baku_tukar : 0, gram_tukar : 0, ongkos : 0, pajak : 0};
-
+    let tempItem = this.defaultItem();
     
     Object.assign(tempItem, this.selected);
 
@@ -667,12 +933,10 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     
     this.input['items'].push(tempItem);
 
-    for(let i = 0; i < this.input.length; i++)
+    for(let i = 0; i < this.input.items.length; i++)
     {
-      let ass = {no : i};
       let item = this.input.items[i];
-      Object.assign(item, ass);
-      console.log(item)
+      console.debug(item)
     }
 
     // this.onResetItem();
@@ -681,7 +945,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   onDeleteItem()
   {
     let i = this.input['items'].indexOf(this.selected);
-    console.log(i)
+    console.debug(i)
     this.input['items']?.splice(i, 1);
     this.onResetItem();
   }
@@ -743,10 +1007,11 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     {
       if(this.input.items[i]?.gram_tukar == null || this.input.items[i]?.gram_tukar == "null")
         continue;
-        value += parseFloat(this.input.items[i].gram_tukar);
+      
+      value += parseFloat(this.input.items[i].gram_tukar);
     }
 
-    this.input['total_gram_tukar'] = value;
+    this.input['total_gram_tukar'] = Math.round(value*100) / 100;
     return value;
   }
   
@@ -784,6 +1049,13 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   {
     if(this.hitungTotalHarga() > 0) return {};
 
+    return {'text-decoration': 'underline','text-decoration-color': 'red', 'color' : 'red'};
+  }
+
+  totalDPPStyleValid()
+  {
+    if(this.hitungTotalDPP() > 0) return {};
+    
     return {'text-decoration': 'underline','text-decoration-color': 'red', 'color' : 'red'};
   }
 
@@ -826,7 +1098,15 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
   
   pajakStyleValid()
   {
-    if(this.getPajakFromItems() > 0) return {};
+    if(this.getPajakFromItems() > 0) return {}; // valid
+
+    if(this.input != null)
+    {
+      if(this.input['tipe_bayar'] == PaymentType.UANG.code)
+      {
+        return {}; // valid
+      }
+    }
 
     return {'text-decoration': 'underline','text-decoration-color': 'red', 'color' : 'red'};
   }
@@ -838,7 +1118,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
       let item = this.input.items[i];
 
       this.hitungPajak(item);
-      console.log(item)
+      console.debug(item)
     }
     
     this.hitungPajak();
@@ -846,6 +1126,15 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
 
   hitungPajak(item? : any)
   {
+    if(this.input == null)
+    {
+      return 0;
+    }
+    if(this.input['tipe_bayar'] == PaymentType.UANG.code)
+    {
+      return 0;
+    }
+
     item = item == null ? this.selected : item;
     let ongkos : number = item.ongkos;
     let hpajak : number= this.input?.pajak;
@@ -856,9 +1145,9 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     let persenPajak = 2.00;
 
     let pajakItem : number = (ongkos/1000) * gram_tukar * hpajak * persenPajak / 100;
-    item.pajak = Math.trunc(pajakItem);
-    console.log(pajakItem)
-    return this.selected.pajak;
+    item.pajak = Math.round(pajakItem);
+    console.debug(pajakItem)
+    return item.pajak;
   }
 
   hitungHarga()
@@ -928,8 +1217,8 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     let baku_tukar = Number(item.baku_tukar);
 
     item.gram_tukar = baku_tukar * berat / 1000;
-    item.gram_tukar = Number(item.gram_tukar.toFixed(2));
-    console.log(item.gram_tukar);
+    item.gram_tukar = Math.round(Number(item.gram_tukar.toFixed(2) * 100)) / 100;
+    console.debug(item.gram_tukar);
   }
 
   hitungTotalHarga()
@@ -937,7 +1226,28 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
     let hbaku = Number(this.input['harga_baku']);
     let total_gram_tukar = this.getGramTukarFromItems();
 
-    this.input['total_harga'] = hbaku * total_gram_tukar;
+    this.input['total_harga'] = Math.round(hbaku * total_gram_tukar);
     return this.input['total_harga'];
+  }
+
+  hitungTotalDPP()
+  {
+    if(this.input == null)
+    {
+      return 0;
+    }
+
+    let total_harga = Math.round(Number(this.input['total_harga']));
+    if(total_harga == 0)
+    {
+      return 0;
+    }
+
+    let total_pajak = Math.round(this.input['total_pajak']);
+
+    total_harga -= total_pajak;
+
+    this.input['total_dpp'] = total_harga;
+    return this.input['total_dpp'];
   }
 }

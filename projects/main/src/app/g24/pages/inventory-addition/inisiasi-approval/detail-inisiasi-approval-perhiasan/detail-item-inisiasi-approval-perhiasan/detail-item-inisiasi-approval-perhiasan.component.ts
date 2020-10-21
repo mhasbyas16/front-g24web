@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { InisiasiService } from 'projects/main/src/app/g24/services/stock/inisiasi.service';
 import { ProductPurityService } from 'projects/main/src/app/g24/services/product/product-purity.service';
 import { ProductJenisService } from 'projects/main/src/app/g24/services/product/product-jenis.service';
@@ -12,10 +12,10 @@ import { DataTypeUtil } from 'projects/main/src/app/g24/lib/helper/data-type-uti
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { IDetailCallbackListener } from 'projects/main/src/app/g24/lib/base/idetail-callback-listener';
 import { PaymentType } from 'projects/main/src/app/g24/lib/enums/payment-type';
+import { JurnalInisiasiService } from 'projects/main/src/app/g24/services/keuangan/jurnal/stock/jurnal-inisiasi.service';
+import { ServerDateTimeService } from 'projects/main/src/app/g24/services/system/server-date-time.service';
+import { LoadingSpinnerComponent } from 'projects/main/src/app/g24/nav/modal/loading-spinner/loading-spinner.component';
 
-/**
- * Penerimaan perhiasan baru isi ke stock/product
- */
 @Component({
   selector: 'detail-item-inisiasi-approval-perhiasan',
   templateUrl: './detail-item-inisiasi-approval-perhiasan.component.html',
@@ -27,26 +27,51 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
   (
     private toastr : ToastrService,
     private session : SessionService,
+    private jurnalInisiasi : JurnalInisiasiService,
+    private dateService : ServerDateTimeService,
 
     private inisiasiService : InisiasiService,
-    private kadarService : ProductPurityService,
     private jenisService : ProductJenisService,
-    private goldColorService : ProductGoldColorService,
-    private productService : ProductService
   ) { }
+  
+  @ViewChild('spinner', {static: false}) spinner : LoadingSpinnerComponent;
 
   parentListener : IDetailCallbackListener;
   
   user : any = this.session.getUser();
   unit : any = this.session.getUnit();
 
+  date : string = "";
+  time : string = "";
+
   EPriviledge = EPriviledge;
 
   jeniss : any[] = [];
 
-  LoadAllParameter()
+  async LoadAllParameter()
   {
-    this.LoadJenis();
+    await this.LoadDate();
+  }
+
+  async LoadDate()
+  {
+    let resp : any = false;
+    try {
+      resp = await this.dateService.task("").toPromise();
+    } catch(err) {
+      resp = false;
+    }
+    if(resp == false)
+    {
+      this.toastr.error("Gagal mengambil tanggal server.");
+      this.Close();
+      this.doReset();
+      return;
+    }
+
+    let dtarr = resp.split("T");
+    this.date = dtarr[0];
+    this.time = dtarr[0].split("Z")[0];
   }
 
   async LoadJenis()
@@ -84,7 +109,7 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
     this.isOpened = open
   }
 
-  private title : string = "Detail Penerimaan Perhiasan";
+  private title : string = "Detail Approval Perhiasan";
   public get Title()
   {
     return this.title;
@@ -92,6 +117,7 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
 
   // input
   inisiasi : any = null;
+
   public getItemsOfInisiasi() : any[]
   {
     return this.inisiasi == null ? [] : this.inisiasi.items;
@@ -100,6 +126,7 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
 
   public setId(id : string)
   {
+    this.spinner.Open();
     if(id == null || id == "")
     {
       this.toastr.error("No ID is set.");
@@ -107,8 +134,9 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
       return;
     }
 
-    this.inisiasiService.list("?_or=product-category.code=c00&no_po="+id).subscribe(output => 
+    this.inisiasiService.list("?_or=product-category.code=c00&no_po="+id).subscribe(async output => 
     {
+      this.spinner.Close();
       if(output != false)
       {
         if(output.length > 1)
@@ -126,7 +154,7 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
           return;
         }
 
-        this.onContentFound(output[0]);
+        await this.onContentFound(output[0]);
 
         this.Open();
         this.toastr.info("Load success...!")
@@ -160,6 +188,7 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    
   }
   
   GetDisplayValue(object : any) : string
@@ -210,20 +239,18 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
     this.mode = mode;
   }
 
-  onContentFound(content : any)
+  async onContentFound(content : any)
   {
     this.inisiasi = content;
 
-    if(this.inisiasi.order_status == OrderStatus.TERIMA_FULL.code && this.mode == EPriviledge.UPDATE)
+    if(this.inisiasi.order_status != OrderStatus.SUBMIT.code && this.mode == EPriviledge.UPDATE)
     {
       this.doReset();
       this.Close();
-      this.toastr.show("PO sudah di Terima Full.", "Terima says");
+      this.toastr.show("Status PO bukan SUBMIT", "Terima says");
       return;
     }
-    this.LoadAllParameter();
-
-    this.fillItemsWithProducts();
+    await this.LoadAllParameter();
   }
 
   ts;
@@ -543,6 +570,7 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
 
   async doSave()
   {
+    this.spinner.Open();
     if(this.mode == EPriviledge.READ)
     {
       this.toastr.info("Mode 'READ' only.");
@@ -559,65 +587,45 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
       return;
     }
 
-    this.inisiasi.order_status = OrderStatus.TERIMA_FULL.code;
-    this.inisiasi.update_date = new Date().toISOString().split("T")[0];
-    this.inisiasi.update_by = this.user.username;
-    this.inisiasi['tgl_terima'] = this.inisiasi.update_date;
-    this.inisiasi.terima_by = this.user.username;
-    let items = this.inisiasi.items;
-    let productNoId = [];
-    let ids = [];
-    console.log(items);
-    
-    for(let i = 0; i < items.length; i++)
-    {
-      let products = items[i].products;
-      productNoId.push(...products);
-    }
-
-    let itemProduct : Map<string, number> = new Map<string,number>();
-    
-    console.log(productNoId);
-
-    let failedIndex : any[] = [];
-    let someFailed : boolean = false;
-    for(let i =0; i < productNoId.length; i++)
-    {
-      let product = productNoId[i];
-      let fail = {itemIndex : product.no_item_po, productIndex: product.no_index_products}
-      delete product._id;
-      DataTypeUtil.Encode(product);
-
-      itemProduct.set(fail.itemIndex + "," + fail.productIndex, product);
-
-      let result = await this.productService.add(product).toPromise();
-      if(result == false)
-      {
-        this.toastr.error("Barang nomor: " + fail.productIndex + " dengan nomor Bulk: " + fail.itemIndex + " gagal masuk.");
-        continue;
-      } else {
-        let product = itemProduct.get(fail.itemIndex + "," + fail.productIndex);
-        Object.assign(product, result);
-        itemProduct.set(fail.itemIndex + "," + fail.productIndex, result);
-        console.log(result);
-      }
-    }
+    this.inisiasi.order_status = OrderStatus.APPROVAL.code;
+    this.inisiasi.update_time = this.time;
+    this.inisiasi.update_date = this.date;
+    this.inisiasi.update_by = this.user;
+    this.inisiasi['tgl_approved'] = this.date;
+    this.inisiasi.approved_by = this.user;
 
     console.log(this.inisiasi);
     let tempInisiasi = {}
+
+    //              TARGET    - >   SOURCE
     Object.assign(tempInisiasi, this.inisiasi);
     DataTypeUtil.Encode(tempInisiasi);
+    console.log(tempInisiasi);
 
-    let inisiasi = await this.inisiasiService.update(tempInisiasi).toPromise();
+    let msg = "";
+    let inisiasi = false;
+    try
+    {
+      inisiasi = await this.inisiasiService.update(tempInisiasi).toPromise();
+    } catch(err) {
+      msg = err.message;
+      inisiasi = false;
+    }
+
+    this.spinner.Close();
     if(inisiasi == false)
     {
-      this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk.");
+      this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk. Error: " + msg, "Error", {disableTimeOut : true, closeButton : true});
+      this.parentListener.onAfterUpdate(this.inisiasi._id);
+      this.doReset();
+      this.Close();
       return;
     } else {
       Object.assign(this.inisiasi, tempInisiasi);
       console.log(this.inisiasi);
       this.parentListener.onAfterUpdate(this.inisiasi._id);
-      this.toastr.success("PO berhasil diterima.");
+      this.doAccounting(this.inisiasi._id);
+      this.toastr.success("PO berhasil diapproved.");
       this.doReset();
       this.Close();
     }
@@ -748,5 +756,49 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
 
     this.inisiasi['total_harga'] = Math.round(hbaku * total_gram_tukar * 100) /100;
     return this.inisiasi['total_harga'];
+  }
+
+  hitungTotalDPP()
+  {
+    if(this.inisiasi == null)
+    {
+      return 0;
+    }
+
+    let total_harga = Math.round(Number(this.inisiasi['total_harga']));
+    if(total_harga == 0)
+    {
+      return 0;
+    }
+
+    let total_pajak = Math.round(this.inisiasi['total_pajak']);
+
+    total_harga -= total_pajak;
+
+    this.inisiasi['total_dpp'] = total_harga;
+    return this.inisiasi['total_dpp'];
+  }
+
+  totalDPP(){
+    if(!this.inisiasi.total_dpp){
+      return this.inisiasi['total_dpp']=0;
+    }
+    return this.inisiasi['total_dpp'];
+  }
+
+  doAccounting(idInisiasi :string)
+  {
+    this.jurnalInisiasi.bayar(idInisiasi).subscribe(output => {
+      if(output == false)
+      {
+        let msg = this.jurnalInisiasi.message();
+        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg, "Error!", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
+        // console.log()
+        return;
+      } else {
+        this.toastr.success("Jurnal berhasil.")
+        return;
+      }
+    });
   }
 }

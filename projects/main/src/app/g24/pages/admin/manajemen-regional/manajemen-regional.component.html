@@ -1,0 +1,243 @@
+<div class="clr-row">
+    <div class="card" style="margin-top: 0em;">
+        <div class="card-header">
+            {{breadcrumb}}
+        </div>
+        <div class="card-block">
+            <div class="card-text">
+                <button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus"></clr-icon>
+                </button>
+                <form #search="ngForm" id="regional" clrForm (ngSubmit)="onCari(search.value)">
+                    <div class="clr-row">
+                        <div class="clr-col-12">
+                            <h6 class="bg-blue1000"> Pencarian </h6>
+                        </div>
+                        <div class="clr-col-6">
+                            <div class="clr-form-control">
+                                <label for="basic" class="clr-control-label">Kode Regional</label>
+                                <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input name="kdout" class="clr-input" [(ngModel)]="inputModel.kdout" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clr-col-6">
+                            <div class="clr-form-control">
+                                <label for="basic" class="clr-control-label">Regional</label>
+                                <div class="clr-control-container">
+                                    <div class="clr-input-wrapper">
+                                        <input name="reg" class="clr-input" [(ngModel)]="inputModel.reg" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clr-row">
+                        <div class="clr-col-1">
+                            <div class="clr-form-control">
+                                <div class="clr-control-container">
+                                    <button class="btn btn-info-outline btn-sm" (change)="muter()">Cari</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="clr-col-sm-12 clr-col-md-12 clr-col-lg-12"></div>
+                <clr-datagrid [clrDgLoading]="loadingDg">
+                    <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
+                    <clr-dg-column class="width-41">Kode Regoinal</clr-dg-column>
+                    <clr-dg-column class="width-10">Regional</clr-dg-column>
+
+                    <clr-dg-row *clrDgItems="let data of dataList">
+                        <clr-dg-action-overflow>
+                            <button class="action-item" (click)="mainEdit(data)">Edit</button>
+                            <button class="action-item" (click)="mainDetail(data)">Detail</button>
+                            <button class="action-item" (click)="mainDelete(data)">Hapus</button>
+                        </clr-dg-action-overflow>
+                        <clr-dg-cell hidden>{{data._id}}</clr-dg-cell>
+                        <clr-dg-cell class="width-1">{{data.code}}</clr-dg-cell>
+                        <clr-dg-cell class="width-20">{{data.nama}}</clr-dg-cell>
+                    </clr-dg-row>
+                    <clr-dg-footer>
+                        <clr-dg-pagination #pagination [clrDgPageSize]="5">
+                            <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Data per page</clr-dg-page-size>
+                            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                            of {{pagination.totalItems}} Data
+                        </clr-dg-pagination>
+                    </clr-dg-footer>
+                </clr-datagrid>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modalAdd -->
+<ng-container *ngIf="modalAddDialog">
+    <form (ngSubmit)="mainAddSubmit();" autocomplete="off">
+        <clr-modal [clrModalSize]="'md'" [clrModalOpen]="modalAddDialog" [clrModalClosable]="false"
+            [clrModalStaticBackdrop]="true">
+            <h3 class="modal-title">Add {{title}}</h3>
+            <div class="modal-body ">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="clr-row">
+                            <div class="clr-col-6">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Kode Regional</label>
+                                    <div class="clr-control-container">
+                                        <div class="clr-input-wrapper">
+                                            <input name="kode_regional" class="clr-input"
+                                                [(ngModel)]="inputModel.code" />
+                                            <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                        </div>
+                                        <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-6">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Nama Regional</label>
+                                    <div class="clr-control-container">
+                                        <div class="clr-input-wrapper">
+                                            <input name="nama_regional" class="clr-input"
+                                                [(ngModel)]="inputModel.nama" />
+                                            <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                        </div>
+                                        <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- hidden field put here-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" (click)="modalAddDialog = false">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    <span *ngIf="spinner==true" class="spinner spinner-inline">
+                        Saving
+                    </span>
+                    <ng-container *ngIf="spinner==false">
+                        Save
+                    </ng-container>
+                </button>
+            </div>
+        </clr-modal>
+    </form>
+</ng-container>
+
+<!-- modaEdit -->
+<ng-container *ngIf="modalEditDialog">
+    <form autocomplete="off">
+        <clr-modal [clrModalSize]="'md'" [clrModalOpen]="modalEditDialog" [clrModalClosable]="false"
+            [clrModalStaticBackdrop]="true">
+            <h3 class="modal-title">Edit {{title}}</h3>
+            <div class="modal-body ">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="clr-row">
+                            <div class="clr-col-6">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Kode Regional</label>
+                                    <div class="clr-control-container">
+                                        <div class="clr-input-wrapper">
+                                            <input name="kode_regional" class="clr-input"
+                                                [(ngModel)]="inputModel.code" />
+                                            <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                        </div>
+                                        <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-col-6">
+                                <div class="clr-form-control">
+                                    <label for="basic" class="clr-control-label">Nama Regional</label>
+                                    <div class="clr-control-container">
+                                        <div class="clr-input-wrapper">
+                                            <input name="nama_regional" class="clr-input"
+                                                [(ngModel)]="inputModel.nama" />
+                                            <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                        </div>
+                                        <span class="clr-subtext"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- hidden field put here-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" (click)="modalEditDialog = false">Cancel</button>
+                <button type="submit" class="btn btn-primary" (click)="mainEditSubmit();">
+                    <span *ngIf="spinner==true" class="spinner spinner-inline">
+                        Saving
+                    </span>
+                    <ng-container *ngIf="spinner==false">
+                        Save
+                    </ng-container>
+                </button>
+            </div>
+        </clr-modal>
+    </form>
+</ng-container>
+
+<!-- modalDetail -->
+<ng-container *ngIf="modalDetailDialog">
+    <form>
+        <clr-modal [clrModalSize]="'md'" [clrModalOpen]="modalDetailDialog" [clrModalClosable]="false"
+            [clrModalStaticBackdrop]="true">
+            <h3 class="modal-title">Detail {{title}}</h3>
+            <div class="modal-body ">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="clr-row">
+                            <div class="clr-col-6">
+                                <label for="basic" class="clr-control-label">Kode Regional</label>
+                                <label>{{this.inputModel.kode}}</label>
+                            </div>
+                            <div class="clr-col-6">
+                                <label for="basic" class="clr-control-label">Nama Regional</label>
+                                <label>{{this.inputModel.regional}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- hidden field put here-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" (click)="modalDetailDialog = false">Cancel</button>
+            </div>
+        </clr-modal>
+    </form>
+</ng-container>
+
+<!-- modal Delete Dialog -->
+<ng-container *ngIf="modalDeleteDialog">
+    <form (ngSubmit)="mainDeleteSubmit();">
+        <clr-modal [clrModalSize]="'md'" [clrModalOpen]="modalDeleteDialog" [clrModalClosable]="false"
+            [clrModalStaticBackdrop]="false">
+            <h3 class="modal-title">Delete {{title}}</h3>
+            <div class="modal-body">
+                <p>Are you sure you want to permanently remove this item?</p>
+                <clr-input-container>
+                    <input clrInput name="_id" type="hidden" [(ngModel)]="inputModel._id" />
+                </clr-input-container>
+            </div>
+            <!-- hidden field put here-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" (click)="modalDeleteDialog = false">Cancel</button>
+                <button type="submit" class="btn btn-danger">
+                    <span *ngIf="spinner==true" class="spinner spinner-inline">
+                        Deleting
+                    </span>
+                    <ng-container *ngIf="spinner==false">
+                        Delete
+                    </ng-container>
+                </button>
+            </div>
+        </clr-modal>
+    </form>
+</ng-container>

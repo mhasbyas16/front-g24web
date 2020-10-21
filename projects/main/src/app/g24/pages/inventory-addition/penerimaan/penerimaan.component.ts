@@ -35,7 +35,7 @@ export class PenerimaanComponent implements OnInit {
     }
     let products = await this.productCatService.list("?").toPromise();
 
-    console.log(products);
+    console.debug(products);
 
     for(let i = 0; i < products.length; i++)
     {

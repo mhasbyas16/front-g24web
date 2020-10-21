@@ -7,27 +7,19 @@
             	<div class="clr-row">
             		<div class="clr-col-6">
             			<div class="clr-form-control">
-            				<label class="clr-control-label">Produk Kategori</label>
-            				<div class="clr-control-container">
-            				<select [(ngModel)]="search.kategori" clrSelect name="kategori">
-            					<option [ngValue]=""></option>
-            					<ng-container *ngFor="let data of data_kategori">
-            						<option [ngValue]="data">{{data.code}}</option>
-            					</ng-container>
-            				</select>
-            				</div>
+							<label class="clr-control-label">Jens Produk</label>
+							<clr-input-container>
+                                <input [(ngModel)]="search.kategori" clrInput name="kategori">
+                            </clr-input-container>
             			</div>
 					</div>
 					<div class="clr-col-6">
 						<div class="clr-form-control">
 							<label class="clr-control-label">Kode</label>
 							<div class="clr-control-container">
-								<select [(ngModel)]="search.code" clrSelect name="code">
-									<option [ngValue]=""></option>
-									<ng-container *ngFor="let data of datadenom">
-										<option [ngValue]="data">{{data.code}}</option>
-									</ng-container>
-								</select>	
+								<clr-input-container>
+									<input clrInput [(ngModel)]="search.code" name="code">
+								</clr-input-container>
 							</div>
 						</div>
 					</div>
@@ -111,7 +103,20 @@
 				  </clr-input-container>
     			</div>
     		</div>
-    	</div>
+		</div>
+		
+		<!--SELECT2-->
+		<!--div class="clr-row">
+			<div class="clr-col-6">
+				<ng-select2 name="kategori"
+							[data]="exampleData"
+							[options]="option"
+							[width]="300"
+							[value]="exampleData"
+							[(ngModel)]="input.kategori"
+							></ng-select2>
+			</div>
+		</div-->
 
         <!--GRID KATEGORI-->
 	        <div class="clr-row">
@@ -378,3 +383,5 @@
         <button type="button" class="btn btn-outline" (click)="modalview = false">Tutup</button>
     </div>
 </clr-modal>
+
+<loading-spinner #spinner></loading-spinner>

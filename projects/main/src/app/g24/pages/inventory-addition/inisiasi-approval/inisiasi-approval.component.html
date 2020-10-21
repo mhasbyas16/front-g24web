@@ -24,29 +24,29 @@
         <button clrTabLink>Souvenir</button>
         <ng-template [clrIfActive]="input['product-category']?.code?.includes('02')" (clrIfActiveChange)="input['product-category']">
             <clr-tab-content>
-                <!-- <detail-inisiasi-approval-souvenir>
+                 <detail-inisiasi-approval-souvenir>
 
-                </detail-inisiasi-approval-souvenir> -->
+                 </detail-inisiasi-approval-souvenir>
             </clr-tab-content>
         </ng-template>
     </clr-tab>
-    <!-- <clr-tab>
-        <button clrTabLink>Adiratna</button>
+    <clr-tab>
+        <button clrTabLink>Permata</button>
         <ng-template [clrIfActive]="input['product-category']?.code?.includes('03')" (clrIfActiveChange)="input['product-category']">
             <clr-tab-content>
-                <detail-penerimaan-adiratna>
+                <detail-inisiasi-approval-permata>
 
-                </detail-penerimaan-adiratna
+                </detail-inisiasi-approval-permata>
             </clr-tab-content>
         </ng-template>
-    </clr-tab> -->
+    </clr-tab>
     <clr-tab>
         <button clrTabLink>Gift</button>
         <ng-template [clrIfActive]="input['product-category']?.code?.includes('04')" (clrIfActiveChange)="input['product-category']">
             <clr-tab-content>
-                <!-- <detail-inisiasi-approval-gift>
+                <detail-inisiasi-approval-gift>
 
-                </detail-inisiasi-approval-gift> -->
+                </detail-inisiasi-approval-gift>
             </clr-tab-content>
         </ng-template>
     </clr-tab>
@@ -54,20 +54,30 @@
         <button clrTabLink>Emas Batangan</button>
         <ng-template [clrIfActive]="input['product-category']?.code?.includes('05')" (clrIfActiveChange)="input['product-category']">
             <clr-tab-content>
-                <!-- <detail-inisiasi-approval-emas>
+                 <detail-inisiasi-approval-emas-batangan>
 
-                </detail-inisiasi-approval-emas> -->
+                 </detail-inisiasi-approval-emas-batangan> 
             </clr-tab-content>
         </ng-template>
     </clr-tab>
-    <!-- <clr-tab>
+    <clr-tab>
         <button clrTabLink>Dinar</button>
         <ng-template [clrIfActive]="input['product-category']?.code?.includes('06')" (clrIfActiveChange)="input['product-category']">
             <clr-tab-content>
-                <detail-penerimaan-dinar>
+                <detail-inisiasi-approval-dinar>
 
-                </detail-penerimaan-dinar>
+                </detail-inisiasi-approval-dinar>
             </clr-tab-content>
         </ng-template>
-    </clr-tab> -->
-</clr-tabs>
+    </clr-tab> 
+    <!--<clr-tab>
+        <button clrTabLink>Permata</button>
+        <ng-template [clrIfActive]="input['product-category']?.code?.includes('03')" (clrIfActiveChange)="input['product-category']">
+            <clr-tab-content>
+                <detail-inisiasi-approval-permata>
+
+                </detail-inisiasi-approval-permata>
+            </clr-tab-content>
+        </ng-template>
+    </clr-tab> 
+</clr-tabs>-->

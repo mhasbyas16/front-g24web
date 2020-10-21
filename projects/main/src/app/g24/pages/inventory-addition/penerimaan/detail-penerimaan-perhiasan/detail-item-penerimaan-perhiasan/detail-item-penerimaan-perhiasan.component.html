@@ -6,6 +6,148 @@
             <div class="card-header">
                     List Item pada Inisiasi/PO: {{inisiasi?.no_po}}
             </div>
+            <div class="card-block">
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span><label>Nomor PO &#58; </label></span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b> 
+                            <span><u>{{inisiasi?.no_po}}</u></span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Nomor Nota &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b> 
+                            <u><span>{{inisiasi?.nomor_nota}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Tanggal Inisiasi &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b> 
+                            <u><span><input readonly value="{{inisiasi?.tgl_inisiasi}}" type="date" class="clr-input" ></span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Jenis Produk &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b> 
+                            <u><span>{{inisiasi ? GetDisplayValue(inisiasi["product-category"]) : ""}}</span></u>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Vendor &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b> 
+                            <u><span>{{ inisiasi ? GetDisplayValue(inisiasi['vendor']) : ""}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    &nbsp;
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Tipe Bayar &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{GetDisplayName(inisiasi?.tipe_bayar)}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row" *ngIf="inisiasi?.asal_uang == 'bank'">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Bank &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{GetDisplayName(inisiasi?.bank)}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                &nbsp;
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Harga Baku &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{inisiasi?.harga_baku | mask : 'separator' : ','}}</span></u>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Harga Pajak &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{inisiasi?.total_pajak}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Total Berat &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{inisiasi?.total_berat}}</span></u>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Total Pieces &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{inisiasi?.total_piece}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Ongkos Pembuatan &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{inisiasi?.total_ongkos | mask : 'separator' : ','}}</span></u>
+                        </b>
+                    </div>
+                </div>
+            </div>
             <clr-datagrid>
                 <clr-dg-action-bar>
                     <!-- <div class="btn-group">
@@ -33,13 +175,13 @@
                     Berat
                 </clr-dg-column>
                 <clr-dg-column>
+                    Gram Tukar
+                </clr-dg-column>
+                <clr-dg-column>
                     Pieces
                 </clr-dg-column>
                 <clr-dg-column>
                     Baku Tukar
-                </clr-dg-column>
-                <clr-dg-column>
-                    Gram Tukar
                 </clr-dg-column>
                 <clr-dg-column>
                     Ongkos
@@ -54,12 +196,12 @@
                     <clr-dg-cell>{{GetDisplayValue(data['product-jenis'])}}</clr-dg-cell>
                     <clr-dg-cell>{{GetDisplayValue(data['product-gold-color'])}}</clr-dg-cell>
                     <clr-dg-cell>{{data?.berat}} <span [ngStyle]="beratStyleValid(data)">({{getTotalBeratOfItem(data)}})</span></clr-dg-cell>
+                    <clr-dg-cell>{{data?.gram_tukar}}</clr-dg-cell>
                     <clr-dg-cell>{{data?.pieces}}</clr-dg-cell>
                     <clr-dg-cell>{{data?.baku_tukar}}</clr-dg-cell>
-                    <clr-dg-cell>{{data?.gram_tukar}} <span [ngStyle]="gramTukarStyleValid(data)">({{getTotalGramTukarOfItem(data)}})</span></clr-dg-cell>
                     <clr-dg-cell>{{data?.ongkos}}</clr-dg-cell>
                     <!-- <clr-dg-cell>{{data.gram_tukar}}</clr-dg-cell><input readonly type="number" class="clr-input" [ngModel]="input.items[i]['pajak'] = 0" [ngModelOptions]="{standalone:true}"> -->
-                    <clr-dg-cell>{{data?.pajak | number : '2.'}} </clr-dg-cell>
+                    <clr-dg-cell>{{data?.pajak}} </clr-dg-cell>
                     
                     <clr-dg-row-detail *clrIfExpanded="false" (clrIfExpandedChange)="onExpand(itemsIndex)">
                         <table class="table table-compact">
@@ -102,7 +244,7 @@
                                             </select>
                                         </td> -->
                                         <td><input [disabled]="mode == EPriviledge.READ ? true : null" [(ngModel)]="product['berat']" (ngModelChange)="onBeratChanged(productIndex, itemsIndex)" type="number" min="0.00" step="0.00" required /></td>
-                                        <td><input [disabled]="mode == EPriviledge.READ ? true : null" [(ngModel)]="product['gram_tukar']" (ngModelChange)="onGramTukarChanged(productIndex, itemsIndex)" type="number" min="0.00" step="0.00" required /></td>
+                                        <td>{{product?.gram_tukar}}</td>
                                         <td>{{product?.ongkos}}</td>
                                         <td>{{product?.baku_tukar}}</td>
                                         <td>{{product?.hpp_inisiasi}}</td>
@@ -128,6 +270,12 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" [disabled]="mode == EPriviledge.READ" (click)="doSave()">Simpan</button>
+        <button class="btn btn-primary" [disabled]="mode == EPriviledge.READ" (click)="doTerima()">Terima</button>
+        <!-- <button class="btn btn-danger" [disabled]="mode == EPriviledge.READ" (click)="doTolak()">Tolak</button> -->
     </div>
 </clr-modal>
+
+
+<loading-spinner #spinner>
+
+</loading-spinner>

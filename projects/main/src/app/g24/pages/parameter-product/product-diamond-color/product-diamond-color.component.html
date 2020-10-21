@@ -9,12 +9,9 @@
             			<div class="clr-form-control">
             				<label class="clr-control-label">Kode</label>
             				<div class="clr-control-container">
-            				<select [(ngModel)]="search.code" #code clrSelect name="code">
-            					<option [ngValue]=""></option>
-            					<ng-container *ngFor="let data of datadiamond">
-            						<option [ngValue]="data">{{data.code}}</option>
-            					</ng-container>
-            				</select>
+								<clr-input-container>
+									<input clrInput [(ngModel)]="search.code" name="code">
+								</clr-input-container>
             				</div>
             			</div>
             		</div>
@@ -74,7 +71,7 @@
 <clr-modal [(clrModalOpen)]="modaltambah">
     <h3 class="modal-title">Tambah Param Diamond Color</h3>
     <div class="modal-body">
-    	<div class="clr-row">
+    	<div class="clr-row" style="padding-bottom: 10px;">
     		<div class="clr-col-6">
     			<div class="clr-form-control">
     				<clr-input-container>
@@ -132,3 +129,5 @@
         <button type="button" class="btn btn-primary" (click)="Update()">Update</button>
     </div>
 </clr-modal>
+
+<loading-spinner #spinner></loading-spinner>

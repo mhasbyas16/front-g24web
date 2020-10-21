@@ -1,0 +1,192 @@
+
+<clr-modal #modalMsg [(clrModalOpen)]="isOpened" *ngIf="isOpened" [clrModalSize]="'xl'" [clrModalStaticBackdrop]="true">
+    <h3 class="modal-title">{{Title}}</h3>
+    <div class="modal-body">
+        <div class="card" style="margin-top: 0em;">
+            <div class="card-header">
+                    List Item pada Inisiasi/PO: {{inisiasi?.no_po}}
+            </div>
+            <div class="card-block">
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                        <b>
+                            <span><label>Nomor PO &#58; </label></span>
+                            <span><u>{{inisiasi?.no_po}}</u></span>
+                        </b>
+                    </div>
+                    <div class="clr-col-6">
+                        <b>
+                            <span>Nomor Nota &#58; </span>
+                            <u><span>{{inisiasi?.nomor_nota}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                        <b>
+                            <span>Tanggal Inisiasi &#58; </span>
+                            <u><span><input readonly value="{{inisiasi?.tgl_inisiasi}}" type="date" class="clr-input" ></span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                        <b>
+                            <span>Jenis Produk &#58; </span>
+                            <u><span>{{inisiasi ? GetDisplayValue(inisiasi['product-category']) : ""}}</span></u>
+                        </b>
+                    </div>
+                    <div class="clr-col-6">
+                        <b>
+                            <span>Vendor &#58; </span>
+                            <u><span>{{ inisiasi ? GetDisplayValue(inisiasi['vendor']) : ""}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    &nbsp;
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                        <b>
+                            <span>Tipe Bayar &#58; </span>
+                            <u><span>{{GetDisplayName(inisiasi?.tipe_bayar)}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row" *ngIf="inisiasi?.asal_uang == 'bank'">
+                    <div class="clr-col-3">
+                        <b>
+                            <span>Bank &#58; </span>
+                        </b>
+                    </div>
+                    <div class="clr-col-3">
+                        <b>
+                            <u><span>{{GetDisplayName(inisiasi?.bank)}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                &nbsp;
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                        <b>
+                            <span>Harga Baku &#58; </span>
+                            <u><span>{{inisiasi?.harga_baku | mask : 'separator' : ','}}</span></u>
+                        </b>
+                    </div>
+                    <div class="clr-col-6">
+                        <b>
+                            <span>Harga Pajak &#58; </span>
+                            <u><span>{{ inisiasi?.pajak | mask : 'separator' : ','}}</span></u>
+                        </b>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                        <b>
+                            <span>Total Berat &#58; </span>
+                            <u><span>{{inisiasi?.total_berat}}</span></u>
+                        </b>
+                    </div>
+                    <div class="clr-col-6">
+                        <b>
+                            <span>Total Pieces &#58; </span>
+                            <u><span>{{ inisiasi?.total_piece | mask : 'separator' : ','}}</span></u>
+                        </b>
+                    </div>
+                </div>
+            </div>
+            <clr-datagrid>
+                <clr-dg-action-bar>
+                    <!-- <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-secondary" (click)="onTerima()" *ngIf="Selected?.flag != 'terima_full' && Selected?.flag != null"><clr-icon shape="pencil"></clr-icon>Terima</button>
+                        <button type="button" class="btn btn-sm btn-secondary" (click)="onLihat()" *ngIf="Selected?._id != ''"><clr-icon shape="view-list"></clr-icon>Lihat</button>
+                        <button type="button" class="btn btn-sm btn-secondary" (click)="Debug()"><clr-icon shape="bug"></clr-icon>Debug</button>
+                    </div> -->
+                </clr-dg-action-bar>
+                
+                <!-- 10 Kolom -->
+                
+                <clr-dg-column>
+                    SKU
+                </clr-dg-column>
+                <clr-dg-column>
+                    Denom
+                </clr-dg-column>
+                <clr-dg-column>
+                    Series
+                </clr-dg-column>
+                <clr-dg-column>
+                    Pieces
+                </clr-dg-column>
+                <clr-dg-column>
+                    Berat
+                </clr-dg-column>
+                <clr-dg-column>
+                    Ongkos per Piece
+                </clr-dg-column>
+                <clr-dg-column>
+                    Total Ongkos
+                </clr-dg-column>
+                <clr-dg-column>
+                    Harga per Piece
+                </clr-dg-column>
+                <clr-dg-column>
+                    Total Harga
+                </clr-dg-column>
+                <clr-dg-column>
+                    Pajak
+                </clr-dg-column>
+    
+                <clr-dg-row *clrDgItems="let data of (getItemsOfInisiasi() || []); let itemsIndex = index;" [clrDgItem]="data">
+                    <clr-dg-cell>{{data?.sku}} </clr-dg-cell>
+                    <clr-dg-cell>{{GetDisplayValue(data['product-denom'])}}</clr-dg-cell>
+                    <clr-dg-cell>{{GetDisplayValue(data['product-series'])}}</clr-dg-cell>
+                    <clr-dg-cell>{{data?.pieces | mask : 'separator' : ','}}</clr-dg-cell>
+                    <clr-dg-cell>{{data?.total_berat}}</clr-dg-cell>
+                    <clr-dg-cell>{{data?.ongkos_pieces | mask : 'separator' : ','}}</clr-dg-cell>
+                    <clr-dg-cell>{{data?.total_ongkos | mask : 'separator' : ','}}</clr-dg-cell>
+                    <clr-dg-cell>{{data?.harga_piece | mask : 'separator' : ','}}</clr-dg-cell>
+                    <clr-dg-cell>{{data?.total_harga | mask : 'separator' : ','}}</clr-dg-cell>
+                    <clr-dg-cell>{{data?.pajak | mask : 'separator' : ','}}</clr-dg-cell>
+                </clr-dg-row>
+    
+                
+                <clr-dg-footer>
+                    <div class="clr-row">
+                        <div class="clr-col-1">Total Berat: </div>
+                        <div class="clr-col-2"><p>{{getBeratFromItems() | mask : 'separator' : ','}} gram.</p></div>
+                        <div class="clr-col-1">Total Pajak: </div>
+                        <div class="clr-col-2"><p>Rp<span>{{getPajakFromItems() | mask : 'separator' : ','}}</span></p></div>
+                        <div class="clr-col-1">Total DPP: </div>
+                        <div class="clr-col-2"><p>Rp <span>{{totalDPP() | mask : 'separator' : ','}}</span>.</p></div>
+                        <div class="clr-col-1">Total Harga: </div>
+                        <div class="clr-col-2"><p>Rp.<span>{{inisiasi?.total_harga | mask : 'separator' : ','}}</span></p></div>
+                    </div>
+                    <div class="clr-row">
+                        <div class="clr-col-1">Total Pieces: </div>
+                        <div class="clr-col-2"><p>{{getPiecesFromItems()}}.</p></div>
+                        <div class="clr-col-1">Total Ongkos: </div>
+                        <div class="clr-col-2"><p><span [ngStyle]="{'float' : 'left'}">Rp.</span><span>{{getOngkosFromItems() | mask : 'separator' : ','}}.</span></p></div>
+                        <div class="clr-col-6"></div>
+                    </div>
+                    <div>
+                        <clr-dg-pagination #pagination [clrDgPageSize]="10">
+                            <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Items per page</clr-dg-page-size>
+                            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                            of {{pagination.totalItems}} items
+                        </clr-dg-pagination>
+                    </div>
+                      {{ inisiasi ? inisiasi.items.length : 0}} items.
+                </clr-dg-footer>
+            </clr-datagrid>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" [disabled]="mode == EPriviledge.READ" (click)="doSave()">Simpan</button>
+    </div>
+</clr-modal>
+
+<loading-spinner #spinner>
+
+</loading-spinner>

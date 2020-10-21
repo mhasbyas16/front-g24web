@@ -915,6 +915,7 @@
             <button type="button" class="btn btn-primary" (click)="Add()">
                 Tambah
             </button>
+            <button type="button" class="btn btn-warning" (click)="cetakdata()"><clr-icon shape="bug"></clr-icon> Tes Cetak</button>
         </div>
     </clr-modal>
 
@@ -1009,6 +1010,11 @@
         <button type="button" class="btn btn-primary" (click)="modal = false">Ok</button>
     </div>
 </clr-modal>
+
+<loading-spinner #spinner></loading-spinner>
+
+<!-- CETAK MUTASI -->
+<cetak-mutasi #exportPDF></cetak-mutasi>
 
 <p *ngIf="errorType == ErrorType.ERROR" style="color: red">{{errorMessage}}</p>
 <p *ngIf="errorType == ErrorType.WARN" style="color: yellow">{{errorMessage}}</p>
