@@ -7,7 +7,7 @@ import * as CryptoJS from 'crypto-js';
 export class SessionService {
 
   // server: string = "http://localhost:8000";
-  // server: string = "http://34.87.141.184:8000";
+  // server: string = "http://188.166.247.233:8000";
   server: string = "https://dev.g24sys.com";
   pasphrase = "";
 

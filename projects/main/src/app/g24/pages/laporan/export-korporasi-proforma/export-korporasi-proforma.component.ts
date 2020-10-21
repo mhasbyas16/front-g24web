@@ -24,7 +24,7 @@ export class ExportKorporasiProformaComponent implements OnInit {
   transactionList = [];
   noItem = 0;
   isiTable =[];
-  dateNow:any;
+  dateApp:any;
   constructor(
     private tanggalService:TanggalService,
     private hargaTerbilangService:HargaTerbilangService,
@@ -67,7 +67,7 @@ export class ExportKorporasiProformaComponent implements OnInit {
     // const jpegUrl = canvas.toDataURL('image/jpeg');
 
     // Content
-    this.dateNow = this.splitDateServiceService.splitBulanTerbilang(this.datePipe.transform(Date.now(), 'yyyy-MM-dd'));
+    this.dateApp = this.splitDateServiceService.splitBulanTerbilang(data.tglApprove);
     delete this.innerDoc;
     let hargaFormat = new Intl.NumberFormat(['ban', 'id']).format(data.totalHarga);
     this.innerDoc ={pageSize: 'A4', pageOrientation: 'portrait',pageMargins: [ 38, 133, 38, 30 ],};
@@ -160,7 +160,7 @@ export class ExportKorporasiProformaComponent implements OnInit {
           },
           {
             text:[
-              'Jakarta, '+this.dateNow,
+              'Jakarta, '+this.dateApp,
               '\nDibuat oleh,',
               '\n\n\n\n\n',
               nameUser+'\n',

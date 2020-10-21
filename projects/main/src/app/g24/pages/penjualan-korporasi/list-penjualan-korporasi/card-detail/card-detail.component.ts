@@ -3,6 +3,8 @@ import { TransactionBookingService } from '../../../../services/transaction/tran
 import { ToastrService } from 'ngx-toastr';
 import { TransactionFlagService } from '../../../../services/transaction/transaction-flag.service';
 import { DatePipe } from '@angular/common';
+import { FormGroup, Validators, FormControl } from '@angular/forms';
+import { SplitDateServiceService } from '../../../../services/split-date-service.service';
 @Component({
   selector: 'app-card-detail',
   templateUrl: './card-detail.component.html',
@@ -12,6 +14,11 @@ import { DatePipe } from '@angular/common';
 export class CardDetailComponent implements OnInit {
 
   @Output() refresh = new EventEmitter();
+
+  approval:boolean = false;
+  prove:any;
+  proveData:any;
+  formPembayaran:FormGroup;
 
   modal: boolean = false;
   list = [];
@@ -32,12 +39,19 @@ export class CardDetailComponent implements OnInit {
     private transactionBookingService:TransactionBookingService,
     private toastrService:ToastrService,
     private transactionFlagService:TransactionFlagService,
-    private datePipe:DatePipe
+    private datePipe:DatePipe,
+    private splitDateServiceService:SplitDateServiceService
   ) { }
 
   ngOnInit(): void {
+    this.form();
   }
 
+  form(){
+    this.formPembayaran = new FormGroup({
+      tglPembayaran :new FormControl ("", Validators.required)
+    })
+  }
   openModal(data,length,total, type){
     this.modal = true;
     console.log(data);
@@ -56,9 +70,10 @@ export class CardDetailComponent implements OnInit {
   }
 
   approveTr(val){
+    let dataForm = this.splitDateServiceService.split(this.formPembayaran.getRawValue());
     this.dateNow = this.datePipe.transform(Date.now(), 'yyyy-MM-dd');
     console.debug(val.product);
-    let data = {"_id":val._id,"flag":"jual", tglApprove:this.dateNow}
+    let data = {"_id":val._id,"flag":"jual", tglApprove:this.dateNow, tglPembayaran: dataForm}
 
     this.transactionFlagService.batchUpdateOne(val.product,"jual");
     this.transactionBookingService.update(data).subscribe((response:any)=>{
@@ -66,14 +81,17 @@ export class CardDetailComponent implements OnInit {
         return;
       }
       this.modal = false;
+      this.approval = false;
       this.refresh.emit("id");
       this.toastrService.success("Succes Approve");
     })
   }
 
   RejectTr(val){
+    let dataForm = this.splitDateServiceService.split(this.formPembayaran.getRawValue());
+    this.dateNow = this.datePipe.transform(Date.now(), 'yyyy-MM-dd');
     console.debug(val.product);
-    let data = {"_id":val._id,"flag":"rejected"}
+    let data = {"_id":val._id,"flag":"rejected", tglApprove:this.dateNow, tglPembayaran: dataForm}
 
     this.transactionFlagService.batchUpdateOne(val.product,"stock");
     this.transactionBookingService.update(data).subscribe((response:any)=>{
@@ -81,7 +99,27 @@ export class CardDetailComponent implements OnInit {
         return;
       }
 
+      this.modal = false;
+      this.approval = false;
+      this.refresh.emit("id");
       this.toastrService.success("Succes Rejected");
     })
+  }
+
+  validation(data, valid){
+    if (!this.formPembayaran.valid) {
+      this.toastrService.error("Form Not Valid Try Again");
+      return;
+    }
+    this.approval = true;
+    if (valid == 'Approve') {
+      this.prove = valid;
+      this.proveData = data;
+      return;
+    }else{
+      this.prove = valid;
+      this.proveData = data;
+      return;
+    }
   }
 }
