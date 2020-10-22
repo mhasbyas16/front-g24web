@@ -521,13 +521,36 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     return true;
   }
 
+  validateBeratProducts(item : any, indexItem : number) : boolean
+  {
+    console.log(item.products)
+    for(let i = 0; i < item.products.length; i++)
+    {
+      let berat = item.products[i].berat;
+      if(berat == null || berat <= 0)
+      {
+        this.toastr.warning("Product nomor " + i + " pada Bulk Item: " + indexItem + " kurang dari atau sama dengan 0");
+        return false;
+      }
+      console.log(berat)
+    }
+
+    return true;
+  }
+
   validateItems() : boolean
   {
     let items = this.inisiasi.items;
-    for(let i = 0; i < items; i++)
+    for(let i = 0; i < items.length; i++)
     {
       let item = items[i];
+      console.log(item)
       if(!this.validateBeratItem(item, i))
+      {
+        return false;
+      }
+
+      if(!this.validateBeratProducts(item, i))
       {
         return false;
       }
@@ -582,6 +605,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
   async doTerima()
   {
     this.spinner.Open();
+    console.log("saving")
     if(this.mode == EPriviledge.READ)
     {
       this.toastr.info("Mode 'READ' only.");
@@ -595,11 +619,11 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
       return;
     }
 
-    if(!this.validateInisiasi())
-    {
-      this.spinner.Close();
-      return;
-    }
+    // if(!this.validateInisiasi())
+    // {
+    //   this.spinner.Close();
+    //   return;
+    // }
 
     this.inisiasi.order_status = OrderStatus.TERIMA_FULL.code;
     this.inisiasi.update_date = this.date;
@@ -609,7 +633,9 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     let tempInisiasi = {}
     Object.assign(tempInisiasi, this.inisiasi);
     DataTypeUtil.Encode(tempInisiasi);
-
+this.spinner.Close();
+console.log("done")
+return;
     let msg = "";
     let inisiasi :any = false;
     try {
@@ -628,7 +654,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
       return;
     } else {
       Object.assign(this.inisiasi, tempInisiasi);
-      this.doAccounting(inisiasi._id);
+      // this.doAccounting(inisiasi._id);
       console.debug(this.inisiasi);
       this.parentListener.onAfterUpdate(this.inisiasi._id);
       this.toastr.success("PO berhasil diterima.");
@@ -703,7 +729,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
 
   doAccounting(idInisiasi :string)
     {
-    this.jurnalInisiasi.bayar(idInisiasi).subscribe(output => {
+    this.jurnalInisiasi.terimaPerhiasan(idInisiasi).subscribe(output => {
       if(output == false)
       {
         let msg = this.jurnalInisiasi.message();

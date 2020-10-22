@@ -380,7 +380,7 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
   validateItems() : boolean
   {
     let items = this.inisiasi.items;
-    for(let i = 0; i < items; i++)
+    for(let i = 0; i < items.length; i++)
     {
       let item = items[i];
       if(!this.validateBeratItem(item, i))
@@ -406,7 +406,7 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
   validateInisiasi() : boolean
   {
     let items = this.inisiasi.items;
-    for(let i = 0; i < items; i++)
+    for(let i = 0; i < items.length; i++)
     {
       let item = items[i];
       if(!this.validateBeratItem(item, i))
@@ -439,15 +439,15 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
       return;
     }
 
-    if(!this.validateItems())
-    {
-      return;
-    }
+    // if(!this.validateItems())
+    // {
+    //   return;
+    // }
 
-    if(!this.validateInisiasi())
-    {
-      return;
-    }
+    // if(!this.validateInisiasi())
+    // {
+    //   return;
+    // }
 
     this.inisiasi.order_status = OrderStatus.TERIMA_FULL.code;
     this.inisiasi.update_time = this.time;

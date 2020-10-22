@@ -843,6 +843,11 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
   }
 
   totalDPP(){
+    if(!this.inisiasi)
+    {
+      return 0;
+    }
+
     if(!this.inisiasi.total_dpp){
       return this.inisiasi['total_dpp']=0;
     }
@@ -851,17 +856,22 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
 
   doAccounting(idInisiasi :string)
   {
-    this.jurnalInisiasi.bayar(idInisiasi).subscribe(output => {
+    this.jurnalInisiasi.bayarPerhiasan(idInisiasi).subscribe(output => {
       if(output == false)
       {
         let msg = this.jurnalInisiasi.message();
-        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg, "Error!", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
+        this.toastr.error("Jurnal gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg, "Error!", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
         // console.log()
         return;
       } else {
         this.toastr.success("Jurnal berhasil.")
         return;
       }
+    }, err => {
+      
+      let msg = err.message;
+      this.toastr.error("Jurnal gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg, "Error!", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
+      return;
     });
   }
 }

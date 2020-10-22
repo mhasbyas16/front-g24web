@@ -659,30 +659,15 @@ export class DetailItemInisiasiApprovalSouvenirComponent implements OnInit {
         this.doReset();
         this.Close();
       }
-  
-      // HERE BATCH_ADD
-      // let counter : number = this.inisiasi.total_piece;
-      // let enc = {batch_counter : counter};
-      // for(let i = 0; i < counter; i++)
-      // {
-      //   delete productNoId[i]._id;
-      //   enc[i+1] = productNoId[i];
-      // }
-  
-      // DataTypeUtil.Encode(enc);
-      // console.log('enc', enc);
-  
-      // let result = await this.productService.batchAdd(enc).toPromise();
-      // console.log(result);
-      
-      // for(let i = 0; i < result.length; i++)
-      // {
-      //   let product = result[i];
-        
-      // }
     }
 
     totalDPP(){
+
+      if(!this.inisiasi)
+      {
+        return 0;
+      }
+
       if(!this.inisiasi.total_dpp){
         return this.inisiasi['total_dpp']=0;
       }
@@ -691,7 +676,7 @@ export class DetailItemInisiasiApprovalSouvenirComponent implements OnInit {
 
   doAccounting(idInisiasi :string)
   {
-    this.jurnalInisiasi.bayar(idInisiasi).subscribe(output => {
+    this.jurnalInisiasi.bayarSouvenir(idInisiasi).subscribe(output => {
       if(output == false)
       {
         let msg = this.jurnalInisiasi.message();
@@ -702,6 +687,11 @@ export class DetailItemInisiasiApprovalSouvenirComponent implements OnInit {
         this.toastr.success("Jurnal berhasil.")
         return;
       }
+    }, err => {
+      
+      let msg = err.message;
+      this.toastr.error("Jurnal gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg, "Error!", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
+      return;
     });
   }
   

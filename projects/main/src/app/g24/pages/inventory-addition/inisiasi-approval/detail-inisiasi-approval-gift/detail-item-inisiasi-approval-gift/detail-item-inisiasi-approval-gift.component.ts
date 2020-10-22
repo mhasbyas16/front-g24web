@@ -681,6 +681,12 @@ export class DetailItemInisiasiApprovalGiftComponent implements OnInit {
   }
 
   totalDPP(){
+
+    if(!this.inisiasi)
+    {
+      return 0;
+    }
+
     if(!this.inisiasi.total_dpp){
       return this.inisiasi['total_dpp']=0;
     }
@@ -689,7 +695,7 @@ export class DetailItemInisiasiApprovalGiftComponent implements OnInit {
   
   doAccounting(idInisiasi :string)
   {
-    this.jurnalInisiasi.bayar(idInisiasi).subscribe(output => {
+    this.jurnalInisiasi.bayarGift(idInisiasi).subscribe(output => {
       if(output == false)
       {
         let msg = this.jurnalInisiasi.message();
@@ -700,6 +706,11 @@ export class DetailItemInisiasiApprovalGiftComponent implements OnInit {
         this.toastr.success("Jurnal berhasil.")
         return;
       }
+    }, err => {
+      
+      let msg = err.message;
+      this.toastr.error("Jurnal gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg, "Error!", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
+      return;
     });
   }
 

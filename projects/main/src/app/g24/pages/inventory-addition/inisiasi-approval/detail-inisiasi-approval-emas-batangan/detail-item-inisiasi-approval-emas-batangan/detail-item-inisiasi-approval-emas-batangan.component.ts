@@ -727,7 +727,7 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
 
   doAccounting(idInisiasi :string)
   {
-    this.jurnalInisiasi.bayar(idInisiasi).subscribe(output => {
+    this.jurnalInisiasi.bayarEmas(idInisiasi).subscribe(output => {
       if(output == false)
       {
         let msg = this.jurnalInisiasi.message();

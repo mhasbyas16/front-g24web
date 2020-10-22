@@ -678,7 +678,7 @@ export class DetailItemInisiasiApprovalPermataComponent implements OnInit {
   
   doAccounting(idInisiasi :string)
   {
-    this.jurnalInisiasi.bayar(idInisiasi).subscribe(output => {
+    this.jurnalInisiasi.bayarPermata(idInisiasi).subscribe(output => {
       if(output == false)
       {
         let msg = this.jurnalInisiasi.message();
@@ -689,6 +689,11 @@ export class DetailItemInisiasiApprovalPermataComponent implements OnInit {
         this.toastr.success("Jurnal berhasil.")
         return;
       }
+    }, err => {
+      
+      let msg = err.message;
+      this.toastr.error("Jurnal gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg, "Error!", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
+      return;
     });
   }
 
