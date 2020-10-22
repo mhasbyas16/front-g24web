@@ -3,7 +3,6 @@ import { CommonModule, DatePipe } from '@angular/common';
 
 import { InventoryAdditionRoutingModule } from './inventory-addition-routing.module';
 import { InisiasiComponent } from './inisiasi/inisiasi.component';
-import { PemesananComponent } from './pemesanan/pemesanan.component';
 import { DetailInisiasiPerhiasanComponent } from './inisiasi/detail-inisiasi-perhiasan/detail-inisiasi-perhiasan.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PenerimaanComponent } from './penerimaan/penerimaan.component';
@@ -46,7 +45,6 @@ import { NavModule } from '../../nav/nav.module';
   declarations: 
   [
     InisiasiComponent,
-    PemesananComponent,
     DetailInisiasiPerhiasanComponent,
     PenerimaanComponent,
     DetailInisiasiEmasComponent, 
@@ -91,8 +89,8 @@ import { NavModule } from '../../nav/nav.module';
     ToastrModule,
     NgxMaskModule.forRoot()
   ],
-  exports: [InisiasiComponent, PemesananComponent],
-  entryComponents: [InisiasiComponent, PemesananComponent],
+  exports: [InisiasiComponent],
+  entryComponents: [InisiasiComponent],
   providers : [DatePipe]
 })
 export class InventoryAdditionModule
