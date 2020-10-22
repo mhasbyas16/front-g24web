@@ -568,6 +568,69 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
     return true;
   }
 
+  async doTolak()
+  {
+    this.spinner.Open();
+    if(this.mode == EPriviledge.READ)
+    {
+      this.toastr.info("Mode 'READ' only.");
+      return;
+    }
+
+    if(!this.validateItems())
+    {
+      return;
+    }
+
+    if(!this.validateInisiasi())
+    {
+      return;
+    }
+
+    this.inisiasi.order_status = OrderStatus.TOLAK.code;
+    this.inisiasi.update_time = this.time;
+    this.inisiasi.update_date = this.date;
+    this.inisiasi.update_by = this.user;
+    this.inisiasi['tgl_approved'] = this.date;
+    this.inisiasi.approved_by = this.user;
+
+    console.log(this.inisiasi);
+    let tempInisiasi = {}
+
+    //              TARGET    - >   SOURCE
+    Object.assign(tempInisiasi, this.inisiasi);
+    DataTypeUtil.Encode(tempInisiasi);
+    console.log(tempInisiasi);
+
+    let msg = "";
+    let inisiasi = false;
+    try
+    {
+      inisiasi = await this.inisiasiService.update(tempInisiasi).toPromise();
+    } catch(err) {
+      msg = err.message;
+      inisiasi = false;
+    }
+
+    this.spinner.Close();
+    if(inisiasi == false)
+    {
+      this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk. Error: " + msg, "Error", {disableTimeOut : true, closeButton : true});
+      this.parentListener.onAfterUpdate(this.inisiasi._id);
+      this.doReset();
+      this.Close();
+      return;
+    } else {
+      Object.assign(this.inisiasi, tempInisiasi);
+      console.log(this.inisiasi);
+      this.parentListener.onAfterUpdate(this.inisiasi._id);
+      // this.doAccounting(this.inisiasi._id);
+      this.toastr.success("PO berhasil ditolak.");
+      this.doReset();
+      this.Close();
+    }
+  }
+
   async doSave()
   {
     this.spinner.Open();
