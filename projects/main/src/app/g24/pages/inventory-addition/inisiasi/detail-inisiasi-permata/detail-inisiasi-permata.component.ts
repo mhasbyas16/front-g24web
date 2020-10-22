@@ -52,7 +52,13 @@ export class DetailInisiasiPermataComponent implements OnInit {
   isDev = !environment.production;
 
   InitiationType = Object.values(InitiationType);
-  PaymentTypeValues = Object.values(PaymentType);
+  // PaymentTypeValues = Object.values(PaymentType);
+  PaymentTypeValues = 
+  [
+    // {code : "E", name : "Maklon"}, 
+    {code : "U", name : "Uang"}
+  ];
+
   PaymentType = PaymentType;
   
   OnlyUpperAlphabetsPattern  = new RegExp('[^A-Z]+', 'g');

@@ -105,7 +105,13 @@ export class DetailInisiasiGiftComponent extends BasePersistentFields implements
   }
 
   InitiationType = Object.values(InitiationType);
-  PaymentTypeValues = Object.values(PaymentType);
+  // PaymentTypeValues = Object.values(PaymentType);
+  PaymentTypeValues = 
+  [
+    // {code : "E", name : "Maklon"}, 
+    {code : "U", name : "Uang"}
+  ];
+
   PaymentType = PaymentType;
   DocumentStatus = Object.values(DocumentStatus);
   ErrorType = ModalErrorType;
