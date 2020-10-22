@@ -802,7 +802,16 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
   {
     for(let key in this.input)
     {
+
       if(key == 'total_pajak' && this.input.tipe_bayar == PaymentType.UANG.code) continue;
+      
+      if(key == 'bank' && this.input.tipe_bayar == PaymentType.MAKLON.code) continue;
+
+      if(key == 'bank' && this.input.asal_uang == 'kas') continue;
+
+      if(key == 'asal_uang' && this.input.tipe_bayar == PaymentType.MAKLON.code) continue;
+
+      if(key == 'asal_uang' && this.input.tipe_bayar == PaymentType.MAKLON.code) continue;
 
       let value = this.input[key];
       console.debug(value, key, 'key')

@@ -146,7 +146,7 @@
                         <div class="clr-col-1">Total Pajak: </div>
                         <div class="clr-col-2"><p>Rp<span>{{getPajakFromItems() | mask : 'separator' : ','}}</span></p></div>
                         <div class="clr-col-1">Total DPP: </div>
-                        <div class="clr-col-2"><p>Rp <span>{{totalDPP() | mask : 'separator' : ','}}</span>.</p></div>
+                        <div class="clr-col-2"><p>Rp <span>{{inisiasi?.total_dpp | mask : 'separator' : ','}}</span>.</p></div>
                         <div class="clr-col-1">Total Harga: </div>
                         <div class="clr-col-2"><p>Rp.<span>{{inisiasi?.total_harga | mask : 'separator' : ','}}</span></p></div>
                     </div>

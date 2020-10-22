@@ -215,7 +215,7 @@ export class DetailItemInisiasiApprovalDinarComponent implements OnInit {
   {
     this.inisiasi = content;
 
-    if(this.inisiasi.order_status == OrderStatus.SUBMIT.code && this.mode == EPriviledge.UPDATE)
+    if(this.inisiasi.order_status != OrderStatus.SUBMIT.code && this.mode == EPriviledge.UPDATE)
     {
       this.doReset();
       this.Close();
