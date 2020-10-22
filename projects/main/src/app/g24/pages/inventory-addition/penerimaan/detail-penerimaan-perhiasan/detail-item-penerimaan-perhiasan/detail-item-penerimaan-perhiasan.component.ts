@@ -621,9 +621,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     let tempInisiasi = {}
     Object.assign(tempInisiasi, this.inisiasi);
     DataTypeUtil.Encode(tempInisiasi);
-this.spinner.Close();
-console.log("done")
-return;
+    
     let msg = "";
     let inisiasi :any = false;
     try {
