@@ -559,18 +559,6 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
       // {
       //   return false;
       // }
-
-      if(item.berat == null || item.berat == 0)
-      {
-        this.toastr.warning("'Berat' barang pada Bulk Item nomor :" + i + " belum diisi.");
-        return false;
-      }
-
-      if(item.jenis == null || item.jenis == "")
-      {
-        this.toastr.warning("'Jenis' barang pada Bulk Item nomor :" + i + " belum diisi.");
-        return false;
-      }
     }
 
     return true;
