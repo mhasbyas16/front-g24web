@@ -70,7 +70,12 @@ export class CardDetailComponent implements OnInit {
   }
 
   approveTr(val){
+<<<<<<< HEAD
     let dataForm = this.formPembayaran.getRawValue();
+=======
+    let p = this.formPembayaran.getRawValue();
+    let dataForm = this.splitDateServiceService.split(p.tglPembayaran);
+>>>>>>> hasby
     this.dateNow = this.datePipe.transform(Date.now(), 'yyyy-MM-dd');
     console.debug(val.product);
     let data = {"_id":val._id,"flag":"jual", tglApprove:this.dateNow, tglPembayaran: this.splitDateServiceService.split(dataForm.tglPembayaran)}
@@ -88,7 +93,12 @@ export class CardDetailComponent implements OnInit {
   }
 
   RejectTr(val){
+<<<<<<< HEAD
     let dataForm = this.formPembayaran.getRawValue();
+=======
+    let p = this.formPembayaran.getRawValue();
+    let dataForm = this.splitDateServiceService.split(p.tglPembayaran);
+>>>>>>> hasby
     this.dateNow = this.datePipe.transform(Date.now(), 'yyyy-MM-dd');
     console.debug(val.product);
     let data = {"_id":val._id,"flag":"rejected", tglApprove:this.dateNow, tglPembayaran: this.splitDateServiceService.split(dataForm.tglPembayaran)}
@@ -107,16 +117,17 @@ export class CardDetailComponent implements OnInit {
   }
 
   validation(data, valid){
-    if (!this.formPembayaran.valid) {
-      this.toastrService.error("Form Not Valid Try Again");
-      return;
-    }
-    this.approval = true;
     if (valid == 'Approve') {
+      if (!this.formPembayaran.valid) {
+        this.toastrService.error("Form Not Valid Try Again");
+        return;
+      }
+      this.approval = true;
       this.prove = valid;
       this.proveData = data;
       return;
     }else{
+      this.approval = true;
       this.prove = valid;
       this.proveData = data;
       return;
