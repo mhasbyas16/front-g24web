@@ -8,12 +8,11 @@ import { MuliaKorporasiComponent } from './penjualan-korporasi/mulia/mulia-korpo
 import { NavModule } from '../../nav/nav.module';
 import { ListPenjualanKorporasiComponent } from './list-penjualan-korporasi/list-penjualan-korporasi.component';
 import { CardDetailComponent } from './list-penjualan-korporasi/card-detail/card-detail.component';
-import { PenjualanProformaComponent } from './penjualan-korporasi/penjualan-proforma/penjualan-proforma.component';
-import { PenjualanBerjangkaComponent } from './penjualan-korporasi/penjualan-berjangka/penjualan-berjangka.component';
 import { LaporanModule } from '../laporan/laporan.module';
+import { PenjualanKorporasiBerjangkaComponent } from './penjualan-korporasi-berjangka/penjualan-korporasi-berjangka.component';
 
 @NgModule({
-  declarations: [PenjualanKorporasiComponent, MuliaKorporasiComponent, ListPenjualanKorporasiComponent, CardDetailComponent, PenjualanProformaComponent, PenjualanBerjangkaComponent ],
+  declarations: [PenjualanKorporasiComponent, MuliaKorporasiComponent, ListPenjualanKorporasiComponent, CardDetailComponent, PenjualanKorporasiBerjangkaComponent ],
   imports: [
     NavModule,
     CommonModule,
