@@ -229,7 +229,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
   defaultProduct()
   {
     return {
-      _id : "", code : "", sku : "", 
+      _id : "", code : "", sku : "", nomor_nota : "",
       "product-jenis" : null, "product-category" : null, "product-purity" : null, "product-gold-color" : null,
       berat : 0.00, baku_tukar : 0.0, gram_tukar : 0, ongkos : 0.0, unit : null,
       tipe_stock : "stock", vendor : null, flag : "stock", location : "",
@@ -319,6 +319,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     let item = this.inisiasi.items[itemsIndex];
 
     let def = this.defaultProduct();
+    def.nomor_nota = this.inisiasi['nomor_nota'];
     def.sku = item['sku'];
     def['product-category'] = this.inisiasi['product-category'];
     def['vendor'] = this.inisiasi['vendor'];
