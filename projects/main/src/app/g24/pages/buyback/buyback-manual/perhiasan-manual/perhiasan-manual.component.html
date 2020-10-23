@@ -11,11 +11,18 @@
                     <div class="card" style="margin-top: 0;">
                         <div class="card-header">
                             Perhiasan
+                            <div class="cart-style"> <!-- total isi cart              total harga cart                           -->
+                                <app-cart-buyback-manual-lm
+                                
+                                
+                                >
+                                </app-cart-buyback-manual-lm>
+                            </div>
                         </div>
                         <div class="card-block" style="padding-top: 0px;">
                             <div class="card-text">
                                 <!-- <form class="clr-form clr-form-horizontal"  [formGroup]="dataPerhiasan" (ngSubmit)="addCart"> -->
-                                <form #dataPerhiasan="ngForm" id="perhiasan" class="clr-form clr-form-compact" clrLayout="horizontal" (ngSubmit)="addCart(dataPerhiasan.value)" >    
+                                <form #dataPerhiasan="ngForm" id="perhiasan" class="clr-form clr-form-compact" clrLayout="horizontal" (ngSubmit)="tampilHarga(dataPerhiasan.value)" >    
                                     <div class="clr-row">
                                         <div class="clr-col-6">
                                             <clr-select-container class="clr-form-control">
@@ -28,8 +35,6 @@
                                                 </select>
                                             </clr-select-container>
                                         </div>
-                                    </div>
-                                    <div class="clr-row">
                                         <div class="clr-col-6">
                                             <clr-date-container>
                                                 <label>Tanggal Transaksi Pembelian</label>
@@ -44,8 +49,6 @@
                                                 <input type="text" clrInput [(ngModel)]="searchModel.namaNasabahPembelian" name="input_namaNasabahPembelian">
                                             </clr-input-container>
                                         </div>
-                                    </div>
-                                    <div class="clr-row">
                                         <div class="clr-col-6">
                                             <clr-input-container>
                                                 <label>Alamat Nasabah Pembelian</label>
@@ -56,22 +59,133 @@
                                     <div class="clr-row">
                                         <div class="clr-col-6">
                                             <clr-select-container class="clr-form-control">
+                                                <label>Vendor Perhiasan</label>
+                                                <select [(ngModel)]="searchModel.vendors" clrSelect name="input_vendor_product" >
+                                                    <option value="pilih" >Pilih Vendor</option>
+                                                    <ng-container *ngFor="let vendor of vendors">
+                                                        <option value="{{vendor.code}}">{{vendor.name}}</option>
+                                                    </ng-container>
+                                                </select>
+                                            </clr-select-container>
+                                        </div>
+                                        <div class="clr-col-6">
+                                            <clr-select-container class="clr-form-control">
                                                 <label>Kadar Perhiasan</label>
                                                 <select [(ngModel)]="searchModel.kadars" clrSelect name="input_kadar_product" >
                                                     <option value="pilih" >Pilih Kadar</option>
                                                     <ng-container *ngFor="let kadar of kadars">
-                                                        <option value="{{kadar.name}}">{{kadar.name}}</option>
+                                                        <option value="{{kadar.code}}">{{kadar.name}}</option>
                                                     </ng-container>
                                                 </select>
                                             </clr-select-container>
                                         </div>
                                     </div>
-                                    <div class="clr-col-4">
-                                        <clr-control-container>
-                                            <button class="btn btn-info-outline btn-sm btn-block float-right">Tampil Harga</button>
-                                        </clr-control-container>
+                                    <div class="clr-row">
+                                        <div class="clr-col-6">
+                                            <clr-select-container class="clr-form-control">
+                                                <label>Jenis Perhiasan</label>
+                                                <select [(ngModel)]="searchModel.jeniss" clrSelect name="input_jenis_perhiasan" >
+                                                    <option value="pilih" >Pilih Jenis</option>
+                                                    <ng-container *ngFor="let jenis of jeniss">
+                                                        <option value="{{jenis.code}}">{{jenis.name}}</option>
+                                                    </ng-container>
+                                                </select>
+                                            </clr-select-container>
+                                        </div>
+                                        <div class="clr-col-6">
+                                            <clr-select-container class="clr-form-control">
+                                                <label>Warna Perhiasan</label>
+                                                <select [(ngModel)]="searchModel.warnas" clrSelect name="input_warna_perhiasan" >
+                                                    <option value="pilih" >Pilih Warna</option>
+                                                    <ng-container *ngFor="let warna of warnas">
+                                                        <option value="{{warna.code}}">{{warna.name}}</option>
+                                                    </ng-container>
+                                                </select>
+                                            </clr-select-container>
+                                        </div>
                                     </div>
+                                    <div class="clr-row">
+                                        <div class="clr-col-6">
+                                            <clr-input-container>
+                                                <label>Berat Perhiasan</label>
+                                                <input type="text" clrInput [(ngModel)]="searchModel.beratPerhiasan" name="input_beratPerhiasan">
+                                            </clr-input-container>
+                                        </div>
+                                        <div class="clr-col-6">
+                                            <clr-select-container class="clr-form-control">
+                                                <label>Kondisi Perhiasan</label>
+                                                <select clrSelect [(ngModel)]="searchModel.kondisis" name="input_kondisi_perhiasan" >
+                                                    <option value="pilih" >Pilih Kondisi</option>
+                                                    <ng-container *ngFor="let kondisi of kondisis">
+                                                        <option value="{{kondisi.value}}">{{kondisi.name}}</option>
+                                                    </ng-container>
+                                                </select>
+                                            </clr-select-container>
+                                        </div>
+                                    </div>
+                                    <div class="clr-row">
+                                        <div class="clr-col-12" style="margin-top: 10px;">
+                                            <button class="btn btn-info-outline btn-sm btn-block ">Tampil Harga</button>
+                                        </div>
+                                    </div>
+                                   
                                 </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-block">
+            <div class="card-text">
+                <div class="clr-row">
+                    <div class="card" style="margin-top: 0;">
+                        <div class="card-header">
+                            Detail Perhiasan
+                        </div>
+                        <div class="card-block" style="padding-top: 0px;">
+                            <div class="card-text">
+                                <clr-datagrid [clrDgLoading]="loadingDg">
+                                    <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
+                                    <clr-dg-column>Vendor</clr-dg-column>
+                                    <clr-dg-column>Jenis</clr-dg-column>
+                                    <clr-dg-column>Berat</clr-dg-column>
+                                    <clr-dg-column>Kadar</clr-dg-column>
+                                    <clr-dg-column>Warna</clr-dg-column>
+                                    <clr-dg-column>Kondisi</clr-dg-column>
+                                    <clr-dg-column>Harga</clr-dg-column>
+                                    <clr-dg-column class="right"></clr-dg-column>
+                                
+                                    <clr-dg-row *clrDgItems="let d of dataperhiasans">
+                                        <clr-dg-cell>{{d.vendorName}}</clr-dg-cell>
+                                        <clr-dg-cell>{{d.jenisName}}</clr-dg-cell>
+                                        <clr-dg-cell>{{d.berat}}</clr-dg-cell>
+                                        <clr-dg-cell>{{d.kadarName}}</clr-dg-cell>
+                                        <clr-dg-cell>{{d.warnaName}}</clr-dg-cell>
+                                        <clr-dg-cell>
+                                            <ng-container *ngIf="d.kondisi == '2'; else plusDefault">
+                                                <span class="label label-danger" >Rusak</span>
+                                            </ng-container>
+                                            <ng-template #plusDefault>
+                                                <span class="label label-success" >Baik</span>
+                                            </ng-template>
+                                        </clr-dg-cell>
+                                        <clr-dg-cell>Rp. {{d.hargaBB | number}}</clr-dg-cell>
+                                        <clr-dg-cell>
+                                            <button type="button" class="btn btn-icon btn-sm btn-success" (click)="addToCart(dataperhiasans)" aria-label="home" >
+                                                <clr-icon shape="plus"></clr-icon>
+                                            </button>  
+                                        </clr-dg-cell>
+                                            
+                                    </clr-dg-row>
+                                    <clr-dg-footer>
+                                        <clr-dg-pagination #pagination [clrDgPageSize]="5">
+                                          <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Users per page</clr-dg-page-size>
+                                          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                                          of {{pagination.totalItems}} Produk
+                                        </clr-dg-pagination>
+                                      </clr-dg-footer>
+                                </clr-datagrid>
                             </div>
                         </div>
                     </div>
