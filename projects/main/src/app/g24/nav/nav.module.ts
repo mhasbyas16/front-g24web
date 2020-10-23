@@ -14,9 +14,10 @@ import { SearchNasabahComponent } from './modal/search-nasabah/search-nasabah.co
 import { ModalOutletComponent } from './modal-outlet/modal-outlet.component';
 import { CartBuybackComponent } from './modal/cart-buyback/cart-buyback.component';
 import { CheckoutBuybackComponent } from './modal/checkout-buyback/checkout-buyback.component';
-import { LoadingSpinnerComponent } from './modal/loading-spinner/loading-spinner.component';
 import { CartBuybackManualLmComponent } from './modal/cart-buyback-manual-lm/cart-buyback-manual-lm/cart-buyback-manual-lm.component';
 import { CheckoutBuybackManualComponent } from './modal/checkout-buyback-manual/checkout-buyback-manual.component';
+import { LoadingSpinnerComponent } from './modal/loading-spinner/loading-spinner.component';
+
 
 @NgModule({
   declarations: [HeaderComponent, SidebarComponent, ContentComponent, FooterComponent, CartComponent, CheckoutComponent, AddNasabahComponent, SearchNasabahComponent, ModalOutletComponent, CartBuybackComponent, CheckoutBuybackComponent,LoadingSpinnerComponent, CartBuybackManualLmComponent, CheckoutBuybackManualComponent],
@@ -37,8 +38,8 @@ import { CheckoutBuybackManualComponent } from './modal/checkout-buyback-manual/
     CartBuybackComponent,
     SearchNasabahComponent,
     AddNasabahComponent,
-    LoadingSpinnerComponent,
-    CartBuybackManualLmComponent
+    CartBuybackManualLmComponent,
+    LoadingSpinnerComponent
   ],
 })
 export class NavModule { }

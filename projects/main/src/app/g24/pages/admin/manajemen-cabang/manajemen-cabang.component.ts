@@ -77,7 +77,7 @@ export class ManajemenCabangComponent implements OnInit {
   validateInput() {
     for (let key in this.inputModel) {
       let value = this.inputModel[key];
-      // console.log(value, key, 'key')
+      // console.debug(value, key, 'key')
       if (value == null || value == "null" || value == 0 || (typeof value === 'number' && value === 0)) {
         this.toastrService.warning("Field belum diisi / sama dengan 0 ");
         return true
@@ -174,7 +174,7 @@ export class ManajemenCabangComponent implements OnInit {
         this.toastrService.success('Add Success')
       });
     });
-    console.log("submitted data", data);
+    console.debug("submitted data", data);
   }
   mainEdit(data) {
     this.inputModel = data;
@@ -215,7 +215,7 @@ export class ManajemenCabangComponent implements OnInit {
         this.toastrService.success('Update Success')
       });
     });
-    console.log("submitted data", data);
+    console.debug("submitted data", data);
   }
   mainDetail(data) { 
     this.inputModel = data;

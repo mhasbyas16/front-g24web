@@ -194,8 +194,8 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
   public setParentListener(listener : IDetailCallbackListener)
   {
     this.parentListener = listener;
-    console.log(listener);
-    console.log(this.spinner)
+    console.debug(listener);
+    console.debug(this.spinner)
   }
 
   private Open() {
@@ -220,7 +220,7 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
   
   GetDisplayValue(object : any) : string
   {
-    // console.log(typeof object)
+    // console.debug(typeof object)
     if(object == null) return "null";
     if(typeof object == 'string' || typeof object == 'number' || typeof object == 'undefined') return object.toString();
 
@@ -408,7 +408,7 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
   onDetailTerimaChanged(item, value, index)
   {
     // let it = this.inisiasi.items[index];
-    // console.log(item, item.detail_terima, value.key, it, it == item)
+    // console.debug(item, item.detail_terima, value.key, it, it == item)
     // if(item.detail_terima == null)
     // {
     //   item['detail_terima'] = 0;
@@ -555,8 +555,8 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
       let total_terima = Number(item.total_terima);
       // let last_terima = Number(item.last_terima);
       let pieces = Number(item.pieces);
-      console.log(detail_terima, detail_terima > 0, detailTerimaAllEmpty)
-      console.log(item)
+      console.debug(detail_terima, detail_terima > 0, detailTerimaAllEmpty)
+      console.debug(item)
 
       if(detail_terima == null)
       {
@@ -651,7 +651,7 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
     this.inisiasi['tgl_terima'] = this.date;
     this.inisiasi.terima_by = this.user;
 
-    console.log(this.inisiasi);
+    console.debug(this.inisiasi);
     let tempInisiasi = {}
     Object.assign(tempInisiasi, this.inisiasi);
     
@@ -674,7 +674,7 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
         return;
       } else {
         Object.assign(this.inisiasi, tempInisiasi);
-        console.log(this.inisiasi);
+        console.debug(this.inisiasi);
         this.parentListener.onAfterUpdate(this.inisiasi._id);
         this.toastr.success("PO berhasil diterima.");
         this.doReset();
@@ -716,7 +716,7 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
       return;
     } else {
       Object.assign(this.inisiasi, tempInisiasi);
-      console.log(this.inisiasi);
+      console.debug(this.inisiasi);
       this.parentListener.onAfterUpdate(this.inisiasi._id);
       this.toastr.success("PO berhasil ditolak");
       this.doReset();
@@ -728,8 +728,8 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
   idTerima : Map<String,any>  = new Map<String,boolean>();
   onCheckAll(data)
   {
-    console.log(data)
-    console.log(this.idTerima)
+    console.debug(data)
+    console.debug(this.idTerima)
     let products = data.products;
     let cekNum = this.checkNumber;
     let checked = 0;
@@ -763,7 +763,7 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
 
     if(this.idTerima.has(key))
     {
-      console.log(key, "key");
+      console.debug(key, "key");
       return true;
     }
 

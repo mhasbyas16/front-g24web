@@ -37,7 +37,7 @@ export class AlphaNumeric {
             let key : number = number - (currPower * multiplier);
             enc += this.alnum[multiplier];
             number -= (currPower * multiplier);
-            console.log("key", key, number)
+            console.debug("key", key, number)
         }
 
         return enc.toUpperCase();

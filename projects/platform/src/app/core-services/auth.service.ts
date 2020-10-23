@@ -44,11 +44,11 @@ export class AuthService {
     let filePath = "/assets/config/server-config.json";
     let url = protocol + "//" + name + ":" + port + filePath;
     let file = await this.http.get(url).toPromise();
-    console.log(file);
+    console.debug(file);
 
     this.sessionService.server = file['backend-url'];
 
-    console.log(this.sessionService.server)
+    console.debug(this.sessionService.server)
 
     return file;
   }
@@ -56,7 +56,7 @@ export class AuthService {
   authCompany(params: string) {
     this.getServerConfig();
     // let json = 
-    // console.log(json);
+    // console.debug(json);
 
     return new Observable(observer => {
       console.debug("environment", environment.server);

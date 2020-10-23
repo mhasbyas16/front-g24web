@@ -24,7 +24,7 @@ export class ExportKorporasiProformaComponent implements OnInit {
   transactionList = [];
   noItem = 0;
   isiTable =[];
-  dateNow:any;
+  dateApp:any;
   constructor(
     private tanggalService:TanggalService,
     private hargaTerbilangService:HargaTerbilangService,
@@ -67,10 +67,10 @@ export class ExportKorporasiProformaComponent implements OnInit {
     // const jpegUrl = canvas.toDataURL('image/jpeg');
 
     // Content
-    this.dateNow = this.splitDateServiceService.splitBulanTerbilang(this.datePipe.transform(Date.now(), 'yyyy-MM-dd'));
+    this.dateApp = this.splitDateServiceService.splitBulanTerbilang(data.tglApprove);
     delete this.innerDoc;
     let hargaFormat = new Intl.NumberFormat(['ban', 'id']).format(data.totalHarga);
-    this.innerDoc ={pageSize: 'A4', pageOrientation: 'portrait',pageMargins: [ 38, 30, 38, 30 ],};
+    this.innerDoc ={pageSize: 'A4', pageOrientation: 'portrait',pageMargins: [ 38, 133, 38, 30 ],};
     this.innerDoc['info'] = {title: "Penjualan Korporasi Proforma"}; 
 
     // footer    
@@ -160,7 +160,7 @@ export class ExportKorporasiProformaComponent implements OnInit {
           },
           {
             text:[
-              'Jakarta, '+this.dateNow,
+              'Jakarta, '+this.dateApp,
               '\nDibuat oleh,',
               '\n\n\n\n\n',
               nameUser+'\n',
@@ -178,7 +178,7 @@ export class ExportKorporasiProformaComponent implements OnInit {
       {text:'Kode',style:'tableDesignHeader'},
       {text:'Vendor', style:'tableDesignHeader'},
       {text:'Denom', style:'tableDesignHeader'},
-      {text:'Harga', style:'tableDesignHeader'},
+      {text:'Harga', style:'tableDesignHeader', noWrap: true},
       {text:'Unit', style:'tableDesignHeader'}]);
     for (let o of data.product) {
       this.isiTable.push([
@@ -194,8 +194,13 @@ export class ExportKorporasiProformaComponent implements OnInit {
     // Footer Content
     this.innerDoc['content'].push([
       {
+        style:'head',
+        text: 'List Nasabah'
+      },
+      {
         style: 'table',
         table: {
+          widths:['*','*','auto','auto','auto','auto','*'],
           body : this.isiTable
         }
       }

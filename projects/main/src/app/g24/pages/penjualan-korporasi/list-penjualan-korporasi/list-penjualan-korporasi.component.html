@@ -57,8 +57,14 @@
                         <clr-dg-cell>{{isi.value.product.length}}</clr-dg-cell>
                         <clr-dg-cell>{{listTotalHarga[isi.key]}}</clr-dg-cell>
                         <clr-dg-cell>Rp. {{isi.value.totalHarga | number}}</clr-dg-cell>
-                        <clr-dg-cell>{{isi.value.flag}}</clr-dg-cell>
-                        <clr-dg-cell><button class="btn btn-danger" (click)="export.PDFData(isi.value,listTotalHarga[isi.key])" >PDF</button></clr-dg-cell>
+                        <!-- flag -->
+                        <clr-dg-cell *ngIf="isi.value.flag == 'jual'"><span class="badge badge-info">Jual</span></clr-dg-cell>
+                        <clr-dg-cell *ngIf="isi.value.flag == 'booking'"><span class="badge badge-success">Booking</span></clr-dg-cell>
+                        <clr-dg-cell *ngIf="isi.value.flag == 'rejected'"><span class="badge badge-danger">Rejected</span></clr-dg-cell>
+                        <clr-dg-cell >
+                            <ng-container *ngIf="isi.value.flag == 'jual'">
+                                <button class="btn btn-danger" (click)="export.PDFData(isi.value,listTotalHarga[isi.key])" >PDF</button>
+                            </ng-container> </clr-dg-cell>
                     </clr-dg-row>
                 </clr-datagrid>
             </div>

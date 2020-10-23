@@ -191,7 +191,6 @@
                                 </clr-input-container>
                                 <clr-select-container>
                                     <label>Rekening Bank</label>
-      rekening: new FormControl ("", Validators.required), 
                                     <select clrSelect formControlName="rekening" id="">
                                         <option *ngFor="let t of bankList" [value]="t._hash">{{t['mata-anggaran']}} - {{t.name}}</option>
                                     </select>

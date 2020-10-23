@@ -20,14 +20,49 @@ export class JurnalInisiasiService {
     return this.commonService.task("journal-api/inisiasi/bayar-emas", obj);
   }
 
-  bayar(id : string) {
+  bayarPerhiasan(id : string) {
     let obj = {_id : id};
-    return this.commonService.task("journal-api/inisiasi/bayar", obj);
+    return this.commonService.task("journal-api/inisiasi/bayar-perhiasan", obj);
+  }
+
+  bayarSouvenir(id : string) {
+    let obj = {_id : id};
+    return this.commonService.task("journal-api/inisiasi/bayar-perhiasan", obj); // currently ke perhiasan
+  }
+  
+  bayarGift(id : string) {
+    let obj = {_id : id};
+    return this.commonService.task("journal-api/inisiasi/bayar-perhiasan", obj); // currently ke perhiasan
+  }
+  
+  bayarPermata(id : string) {
+    let obj = {_id : id};
+    return this.commonService.task("journal-api/inisiasi/bayar-permata", obj);
   }
 
   terima(id : string) {
     let obj = {_id : id};
     return this.commonService.task("journal-api/inisiasi/terima", obj);
+  }
+
+  terimaPerhiasan(id : string) {
+    let obj = {_id : id};
+    return this.commonService.task("journal-api/inisiasi/terima-perhiasan", obj);
+  }
+
+  terimaSouvenir(id : string) {
+    let obj = {_id : id};
+    return this.commonService.task("journal-api/inisiasi/terima-perhiasan", obj); // currently ke perhiasan
+  }
+
+  terimaGift(id : string) {
+    let obj = {_id : id};
+    return this.commonService.task("journal-api/inisiasi/terima-perhiasan", obj); // currently ke perhiasan
+  }
+
+  terimaPermata(id : string) {
+    let obj = {_id : id};
+    return this.commonService.task("journal-api/inisiasi/terima-permata", obj); // currently ke perhiasan
   }
 
   message() {

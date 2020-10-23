@@ -208,7 +208,7 @@ export class DetailPenerimaanDinarComponent extends BasePersistentFields impleme
 
   GetDisplayValue(object : any) : string
   {
-    // console.log(typeof object)
+    // console.debug(typeof object)
     if(object == null) return "null";
     if(typeof object == 'string' || typeof object == 'number' || typeof object == 'undefined') return object.toString();
 
@@ -263,7 +263,7 @@ export class DetailPenerimaanDinarComponent extends BasePersistentFields impleme
     }
     let products = await this.productCatService.list("?code=c05").toPromise();
 
-    console.log(products);
+    console.debug(products);
 
     for(let i = 0; i < products.length; i++)
     {
@@ -285,7 +285,7 @@ export class DetailPenerimaanDinarComponent extends BasePersistentFields impleme
     this.input = this.defaultInput();
     this.searchFG.reset();
     // form2reset.reset();
-    console.log(form2reset, this.input)
+    console.debug(form2reset, this.input)
   }
 
   onProductChanged()
@@ -309,7 +309,7 @@ export class DetailPenerimaanDinarComponent extends BasePersistentFields impleme
     // console.dir(JSON.stringify(this.searchModel))
     // window['fg'] = this.searchFG;
     // window['ctrl'] = this.searchFG.controls;
-    // console.log(this.searchFG.controls)
+    // console.debug(this.searchFG.controls)
     if(!this.searchFG.get("order_status").valid || !this.searchFG.get("create_date_start").valid)
     {
       this.toastr.warning("Mohon isi semua data yang mandatory !!", "Form incomplete!");
@@ -318,7 +318,7 @@ export class DetailPenerimaanDinarComponent extends BasePersistentFields impleme
 
     let create_start = this.searchFG.get("create_date_start").value;
     create_start = StringHelper.StandardFormatDate("/", create_start, "MM/dd/yyyy");
-    // console.log(create_start)
+    // console.debug(create_start)
 
     let create_end = this.searchFG.get("create_date_end").value;
     
@@ -365,7 +365,7 @@ export class DetailPenerimaanDinarComponent extends BasePersistentFields impleme
     }
 
     let order_status = this.searchFG.get("order_status").value;
-    // console.log(order_status);
+    // console.debug(order_status);
     let order_status_p = "";
     switch(order_status)
     {
@@ -425,7 +425,7 @@ export class DetailPenerimaanDinarComponent extends BasePersistentFields impleme
 
   Debug()
   {
-    console.log(this.input, "model", this.selected);
+    console.debug(this.input, "model", this.selected);
   }
 
   onDelete()
@@ -445,7 +445,7 @@ export class DetailPenerimaanDinarComponent extends BasePersistentFields impleme
     for(let key in this.input)
     {
       let value = this.input[key];
-      console.log(value, key, 'key')
+      console.debug(value, key, 'key')
       if(value == null || value == "null" || value == 0 || (typeof value === 'number' && value === 0))
       {
         this.toastr.warning(this.GetDisplayName(key) + " belum diisi / sama dengan 0 ");
@@ -601,7 +601,7 @@ export class DetailPenerimaanDinarComponent extends BasePersistentFields impleme
       let item = this.input.items[i];
 
       this.hitungPajak(item);
-      console.log(item)
+      console.debug(item)
     }
     
     this.hitungPajak();
@@ -620,7 +620,7 @@ export class DetailPenerimaanDinarComponent extends BasePersistentFields impleme
 
     let pajakItem : number = (ongkos/1000) * berat * hpajak * persenPajak / 100; 
     item.pajak = Math.trunc(pajakItem);
-    console.log(pajakItem)
+    console.debug(pajakItem)
     return this.selected.pajak;
   }
 
@@ -663,7 +663,7 @@ export class DetailPenerimaanDinarComponent extends BasePersistentFields impleme
 
   onLihat()
   {
-    console.log(this.selected)
+    console.debug(this.selected)
     if(this.selected == null || Object.keys(this.selected).length === 0)
     {
       this.toastr.warning("Mohon pilih Item.");

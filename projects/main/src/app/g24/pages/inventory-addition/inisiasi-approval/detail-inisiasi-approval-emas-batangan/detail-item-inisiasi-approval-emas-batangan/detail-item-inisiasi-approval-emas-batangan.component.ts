@@ -574,8 +574,10 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
 
   async onTolak()
   {
+    this.spinner.Open();
     if(this.errorHappened)
     {
+      this.spinner.Close();
       this.toastr.error("Terjadi Kesalahan! Harap proses ulang!");
       this.doReset();
       this.Close();
@@ -584,17 +586,26 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
 
     if(this.mode == EPriviledge.READ)
     {
+      this.spinner.Close();
       this.toastr.info("Mode 'READ' only.");
+      this.doReset();
+      this.Close();
       return;
     }
 
     if(!this.validateItems())
     {
+      this.spinner.Close();
+      this.doReset();
+      this.Close();
       return;
     }
 
     if(!this.validateInisiasi())
     {
+      this.spinner.Close();
+      this.doReset();
+      this.Close();
       return;
     }
 
@@ -611,10 +622,24 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
     Object.assign(tempInisiasi, this.inisiasi);
     DataTypeUtil.Encode(tempInisiasi);
 
-    let inisiasi = await this.inisiasiService.update(tempInisiasi).toPromise();
+    let inisiasi : any = false;
+    let msg = "";
+    try
+    {
+      inisiasi = await this.inisiasiService.update(tempInisiasi).toPromise();    
+    }
+    catch(err) {
+      msg = err.message;
+      inisiasi = false;
+    }
+
+    this.spinner.Close();
     if(inisiasi == false)
     {
       this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk.");
+      if(msg == "") msg = this.inisiasiService.message();
+      this.doReset();
+      this.Close();
       return;
     } else {
       Object.assign(this.inisiasi, tempInisiasi);
@@ -675,7 +700,7 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
     let msg = "";
     let inisiasi : any = null; 
     try{
-      await this.inisiasiService.ApprovalInisiasiEmas(tempInisiasi).toPromise();
+      inisiasi = await this.inisiasiService.ApprovalInisiasiEmas(tempInisiasi).toPromise();
     } catch (err) {
       msg = err.message;
       inisiasi = false;
@@ -702,7 +727,7 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
 
   doAccounting(idInisiasi :string)
   {
-    this.jurnalInisiasi.bayar(idInisiasi).subscribe(output => {
+    this.jurnalInisiasi.bayarEmas(idInisiasi).subscribe(output => {
       if(output == false)
       {
         let msg = this.jurnalInisiasi.message();

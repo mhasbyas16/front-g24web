@@ -58,6 +58,28 @@
                 
             </div>
         </div>
+        <ng-container *ngIf="type == 'action'">
+            <div class="card">
+                <div class="card-header">
+                    Konfirmasi Pembayaran
+                </div>
+                <div class="card-block">
+                    <form clrForm [formGroup]="formPembayaran">
+                        <div class="card-text">
+                            <clr-input-container>
+                                <label>Total Transaksi</label>
+                                <input clrInput type="text" value="Rp. {{totals | number}}" name="" id="" readonly >
+                            </clr-input-container>
+                            <clr-date-container>
+                                <label>Tanggal Pembayaran</label>
+                                <input clrDate type="date" formControlName="tglPembayaran" id="" readonly>
+                            </clr-date-container>          
+                        </div>
+                    </form>
+                    
+                </div>
+            </div>
+        </ng-container>
         <div class="card">
             <div class="card-header">
                 Product
@@ -98,9 +120,22 @@
     <div class="modal-footer">
         <button type="button" class="btn btn-outline" (click)="modal = false">Cancel</button>
         <ng-container *ngIf="type == 'action'">
-            <button type="button" class="btn btn-success" (click)="approveTr(list)" >Approve</button>
-            <button type="button" class="btn btn-danger" >Reject</button>
+            <button type="button" class="btn btn-success" (click)="validation(list,'Approve')" >Approve</button>
+            <button type="button" class="btn btn-danger" (click)="validation(list, 'Reject')">Reject</button>
         </ng-container>
         
+    </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="approval">
+    <h3 class="modal-title">Transaction</h3>
+    <div class="modal-body">
+        <p>Are You Sure {{prove}} This Transaction ?</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="approval = false">Cancel</button>
+        <button *ngIf="prove == 'Approve'" type="button" class="btn btn-primary" (click)="approveTr(proveData)">Ok</button>
+        <button *ngIf="prove == 'Reject'" type="button" class="btn btn-primary" (click)="RejectTr(proveData)">Ok</button>
+
     </div>
 </clr-modal>

@@ -56,11 +56,11 @@ export class ModalOutlet {
     public static LoadModal(cls : any, resolver : ComponentFactoryResolver, container : ViewContainerRef) : ComponentRef<any>
     {
         // these creates a Component Instance by a supplied class2Create
-        console.log(cls, 'cls');
+        console.debug(cls, 'cls');
         const factory = resolver.resolveComponentFactory(cls);
-        console.log(factory);
+        console.debug(factory);
         let comp = container.createComponent(factory);
-        console.log(comp)
+        console.debug(comp)
         let modal : IModals = <IModals><unknown>comp.instance;
         modal.SetComponentRef(comp);
         return comp;
