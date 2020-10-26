@@ -452,7 +452,7 @@ static key = EMenuID.TERIMA_MUTASI;
     this.spinner.SetSpinnerText("Mohon Tunggu...");
     this.spinner.Open();
 	  for(let i=0; i < this.listflag.length; i++){
-      if(this.listflag[i].flag=="approved"){
+    if(this.listflag[i].flag=="approved"){
         
         let data = {
           _id : this.listflag[i]._id,
@@ -464,20 +464,7 @@ static key = EMenuID.TERIMA_MUTASI;
         };
         
         console.log(data);
-
-        for(let i = 0; i < this.items.length; i++){
-          console.log("id items",this.items[i]._id);
-        
-          let updateproduct = {
-            _id : this.items[i]._id,
-            unit : this.sessionservice.getUser().unit,
-            flag : FlagProduct.STOCK.code
-          }
-
-          console.log(updateproduct);
-        
-            let updproduct = DataTypeUtil.Encode(updateproduct)
-            let r = DataTypeUtil.Encode(data);
+        let r = DataTypeUtil.Encode(data);
             this.mutasiservice.update(r).subscribe(output=>{
               if(output==false){
                 if(this.mutasiservice.message()!=""){
@@ -486,18 +473,36 @@ static key = EMenuID.TERIMA_MUTASI;
                 }
               }
 
-              this.productservice.update(updproduct).subscribe(data=>{
-                if(data==false){
-                  if(this.productservice.message()!=""){
-                    this.spinner.Close();
-                    return;
-                  }
+              
+              for(let i = 0; i < this.items.length; i++){
+                console.log("id items",this.items[i]._id);
+              
+                let updateproduct = {
+                  _id : this.items[i]._id,
+                  unit : this.sessionservice.getUser().unit,
+                  flag : FlagProduct.STOCK.code
                 }
-              })
+
+                console.log(updateproduct);
+
+                  let updproduct = DataTypeUtil.Encode(updateproduct)
+                  this.productservice.update(updproduct).subscribe(data=>{
+                    if(data==false){
+                      if(this.productservice.message()!=""){
+                        this.spinner.Close();
+                        return;
+                      }
+                    }
+
+                    this.modalaccept = false;
+                    this.spinner.Close();
+                  })
+              }
+
               this.toastr.success("Data berhasil diterima","Sukses");
               this.modalaccept = false;
             })
-        }
+
 
 
     //   let data = {
