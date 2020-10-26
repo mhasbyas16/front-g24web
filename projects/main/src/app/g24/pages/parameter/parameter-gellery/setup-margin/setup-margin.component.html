@@ -1,4 +1,4 @@
-<ng-container *ngIf="myRole == 'Keuangan'">
+<ng-container *ngIf="myRole == 'staffPurchasing'">
     <div  class="clr-col-12"><br></div>
     <button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus"></clr-icon></button> 
 </ng-container>
@@ -51,7 +51,7 @@
         
         <clr-dg-row *clrDgItems="let row of dataMargin">
             <clr-dg-action-overflow>
-                <button *ngIf="row.flag == 'submit'&& myRole == 'Management';" class="action-item" (click)="mainConfirm(row)">Confirm</button>
+                <button *ngIf="row.flag == 'submit'&& myRole == 'kadepStock';" class="action-item" (click)="mainConfirm(row)">Confirm</button>
                 <button class="action-item" (click)="mainDetail(row)">Detail</button>
             </clr-dg-action-overflow>
             <clr-dg-cell hidden>{{row._id}}</clr-dg-cell>

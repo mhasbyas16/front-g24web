@@ -9,7 +9,7 @@
                     <clr-tab>
                         <button clrTabLink>Logam Mulia dan Dinar </button>
                         <clr-tab-content >
-                            <ng-container *ngIf="myRole == 'Keuangan'">
+                            <ng-container *ngIf="myRole == 'staffPurchasing'">
                                 <div  class="clr-col-12"><br></div>
                                 <button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus"></clr-icon></button>
                             </ng-container>
@@ -60,7 +60,7 @@
                             
                                 <clr-dg-row *clrDgItems="let data of logamMulia">
                                     <clr-dg-action-overflow>
-                                        <button *ngIf="data.flag == 'submit' && myRole == 'Management';" class="action-item" (click)="mainConfirm(data)">Confirm</button>
+                                        <button *ngIf="data.flag == 'submit' && myRole == 'kadepStock';" class="action-item" (click)="mainConfirm(data)">Confirm</button>
                                         <button class="action-item" (click)="mainDetail(data)">Detail</button>
                                     </clr-dg-action-overflow>
                                     <clr-dg-cell hidden>{{data._id}}</clr-dg-cell>
@@ -105,10 +105,6 @@
                     </clr-tab>
                 </clr-tabs>
             </div>
-        </div>
-        <div class="card-footer">
-            <button class="btn btn-sm btn-link">Footer Action 1</button>
-            <button class="btn btn-sm btn-link">Footer Action 2</button>
         </div>
     </div>
 </div>
