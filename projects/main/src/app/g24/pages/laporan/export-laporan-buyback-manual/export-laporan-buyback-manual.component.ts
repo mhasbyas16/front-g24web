@@ -264,36 +264,37 @@ export class ExportLaporanBuybackManualComponent implements OnInit {
       }
     ]);
     
-    // //perhiasan
-    // if (data.product.PERHIASAN.length != 0) {
-    //   this.innerDoc['content'].push([
-    //     {
-    //       style:'head', alignment:'left',bold: true, text:'PERHIASAN'
-    //     }
-    //   ]);
+    //perhiasan
+    if (data.product.PERHIASAN != null) {
+      this.innerDoc['content'].push([
+        {
+          style:'head', alignment:'left',bold: true, text:'PERHIASAN'
+        }
+      ]);
 
-    //   let rowPerhiasan = []
-    //   rowPerhiasan.push(['No', 'Deskripsi', 'Berat', 'Kadar', 'Harga'])
-    //   for (let perhiasan of data.product.PERHIASAN) {
-    //     this.noItem++;
-    //     rowPerhiasan.push([this.noItem, perhiasan.detail['product-jenis'].name+'/'+perhiasan.code, perhiasan.detail['berat'], perhiasan.detail['product-purity'].name , 'RP. '+ new Intl.NumberFormat(['ban', 'id']).format(perhiasan.hargaBB) ])
-    //   }
-    //   console.debug(rowPerhiasan)
-    //     this.innerDoc['content'].push([
-    //       {
-    //         layout: 'lightHorizontalLines', // optional
-    //         table: {
-    //           headerRows: 1,
-    //           widths: [ 25, 220, 50, 50, 100 ],
-    //           body: rowPerhiasan
-    //         }
-    //       }
-    //     ]);
-    //   }
+      this.noItem = 0
+      let rowPerhiasan = []
+      rowPerhiasan.push(['No', 'Deskripsi', 'Berat', 'Kadar', 'Harga'])
+      for (let perhiasan of data.product.PERHIASAN) {
+        this.noItem++;
+        rowPerhiasan.push([this.noItem, perhiasan.detail['product-jenis'].name, perhiasan.detail['berat'], perhiasan.detail['product-purity'].name , 'RP. '+ new Intl.NumberFormat(['ban', 'id']).format(perhiasan.hargaBB) ])
+      }
+      console.debug(rowPerhiasan)
+        this.innerDoc['content'].push([
+          {
+            layout: 'lightHorizontalLines', // optional
+            table: {
+              headerRows: 1,
+              widths: [ 25, 220, 50, 50, 100 ],
+              body: rowPerhiasan
+            }
+          }
+        ]);
+      }
 
 
       // LM
-      if (data.product.LM.length != 0) {
+      if (data.product.LM  !=  null) {
         this.innerDoc['content'].push([
           {
             style:'head', alignment:'left',bold: true, text:'\n LOGAM MULIA'
@@ -301,6 +302,7 @@ export class ExportLaporanBuybackManualComponent implements OnInit {
         ]);
   
         let rowLM = []
+        this.noItem = 0
         rowLM.push(['No', 'Deskripsi', 'Denom', 'Harga'])
         for (let lm of data.product.LM) {
           this.noItem++;
@@ -375,32 +377,33 @@ export class ExportLaporanBuybackManualComponent implements OnInit {
       // }
 
 
-      // GS
-      // if (data.product.GS.length != 0) {
-      //   this.innerDoc['content'].push([
-      //     {
-      //       style:'head', alignment:'left',bold: true, text:'\n GIFT AND SOUVENIR'
-      //     }
-      //   ]);
+      
+      if (data.product.GS !=  null) {
+        this.noItem = 0
+        this.innerDoc['content'].push([
+          {
+            style:'head', alignment:'left',bold: true, text:'\n GIFT AND SOUVENIR'
+          }
+        ]);
   
-      //   let rowGS = []
-      //   rowGS.push(['No', 'Deskripsi', 'Denom', 'Harga'])
-      //   for (let gs of data.product.GS) {
-      //     this.noItem++;
-      //     rowGS.push([this.noItem, gs.detail.code+'/', gs.detail['product-denom'].name, 'RP. '+ new Intl.NumberFormat(['ban', 'id']).format(gs.hargaBB) ])
-      //   }
+        let rowGS = []
+        rowGS.push(['No', 'Deskripsi', 'Denom', 'Harga'])
+        for (let gs of data.product.GS) {
+          this.noItem++;
+          rowGS.push([this.noItem,  gs.detail['vendor'].name, gs.detail['product-denom'].name, 'RP. '+ new Intl.NumberFormat(['ban', 'id']).format(gs.hargaBB) ])
+        }
        
-      //     this.innerDoc['content'].push([
-      //       {
-      //         layout: 'lightHorizontalLines', // optional
-      //         table: {
-      //           headerRows: 1,
-      //           widths: [ 25, 220, 117, 100 ],
-      //           body: rowGS
-      //         }
-      //       }
-      //     ]);
-      // }
+          this.innerDoc['content'].push([
+            {
+              layout: 'lightHorizontalLines', // optional
+              table: {
+                headerRows: 1,
+                widths: [ 25, 220, 117, 100 ],
+                body: rowGS
+              }
+            }
+          ]);
+      }
 
       this.innerDoc['content'].push([
         '\n',

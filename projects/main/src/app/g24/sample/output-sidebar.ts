@@ -84,6 +84,17 @@ export const management = [
     {_id: "1001", type: "sub-menu", name : "Terima Manual Souvenir", icons: "yang bagus", color : "warna-warni", componentId : "11005", parentId: "S10011", module: "bb",menu : {_id: "0001 "}},
     
 ];
+export const managerDistro = [
+   
+   // LAPORAN
+   {_id: "0004", type: "menu", name : "Laporan", icons: "list", color : "warna-warni", componentId : "S10002", parentId: "", module: "lp"},
+   {_id: "0004", type: "sub-menu", name : "Laporan Penjualan", icons: "yang bagus", color : "warna-warni", componentId : "10003", parentId: "S10002", module: "lp",menu : {_id: "0004"}},
+   {_id: "0004", type: "sub-menu", name : "Laporan Buyback", icons: "yang bagus", color : "warna-warni", componentId : "10009", parentId: "S10002", module: "lp",menu : {_id: "0005"}},
+   {_id: "0004", type: "sub-menu", name : "Laporan BB Manual", icons: "yang bagus", color : "warna-warni", componentId : "10010", parentId: "S10002", module: "lp",menu : {_id: "0005"}},
+   
+   
+   
+];
 
 export const keuangan = [
     // ANGGARAN

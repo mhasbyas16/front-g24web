@@ -8,7 +8,56 @@
     <clr-modal [(clrModalOpen)]="cartModal" [clrModalSize]="'xl'" [clrModalStaticBackdrop]="false">
         <h3 class="modal-title" >Buyback Cart <clr-icon shape="coin-bag" class="is-solid cart-color"></clr-icon></h3>
         <div class="modal-body">
-            <!-- <ng-container *ngIf="cartPerhiasan.length > 0"> -->
+            <ng-container *ngIf="cartPerhiasan.length > 0">
+                <div class="clr-row">
+                    <div class="card" style="margin-top: 0;">
+                        <div class="card-header">
+                            Perhiasan 
+                        </div>
+                        <div class="card-block">
+                            <ul class="list-group">
+                                <ng-container *ngFor="let ip of cartPerhiasan | keyvalue">
+                                    <li class="list-group-item">
+                                        <div class="clr-row" style="padding-top: 0;">
+                                            <div class="clr-col-1">
+                                                <span>{{ip.value.vendor}}</span>
+                                            </div>
+                                            <div class="clr-col-1">
+                                                <span>{{ip.value.jenis}}</span>
+                                            </div>
+                                            <div class="clr-col-1">
+                                                <span>{{ip.value.warna}}</span>
+                                            </div>
+                                            <div class="clr-col-1">
+                                                <span>{{ip.value.kadar}}</span>
+                                            </div>
+                                            <div class="clr-col-1">
+                                                <span>{{ip.value.berat}}</span>
+                                            </div>
+                                            <div class="clr-col-2"> Kondisi : 
+                                                <ng-container *ngIf="ip.value.kondisi == '2'; else plusDefault">
+                                                    <span class="label label-danger" >Rusak</span>
+                                                </ng-container>
+                                                <ng-template #plusDefault>
+                                                    <span class="label label-success" >Baik</span>
+                                                </ng-template>
+                                            </div>
+                                            <div class="clr-col-3">
+                                                <span class="left"> Rp. {{ip.value.hargaBB| number}}</span>
+                                            </div>
+                                            <div class="clr-col-1">
+                                                <button type="button" class="btn btn-icon btn-sm btn-danger" aria-label="home" (click)="removeItemPerhiasan(ip.key, ip.value.harga )">
+                                                    <clr-icon shape="minus"></clr-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </li>                                        
+                                </ng-container>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
             <ng-container *ngIf="cartLogam.length > 0">
                 <div class="clr-row">
                     <div class="card" style="margin-top: 0;">
@@ -84,9 +133,9 @@
         </div>
         <div class="modal-footer">
             <ng-container *ngIf="totalCart > 0">
-                <span>Total : Rp. {{ hargaTotalEmasBatangan+hargaTotalSouvenir | number}}</span>
+                <span>Total : Rp. {{ hargaTotalEmasBatangan+hargaTotalSouvenir+hargaTotalPerhiasan | number}}</span>
             <button type="button" class="btn btn-warning" (click)="removeCart()">Clear</button>
-            <button type="button" class="btn btn-primary" (click)="CO.openModal(hargaTotalEmasBatangan+hargaTotalSouvenir)">Check Out</button>
+            <button type="button" class="btn btn-primary" (click)="CO.openModal(hargaTotalEmasBatangan+hargaTotalSouvenir+hargaTotalPerhiasan)">Check Out</button>
             </ng-container>            
         </div>
     </clr-modal>

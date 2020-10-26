@@ -92,7 +92,7 @@ export class LaporanBuybackManualComponent implements OnInit {
 
     let data = this.search.getRawValue(); 
     let params = "";
-    let paramTransaction = "&_or=transaction-type.code:b02,b03"
+    let paramTransaction = "&_or=transaction-type.code:b02,b03,b04"
 
     // Session
     const getUnit = this.sessionService.getUnit();
@@ -186,9 +186,11 @@ export class LaporanBuybackManualComponent implements OnInit {
         this.totalHargaLM=0;
         this.totalHargaGS=0;
         this.totalHargaDinar=0;
-        // for (let hp of isi.product["PERHIASAN"]) {
-        //   this.totalP = this.totalP + hp.hargaBB;
-        // }
+        if ( isi.product["PERHIASAN"] != null) {
+          for (let hp of isi.product["PERHIASAN"]) {
+            this.totalP = this.totalP + hp.hargaBB;
+          }
+        }
         // for (let hb of isi.product["BERLIAN"]) {
         //   this.totalBerlian = this.totalBerlian + hb.hargaBB;
         // }
@@ -236,7 +238,10 @@ export class LaporanBuybackManualComponent implements OnInit {
           detailProduct = response.product.LM
         }else if (response.product.GS != null){
           detailProduct = response.product.GS
+        }else if (response.product.PERHIASAN != null){
+          detailProduct = response.product.PERHIASAN
         }
+
         let dataDetail : any
         let data = {batch_counter : detailProduct.length }
         for (let index = 0; index < detailProduct.length; index++) {

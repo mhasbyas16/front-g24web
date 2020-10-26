@@ -1,5 +1,5 @@
 import { Component, OnInit , Output, EventEmitter} from '@angular/core';
-import { LM, GS } from '../../../sample/cart-buyback-manual-lm';
+import { LM, GS, PERHIASAN } from '../../../sample/cart-buyback-manual-lm';
 
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
@@ -34,7 +34,7 @@ export class CheckoutBuybackManualComponent implements OnInit {
   tf:boolean = false;
   
   //cart
-  // perhiasan = PERHIASAN;
+  perhiasan = PERHIASAN;
   emasBatangan = LM;
   souvenir = GS;
   // berlian = BERLIAN;
@@ -104,7 +104,7 @@ export class CheckoutBuybackManualComponent implements OnInit {
     })
 
     console.debug(LM, "sadsda")
-    // this.jumlahPerhiasan = this.perhiasan.length;
+    this.jumlahPerhiasan = this.perhiasan.length;
     this.jumlahEmasBatangan = this.emasBatangan.length;
     this.jumlahSouvenir = this.souvenir.length;
     // this.jumlahBerlian = this.berlian.length;
@@ -128,6 +128,12 @@ export class CheckoutBuybackManualComponent implements OnInit {
       })
     }else if (this.emasBatangan.length > 0) {
       this.transactionTypeService.get("?_hash=1&code=b02").subscribe((response: any) => {
+        if (response != false) {
+          this.formData.patchValue({ 'transaction-type': response["_hash"] });
+        }
+      })
+    }else if (this.perhiasan.length > 0) {
+      this.transactionTypeService.get("?_hash=1&code=b03").subscribe((response: any) => {
         if (response != false) {
           this.formData.patchValue({ 'transaction-type': response["_hash"] });
         }
@@ -270,6 +276,8 @@ export class CheckoutBuybackManualComponent implements OnInit {
       data.product = btoa(JSON.stringify({ LM }));
     }else if(this.jumlahSouvenir > 0){
       data.product = btoa(JSON.stringify({ GS }));
+    }else if(this.jumlahPerhiasan > 0){
+      data.product = btoa(JSON.stringify({ PERHIASAN }));
     }
     
     data.product_encoded = "base64";
@@ -303,7 +311,7 @@ export class CheckoutBuybackManualComponent implements OnInit {
         this.toastr.success(this.buybackService.message(), "Transaction Success");
         this.checkoutModal = false;
         // remove isi cart
-        // PERHIASAN.splice(0);
+        PERHIASAN.splice(0);
         // BERLIAN.splice(0);
         LM.splice(0);
         // DINAR.splice(0);

@@ -13,7 +13,10 @@
                             Perhiasan
                             <div class="cart-style"> <!-- total isi cart              total harga cart                           -->
                                 <app-cart-buyback-manual-lm
-                                
+                                [totalCart]="totalCart"
+                                (clearPerhiasan)="clearPerhiasan($event)"
+                                [hargaTotalPerhiasan]="hargaTotalPerhiasan"
+                               
                                 
                                 >
                                 </app-cart-buyback-manual-lm>
@@ -108,7 +111,7 @@
                                         <div class="clr-col-6">
                                             <clr-input-container>
                                                 <label>Berat Perhiasan</label>
-                                                <input type="text" clrInput [(ngModel)]="searchModel.beratPerhiasan" name="input_beratPerhiasan">
+                                                <input type="number" clrInput [(ngModel)]="searchModel.beratPerhiasan" name="input_beratPerhiasan">
                                             </clr-input-container>
                                         </div>
                                         <div class="clr-col-6">
@@ -172,9 +175,17 @@
                                         </clr-dg-cell>
                                         <clr-dg-cell>Rp. {{d.hargaBB | number}}</clr-dg-cell>
                                         <clr-dg-cell>
-                                            <button type="button" class="btn btn-icon btn-sm btn-success" (click)="addToCart(dataperhiasans)" aria-label="home" >
-                                                <clr-icon shape="plus"></clr-icon>
-                                            </button>  
+                                            <ng-container *ngIf="cartList.length == 0; else disabled">
+                                                <button type="button" class="btn btn-icon btn-sm btn-success" (click)="addToCart(dataperhiasans)" aria-label="home" >
+                                                    <clr-icon shape="plus"></clr-icon>
+                                                </button> 
+                                            </ng-container>
+                                            <ng-template #disabled>
+                                                <button type="button" class="btn btn-icon btn-sm btn-success" disabled aria-label="home" >
+                                                    <clr-icon shape="minus"></clr-icon>
+                                                </button> 
+                                            </ng-template>
+                                             
                                         </clr-dg-cell>
                                             
                                     </clr-dg-row>
