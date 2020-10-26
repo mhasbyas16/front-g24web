@@ -63,8 +63,18 @@
     <clr-dg-column class="right"></clr-dg-column>
 
     <clr-dg-row *clrDgItems="let d of dataperhiasans">
-        <clr-dg-cell>{{d.id}}</clr-dg-cell>
-        <clr-dg-cell>{{d.code}}</clr-dg-cell>
+        <ng-container *ngIf="d.id == null || d.id == ''; else dId">
+            <clr-dg-cell>Not Set</clr-dg-cell>
+        </ng-container>
+        <ng-template #dID>
+            <clr-dg-cell>{{d.id}}</clr-dg-cell>
+        </ng-template>
+        <ng-container *ngIf="d.code == null || d.code == ''; else dCode">
+            <clr-dg-cell>Not Set</clr-dg-cell>
+        </ng-container>
+        <ng-template #dCode>
+            <clr-dg-cell>{{d.code}}</clr-dg-cell>
+        </ng-template>
         <clr-dg-cell>{{d.vendor.name}}</clr-dg-cell>
         <clr-dg-cell>{{d['product-jenis'].name}}</clr-dg-cell>
         <clr-dg-cell>{{d.berat}}</clr-dg-cell>
