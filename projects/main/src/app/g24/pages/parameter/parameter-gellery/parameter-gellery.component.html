@@ -173,7 +173,7 @@
                         <ng-container *ngFor="let hargaItem of harga">
                             <tr>
                                 <td>{{hargaItem['product-denom'].name}}</td>
-                                <td><clr-input-container><input clrInput name="harga_baku" type="number" [(ngModel)]="hargaItem.harga_baku"/></clr-input-container></td>
+                                <td><clr-input-container><input clrInput name="harga_baku" type="text" [(ngModel)]="hargaItem.harga_baku" mask="separator" thousandSeparator=","/></clr-input-container></td>
                             </tr>
                         </ng-container>
                     </tbody>

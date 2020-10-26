@@ -131,8 +131,6 @@ export class SetupHargaComponent implements OnInit {
     return false
   }
 
-  
-
   //list product category 
   onListCategory(){
     this.ProductCategorySerevice.list("?"+this.productFilter).subscribe((response : any) => {
@@ -192,6 +190,15 @@ export class SetupHargaComponent implements OnInit {
 
   mainAddSubmit(){
     if(this.validateInput()) return;
+
+    let hbk = this.inputModel.harga_baku;
+    let hbb = this.inputModel.harga_buyback;
+
+    if(hbb >= hbk){
+      this.toastrService.warning("Harga Buyback tidak boleh besar atau sama dengan harga baku");
+      return
+    }
+    
     //mencari product berdasarkan id
     for (let i of this.product){
       if(this.inputModel.productSelect == i._id){

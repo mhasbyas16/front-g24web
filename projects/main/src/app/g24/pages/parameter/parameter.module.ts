@@ -13,6 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NavModule } from '../../nav/nav.module';
 import { DatePipe } from '@angular/common';
 import { NgSelect2Module } from "ng-select2";
+import { NgxMaskModule } from 'ngx-mask';
 
 @NgModule({
   declarations: [ParameterGelleryComponent, SetupHargaComponent, SetupMarginComponent, ParameterGlobalComponent],
@@ -23,6 +24,7 @@ import { NgSelect2Module } from "ng-select2";
     NavModule,
     ReactiveFormsModule,
     NgSelect2Module,
+    NgxMaskModule.forRoot()
   ],
   exports : [],
   providers:[
