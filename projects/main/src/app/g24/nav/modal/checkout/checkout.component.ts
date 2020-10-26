@@ -15,6 +15,7 @@ import { TransactionCardTypeService } from '../../../services/transaction/transa
 import { TransactionBankInstallmentService } from '../../../services/transaction/transaction-bank-installment.service';
 import { TransactionFlagService } from '../../../services/transaction/transaction-flag.service';
 import { TransactionTypeService } from '../../../services/transaction/transaction-type.service';
+import { CurrencyService } from '../../../services/transaction/currency.service';
 
 // session service
 import { UserService } from 'projects/platform/src/app/services/security/user.service';
@@ -90,6 +91,7 @@ export class CheckoutComponent implements OnInit {
     private transactionFlagService: TransactionFlagService,
     private productService: ProductService,
     private transactionTypeService: TransactionTypeService,
+    private currencyService:CurrencyService,
     //ng
     private toastr: ToastrService,
     private sessionService: SessionService,
@@ -441,6 +443,13 @@ export class CheckoutComponent implements OnInit {
       delete data[LM[index].code]
     }
     // 
+    this.currencyService.get('?code=360').subscribe((response:any)=>{
+      if (response == false) {
+        console.debug("gagal get currency");
+        return;
+      }
+      data.currency = response;
+    })
     data.product = btoa(JSON.stringify({ PERHIASAN, LM, BERLIAN, GS, DINAR }));
     data.product_encoded = "base64";
     let nomT = data["nominalTransaksi"]
@@ -459,7 +468,10 @@ export class CheckoutComponent implements OnInit {
 
       console.debug(this.transactionFlagService.batchUpdate(), 'product flaf update success');
     })
+
+    
     this.transactionService.add(data).subscribe((response: any) => {
+      
       if (response != false) {
         this.validModel = false;
         this.toastr.success(this.transactionService.message(), "Transaction Success");

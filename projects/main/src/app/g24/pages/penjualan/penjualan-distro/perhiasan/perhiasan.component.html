@@ -66,7 +66,7 @@
         <ng-container *ngIf="d.id == null || d.id == ''; else dId">
             <clr-dg-cell>Not Set</clr-dg-cell>
         </ng-container>
-        <ng-template #dID>
+        <ng-template #dId>
             <clr-dg-cell>{{d.id}}</clr-dg-cell>
         </ng-template>
         <ng-container *ngIf="d.code == null || d.code == ''; else dCode">
