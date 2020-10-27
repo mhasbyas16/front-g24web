@@ -192,8 +192,8 @@
                             <label for="basic" class="clr-control-label">Harga Buyback</label>
                             <div class="clr-control-container">
                                 <div class="clr-input-wrapper">
-                                    <input name="harga_buyback" type="number" class="clr-input"
-                                        [(ngModel)]="inputModel.harga_buyback" />
+                                    <input name="harga_buyback" type="text" class="clr-input"
+                                        [(ngModel)]="inputModel.harga_buyback" mask="separator" thousandSeparator=","/>
                                     <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                                 </div>
                                 <span class="clr-subtext"></span>
@@ -205,8 +205,8 @@
                             <label for="basic" class="clr-control-label">Harga Dasar Jual</label>
                             <div class="clr-control-container">
                                 <div class="clr-input-wrapper">
-                                    <input name="harga_baku" type="number" class="clr-input"
-                                        [(ngModel)]="inputModel.harga_baku" />
+                                    <input name="harga_baku" type="text" class="clr-input"
+                                        [(ngModel)]="inputModel.harga_baku" mask="separator" thousandSeparator=","/>
                                     <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                                 </div>
                                 <span class="clr-subtext"></span>
@@ -218,8 +218,8 @@
                             <label for="basic" class="clr-control-label">Potongan BB Batu</label>
                             <div class="clr-control-container">
                                 <div class="clr-input-wrapper">
-                                    <input [(ngModel)]="inputModel.potongan_batu" name="potongan_batu" type="number"
-                                        class="clr-input" placeholder="0" min="0" max="100" />
+                                    <input [(ngModel)]="inputModel.potongan_batu" name="potongan_batu" type="text"
+                                        class="clr-input" placeholder="0" min="0" max="100" mask="separator" thousandSeparator=","/>
                                     <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                                 </div>
                                 <span class="clr-subtext"></span>
@@ -232,7 +232,7 @@
                             <div class="clr-control-container">
                                 <div class="clr-input-wrapper">
                                     <input [(ngModel)]="inputModel.potongan_berlian" name="potongan_berlian"
-                                        type="number" class="clr-input" placeholder="0" min="0" max="100" />
+                                        type="text" class="clr-input" placeholder="0" min="0" max="100" mask="separator" thousandSeparator=","/>
                                     <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                                 </div>
                                 <span class="clr-subtext"></span>
@@ -244,8 +244,8 @@
                             <label for="basic" class="clr-control-label">Potongan Ongkos</label>
                             <div class="clr-control-container">
                                 <div class="clr-input-wrapper">
-                                    <input [(ngModel)]="inputModel.potongan_ongkos" name="potongan_ongkos" type="number"
-                                        class="clr-input" placeholder="0" min="0" max="100" />
+                                    <input [(ngModel)]="inputModel.potongan_ongkos" name="potongan_ongkos" type="text"
+                                        class="clr-input" placeholder="0" min="0" max="100" mask="separator" thousandSeparator=","/>
                                     <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                                 </div>
                                 <span class="clr-subtext"></span>

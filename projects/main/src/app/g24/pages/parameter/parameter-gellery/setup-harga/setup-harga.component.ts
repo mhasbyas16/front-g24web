@@ -389,7 +389,7 @@ export class SetupHargaComponent implements OnInit {
   }
 
   mainApproveSubmit(){
-    if(this.validateInput()) return;
+    // if(this.validateInput()) return;
 
     let setup = {
       "_id" : this.inputModel._id,
@@ -433,7 +433,7 @@ export class SetupHargaComponent implements OnInit {
 
     //get data approve lama
     this.spinner = true;
-    this.prmJualService.get("?flag=approved&product-category._id="+this.inputModel.productSelect).subscribe((out) => {
+    this.prmJualService.get("?flag=approved&product-category._id="+this.inputModel.productS).subscribe((out) => {
       this.getDataold = out._id;
 
       if (out == false){
