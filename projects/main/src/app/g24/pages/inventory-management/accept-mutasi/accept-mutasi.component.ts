@@ -12,6 +12,7 @@ import { ServerDateTimeService } from '../../../services/system/server-date-time
 import { FlagProduct } from '../../../lib/enum/flag-product';
 import { ProductService } from '../../../services/product/product.service';
 import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
+import { JurnalMutasiService } from '../../../services/keuangan/jurnal/stock/jurnal-mutasi.service';
 
 
 @Component({
@@ -58,6 +59,8 @@ static key = EMenuID.TERIMA_MUTASI;
     private UnitService : UnitService,
     private mutasiservice : MutasiService,
     private sessionservice : SessionService,
+    private jurnalMutasiService : JurnalMutasiService,
+
     private productjenis : ProductJenisService,
 	  private datetimeservice : ServerDateTimeService,
     private toastr : ToastrService,
@@ -501,6 +504,8 @@ static key = EMenuID.TERIMA_MUTASI;
 
               this.toastr.success("Data berhasil diterima","Sukses");
               this.modalaccept = false;
+              let id : string = output._id;
+              this.doAccounting(id);
             })
 
 
@@ -531,5 +536,28 @@ static key = EMenuID.TERIMA_MUTASI;
    }
 
 
+  }
+
+  doAccounting(id : string) {
+    this.jurnalMutasiService.terima(id).subscribe(result => {
+      if(result != false)
+      {
+        this.toastr.success("Jurnal Terima berhasil.");
+        this.modalaccept = false;
+        this.spinner.Close();
+      } 
+      else
+      {
+        let msg : string = "";
+        this.toastr.error("Harap hubungi IT Helpdesk/Support. Error: " + msg, "Jurnal Terima gagal!", {disableTimeOut : true, tapToDismiss : true});
+        this.modalaccept = false;
+        this.spinner.Close();
+      }
+
+    }, err => {
+      this.toastr.error("Harap hubungi IT Helpdesk/Support. Error: " + err.message, "Jurnal Terima gagal!", {disableTimeOut : true, tapToDismiss : true});
+      this.modalaccept = false;
+      this.spinner.Close();
+    })
   }
 }
