@@ -12,6 +12,7 @@ import { ServerDateTimeService } from '../../../services/system/server-date-time
 import { FlagProduct } from '../../../lib/enum/flag-product';
 import { ProductService } from '../../../services/product/product.service';
 import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
+import { JurnalMutasiService } from '../../../services/keuangan/jurnal/stock/jurnal-mutasi.service';
 
 
 @Component({
@@ -58,6 +59,8 @@ static key = EMenuID.TERIMA_MUTASI;
     private UnitService : UnitService,
     private mutasiservice : MutasiService,
     private sessionservice : SessionService,
+    private jurnalMutasiService : JurnalMutasiService,
+
     private productjenis : ProductJenisService,
 	  private datetimeservice : ServerDateTimeService,
     private toastr : ToastrService,
@@ -452,7 +455,7 @@ static key = EMenuID.TERIMA_MUTASI;
     this.spinner.SetSpinnerText("Mohon Tunggu...");
     this.spinner.Open();
 	  for(let i=0; i < this.listflag.length; i++){
-      if(this.listflag[i].flag=="approved"){
+    if(this.listflag[i].flag=="approved"){
         
         let data = {
           _id : this.listflag[i]._id,
@@ -464,20 +467,7 @@ static key = EMenuID.TERIMA_MUTASI;
         };
         
         console.log(data);
-
-        for(let i = 0; i < this.items.length; i++){
-          console.log("id items",this.items[i]._id);
-        
-          let updateproduct = {
-            _id : this.items[i]._id,
-            unit : this.sessionservice.getUser().unit,
-            flag : FlagProduct.STOCK.code
-          }
-
-          console.log(updateproduct);
-        
-            let updproduct = DataTypeUtil.Encode(updateproduct)
-            let r = DataTypeUtil.Encode(data);
+        let r = DataTypeUtil.Encode(data);
             this.mutasiservice.update(r).subscribe(output=>{
               if(output==false){
                 if(this.mutasiservice.message()!=""){
@@ -486,18 +476,38 @@ static key = EMenuID.TERIMA_MUTASI;
                 }
               }
 
-              this.productservice.update(updproduct).subscribe(data=>{
-                if(data==false){
-                  if(this.productservice.message()!=""){
-                    this.spinner.Close();
-                    return;
-                  }
+              
+              for(let i = 0; i < this.items.length; i++){
+                console.log("id items",this.items[i]._id);
+              
+                let updateproduct = {
+                  _id : this.items[i]._id,
+                  unit : this.sessionservice.getUser().unit,
+                  flag : FlagProduct.STOCK.code
                 }
-              })
+
+                console.log(updateproduct);
+
+                  let updproduct = DataTypeUtil.Encode(updateproduct)
+                  this.productservice.update(updproduct).subscribe(data=>{
+                    if(data==false){
+                      if(this.productservice.message()!=""){
+                        this.spinner.Close();
+                        return;
+                      }
+                    }
+
+                    this.modalaccept = false;
+                    this.spinner.Close();
+                  })
+              }
+
               this.toastr.success("Data berhasil diterima","Sukses");
               this.modalaccept = false;
+              let id : string = output._id;
+              this.doAccounting(id);
             })
-        }
+
 
 
     //   let data = {
@@ -526,5 +536,28 @@ static key = EMenuID.TERIMA_MUTASI;
    }
 
 
+  }
+
+  doAccounting(id : string) {
+    this.jurnalMutasiService.terima(id).subscribe(result => {
+      if(result != false)
+      {
+        this.toastr.success("Jurnal Terima berhasil.");
+        this.modalaccept = false;
+        this.spinner.Close();
+      } 
+      else
+      {
+        let msg : string = "";
+        this.toastr.error("Harap hubungi IT Helpdesk/Support. Error: " + msg, "Jurnal Terima gagal!", {disableTimeOut : true, tapToDismiss : true});
+        this.modalaccept = false;
+        this.spinner.Close();
+      }
+
+    }, err => {
+      this.toastr.error("Harap hubungi IT Helpdesk/Support. Error: " + err.message, "Jurnal Terima gagal!", {disableTimeOut : true, tapToDismiss : true});
+      this.modalaccept = false;
+      this.spinner.Close();
+    })
   }
 }

@@ -443,21 +443,17 @@ export class CheckoutComponent implements OnInit {
       delete data[LM[index].code]
     }
     // 
-    this.currencyService.get('?code=360').subscribe((response:any)=>{
-      if (response == false) {
-        console.debug("gagal get currency");
-        return;
-      }
-      data.currency = response;
-    })
+    
     data.product = btoa(JSON.stringify({ PERHIASAN, LM, BERLIAN, GS, DINAR }));
     data.product_encoded = "base64";
+    data.currency_encoded = "base64";
     let nomT = data["nominalTransaksi"]
     data["nominalTransaksi"] = nomT.replace(/,/g, '')
     delete data["cif"];
     delete data["namaPemasar"];
     delete data["nik"];
-    console.debug(data, "ISI FORMDATA");
+    
+   
 
     // data.metodeBayar =
 
@@ -469,27 +465,35 @@ export class CheckoutComponent implements OnInit {
       console.debug(this.transactionFlagService.batchUpdate(), 'product flaf update success');
     })
 
-    
-    this.transactionService.add(data).subscribe((response: any) => {
-      
-      if (response != false) {
-        this.validModel = false;
-        this.toastr.success(this.transactionService.message(), "Transaction Success");
-        this.checkoutModal = false;
-        // remove isi cart
-        PERHIASAN.splice(0);
-        BERLIAN.splice(0);
-        LM.splice(0);
-        DINAR.splice(0);
-        GS.splice(0);
-        this.cartModal.emit(false);
-        this.ChangeContentArea('10003');
-      } else {
-        this.toastr.error(this.transactionService.message(), "Transaction");
-        this.idTransaksi()
+    this.currencyService.get('?code=360').subscribe((response:any)=>{
+      if (response == false) {
+        console.debug("gagal get currency");
         return;
       }
+      data.currency =  btoa(JSON.stringify(response));
+      console.debug(data, "ISI FORMDATA");
+      this.transactionService.add(data).subscribe((response: any) => {
+      
+        if (response != false) {
+          this.validModel = false;
+          this.toastr.success(this.transactionService.message(), "Transaction Success");
+          this.checkoutModal = false;
+          // remove isi cart
+          PERHIASAN.splice(0);
+          BERLIAN.splice(0);
+          LM.splice(0);
+          DINAR.splice(0);
+          GS.splice(0);
+          this.cartModal.emit(false);
+          this.ChangeContentArea('10003');
+        } else {
+          this.toastr.error(this.transactionService.message(), "Transaction");
+          this.idTransaksi()
+          return;
+        }
+      })
     })
+    
 
   }
 

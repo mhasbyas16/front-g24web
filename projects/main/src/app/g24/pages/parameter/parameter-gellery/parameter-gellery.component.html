@@ -8,12 +8,14 @@
                 <clr-tabs>
                     <clr-tab>
                         <button clrTabLink>Logam Mulia dan Dinar </button>
-                        <clr-tab-content >
+                        <clr-tab-content>
                             <ng-container *ngIf="myRole == 'staffPurchasing'">
-                                <div  class="clr-col-12"><br></div>
-                                <button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus"></clr-icon></button>
+                                <div class="clr-col-12"><br></div>
+                                <button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus">
+                                    </clr-icon></button>
                             </ng-container>
-                            <form #searchLogamMulia="ngForm" id="logam-mulia" clrForm (ngSubmit)="onCariLogamMulia(searchLogamMulia.value)">
+                            <form #searchLogamMulia="ngForm" id="logam-mulia" clrForm
+                                (ngSubmit)="onCariLogamMulia(searchLogamMulia.value)">
                                 <div class="clr-row">
                                     <div class="clr-col-12">
                                         <h6 class="bg-blue1000"> Pencarian </h6>
@@ -21,8 +23,9 @@
                                     <div class="clr-col-3">
                                         <clr-select-container class="clr-form-control">
                                             <label class="clr-control-label">Vendor</label>
-                                            <select [(ngModel)]="searchModel.vendors" clrSelect name="input_vendor_perhiasan" ngModel>
-                                                <option value="all" >All</option>
+                                            <select [(ngModel)]="searchModel.vendors" clrSelect
+                                                name="input_vendor_perhiasan" ngModel>
+                                                <option value="all">All</option>
                                                 <ng-container *ngFor="let vendor of vendors">
                                                     <option value="{{vendor.code}}">{{vendor.name}}</option>
                                                 </ng-container>
@@ -32,7 +35,8 @@
                                     <div class="clr-col-3">
                                         <clr-select-container class="clr-form-control">
                                             <label class="clr-control-label">Jenis Harga</label>
-                                            <select [(ngModel)]="searchModel.jenisbarang" clrSelect name="input_jenis_barang" ngModel>
+                                            <select [(ngModel)]="searchModel.jenisbarang" clrSelect
+                                                name="input_jenis_barang" ngModel>
                                                 <option value="all">All</option>
                                                 <ng-container *ngFor="let B of barang">
                                                     <option value="{{B.name}}">{{B.name}}</option>
@@ -45,11 +49,12 @@
                                     <div class="clr-col-1">
                                         <div class="clr-form-control">
                                             <div class="clr-control-container">
-                                                <button class="btn btn-info-outline btn-sm" (change)="muter()">Cari</button>
+                                                <button class="btn btn-info-outline btn-sm"
+                                                    (change)="muter()">Cari</button>
                                             </div>
                                         </div>
                                     </div>
-                                </div>   
+                                </div>
                             </form>
                             <clr-datagrid [clrDgLoading]="loadingDg">
                                 <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
@@ -57,31 +62,33 @@
                                 <clr-dg-column>Jenis Harga</clr-dg-column>
                                 <clr-dg-column>Vendor</clr-dg-column>
                                 <clr-dg-column>Status</clr-dg-column>
-                            
+
                                 <clr-dg-row *clrDgItems="let data of logamMulia">
                                     <clr-dg-action-overflow>
-                                        <button *ngIf="data.flag == 'submit' && myRole == 'kadepStock';" class="action-item" (click)="mainConfirm(data)">Confirm</button>
+                                        <button *ngIf="data.flag == 'submit' && myRole == 'kadepStock';"
+                                            class="action-item" (click)="mainConfirm(data)">Confirm</button>
                                         <button class="action-item" (click)="mainDetail(data)">Detail</button>
                                     </clr-dg-action-overflow>
                                     <clr-dg-cell hidden>{{data._id}}</clr-dg-cell>
                                     <clr-dg-cell [style.width.px]="100">{{data['product-category'].name}}</clr-dg-cell>
                                     <clr-dg-cell [style.width.px]="100">{{data.jenis_barang}}</clr-dg-cell>
                                     <clr-dg-cell [style.width.px]="100">{{data.vendor.name}}</clr-dg-cell>
-                                        <ng-container *ngIf="data.flag == 'approved'">
-                                            <clr-dg-cell><span class="label label-success">Approved</span></clr-dg-cell>
-                                        </ng-container>
-                                        <ng-container *ngIf="data.flag == 'submit'">
-                                            <clr-dg-cell><span class="label label-warning">Waiting</span></clr-dg-cell>
-                                        </ng-container>
-                                        <ng-container *ngIf="data.flag == 'declined'">
-                                            <clr-dg-cell><span class="label label-danger">Declined</span></clr-dg-cell>
-                                        </ng-container>
+                                    <ng-container *ngIf="data.flag == 'approved'">
+                                        <clr-dg-cell><span class="label label-success">Approved</span></clr-dg-cell>
+                                    </ng-container>
+                                    <ng-container *ngIf="data.flag == 'submit'">
+                                        <clr-dg-cell><span class="label label-warning">Waiting</span></clr-dg-cell>
+                                    </ng-container>
+                                    <ng-container *ngIf="data.flag == 'declined'">
+                                        <clr-dg-cell><span class="label label-danger">Declined</span></clr-dg-cell>
+                                    </ng-container>
                                 </clr-dg-row>
                                 <clr-dg-footer>
                                     <clr-dg-pagination #pagination [clrDgPageSize]="5">
-                                      <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Data per page</clr-dg-page-size>
-                                      {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
-                                      of {{pagination.totalItems}} Data
+                                        <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Data per page
+                                        </clr-dg-page-size>
+                                        {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                                        of {{pagination.totalItems}} Data
                                     </clr-dg-pagination>
                                 </clr-dg-footer>
                             </clr-datagrid>
@@ -89,7 +96,7 @@
                     </clr-tab>
                     <clr-tab>
                         <button clrTabLink>Setup Harga</button>
-                        <clr-tab-content >
+                        <clr-tab-content>
                             <app-setup-harga>
 
                             </app-setup-harga>
@@ -97,7 +104,7 @@
                     </clr-tab>
                     <clr-tab>
                         <button clrTabLink>Setup Margin</button>
-                        <clr-tab-content >
+                        <clr-tab-content>
                             <app-setup-margin>
 
                             </app-setup-margin>
@@ -123,7 +130,8 @@
                             <div class="clr-col-6">
                                 <clr-select-container class="clr-form-control">
                                     <label class="clr-control-label">Product Category</label>
-                                    <select [(ngModel)]="inputModel.selectProduct" name="vendor" clrSelect (change)="onChangeProduct($event.target.value)">
+                                    <select [(ngModel)]="inputModel.selectProduct" name="vendor" clrSelect
+                                        (change)="onChangeProduct($event.target.value)">
                                         <ng-container *ngFor="let prod of product">
                                             <option value="{{prod._id}}">{{prod.name}}</option>
                                         </ng-container>
@@ -133,7 +141,8 @@
                             <div class="clr-col-6">
                                 <clr-select-container class="clr-form-control">
                                     <label class="clr-control-label">Jenis Harga</label>
-                                    <select [(ngModel)]="inputModel.jenis_barang" name="jenis_barang" clrSelect ngModel required>
+                                    <select [(ngModel)]="inputModel.jenis_barang" name="jenis_barang" clrSelect ngModel
+                                        required>
                                         <ng-container *ngFor="let B of barang">
                                             <option value="{{B.name}}">{{B.name}}</option>
                                         </ng-container>
@@ -153,8 +162,10 @@
                             <div class="clr-col-6">
                                 <clr-textarea-container>
                                     <label>Keterangan</label>
-                                    <textarea clrTextarea required name="keterangan" [(ngModel)]="inputModel.keterangan"></textarea>
-                                    <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                    <textarea clrTextarea required name="keterangan"
+                                        [(ngModel)]="inputModel.keterangan"></textarea>
+                                    <clr-control-error *clrIfError="'required'">This is a required field
+                                    </clr-control-error>
                                 </clr-textarea-container>
                             </div>
                         </div>
@@ -173,7 +184,11 @@
                         <ng-container *ngFor="let hargaItem of harga">
                             <tr>
                                 <td>{{hargaItem['product-denom'].name}}</td>
-                                <td><clr-input-container><input clrInput name="harga_baku" type="number" [(ngModel)]="hargaItem.harga_baku"/></clr-input-container></td>
+                                <td>
+                                    <clr-input-container><input clrInput name="harga_baku" type="text"
+                                            [(ngModel)]="hargaItem.harga_baku" mask="separator" thousandSeparator="," />
+                                    </clr-input-container>
+                                </td>
                             </tr>
                         </ng-container>
                     </tbody>
@@ -223,8 +238,10 @@
                             <div class="clr-col-6">
                                 <clr-textarea-container>
                                     <label>Keterangan</label>
-                                    <textarea clrTextarea required name="keterangan" [(ngModel)]="inputModel.keterangan"></textarea>
-                                    <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                                    <textarea clrTextarea required name="keterangan"
+                                        [(ngModel)]="inputModel.keterangan"></textarea>
+                                    <clr-control-error *clrIfError="'required'">This is a required field
+                                    </clr-control-error>
                                 </clr-textarea-container>
                             </div>
                         </div>
@@ -243,7 +260,10 @@
                         <ng-container *ngFor="let hargaItem of harga">
                             <tr>
                                 <td>{{hargaItem['product-denom'].name}}</td>
-                                <td><clr-input-container><input clrInput name="{{hargaItem['product-denom'].name}}" type="number" [(ngModel)]="hargaItem.harga_baku"/></clr-input-container></td>
+                                <td>
+                                    <clr-input-container><input clrInput name="{{hargaItem['product-denom'].name}}"
+                                            type="number" [(ngModel)]="hargaItem.harga_baku" /></clr-input-container>
+                                </td>
                             </tr>
                         </ng-container>
                     </tbody>
@@ -261,7 +281,7 @@
                         Decline
                     </ng-container>
                 </button>
-                <button type="submit" class="btn btn-primary"  (click)="mainApproveSubmit()">
+                <button type="submit" class="btn btn-primary" (click)="mainApproveSubmit()">
                     <span *ngIf="spinner==true" class="spinner spinner-inline">
                         Approved
                     </span>
@@ -304,7 +324,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card" *ngIf="this.inputModel.jenis_barang != 'Buyback'">
                     <div class="card-block">
                         <div class="clr-row">
                             <div class="clr-col-12">
@@ -342,7 +362,7 @@
                                 <td>{{hargaItem['product-denom'].name}}</td>
                                 <td>Rp. {{hargaItem.harga_baku | number}}</td>
                                 <td>Rp. {{(hargaItem.harga_baku * margin / 100) + hargaItem.harga_baku | number}}</td>
-                                </tr>
+                            </tr>
                         </ng-container>
                     </tbody>
                 </table>

@@ -131,7 +131,8 @@
                             <label for="basic" class="clr-control-label">Margin</label>
                             <div class="clr-control-container">
                             <div class="clr-input-wrapper">
-                                <input [(ngModel)]="inputModel.margin" name="margin" type="number" class="clr-input" />
+                                <input [(ngModel)]="inputModel.margin" name="margin" type="text" class="clr-input" mask="separator" thousandSeparator=","/>
+                                <clr-control-helper>Percent (%)</clr-control-helper>
                                 <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                             </div>
                             <span class="clr-subtext"></span>
@@ -143,7 +144,8 @@
                             <label for="basic" class="clr-control-label">Margin Batu</label>
                             <div class="clr-control-container">
                             <div class="clr-input-wrapper">
-                                <input [(ngModel)]="inputModel.margin_batu" name="margin_batu" type="number" class="clr-input" [value]="0"/>
+                                <input [(ngModel)]="inputModel.margin_batu" name="margin_batu" type="text" class="clr-input" [value]="0" mask="separator" thousandSeparator=","/>
+                                <clr-control-helper>Percent (%)</clr-control-helper>
                                 <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                             </div>
                             <span class="clr-subtext"></span>
@@ -155,7 +157,8 @@
                             <label for="basic" class="clr-control-label">Margin Berlian</label>
                             <div class="clr-control-container">
                             <div class="clr-input-wrapper">
-                                <input [(ngModel)]="inputModel.margin_berlian" name="margin_berlian" type="number" class="clr-input" [value]=0/>
+                                <input [(ngModel)]="inputModel.margin_berlian" name="margin_berlian" type="text" class="clr-input" [value]=0 mask="separator" thousandSeparator=","/>
+                                <clr-control-helper>Percent (%)</clr-control-helper>
                                 <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                             </div>
                             <span class="clr-subtext"></span>
@@ -167,7 +170,7 @@
                             <label for="basic" class="clr-control-label">Periode</label>
                             <div class="clr-control-container">
                             <div class="clr-input-wrapper">
-                                <input [(ngModel)]="inputModel.periode" name="periode" type="number" class="clr-input" placeholder="0"/>
+                                <input [(ngModel)]="inputModel.periode" name="periode" type="text" class="clr-input" placeholder="0" mask="separator" thousandSeparator=","/>
                                 <clr-control-helper>Hari</clr-control-helper>
                                 <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                             </div>

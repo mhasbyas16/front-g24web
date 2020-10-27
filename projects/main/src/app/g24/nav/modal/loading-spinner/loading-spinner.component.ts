@@ -9,6 +9,7 @@ export class LoadingSpinnerComponent implements OnInit {
 
   constructor() { }
 
+  private defaultText : string = "Loading ...";
   private spinnerText : string = "Loading ...";
   public get SpinnerText()
   {
@@ -36,6 +37,7 @@ export class LoadingSpinnerComponent implements OnInit {
   Close()
   {
     this.isOpen = false;
+    this.spinnerText = this.defaultText;
   }
 
   Open()

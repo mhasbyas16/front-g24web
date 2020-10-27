@@ -11,6 +11,7 @@ import { ServerDateTimeService } from '../../../services/system/server-date-time
 import { ProductService } from '../../../services/product/product.service';
 import { FlagProduct } from '../../../lib/enum/flag-product';
 import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
+import { JurnalMutasiService } from '../../../services/keuangan/jurnal/stock/jurnal-mutasi.service';
 
 
 @Component({
@@ -28,7 +29,7 @@ unitsal : any[] = [];
 unituju : any[] = [];
 productku : any[] = [];
 listdt : any[] = [];
-listdt2 : any[] = [];
+listdt2 : any[] = []; // data item dari mutasi nya
 data_view : any[] = [];
 
 input : any = {};
@@ -61,6 +62,8 @@ time : String;
     private UnitService : UnitService,
     private mutasiservice : MutasiService,
     private sessionservice : SessionService,
+    private jurnalMutasiService : JurnalMutasiService,
+
     private productjenis : ProductJenisService,
 	  private datetimeservice : ServerDateTimeService,
     private toastr : ToastrService,
@@ -123,7 +126,7 @@ time : String;
     this.spinner.SetSpinnerText("Mohon Tunggu...");
     this.spinner.Open();
     this.listdt = [];
-    let params = "?"; 
+    let params = "?";
     for(let key in this.input){
       if(this.input[key]==""||this.input[key]=="null"||this.input[key]==null)continue;
       switch(key){
@@ -441,6 +444,9 @@ time : String;
          this.listdt = [];
          this.spinner.Close();
          this.toastr.success("Data berhasil di approve","Sukses");
+         let id : string = output._id;
+         console.debug(id);
+         this.doAccounting(id);
         }
       })
 
@@ -451,6 +457,26 @@ time : String;
     }
 
     
+  }
+
+  doAccounting(id : string) {
+    this.jurnalMutasiService.kirim(id).subscribe(result => {
+      if(result != false)
+      {
+        this.toastr.success("Jurnal Kirim berhasil.");
+        this.spinner.Close();
+      } 
+      else
+      {
+        let msg : string = "";
+        this.toastr.error("Harap hubungi IT Helpdesk/Support. Error: " + msg, "Jurnal Kirim gagal!", {disableTimeOut : true, tapToDismiss : true});
+        this.spinner.Close();
+      }
+
+    }, err => {
+      this.toastr.error("Harap hubungi IT Helpdesk/Support. Error: " + err.message, "Jurnal Kirim gagal!", {disableTimeOut : true, tapToDismiss : true});
+      this.spinner.Close();
+    })
   }
 
   refuse(){

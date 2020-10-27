@@ -31,6 +31,7 @@ export class PricingService {
       let paramMarginBatu = hppBatu * marginBatu / 100
       let paramMarginPenjualan = harga_baku  *  berat * (kadar/1000) * (1+(margin/100))
       let total = paramMarginPenjualan + hppBerlian + hppBatu + paramMarginBatu + paramMarginBerlian  + ongkos
+      console.debug(harga_baku,kadar,berat,margin,hppBatu,marginBatu,hppBerlian,marginBerlian,ongkos,"TTAGSAHJSJAHSHAH");
       return total;
   }
 

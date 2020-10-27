@@ -92,6 +92,16 @@ export const managerDistro = [
   { _id: "0004", type: "sub-menu", name: "Laporan Buyback", icons: "yang bagus", color: "warna-warni", componentId: "10009", parentId: "S10002", module: "lp", menu: { _id: "0005" } },
   { _id: "0004", type: "sub-menu", name: "Laporan BB Manual", icons: "yang bagus", color: "warna-warni", componentId: "10010", parentId: "S10002", module: "lp", menu: { _id: "0005" } },
 
+  // Mutasi
+{ _id: "0001", type: "menu", name: "Inventory Management", icons: "yang bagus", color: "warna-warni", componentId: "x2", parentId: "", module: "x2" },
+{ _id: "0002", type: "sub-menu", name: "Mutasi", icons: "yang bagus", color: "warna-warni", componentId: "2001", parentId: "x2", module: "x2", menu: { _id: "0001" } },
+// {_id: "0002",type: "sub-menu", name : "Approval Mutasi", icons: "yang bagus", color : "warna-warni", componentId : "2005", parentId: "x2", module: "x2", menu : {_id: "0001"}},
+{ _id: "0002", type: "sub-menu", name: "Terima Mutasi", icons: "yang bagus", color: "warna-warni", componentId: "2004", parentId: "x2", module: "x2", menu: { _id: "0001" } },
+
+//INQUERY PRODUCT
+{ _id: "0011", type: "menu", name: "Inquery", icons: "data-cluster", color: "warna-warni", componentId: "IP101", parentId: "", module: "ip" },
+{ _id: "0011", type: "sub-menu", name: "Inquery Product", icons: "yang bagus", color: "warna-warni", componentId: "99101", parentId: "IP101", module: "ip", menu: { _id: "0011" } },
+
 
 
 ];

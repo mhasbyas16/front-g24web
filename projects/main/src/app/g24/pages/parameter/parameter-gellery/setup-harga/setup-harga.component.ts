@@ -131,8 +131,6 @@ export class SetupHargaComponent implements OnInit {
     return false
   }
 
-  
-
   //list product category 
   onListCategory(){
     this.ProductCategorySerevice.list("?"+this.productFilter).subscribe((response : any) => {
@@ -192,6 +190,15 @@ export class SetupHargaComponent implements OnInit {
 
   mainAddSubmit(){
     if(this.validateInput()) return;
+
+    let hbk = this.inputModel.harga_baku;
+    let hbb = this.inputModel.harga_buyback;
+
+    if(hbb >= hbk){
+      this.toastrService.warning("Harga Buyback tidak boleh besar atau sama dengan harga baku");
+      return
+    }
+    
     //mencari product berdasarkan id
     for (let i of this.product){
       if(this.inputModel.productSelect == i._id){
@@ -382,7 +389,7 @@ export class SetupHargaComponent implements OnInit {
   }
 
   mainApproveSubmit(){
-    if(this.validateInput()) return;
+    // if(this.validateInput()) return;
 
     let setup = {
       "_id" : this.inputModel._id,
@@ -426,7 +433,7 @@ export class SetupHargaComponent implements OnInit {
 
     //get data approve lama
     this.spinner = true;
-    this.prmJualService.get("?flag=approved&product-category._id="+this.inputModel.productSelect).subscribe((out) => {
+    this.prmJualService.get("?flag=approved&product-category._id="+this.inputModel.productS).subscribe((out) => {
       this.getDataold = out._id;
 
       if (out == false){
