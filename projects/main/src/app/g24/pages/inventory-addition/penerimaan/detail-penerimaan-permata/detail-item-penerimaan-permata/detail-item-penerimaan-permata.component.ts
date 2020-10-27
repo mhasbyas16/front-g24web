@@ -658,17 +658,20 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
     // Object.assign(tempInisiasi, this.inisiasi);
     DataTypeUtil.Encode(tempInisiasi);
 
-    let inisiasi = await this.inisiasiService.TerimaPermata(tempInisiasi).toPromise();
+    let inisiasi = await this.inisiasiService.update(tempInisiasi).toPromise();
     if(inisiasi == false)
     {
-      this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk.");
+      let msg = this.inisiasiService.message();
+      this.toastr.error("Harap hubungi IT Support/Helpdesk. Error: " + msg, "Penerimaan gagal.", {disableTimeOut: true, tapToDismiss : true});
+      this.Close();
+      this.doReset();
       return;
     } else {
       Object.assign(this.inisiasi, tempInisiasi);
       await this.doAccounting(inisiasi._id);
       console.log(this.inisiasi);
       this.parentListener.onAfterUpdate(this.inisiasi._id);
-      this.toastr.success("PO berhasil diterima.");
+      this.toastr.success("Penerimaan berhasil.");
       this.doReset();
       this.Close();
     }
@@ -697,11 +700,11 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
 
   async doAccounting(idInisiasi :string)
   {
-    await this.jurnalInisiasi.terima(idInisiasi).subscribe(output => {
+    await this.jurnalInisiasi.terimaPermata(idInisiasi).subscribe(output => {
       if(output == false)
       {
         let msg = this.jurnalInisiasi.message();
-        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg);
+        this.toastr.error("Jurnal gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg);
         // console.log()
         return;
       } else {
