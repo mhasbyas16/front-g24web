@@ -261,6 +261,7 @@ export class CheckoutBuybackComponent implements OnInit {
     delete data["cif"];
     delete data["namaPemasar"];
     delete data["nik"];
+    data['transaction-type_encoded'] = "base64";
     
     // this.productService.batchUpdate(this.transactionFlagBuybackService.batchUpdate(btoa(JSON.stringify(this.sessionService.getUnit())))).subscribe((response: any) => {
     //   if (response == false) {
@@ -284,25 +285,35 @@ export class CheckoutBuybackComponent implements OnInit {
       let dataSouvenir = this.transactionFlagBuybackService.batchUpdateTransaction(this.dinar, "dinar", btoa(JSON.stringify(this.sessionService.getUnit())))
     }
 
-    this.buybackService.add(data).subscribe((response: any) => {
-      if (response != false) {
-        this.validModel = false;
-        this.toastr.success(this.buybackService.message(), "Transaction Success");
-        this.checkoutModal = false;
-        // remove isi cart
-        PERHIASAN.splice(0);
-        BERLIAN.splice(0);
-        LM.splice(0);
-        DINAR.splice(0);
-        GS.splice(0);
-        this.cartModal.emit(false);
-        this.ChangeContentArea('10009');
-      } else {
-        this.toastr.error(this.buybackService.message(), "Transaction");
-        this.idTransaksi()
-        return;
+    this.transactionTypeService.get("?code=b01").subscribe((response:any)=>{
+      if (response == false) {
+        console.debug("Transaction type not found");
+        return
       }
+
+      data['transaction-type'] = btoa(JSON.stringify(response));
+
+      this.buybackService.add(data).subscribe((response: any) => {
+        if (response != false) {
+          this.validModel = false;
+          this.toastr.success(this.buybackService.message(), "Transaction Success");
+          this.checkoutModal = false;
+          // remove isi cart
+          PERHIASAN.splice(0);
+          BERLIAN.splice(0);
+          LM.splice(0);
+          DINAR.splice(0);
+          GS.splice(0);
+          this.cartModal.emit(false);
+          this.ChangeContentArea('10009');
+        } else {
+          this.toastr.error(this.buybackService.message(), "Transaction");
+          this.idTransaksi()
+          return;
+        }
+      })
     })
+    
   }
 
   ChangeContentArea(pageId: string) {
