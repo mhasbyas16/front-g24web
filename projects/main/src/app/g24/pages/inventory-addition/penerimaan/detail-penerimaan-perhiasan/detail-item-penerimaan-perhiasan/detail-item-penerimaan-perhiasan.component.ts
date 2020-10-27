@@ -280,7 +280,8 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     let product = item.products[productIndex];
 
     let baku_tukar = Math.round(Number(product.baku_tukar));
-    let berat = Math.round(Number(product.berat));
+    let berat = Math.round(Number(product.berat) * 100) / 100;
+    product.berat = berat;
 
     let gram_tukar = Math.round(berat * baku_tukar) / 100;
     product['gram_tukar'] = gram_tukar;
