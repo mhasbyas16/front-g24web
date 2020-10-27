@@ -35,6 +35,7 @@ export class BerlianComponent implements OnInit {
   //params
   params = null;
   berlianCategory= "product-category.code=c01";
+  // berlianCategory= "_or=product-category.code:c01:c03";
   category = "?_hash=1&product-category.code=c01&flag=stock";
 
   channel = "channel.code=ch02";
