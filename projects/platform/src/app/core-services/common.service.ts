@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SessionService } from './session.service';
 import { environment } from 'src/environments/environment';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,9 @@ export class CommonService {
 
   constructor(
     private http: HttpClient,
-    private sessionService: SessionService) { }
+    private sessionService: SessionService,
+    private toastr : ToastrService
+    ) { }
 
   public prefix() {
     const company = this.sessionService.getCompany();
@@ -54,6 +57,14 @@ export class CommonService {
         if (respond.status == "failed") {
 
           this.message = respond.message;
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();
+        }
+
+        if(respond.status == "auth-failed")
+        {
+          this.sessionService.logout();
           observer.next(false);
           observer.complete();
           return (observer).unsubscribe();
@@ -99,6 +110,14 @@ export class CommonService {
           return (observer).unsubscribe();;
         }
 
+        if(respond.status == "auth-failed")
+        {
+          this.sessionService.logout();
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();
+        }
+
         this.originalResult = respond;
 
         observer.next(respond.data);
@@ -134,6 +153,14 @@ export class CommonService {
           return (observer).unsubscribe();;
         }
 
+        if(respond.status == "auth-failed")
+        {
+          this.sessionService.logout();
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();
+        }
+
         this.originalResult = respond;
 
         observer.next(respond.data);
@@ -163,6 +190,14 @@ export class CommonService {
           return (observer).unsubscribe();
         }
 
+        if(respond.status == "auth-failed")
+        {
+          this.sessionService.logout();
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();
+        }
+
         console.debug(respond.data);
         observer.next(respond.data);
         observer.complete();
@@ -183,6 +218,14 @@ export class CommonService {
         if (respond.status == "failed") {
 
           this.message = respond.message;
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();
+        }
+
+        if(respond.status == "auth-failed")
+        {
+          this.sessionService.logout();
           observer.next(false);
           observer.complete();
           return (observer).unsubscribe();
@@ -217,6 +260,14 @@ export class CommonService {
           return (observer).unsubscribe();
         }
 
+        if(respond.status == "auth-failed")
+        {
+          this.sessionService.logout();
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();
+        }
+
         this.originalResult = respond;
 
         observer.next(json.data);
@@ -240,6 +291,14 @@ export class CommonService {
         const json = { "status": respond.status, "message": respond.message, "data": respond.data };
         if (json.status == "failed") {
           this.message = json.message;
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();
+        }
+
+        if(respond.status == "auth-failed")
+        {
+          this.sessionService.logout();
           observer.next(false);
           observer.complete();
           return (observer).unsubscribe();
@@ -273,6 +332,14 @@ export class CommonService {
           return (observer).unsubscribe();
         }
 
+        if(respond.status == "auth-failed")
+        {
+          this.sessionService.logout();
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();
+        }
+
         this.originalResult = respond;
 
         observer.next(json.data);
@@ -296,6 +363,14 @@ export class CommonService {
         const json = { "status": respond.status, "message": respond.message, "data": respond.data };
         if (json.status == "failed") {
           this.message = json.message;
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();
+        }
+
+        if(respond.status == "auth-failed")
+        {
+          this.sessionService.logout();
           observer.next(false);
           observer.complete();
           return (observer).unsubscribe();
@@ -331,6 +406,14 @@ export class CommonService {
           return (observer).unsubscribe();
         }
 
+        if(respond.status == "auth-failed")
+        {
+          this.sessionService.logout();
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();
+        }
+
         observer.next(json.data);
         observer.complete();
         return (observer).unsubscribe();
@@ -352,6 +435,14 @@ export class CommonService {
         const json = { "status": respond.status, "message": respond.message, "data": respond.data };
         if (json.status == "failed") {
           this.message = json.message;
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();
+        }
+
+        if(respond.status == "auth-failed")
+        {
+          this.sessionService.logout();
           observer.next(false);
           observer.complete();
           return (observer).unsubscribe();
@@ -379,6 +470,14 @@ export class CommonService {
         const json = { "status": respond.status, "message": respond.message, "data": respond.data };
         if (json.status == "failed") {
           this.message = json.message;
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();
+        }
+
+        if(respond.status == "auth-failed")
+        {
+          this.sessionService.logout();
           observer.next(false);
           observer.complete();
           return (observer).unsubscribe();
@@ -414,6 +513,14 @@ export class CommonService {
           return (observer).unsubscribe();
         }
 
+        if(respond.status == "auth-failed")
+        {
+          this.sessionService.logout();
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();
+        }
+
         observer.next(json.data);
         observer.complete();
         return (observer).unsubscribe();
@@ -435,6 +542,14 @@ export class CommonService {
         const json = { "status": respond.status, "message": respond.message, "data": respond.data };
         if (json.status == "failed") {
           this.message = json.message;
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();
+        }
+
+        if(respond.status == "auth-failed")
+        {
+          this.sessionService.logout();
           observer.next(false);
           observer.complete();
           return (observer).unsubscribe();
@@ -467,6 +582,15 @@ export class CommonService {
           observer.complete();
           return (observer).unsubscribe();
         }
+
+        if(respond.status == "auth-failed")
+        {
+          this.sessionService.logout();
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();
+        }
+
         observer.next(json.data);
         observer.complete();
         return (observer).unsubscribe();
@@ -491,6 +615,14 @@ export class CommonService {
         if (respond.status == "failed") {
           console.debug(respond.message);
           this.message = respond.message;
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();
+        }
+
+        if(respond.status == "auth-failed")
+        {
+          this.sessionService.logout();
           observer.next(false);
           observer.complete();
           return (observer).unsubscribe();
@@ -524,6 +656,14 @@ export class CommonService {
           return (observer).unsubscribe();
         }
 
+        if(respond.status == "auth-failed")
+        {
+          this.sessionService.logout();
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();
+        }
+
         observer.next(respond.data);
         observer.complete();
         return (observer).unsubscribe();
@@ -547,6 +687,14 @@ export class CommonService {
         if (respond.status == "failed") {
           console.debug(respond.message);
           this.message = respond.message;
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();
+        }
+
+        if(respond.status == "auth-failed")
+        {
+          this.sessionService.logout();
           observer.next(false);
           observer.complete();
           return (observer).unsubscribe();
