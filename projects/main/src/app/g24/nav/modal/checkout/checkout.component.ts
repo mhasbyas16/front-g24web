@@ -448,10 +448,12 @@ export class CheckoutComponent implements OnInit {
         console.debug("gagal get currency");
         return;
       }
-      data.currency = response;
+      data.currency =  btoa(JSON.stringify(response));
+      
     })
     data.product = btoa(JSON.stringify({ PERHIASAN, LM, BERLIAN, GS, DINAR }));
     data.product_encoded = "base64";
+    data.currency_encoded = "base64";
     let nomT = data["nominalTransaksi"]
     data["nominalTransaksi"] = nomT.replace(/,/g, '')
     delete data["cif"];
