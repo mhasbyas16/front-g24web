@@ -5,7 +5,6 @@ import { ProductService } from '../../../../services/product/product.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { ServerDateTimeService } from '../../../../services/system/server-date-time.service';
 import { KonversiService } from '../../../../services/konversi/konversi.service';
-import { ApprovalKonversiService } from '../../../../services/konversi/approval-konversi.service';
 import { LoadingSpinnerComponent } from '../../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
 import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
 import { ToastrService } from 'ngx-toastr';
@@ -23,7 +22,6 @@ export class DetailApprovalKonversiComponent implements OnInit {
     private vendorservice : VendorService,
     private productservice : ProductService,
     private konversiservice : KonversiService,
-    private approvalkonversiservice : ApprovalKonversiService,
     private session : SessionService,
     private datetimeservice : ServerDateTimeService,
     private toastr : ToastrService) { }
@@ -381,9 +379,11 @@ export class DetailApprovalKonversiComponent implements OnInit {
     }
 
     let hash = DataTypeUtil.Encode(data);
+    // let updateKonversi = await this.konversiservice.approve(hash).toPromise(); 404
     let updateKonversi = await this.konversiservice.update(hash).toPromise();
     if(updateKonversi==false){
-      this.toastr.error("Data gagal di aproved","Error");
+      let msg = this.konversiservice.message();
+      this.toastr.error("Data gagal di aproved "+msg,"Error");
       this.spinner.Close();
       return;
     }
@@ -430,7 +430,7 @@ export class DetailApprovalKonversiComponent implements OnInit {
     }
 
     let hash = DataTypeUtil.Encode(data);
-    let updateKonversi = await this.konversiservice.update(hash).toPromise();
+    let updateKonversi = await this.konversiservice.approve(hash).toPromise();
     if(updateKonversi==false){
       this.toastr.error("Data gagal di tolak","Error");
       this.spinner.Close();

@@ -41,7 +41,7 @@
                             <label class="clr-control-label">Jumlah Gram</label>
                             <div class="clr-control-container">
                             <clr-input-container>
-                                <input type="number" clrInput [(ngModel)]="bahan_baku.jumlah_gram" name="jumlah_gram" required>
+                                <input type="number" clrInput [(ngModel)]="bahan_baku.jumlah_gram" name="jumlah_gram" (keyup)="totalJumlahGram()" required>
                                 <clr-control-helper>{{bahan_baku.jumlah_gram|number}}</clr-control-helper>
                                 <clr-control-error>Wajib di isi</clr-control-error>
                             </clr-input-container>
@@ -71,7 +71,7 @@
                             <label class="clr-control-label">Total Harga Gram</label>
                             <div class="clr-control-container">
                                 <clr-input-container>
-                                <input type="number" clrInput [(ngModel)]="bahan_baku.total_harga_gram" name="total_harga_gram" required>
+                                <input type="number" clrInput [(ngModel)]="bahan_baku.total_harga_gram" name="total_harga_gram" readonly>
                                 <clr-control-helper>Harap gunakan titik (.)</clr-control-helper>
                                 <clr-control-error>Wajib di isi</clr-control-error>
                                 </clr-input-container>
@@ -112,3 +112,5 @@
         </div>
     </div>
 </div>
+
+<loading-spinner #spinner></loading-spinner>

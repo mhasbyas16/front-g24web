@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { promise } from 'protractor';
 import { DContent } from '../../../decorators/content/pages';
 import { EMenuID } from '../../../lib/enums/emenu-id.enum';
@@ -7,9 +7,14 @@ import { ProductCategoryService } from '../../../services/product/product-catego
 import { TokoPenyediaService } from '../../../services/toko-penyedia.service';
 import { PrmJournalService } from "../../../services/keuangan/jurnal/prm-journal.service";
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
+import { InisiasiBahanBakuService } from '../../../services/bahan-baku/inisiasi-bahan-baku.service';
+import { JurnalEmasService } from '../../../services/jurnal-emas/jurnal-emas.service';
+import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
 import { ToastrService } from 'ngx-toastr';
 import { PaymentType } from '../../../lib/enums/payment-type';
 import { ThrowStmt } from '@angular/compiler';
+import { BahanBaku } from '../../../lib/enum/bahan-baku';
+import { DataTypeUtil } from '../../../lib/helper/data-type-util';
 
 @Component({
   selector: 'app-inisiasi-bahan-baku',
@@ -32,13 +37,27 @@ static key = EMenuID.PEMBUATAN;
               private tokopenyediaservice : TokoPenyediaService,
               private toastr : ToastrService,
               private session : SessionService,
-              private prmjournalservice : PrmJournalService) { }
+              private prmjournalservice : PrmJournalService,
+              private bahanbakuservice : InisiasiBahanBakuService,
+              private jurnalemasService : JurnalEmasService) { }
+
+  @ViewChild('spinner',{static:false}) spinner : LoadingSpinnerComponent;
 
    ngOnInit(): void {
+    this.Tesjournal();
     this.LoadDate();
     this.LoadKategori();
-    this.LoadVendor();
+    this.LoadTokped();
     this.bahan_baku["tgl_inisiasi"] = this.date;
+  }
+
+  async Tesjournal(){
+    let data = await this.jurnalemasService.list("?").toPromise();
+    if(data==false){
+      let msg = this.jurnalemasService.message();
+      this.toastr.error("Journal Emas API "+msg, "Error");
+    }
+    console.log("Jual Gram",data[0].harga_hpp);
   }
 
   async LoadDate(){
@@ -49,10 +68,10 @@ static key = EMenuID.PEMBUATAN;
   }
 
   async LoadKategori(){
-    this.jenis = await this.kategoriservice.list("?").toPromise();
+    this.jenis = await this.kategoriservice.list("?code=c07").toPromise();
   }
 
-  async LoadVendor(){
+  async LoadTokped(){
     this.tokped = await this.tokopenyediaservice.list("?").toPromise();
   }
 
@@ -80,21 +99,41 @@ static key = EMenuID.PEMBUATAN;
       console.log(code);
   }
 
-  doSave(){
+  async totalJumlahGram(){
+    let data = await this.jurnalemasService.list("?").toPromise();
+    if(data==false){
+      let msg = this.jurnalemasService.message();
+      this.toastr.error("Journal Emas API "+msg, "Error");
+    }
+    // console.log("Jual Gram",data[0].harga_hpp);
+    // console.log(this.bahan_baku.jumlah_gram + data[0].harga_hpp);
+    let total = this.bahan_baku.jumlah_gram + data[0].harga_hpp;
+    this.bahan_baku.total_harga_gram = total;
+  }
+
+  async doSave(){
+    this.spinner.SetSpinnerText("Mohon Tunggu...");
+    this.spinner.Open();
+
     if(!this.bahan_baku["jenis_product"]){
       this.toastr.warning("Produk jenis belum dipilih","Peringatan");
+      this.spinner.Close();
       return;
     }else if(!this.bahan_baku["jumlah_gram"]){
       this.toastr.warning("Jumlah Gram belum di isi","Peringatan");
+      this.spinner.Close();
       return;
     }else if(!this.bahan_baku["toko_penyedia"]){
       this.toastr.warning("Toko penyedia belum dipilih");
+      this.spinner.Close();
       return;
     }else if(!this.bahan_baku["total_harga_gram"]){
-      this.toastr.warning("Total harga gram belum di isi");
+      this.toastr.warning("Total harga gram masih kosong");
+      this.spinner.Close();
       return;
     }else if(!this.bahan_baku["ma_bank"]){
       this.toastr.warning("Kode MA bank belum di isi");
+      this.spinner.Close();
       return;
     }
 
@@ -106,9 +145,23 @@ static key = EMenuID.PEMBUATAN;
       tipe_bayar : PaymentType.UANG.code,
       "prm-journal" : this.bahan_baku["get_bank"],
       "product-category" : this.bahan_baku["jenis_product"],
-      toko_penyedia : this.bahan_baku["toko_penyedia"]
+      toko_penyedia : this.bahan_baku["toko_penyedia"],
+      status_inisiasi : BahanBaku.SUBMIT.code
     };
     console.log(data);
+    
+    let hash = DataTypeUtil.Encode(data);
+    let savedata = await this.bahanbakuservice.add(hash).toPromise();
+
+    if(savedata==false){
+      this.toastr.error("Data gagal disimpan","Error");
+      this.spinner.Close();
+      return;
+    }
+
+    this.toastr.success("Data berhasil disimpan","Sukses");
+    this.spinner.Close();
+    this
   }
 
 

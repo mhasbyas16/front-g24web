@@ -44,7 +44,7 @@
                     <clr-datagrid [(clrDgSingleSelected)]="selected_data">
                         <clr-dg-action-bar>
                             <div class="btn-group">
-                                <button class="btn btn-icon btn-sm" (click)="onApprove()" *ngIf="selected_data?.status_konversi != 'approved'"><clr-icon shape="plus"></clr-icon> Approve</button>
+                                <button class="btn btn-icon btn-sm" (click)="onApprove()" *ngIf="selected_data?.status_konversi != 'approved' && selected_data?.status_konversi != 'tolak'"><clr-icon shape="plus"></clr-icon> Approve</button>
                                 <button class="btn btn-icon btn-sm" (click)="Lihat()"><clr-icon shape="eye"></clr-icon> Lihat</button>
                             </div>
                         </clr-dg-action-bar>

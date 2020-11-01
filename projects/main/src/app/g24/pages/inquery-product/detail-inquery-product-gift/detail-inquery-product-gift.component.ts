@@ -119,6 +119,11 @@ export class DetailInqueryProductGiftComponent implements OnInit {
     this.spinner.Open();
     this.LoadingSearch = ClrLoadingState.LOADING;
     let params = "?product-category.code=c04&";
+
+    if(this.sessionService.getUser().unit.code!="00005"){
+      params += "unit.code="+this.sessionService.getUser().unit.code+"&";
+    }
+    
     for(let key in this.inquery){
       if(this.inquery[key]==null)continue;
         switch(key){

@@ -32,7 +32,7 @@
                         </clr-date-container>
                         </div>
                     </div>
-                    <div class="clr-col-6">
+                    <!-- <div class="clr-col-6">
                         <div class="clr-form-control">
                         <label class="clr-control-label">Tanggal Inisiasi Akhir</label>
                         <clr-date-container>
@@ -40,7 +40,7 @@
                             <clr-control-helper>Optional</clr-control-helper>
                         </clr-date-container>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <div class="card-footer">
@@ -60,12 +60,23 @@
                 <clr-datagrid>
                     <clr-dg-column>Mata Anggaran Bank</clr-dg-column>
                     <clr-dg-column>Jenis Produk</clr-dg-column>
-                    <clr-dg-column>Vendor</clr-dg-column>
+                    <clr-dg-column>Toko Penyedia</clr-dg-column>
                     <clr-dg-column>Tanggal Inisiasi</clr-dg-column>
                     <clr-dg-column>Jumlah Gram</clr-dg-column>
                     <clr-dg-column>Total Harga Gram</clr-dg-column>
+
+                    <clr-dg-row *ngFor="let bahanBaku of data">
+                        <clr-dg-cell>{{bahanBaku['prm-journal']?.name}}</clr-dg-cell>
+                        <clr-dg-cell>{{bahanBaku['product-category']?.name}}</clr-dg-cell>
+                        <clr-dg-cell>{{bahanBaku.toko_penyedia?.name}}</clr-dg-cell>
+                        <clr-dg-cell>{{bahanBaku.created_date}}</clr-dg-cell>
+                        <clr-dg-cell>{{bahanBaku.jumlah_gram}}</clr-dg-cell>
+                        <clr-dg-cell>{{bahanBaku.total_harga_gram}}</clr-dg-cell>
+                    </clr-dg-row>
                 </clr-datagrid>
             </div>
         </div>
     </div>
 </div>
+
+<loading-spinner #spinner></loading-spinner>

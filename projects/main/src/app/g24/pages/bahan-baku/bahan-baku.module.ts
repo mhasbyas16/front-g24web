@@ -8,12 +8,14 @@ import { InisiasiApprovalBahanBakuComponent } from './inisiasi-approval-bahan-ba
 import { InisiasiPenerimaanBahanBakuComponent } from './inisiasi-penerimaan-bahan-baku/inisiasi-penerimaan-bahan-baku.component';
 import { from } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { NavModule } from '../../nav/nav.module';
 
 
 @NgModule({
   declarations: [InisiasiBahanBakuComponent, InisiasiApprovalBahanBakuComponent, InisiasiPenerimaanBahanBakuComponent],
   imports: [
     CommonModule,
+    NavModule,
     BahanBakuRoutingModule,
     ClarityModule,
     FormsModule

@@ -25,6 +25,7 @@ import { TipeStock } from '../../../lib/enum/flag-product';
 import { FlagProduct } from '../../../lib/enum/flag-product';
 import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
 import { CetakMutasiComponent } from './cetak-mutasi/cetak-mutasi.component';
+import { StringHelper } from '../../../lib/helper/string-helper';
 
 @Component({
   selector: 'app-mutasi',
@@ -65,14 +66,13 @@ static key = EMenuID.MUTASI;
 units : any[] = [];          
 unit_tj : any[] = [];
 products:  any[] = [];        
-products2 : any[] = [];
-productss : any[] = [];
-errorTitle = "";              
+product_kategori : any[] = [];
+
 errorMessage = "";
 errorType = "";               
 ErrorType = ModalErrorType;
-searchModel : any = {};       
-datas : any[] = [];
+
+searchModel : any = {};      
 itemsinmutasi : any = [];
 items : any[] = [];
 details : any[] = [];
@@ -95,11 +95,8 @@ series : any[] = [];
 denoms : any[] = [];
 input : any = {};   
 addinput : any = {};
-edit : any = {};          
 Flag = Object.values(FlagMutasi);
 Tipe = Object.values(TipeStock);
-username = "";                
-mongoMutasi : any[] = [];
 kadars : any[] = [];          
 warnas : any[] = [];  
 jeniss : any[] = [];  
@@ -130,6 +127,10 @@ timezone : String;
 date_now : String;
 time : String;
 
+noItem : number = 0;
+innerDoc : any = {};
+date : String = "";
+
 constructor(private UnitService : UnitService, private sessionservice : SessionService, 
   private mutasiservice : MutasiService, private productservice : ProductService,
   private warnaservice : ProductGoldColorService, private kadarservice : ProductPurityService,
@@ -141,20 +142,12 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
 
 
   ngOnInit(): void {
-//    var waktu = (new Date()).getTimezoneOffset() * 60000;
-//    //offset in milliseconds
-  	   
-//      let tgl = this.date_time.split("T");
-//      this.date_now = tgl[0];
-//      this.time = tgl[1].split(".")[0];
-	  
-	  //DATE & TIME
 	
     let params = "?";
 	 
 
 
-	this.datetimeservice.task(params).subscribe(output=>{
+	this.datetimeservice.task("").subscribe(output=>{
 	  	if(output!=false){
 	  		this.timezone = output;
 	  		let tgl = this.timezone.split("T");
@@ -164,10 +157,6 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
   		}
   	})
 
-    for(let key in this.searchModel){
-      params += key+"="+this.searchModel[key]+"&";
-    }
-    console.log(params);
     this.UnitService.list(params).subscribe(output=>{
         if(output!=false){
           this.units = output;
@@ -181,20 +170,116 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
           
         }
     });
+
+    this.LoadAllAtribut();
+
   }
 
-
-  codeGet(data){
-    this.edit = true;
-    console.log(this.searchModel[data]);
+  async LoadAllAtribut(){
+      this.LoadCategory();
+      this.LoadColor();
+      this.LoadKadar();
+      this.LoadJenis();
+      this.LoadDenom();
+      this.LoadKlarity();
+      this.LoadSeries();
   }
+
+  async LoadUnit(){
+    // let data = await this.UnitService.list("?").toPromise();
+    // if(data==false){
+    //   let msg = this.UnitService.message();
+    //   this.toastr.error("Gagal load unit "+msg,"Error");
+    //   return;
+    // }
+    
+}
+
+  async LoadCategory(){
+    //Product Kategori
+    let data = await this.productkategoryservice.list("?").toPromise();
+    if(data==false){
+      let msg = this.productkategoryservice.message(); 
+      this.toastr.error("Data kategori gagal diload "+msg,"Error");
+      return;
+    }    
+    this.product_kategori = data;
+  }
+
+  async LoadColor(){
+    //Product Gold Color
+    let data = await this.warnaservice.list("?").toPromise();
+    if(data==false){
+      let msg = this.warnaservice.message();
+      this.toastr.error("Gagal load warna "+msg,"Error");
+      return;
+    }
+    this.warnas = data;
+  }
+
+  async LoadKadar(){
+    //Product Purity
+    let data = await this.kadarservice.list("?").toPromise();
+    if(data==false){
+      let msg = this.kadarservice.message();
+      this.toastr.error("Gagal load Product Purity "+msg,"Error");
+      return;
+    }
+      this.kadars = data;
+  }
+
+  async LoadJenis(){
+    //Product Jenis
+    let data = await this.jenisservice.list("?").toPromise();
+    if(data==false){
+      let msg = this.jenisservice.message();
+      this.toastr.error("Gagal load Product Jenis "+msg,"Error");
+      return;
+    }
+      this.jeniss = data;
+  }
+
+  async LoadDenom(){
+    //Product Denom
+    let data = await this.denomservice.list("?").toPromise();
+    if(data==false){
+      let msg = this.denomservice.message();
+      this.toastr.error("Gagal load Product Denom "+msg,"Error");
+      return;
+    }
+      this.denoms = data;
+  }
+
+  async LoadKlarity(){
+    //Product Clarity
+    let data = await this.klarityservice.list("?").toPromise();
+    if(data==false){
+      let msg = this.klarityservice.message();
+      this.toastr.error("Gagal load Product Klarity "+msg,"Error");
+      return;
+    }
+      this.claritys = data;
+  }
+
+  async LoadSeries(){
+    //Product Series
+    let data = await this.seriesservice.list("?").toPromise();
+    if(data==false){
+      let msg = this.seriesservice.message();
+      this.toastr.error("Gagal load Product Series "+msg,"Error");
+      return;
+    }
+      this.series = data;
+  }
+  
+
 
   onPrint(){
     
   }
 
 
-  doSearch(){
+  async doSearch(){
 
     let params = "?";
     this.spinner.SetSpinnerText("Mohon Tunggu...");
@@ -208,11 +293,11 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
           break;
 
         case 'created_date':
-          params += 'created_date='+this.input[key]+"&";
+          params += 'created_date='+StringHelper.StandardFormatDate('/',this.input[key],'MM/dd/yyyy')+"&";
           break;
 
         case 'tgl_terima':
-          params += 'tgl_terima='+this.input[key]+"&";
+          params += 'tgl_terima='+StringHelper.StandardFormatDate('/',this.input[key],'MM/dd/yyyy')+"&";
           break;
 
         case 'flag':
@@ -226,21 +311,18 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     console.log(params);
     }
 
-    this.mutasiservice.list(params).subscribe(output=>{
-      if(output==false){
-        if(this.mutasiservice.message() != ""){
-          console.log(output);
-          this.toastr.info('Data tidak ditemukan','Informasi');
-          this.spinner.Close();
-          this.input = {};
-          this.listdt = [];
-          return
-        }
-      }
-      this.toastr.success("Data ditemukan "+output.length,"Sukses");
-      this.listdt = output;
+    let data = await this.mutasiservice.list(params).toPromise();
+    if(data==false){
+      this.toastr.info('Data tidak ditemukan','Informasi');
       this.spinner.Close();
-    });
+      this.input = {};
+      this.listdt = [];
+      return;
+    }
+    this.toastr.success("Data ditemukan "+data.length,"Sukses");
+    this.listdt = data;
+    this.spinner.Close();
+
 
 
   }
@@ -249,33 +331,32 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     this.itemsdata = [];
     this.itempick = 0;
     this.searchModel = {};
-    this.addinput['keterangan']="";
+    this.addinput={};
+    this.searchCode = {};
     let params ="?";
     this.onChange();
+    this.LoadCategory();
     this.modalshow=true;
 
-    this.productkategoryservice.list(params).subscribe(output=>{
-      if(output!=false){
-        this.products2 = output;
-      }
-    })
-
-  //   this.vendorservice.list(params).subscribe(output=>{
-  //    if(output!=false){
-  //      this.vendor = output;
-  //    }
-  //  })
-
-  }
-
-  cetakdata(){
-    this.pdf.Makepdf(this.itemsdata);
   }
 
   reset(){
+    this.LoadCategory();
     this.searchModel = {};
     this.input = {};
     this.listdt = [];
+  }
+
+  async validateInputNumerik(){
+    let validate = "^[0-9]+$";
+    if(!this.searchCode['code'].match(validate)){
+      this.toastr.info("Inputan harus numerik","Informasi");
+    }
+
+    if(this.searchCode['code']==""){
+      this.addinput.unit_tujuan = {};
+    }
+
   }
 
   oncekUnitCode(){
@@ -326,8 +407,8 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     this.products = [];
   }
 
-  onChange(){
-     
+  async onChange(){
+
   this.itemsinmutasi = [];
   this.vendor = [];
   this.products = [];
@@ -345,7 +426,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
         break;
 
       case "c02":
-        this.formInput = this.souvenirInput
+        this.formInput = this.souvenirInput;
         break;
 
       case "c03":
@@ -372,93 +453,47 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     
     let params = "?";
 
-    //WARNA
-    this.warnaservice.list(params).subscribe(output=>{
-      if(output==false){
-        if(this.warnaservice.message() != ""){
-          console.log(output);
-          return
-        }
-      }
-      this.warnas = output;
-    });
-
-    //KARAT
-    this.kadarservice.list(params).subscribe(output=>{
-      if(output==false){
-        if(this.kadarservice.message() != ""){
-          console.log(output);
-          return
-        }
-      }
-      this.kadars = output;
-    });
-
-    //JENIS
-    this.jenisservice.list(params).subscribe(output=>{
-      if(output==false){
-        if(this.jenisservice.message() != ""){
-          console.log(output);
-          return
-        }
-      }
-      this.jeniss = output;
-    });
-
-    //DENOM
-    this.denomservice.list(params).subscribe(output=>{
-      if(output == false){
-        if(this.denomservice.message() != ""){
-          console.log(output);
-          return
-        }
-      }
-      this.denoms = output;
-    })
-    
-    //KLARITY
-    this.klarityservice.list(params).subscribe(output=>{
-      if(output == false){
-        if(this.klarityservice.message() != ""){
-          console.log(output);
-          return
-        }
-      }
-      this.claritys = output;
-    })
-
-    //SERIES
-    this.seriesservice.list(params).subscribe(output=>{
-      if(output == false){
-        if(this.seriesservice.message() != ""){
-          console.log(output);
-          return
-        }
-      }
-      this.series = output;
-    })
-
     //VENDOR
-     this.vendorservice.list(params+"product-category.code="+this.searchModel["product-category"].code).subscribe(data=>{
-       if(data==false){
-         if(this.vendorservice.message()!=""){
-           return;
-         }
-       }
-       this.vendor = data;
-     })
+    let data = await this.vendorservice.list(params+"product-category.code="+this.searchModel["product-category"].code).toPromise();
+    if(data==false){
+      let msg = this.vendorservice.message();
+      this.toastr.error("Gagal load vendor "+msg,"Error");
+      return;
+    }
+    this.vendor = data;
+}
 
+  async Add(){
 
-
-  }
-
-  Add(){
-
+    console.log(this.date_now);
     this.spinner.SetSpinnerText("Mohon Tunggu...");
     this.spinner.Open();
     let tujuan = this.addinput['unit_tujuan'];
 	  let ktr = this.addinput['keterangan'];
     let vdr = this.addinput['vndr'];
+
+    let unit = this.searchCode["code"];
+
+    let cekUnitInvalid = await this.UnitService.list("?code="+unit).toPromise();
+    if(cekUnitInvalid==false){
+      this.toastr.warning("Unit Invalid, mohon isi kode unit yang benar","Peringatan");
+      this.spinner.Close();
+      this.addinput['unit_tujuan'] = "";
+      return;
+    }else if(this.addinput["unit_tujuan"].nama==""){
+      this.toastr.warning("Unit tujuan belum di isi atau di cek","Peringatan");
+      this.spinner.Close();
+      return;
+    }else if(this.searchCode["code"]==""){
+      this.toastr.warning("Kode Unit tujuan belum diisi","Peringatan");
+      this.spinner.Close();
+      return;
+    }else if(unit == this.sessionservice.getUser().unit.code){
+      this.toastr.info("Anda saat ini berada pada unit tsb","Informasi");
+      this.spinner.Close();
+      this.addinput['unit_tujuan'] = "";
+      return;
+    }
 
 
     //UPDATE PRODUK
@@ -498,7 +533,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
       total_hpp : this.jml_hpp.toString(),
       total_berat : this.berat.toString(),
 	    keterangan  : ktr,
-      flag : "submit",
+      flag : FlagMutasi.SUBMIT.code,
       "product-category" : this.searchModel["product-category"],
       approve_by : null,
       approve_date : null,
@@ -510,6 +545,8 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
       items : []
       
     }
+
+    
 
 
 
@@ -526,11 +563,13 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     if(this.itemsdata.length <= 0 || tujuan == null || tujuan == "" || ktr == "" || ktr == null){
       this.spinner.Close();
       this.toastr.warning("Field Unit Tujuan belum dipilih atau data barang yang dimutasi belum di tambah. Dan cek kembali field keterangan","Peringatan");
-      // this.itemsdata = [];
+    
       this.berat = 0;
       this.jml_hpp = 0;
       return;
     }
+
+    //MASIH MENGGUNAKAN API ADD, MICROSERVICES PROBLEM PARSE NUMBER
     this.mutasiservice.add(cfg).subscribe(output => {
       if(output!=false){
         this.spinner.Close();
@@ -561,28 +600,17 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
           }
         })
       }
+
       this.spinner.Close();
+      this.modalshow=false;
+      // this.pdf.Makepdf(data);
       this.toastr.success("Data berhasil di mutasi","Berhasil");
-    })
 
-    
-    // for(let i = 0; i < this.itemsdata.length; i++){
-    //   console.log(this.itemsdata[i]._id);
-    //   let updateproduk = {
-    //     _id : this.itemsdata[i]._id,
-    //     flag : FlagProduct.TRANSIT.code
-    //   }
+    });
 
-    //   let encode = DataTypeUtil.Encode(updateproduk);
-    //   this.productservice.update(encode).subscribe(data=>{
-    //     if(data==false){
-    //       if(this.productservice.message()!=""){
-    //         return;
-    //       }
-    //     }
-    //     this.toastr.success("Data berhasil di mutasi","Berhasil");
-    //   })
-    // }
+
+
+      
      
   }
 
@@ -590,6 +618,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
   searchProduct(){
     this.spinner.SetSpinnerText("Sedang melakukan pencarian Produk...");
     this.spinner.Open();
+
     if(!this.searchModel["product-category"]||!this.searchModel.vndr){
       this.toastr.warning("Produk kategori atau vendor belum dipilih","Peringatan");
       this.spinner.Close();
@@ -597,7 +626,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     }
     this.products = [];
     this.modal_pick = false;
-    let params = "?";
+    let params = "?flag=stock&";
     for (let key in this.searchModel) {
       if(this.searchModel[key] == null||this.searchModel[key] == "null")continue;
       switch(key){
@@ -686,19 +715,9 @@ pickitem(){
 //--------------------------------------------------------------------------------------------
 
 Addmutasi(){
-  // this.selected_detail = [];
-  if(this.selected == [] || this.selected == null)return;
-  console.log(this.selected);
-  // let safe = JSON.stringify(this.selected);
-  
-//   for(let o = 0; o < this.itemsinmutasi.length; o++){
-//     if(this.selected[o]._id==this.itemsinmutasi._id){
-//       alert("Items sudah ada");
-// //      console.log(this.ItemsDataProduct[o]);
-//       return;
-//     }
-//   }
-
+  if(!this.selected.length){
+    this.toastr.warning("Data produk belum dipilih","Peringatan");
+  }
    
   this.itemsinmutasi.push(this.selected);
   for(let r = 0; r < this.itemsinmutasi.length; r++){
@@ -709,11 +728,6 @@ Addmutasi(){
     // }
   }
 
-    // function reducer(acc,cur){
-    //   return{...acc,[cur._id]:cur};
-    // }
-    // this.datareduce = this.ayoo.reduce(reducer,{});
-    // console.log(this.datareduce);
 
 }
 
@@ -724,9 +738,13 @@ Addmutasi(){
 
 
 refresh(){
+  this.LoadCategory();
   this.itemsinmutasi = [];
   this.itemsdata = [];
   this.products = [];
+  this.searchCode = {};
+  this.addinput = {};
+  this.vendor = [];
 }
 
 onView(){
@@ -881,6 +899,34 @@ GetDisplayName(key : string) : string
     name = "Margin Batu";
     break;
 
+    case 'no_po':
+    name = "No PO";
+    break;
+
+    case 'baku_tukar':
+    name = "Baku Tukar";
+    break;
+
+    case "location":
+    name = "Lokasi";
+    break;
+
+    case "price":
+    name = "Price";
+    break;
+
+    case "ongkos":
+    name = "Ongkos";
+    break;
+
+    case "gram_tukar":
+    name = "Gram Tukar";
+    break;
+
+    case "pengajuan_by":
+    name = "Pengajuan Dari";
+    break;
+
       default:
         name += " - " + key;
 
@@ -929,7 +975,15 @@ GetDisplayName(key : string) : string
 			
 	    case "telolet":
 		      return false;
-	       break;
+         break;
+         
+      case "no_item_po":
+          return false;
+         break;
+        
+      case "no_index_products":
+          return false;
+         break;
 			
       case "status":
         return false;

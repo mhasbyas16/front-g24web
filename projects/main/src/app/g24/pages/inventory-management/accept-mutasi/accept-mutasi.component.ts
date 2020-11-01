@@ -12,6 +12,8 @@ import { ServerDateTimeService } from '../../../services/system/server-date-time
 import { FlagProduct } from '../../../lib/enum/flag-product';
 import { ProductService } from '../../../services/product/product.service';
 import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
+import { StringHelper } from '../../../lib/helper/string-helper';
+import { FlagMutasi } from '../../../lib/enum/flag-mutasi';
 
 
 @Component({
@@ -28,14 +30,12 @@ static key = EMenuID.TERIMA_MUTASI;
   productku : any[] = [];
   unitsal : any[] = [];
   unituju : any[] = [];
-  listdt : any[] = [];
-  listdt2 : any[] = [];
-  listdt3 : any[] = [];
   listflag : any[] = [];
+
+  data_mutasi : any[] = [];
+
   items : any[] = [];
-  itemsview : any = [];
-  itemsaccept : any[] = [];
-  data_view : any[] = [];
+  data_view : any = {};
   data : any[] = [];
   IdData : any[] = [];
 
@@ -112,10 +112,9 @@ static key = EMenuID.TERIMA_MUTASI;
   });
   }
 
-  doSearch(){
+  async doSearch(){
     this.spinner.SetSpinnerText("Mohon Tunggu...");
     this.spinner.Open();
-    this.listdt = [];
     let params = "?"; 
     for(let key in this.input){
       if(this.input[key]==""||this.input[key]=="null"||this.input[key]==null)continue;
@@ -124,16 +123,16 @@ static key = EMenuID.TERIMA_MUTASI;
           params += 'unit_asal.code='+this.input[key].code+"&";
           break;
 
-        case 'tgl_approve':
-          params += 'approve_date='+this.input[key]+"&";
+        case 'approve_date':
+          params += 'approve_date='+StringHelper.StandardFormatDate('/',this.input[key],'MM/dd/yyyy')+"&";
           break;
 
         case 'tgl_terima':
-          params += 'tgl_terima='+this.input[key]+"&";
+          params += 'tgl_terima='+StringHelper.StandardFormatDate('/',this.input[key],'MM/dd/yyyy')+"&";
           break;
 
-        case 'tgl_kirim':
-          params += 'created_date='+this.input[key]+"&";
+        case 'created_date':
+          params += 'created_date='+StringHelper.StandardFormatDate('/',this.input[key],'MM/dd/yyyy')+"&";
           break;
 
         default:
@@ -143,38 +142,25 @@ static key = EMenuID.TERIMA_MUTASI;
       console.log(params);
     }
     params += "unit_tujuan.code="+this.sessionservice.getUser().unit.code+"&";
-    this.mutasiservice.list(params).subscribe(output=>{
-      if(output==false){
-        if(this.mutasiservice.message()!=""){
-          this.spinner.Close();
-          this.toastr.info("Data tidak ditemukan","Informasi");
-          this.input = {};
-          this.listdt = [];
-          return;
-        }
-      }
+    let data = await this.mutasiservice.list(params).toPromise();
+    if(data==false){
       this.spinner.Close();
-      this.toastr.success("Data ditemukan "+output.length,"Sukses");
-      this.listflag = output;
-		this.listdt = this.listflag;
-//		for(let y = 0; y < this.listflag.length; y++){
-//		if(this.listflag[y].flag=="approved"){
-//          this.listdt = this.listflag.splice(y,1);
-//          console.log(this.listdt);
-//		}
-//		}
-    })
-
+      this.toastr.info("Data tidak ditemukan","Informasi");
+      this.input = {};
+      this.data_mutasi = [];
+      return;
+    }
+    this.spinner.Close();
+    this.toastr.success("Data ditemukan "+data.length,"Sukses");
+    this.data_mutasi = data;
 
   }
 
   reset(){
     this.add = {};
     this.input = {};
-    this.listdt = [];
+    this.data_mutasi = [];
     this.listflag = [];
-    this.listdt2 = [];
-    this.listdt3 = [];
     this.items = [];
   }
 
@@ -186,64 +172,14 @@ static key = EMenuID.TERIMA_MUTASI;
     this.toastr.warning("Data belum dipilih","Peringatan");
     return;
   }
-	this.add = {};
-	this.listflag = [];
-    this.listflag.push(this.data_view);
-    for(let i = 0; i < this.listflag.length; i++){
-      this.DataFlowModal = this.listflag[i];
-	  this.items = this.listflag[i].items;
-      this.modalaccept = true;
-    }
+
+  this.DataFlowModal = this.data_view;
+  this.items = this.data_view.items;
+  this.modalaccept = true;
 	  
 	  
   }
 
-  searchData(){
-    let params = "?";
-    for(let key in this.add){
-      if(this.add[key]==null||this.add[key]=="null"||this.add[key]=="")continue;
-      switch(key){
-
-        case 'id':
-          params += "_id="+this.add[key]._id+"&";
-        break;
-        
-        case 'unit_asal':
-          params += "unit_asal.code="+this.add[key].code+"&";
-        break;
-
-        case 'unit_tujuan':
-          params += "unit_tujuan.code="+this.add[key]+"&";
-        break;
-
-        case 'jenis':
-          params += "items.jenis-product.code="+this.add[key]+"&";
-        break;
-
-        default:
-          params += key+"="+this.add[key]+"&";
-        break;
-
-      }
-    }
-    
-    this.mutasiservice.list(params).subscribe(data=>{
-      if(data == false){
-        if(this.mutasiservice.message()!=""){
-          this.modal = true;
-          return;
-        }
-      }
-      this.listdt2 = data;
-      for(let i = 0; i < this.listdt2.length; i++){
-        if(this.listdt2[i].flag=="approved"){
-          this.items = this.listdt2[i].items;
-          console.log(this.items);
-        }
-      }
-    })
-
-  }
 
   onView(){
     if(!this.data_view){
@@ -253,13 +189,11 @@ static key = EMenuID.TERIMA_MUTASI;
       this.toastr.warning("Data belum dipilih","Peringatan");
       return;
     }
-    this.listflag = [];
-    this.listflag.push(this.data_view);
-    for(let i = 0; i < this.listflag.length; i++){
-      this.itemsview = this.listflag[i].items;
-	  this.DataFlowModal = this.listflag[i];
-      this.modalview = true;
-    }
+
+    this.DataFlowModal = this.data_view;
+    this.items = this.data_view.items;
+    this.modalview = true;
+    
   }
 
   DisplayName(key:String){
@@ -349,6 +283,34 @@ static key = EMenuID.TERIMA_MUTASI;
     case 'hpp':
     name = "Hpp";
     break;
+
+    case 'gram_tukar':
+    name = "Gram Tukar";
+    break;
+
+    case 'ongkos':
+    name = "Ongkos";
+    break;
+
+    case 'price':
+    name = "Price";
+    break;
+
+    case 'nomor_nota':
+    name = "Nomer Nota";
+    break;
+
+    case 'no_po':
+    name = "No PO";
+    break;
+
+    case 'baku_tukar':
+    name = "Baku Tukar";
+    break;
+
+    case 'location':
+    name = "Lokasi";
+    break;
 			
 	  case 'ongkospembuatan':
 		name = "Ongkos Pembuatan";
@@ -437,7 +399,23 @@ static key = EMenuID.TERIMA_MUTASI;
 			
 	    case "telolet":
 		      return false;
-	       break;
+         break;
+         
+      case "no_index_products":
+          return false;
+          break;
+
+      case "no_item_po":
+          return false;
+          break;
+
+      case "isterima":
+          return false;
+          break;
+
+      case "no_urut":
+          return false;
+          break;
 			
       case "status":
         return false;
@@ -448,77 +426,82 @@ static key = EMenuID.TERIMA_MUTASI;
     }
   }
 
-  accept(){
+  async accept(){
     this.spinner.SetSpinnerText("Mohon Tunggu...");
     this.spinner.Open();
-	  for(let i=0; i < this.listflag.length; i++){
-      if(this.listflag[i].flag=="approved"){
-        
-        let data = {
-          _id : this.listflag[i]._id,
-          flag : 'accept',
-          update_by : this.sessionservice.getUser().username,
-          update_date : this.date_now,
-          update_time : this.time,
-      tgl_terima : this.date_now
-        };
-        
-        console.log(data);
+    console.log(this.data_view._id);
 
-        for(let i = 0; i < this.items.length; i++){
-          console.log("id items",this.items[i]._id);
-        
-          let updateproduct = {
-            _id : this.items[i]._id,
-            unit : this.sessionservice.getUser().unit,
-            flag : FlagProduct.STOCK.code
-          }
+    //CEK TIPE FLAG MUTASI & UPDATE MUTASI
+    if(this.data_view.flag=="approved"){
 
-          console.log(updateproduct);
-        
-            let updproduct = DataTypeUtil.Encode(updateproduct)
-            let r = DataTypeUtil.Encode(data);
-            this.mutasiservice.update(r).subscribe(output=>{
-              if(output==false){
-                if(this.mutasiservice.message()!=""){
-                  this.spinner.Close();
-                  return;
-                }
-              }
+      let data = {
+        _id : this.data_view._id,
+        update_by : this.sessionservice.getUser().username,
+        update_date : this.date_now,
+        update_time : this.time,
+        tgl_terima : this.date_now,
+        flag : FlagMutasi.ACCEPT.code
+      };
 
-              this.productservice.update(updproduct).subscribe(data=>{
-                if(data==false){
-                  if(this.productservice.message()!=""){
-                    this.spinner.Close();
-                    return;
-                  }
-                }
-              })
-              this.toastr.success("Data berhasil diterima","Sukses");
-              this.modalaccept = false;
-            })
+      
+      let encodeMutasi = DataTypeUtil.Encode(data);
+
+      let UpdateMutasi = await this.mutasiservice.update(encodeMutasi).toPromise();
+      if(UpdateMutasi==false){
+      this.spinner.Close();
+      return;
+      }
+
+      //LOOP ITEMS MUTASI & UPDATE PRODUK
+      for(let i = 0; i < this.items.length; i++){
+        console.log("id items",this.items[i]._id);
+      
+        let product = {
+          _id : this.items[i]._id,
+          unit : this.sessionservice.getUser().unit,
+          flag : FlagProduct.STOCK.code
         }
+      
+          let encodeProduct = DataTypeUtil.Encode(product);
+
+          //MICROSERVICES PROBLEM PARSE NUMBER
+          // this.mutasiservice.terima(id).subscribe(output=>{
+          //   if(output==false){
+          //     if(this.mutasiservice.message()!=""){
+          //       this.spinner.Close();
+          //       return;
+          //     }
+          //   }
+
+           let UpdateProduct = await this.productservice.update(encodeProduct).toPromise();
+           if(UpdateProduct==false){
+             let msg = this.productservice.message();
+             this.toastr.error("Gagal update product "+msg,"Error");
+             this.spinner.Close();
+             return;
+           }
+      }
+
+      this.toastr.success("Data berhasil diterima","Sukses");
+      this.modalaccept = false;
+      this.spinner.Close();
 
 
-    //   let data = {
-    //     _id : this.listflag[i]._id,
-    //     flag : 'accept',
-    //     update_by : this.sessionservice.getUser().username,
-    //     update_date : this.date_now,
-    //     update_time : this.time,
-		// tgl_terima : this.date_now
-    //   };
-  
-    //   console.log(data);
-  
-  
-    //   let r = DataTypeUtil.Encode(data);
-    //   this.mutasiservice.update(r).subscribe(output=>{
-    //     if(output!=false){
-    //       console.log(output);
-		//   this.modalaccept = false;
-    //     }
-    //   })
+
+    }else{
+          this.spinner.Close();
+          this.toastr.warning("Data yang bisa diterima adalah tipe flag approved","Peringatan");
+    }
+
+
+    //LOOP ITEMS MUTASI & UPDATE PRODUCT
+	  for(let i=0; i < this.data_view.length; i++){
+      if(this.data_view[i].flag=="approved"){
+        
+
+        
+
+
     }else{
           this.spinner.Close();
           this.toastr.warning("Data yang bisa diterima adalah tipe flag approved","Peringatan");
