@@ -5,14 +5,10 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LM } from '../../../sample/cart';
 import { DatePipe } from '@angular/common';
 import { SplitDateServiceService } from '../../../services/split-date-service.service';
-import { ToastrService } from 'ngx-toastr';
-import { ContentPage } from '../../../lib/helper/content-page';
-
 // services
 import { PrmMarginService } from '../../../services/parameter/prm-margin.service';
-import { TransactionBookingService } from '../../../services/transaction/transaction-booking.service';
-import { TransactionFlagService } from '../../../services/transaction/transaction-flag.service';
-import { ProductService } from '../../../services/product/product.service';
+
+
 @Component({
   selector: 'app-penjualan-korporasi',
   templateUrl: './penjualan-korporasi.component.html',
@@ -24,7 +20,6 @@ import { ProductService } from '../../../services/product/product.service';
 export class PenjualanKorporasiComponent implements OnInit {
 
   formData: FormGroup = null;
-  pic: FormGroup = null;
   isiClientData:any;
   hargaLogamMulia:any;
   mulia:any;
@@ -34,6 +29,8 @@ export class PenjualanKorporasiComponent implements OnInit {
   productData:any;
   prmMargin:any;
   dataMulia:any;
+  placeholderDatagrid = "Silahkan Cari Produk Berdasarkan Parameter";
+  loadingDg: boolean;
 
   muliaCategory = "?_hash=1&product-category.code=c05";
   channel = "channel.code=ch02";
@@ -43,11 +40,7 @@ export class PenjualanKorporasiComponent implements OnInit {
   constructor(
     private datePipe:DatePipe,
     private prmMarginService:PrmMarginService,
-    private splitDateServiceService:SplitDateServiceService,
-    private transactionBookingService:TransactionBookingService,
-    private toastrService:ToastrService,
-    private transactionFlagService:TransactionFlagService,
-    private productService:ProductService
+    private splitDateServiceService:SplitDateServiceService
   ) { }
 
   ngOnInit(): void {
@@ -62,16 +55,13 @@ export class PenjualanKorporasiComponent implements OnInit {
       name: new FormControl ("", Validators.required),
       client: new FormControl ("", Validators.required),
       client_encoded: new FormControl ("base64"),
-      tglPengajuan: new FormControl (this.datePipe.transform(Date.now(), 'yyyy-MM-dd')),
-      periode: new FormControl ("", Validators.required),
-      lastPeriode: new FormControl ("", Validators.required),
-      flag: new FormControl ("booking")
-    });
-
-    this.pic = new FormGroup ({
+      nomorIdentitas: new FormControl ("", [Validators.required, Validators.pattern(/^[0-9]\d*$/)]),
       namePIC: new FormControl ("", Validators.required),
       typeId: new FormControl ("", Validators.required),
-      numberId: new FormControl ("", [Validators.required, Validators.pattern(/^[0-9]\d*$/)]),
+      numberId: new FormControl ("", Validators.required),
+      tglPengajuan: new FormControl (this.datePipe.transform(Date.now(), 'yyyy-MM-dd'), Validators.required),
+      periode: new FormControl ("", Validators.required),
+      lastPeriode: new FormControl ("")
     })
   }
 
@@ -88,12 +78,11 @@ export class PenjualanKorporasiComponent implements OnInit {
     d.setDate(d.getDate() + (Number(data.periode)-1));
     let hasil = this.splitDateServiceService.split(d.toLocaleDateString());
     console.log(hasil);
-    this.formData.patchValue({lastPeriode:hasil, periode:data.periode});
+    this.formData.patchValue({lastPeriode:hasil});
 
     this.productData = [];
     this.dataMulia =[];
     this.productData = [];
-    this.hargaLogamMulia = 0;
     this.prmMargin = data.margin;
     // this.formData.get(tglPengajuan)
   }
@@ -129,41 +118,6 @@ export class PenjualanKorporasiComponent implements OnInit {
     }
 
     console.debug(val, "HASIL EMMMMMMIT")
-  }
-
-  storeTransaction(){
-    if (!this.formData.valid || !this.pic.valid) {
-      this.toastrService.error("Form Not Valid !!");
-      return;
-    }
-
-    let form = this.formData.getRawValue();
-    form.pic_encoded = "base64";
-    form.product_encoded = "base64array";
-    delete form.cif;
-    delete form.name;
-    let Pic = this.pic.getRawValue();
-
-    let data = Object.assign(form,{'pic': btoa(JSON.stringify(Pic))}, {product:btoa(JSON.stringify(this.productData))});
-
-    this.transactionFlagService.batchUpdateOne(this.productData);
-
-    this.transactionBookingService.add(data).subscribe((response)=>{
-      if (response == false) {
-        this.toastrService.error("Add Data Failed !!");
-        return;
-      }
-      
-      this.ChangeContentArea('10004');
-      this.toastrService.success("Success Add Data !!");
-      return;
-    })
-  }
-
-  ChangeContentArea(pageId : string)
-  {
-    if(pageId.startsWith("x")) return;
-    ContentPage.ChangeContent(pageId, true)
   }
   static key = EMenuID.KORPORASI;
 

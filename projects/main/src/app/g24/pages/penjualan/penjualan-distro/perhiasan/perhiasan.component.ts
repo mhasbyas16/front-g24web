@@ -176,6 +176,7 @@ export class PerhiasanComponent implements OnInit {
               }
 
               this.dataperhiasans = this.perhiasans;
+              console.debug(this.dataperhiasans,"dataperhiasan")
               this.toastrService.success("Load "+response["length"]+" Data", "Perhiasan");
               this.loadingDg = false;
             });          

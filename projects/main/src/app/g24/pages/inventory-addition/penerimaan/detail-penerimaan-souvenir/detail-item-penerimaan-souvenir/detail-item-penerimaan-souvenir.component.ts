@@ -198,7 +198,7 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
   defaultProduct()
   {
     return {
-      _id : "", code : "", sku : "",
+      _id : "", code : "", sku : "", nomor_nota : "",
       "product-category" : null, "product-denom" : null, "product-series" : null,
       berat : 0.00, ongkos_pieces : 0.0, unit : null,
       tipe_stock : "stock", vendor : null, flag : "stock", location : "",
@@ -297,6 +297,7 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
       for(let p = init; p < item.pieces; p++)
       {
         let def = this.defaultProduct();
+        def.nomor_nota = this.inisiasi['nomor_nota'];
         def.sku = item['sku'];
         def['product-category'] = this.inisiasi['product-category'];
         def['vendor'] = this.inisiasi['vendor'];
@@ -380,7 +381,7 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
   validateItems() : boolean
   {
     let items = this.inisiasi.items;
-    for(let i = 0; i < items; i++)
+    for(let i = 0; i < items.length; i++)
     {
       let item = items[i];
       if(!this.validateBeratItem(item, i))
@@ -406,7 +407,7 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
   validateInisiasi() : boolean
   {
     let items = this.inisiasi.items;
-    for(let i = 0; i < items; i++)
+    for(let i = 0; i < items.length; i++)
     {
       let item = items[i];
       if(!this.validateBeratItem(item, i))
@@ -439,15 +440,15 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
       return;
     }
 
-    if(!this.validateItems())
-    {
-      return;
-    }
+    // if(!this.validateItems())
+    // {
+    //   return;
+    // }
 
-    if(!this.validateInisiasi())
-    {
-      return;
-    }
+    // if(!this.validateInisiasi())
+    // {
+    //   return;
+    // }
 
     this.inisiasi.order_status = OrderStatus.TERIMA_FULL.code;
     this.inisiasi.update_time = this.time;

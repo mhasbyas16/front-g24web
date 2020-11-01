@@ -81,7 +81,7 @@ static key = EMenuID.DETAIL_INQUERY_PERHIASAN;
       return;
     }
     this.vendor = data;
-    console.log(name);
+    console.debug(name);
   }
 
   async LoadWarna(){
@@ -195,7 +195,7 @@ static key = EMenuID.DETAIL_INQUERY_PERHIASAN;
             params += key +="="+this.inquery[key]+"&";
             break;
       }
-      console.log("Hasil Pencarian "+params);
+      console.debug("Hasil Pencarian "+params);
     }
     let data = await this.productservice.list(params).toPromise();
     if(data==false){

@@ -65,7 +65,7 @@ export class SouvenirBycodeComponent implements OnInit {
    this.loadingDg = false
   }
 
-  addToCart(code, vendor,denom, series, hargaTbb, detail, idTransaction ){
+  addToCart(code, vendor,denom, series, hargaTbb, detail, idTransaction, _id ){
     this.cartList.push({
       "code" : code,
       "vendor" : vendor,
@@ -74,7 +74,8 @@ export class SouvenirBycodeComponent implements OnInit {
       "kondisi" : this.tampilKondisi,
       "detail" : detail,
       "hargaBB" : hargaTbb,
-      "idTransaction" : idTransaction
+      "idTransaction" : idTransaction,
+      "_id" : _id
     })
     console.debug(this.cartList, "isi cart")
     this.totalIsiCartSouvenir.emit(this.cartList.length)
@@ -95,7 +96,7 @@ export class SouvenirBycodeComponent implements OnInit {
 
   cekItemArray(data: any){
     // const code = this.cartList.map(el => el.code);
-    const code = this.cartList.map(el => el.code);
+    const code = this.cartList.map(el => el._id);
     const ARR = code.includes(data);
     return ARR;
   }

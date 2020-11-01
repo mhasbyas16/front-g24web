@@ -1,0 +1,141 @@
+<clr-modal [(clrModalOpen)]="modal" [clrModalSize]="'xl'">
+    <div class="modal-body">
+        <div class="card">
+            <div class="card-header">
+                Detail
+            </div>
+            <div class="card-block">
+                <form clrForm>
+                    <div class="card-text">
+                        <clr-input-container>
+                            <label>ID Transaksi</label>
+                            <input clrInput type="text" [value]="idTransaksi" name="" id="" readonly >
+                        </clr-input-container>
+                        <div class="clr-row">
+                            <div class="clr-col-6">
+                                <clr-input-container>
+                                    <label class="clr-col-4">Tanggal Pengajuan</label>
+                                    <input class="clr-col-6" clrInput type="text" [value]="tglPengajuan" name="" id="" readonly >
+                                </clr-input-container>
+                            </div>
+                            <div class="clr-col-6">
+                                <clr-input-container>
+                                    <label class="clr-col-4">Akhir Periode</label>
+                                    <input class="clr-col-6" clrInput type="text" [value]="lastPeriode" name="" id="" readonly >
+                                </clr-input-container>
+                            </div>
+                        </div>
+                        <div class="clr-row">
+                            <div class="clr-col-6">
+                                <clr-input-container>
+                                    <label class="clr-col-4">CIF Nasabah</label>
+                                    <input class="clr-col-6" clrInput type="text" [value]="cif" name="" id="" readonly >
+                                </clr-input-container>
+                            </div>
+                            <div class="clr-col-6">
+                                <clr-input-container>
+                                    <label class="clr-col-4">Nama Nasabah</label>
+                                    <input class="clr-col-6" clrInput type="text" [value]="nama" name="" id="" readonly >
+                                </clr-input-container>
+                            </div>
+                        </div>                        
+                        <div class="clr-row">
+                            <div class="clr-col-6">
+                                <clr-input-container>
+                                    <label class="clr-col-4">ID Penanggung Jawab</label>
+                                    <input class="clr-col-6" clrInput type="text" [value]="idPic" name="" id="" readonly >
+                                </clr-input-container>
+                            </div>
+                            <div class="clr-col-6">
+                                <clr-input-container>
+                                    <label class="clr-col-4">Nama Penanggung Jawab</label>
+                                    <input class="clr-col-6" clrInput type="text" [value]="namaPic" name="" id="" readonly >
+                                </clr-input-container>
+                            </div>
+                        </div>                      
+                    </div>
+                </form>
+                
+            </div>
+        </div>
+        <ng-container *ngIf="type == 'action'">
+            <div class="card">
+                <div class="card-header">
+                    Konfirmasi Pembayaran
+                </div>
+                <div class="card-block">
+                    <form clrForm [formGroup]="formPembayaran">
+                        <div class="card-text">
+                            <clr-input-container>
+                                <label>Total Transaksi</label>
+                                <input clrInput type="text" value="Rp. {{totals | number}}" name="" id="" readonly >
+                            </clr-input-container>
+                            <clr-date-container>
+                                <label>Tanggal Pembayaran</label>
+                                <input clrDate type="date" formControlName="tglPembayaran" id="" readonly>
+                            </clr-date-container>          
+                        </div>
+                    </form>
+                    
+                </div>
+            </div>
+        </ng-container>
+        <div class="card">
+            <div class="card-header">
+                Product
+            </div>
+            <div class="card-block">
+                <div class="card-text">
+                    <clr-datagrid>
+                        <clr-dg-column>Nama Penerima</clr-dg-column>
+                        <clr-dg-column>ID Penerima</clr-dg-column>
+                        <clr-dg-column>Kode</clr-dg-column>
+                        <clr-dg-column>Vendor</clr-dg-column>
+                        <clr-dg-column>Denom</clr-dg-column>
+                        <clr-dg-column>Harga</clr-dg-column>
+                        <clr-dg-column>Unit</clr-dg-column>
+                    
+                        <clr-dg-row *ngFor="let list of product">
+                            <clr-dg-cell>{{list.name}}</clr-dg-cell>
+                            <clr-dg-cell>{{list.noId}}</clr-dg-cell>
+                            <clr-dg-cell>{{list.code}}</clr-dg-cell>
+                            <clr-dg-cell>{{list.vendor}}</clr-dg-cell>
+                            <clr-dg-cell>{{list.denom}}</clr-dg-cell>
+                            <clr-dg-cell>Rp. {{list.harga | number}}</clr-dg-cell>
+                            <clr-dg-cell>{{list.detail.unit.nama}}</clr-dg-cell>
+                        </clr-dg-row>
+                    
+                        <clr-dg-footer>
+                            Total keping : {{lengths}} Total Harga : Rp. {{totals | number}}&nbsp;&nbsp;&nbsp;
+                            <clr-dg-pagination #pagination [clrDgPageSize]="10">
+                                <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Data per page</clr-dg-page-size>
+                                {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                                of {{pagination.totalItems}} Data
+                            </clr-dg-pagination></clr-dg-footer>
+                    </clr-datagrid>
+                </div>                
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="modal = false">Cancel</button>
+        <ng-container *ngIf="type == 'action'">
+            <button type="button" class="btn btn-success" (click)="validation(list,'Approve')" >Approve</button>
+            <button type="button" class="btn btn-danger" (click)="validation(list, 'Reject')">Reject</button>
+        </ng-container>
+        
+    </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="approval">
+    <h3 class="modal-title">Transaction</h3>
+    <div class="modal-body">
+        <p>Are You Sure {{prove}} This Transaction ?</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="approval = false">Cancel</button>
+        <button *ngIf="prove == 'Approve'" type="button" class="btn btn-primary" (click)="approveTr(proveData)">Ok</button>
+        <button *ngIf="prove == 'Reject'" type="button" class="btn btn-primary" (click)="RejectTr(proveData)">Ok</button>
+
+    </div>
+</clr-modal>

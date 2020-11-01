@@ -110,10 +110,26 @@ export class TransactionFlagBuybackService {
         data = val
         dataProduct = "LM"
         break;
+        
+      case "berlian":
+        data = val
+        dataProduct = "BERLIAN"
+        break;
+      
+      case "souvenir":
+        data = val
+        dataProduct = "GS"
+        break;
+
+      case "dinar":
+          data = val
+          dataProduct = "DINAR"
+          break;
       default:
         break;
     }
 
+    
     for (let isiData of data) {
       idTransaction = isiData.idTransaction
       console.debug(idTransaction,"idtransaksi")
@@ -125,6 +141,10 @@ export class TransactionFlagBuybackService {
           for (let isi of getProduct.product.PERHIASAN) {
             if (isi.detail._id == isiData.detail._id) {
               isi.buyback = "yes"
+              let updateP = {_id:isi.detail._id , flag: "stock",unit: _unit, unit_encoded: 'base64', tipe_stock: "buyback", kondisi: isiData.kondisi};
+              this.productService.update(updateP).subscribe((response:any)=>{
+                console.debug(response);
+              })
             }
           }
         }
@@ -142,17 +162,61 @@ export class TransactionFlagBuybackService {
 
                   isi.detail.vendor = hashVendor;
 
-                  let updateP = {_id:isi.detail._id ,vendor:btoa(JSON.stringify(hashVendor)), vendor_encoded:"base64"};
-                  this.productService.update(updateP).subscribe((response:any)=>{
+                  let updateLM = {_id:isi.detail._id ,vendor:btoa(JSON.stringify(hashVendor)), vendor_encoded:"base64", flag: "stock" ,unit: _unit, unit_encoded: 'base64' , tipe_stock: "buyback"};
+                  this.productService.update(updateLM).subscribe((response:any)=>{
                     console.debug(response);
                   })
                 })
+              }else{
+                  let updateLM = {_id:isi.detail._id , flag: "stock"};
+                  this.productService.update(updateLM).subscribe((response:any)=>{
+                    console.debug(response);
+                  })
               }               
             }
           }
         }
-        //
-        let updateData = {_id: idTransaction, product:btoa(JSON.stringify(getProduct.product)), product_encoded: "base64",unit: _unit, unit_encoded: 'base64'}
+
+        //berlian
+        if ( dataProduct == "BERLIAN") {
+          for (let isi of getProduct.product.BERLIAN) {
+            if (isi.detail._id == isiData.detail._id) {
+              isi.buyback = "yes"
+              let updateB = {_id:isi.detail._id , flag: "stock",unit: _unit, unit_encoded: 'base64', tipe_stock: "buyback"};
+              this.productService.update(updateB).subscribe((response:any)=>{
+                console.debug(response);
+              })
+            }
+          }
+        }
+
+        //souvenir
+        if ( dataProduct == "GS") {
+          for (let isi of getProduct.product.GS) {
+            if (isi.detail._id == isiData.detail._id) {
+              isi.buyback = "yes"
+              let updateGS = {_id:isi.detail._id , flag: "stock",unit: _unit, unit_encoded: 'base64', tipe_stock: "buyback"};
+              this.productService.update(updateGS).subscribe((response:any)=>{
+                console.debug(response);
+              })
+            }
+          }
+        }
+
+         //dinar
+         if ( dataProduct == "DINAR") {
+          for (let isi of getProduct.product.DINAR) {
+            if (isi.detail._id == isiData.detail._id) {
+              isi.buyback = "yes"
+              let updateGS = {_id:isi.detail._id , flag: "stock",unit: _unit, unit_encoded: 'base64', tipe_stock: "buyback"};
+              this.productService.update(updateGS).subscribe((response:any)=>{
+                console.debug(response);
+              })
+            }
+          }
+        }
+
+        let updateData = {_id: idTransaction, product:btoa(JSON.stringify(getProduct.product)), product_encoded: "base64", tipe_stock: "buyback" }
         console.debug(updateData, "weawdasdas")
           this.transactionService.update(updateData).subscribe((response:any)=>{
          return;

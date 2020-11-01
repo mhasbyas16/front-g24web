@@ -1,6 +1,6 @@
-<ng-container *ngIf="myRole == 'Keuangan'">
-    <div  class="clr-col-12"><br></div>
-    <button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus"></clr-icon></button> 
+<ng-container *ngIf="myRole == 'staffPurchasing'">
+    <div class="clr-col-12"><br></div>
+    <button class="btn btn-primary btn-sm" (click)="mainAdd()">Add <clr-icon shape="plus"></clr-icon></button>
 </ng-container>
 <form #search="ngForm" id="logam-mulia" clrForm (ngSubmit)="onDataGrid(search.value)">
     <div class="clr-row">
@@ -11,7 +11,7 @@
             <clr-select-container class="clr-form-control">
                 <label class="clr-control-label">Product Category</label>
                 <select [(ngModel)]="searchModel.product" clrSelect name="inputProduct">
-                    <option value="all" >All</option>
+                    <option value="all">All</option>
                     <ng-container *ngFor="let p of product">
                         <option value="{{p.code}}">{{p.name}}</option>
                     </ng-container>
@@ -38,28 +38,29 @@
 
     <clr-dg-row *clrDgItems="let row of setupHarga">
         <clr-dg-action-overflow>
-            <button *ngIf="row.flag == 'submit' && myRole == 'Management';" class="action-item" (click)="mainConfirm(row)">Confirm</button>
+            <button *ngIf="row.flag == 'submit' && myRole == 'kadepStock';" class="action-item"
+                (click)="mainConfirm(row)">Confirm</button>
             <button class="action-item" (click)="mainDetail(row)">Detail</button>
         </clr-dg-action-overflow>
         <clr-dg-cell hidden>{{row._id}}</clr-dg-cell>
         <clr-dg-cell [style.width.px]="100">{{row['product-category'].name}}</clr-dg-cell>
         <clr-dg-cell [style.width.px]="100">Rp. {{row['harga_buyback'] | number}}</clr-dg-cell>
         <clr-dg-cell [style.width.px]="100">Rp. {{row['harga_baku'] | number}}</clr-dg-cell>
-            <ng-container *ngIf="row.flag == 'approved'">
-                <clr-dg-cell [style.width.px]="100"><span class="label label-success">Approved</span></clr-dg-cell>
-            </ng-container>
-            <ng-container *ngIf="row.flag == 'submit'">
-                <clr-dg-cell [style.width.px]="100"><span class="label label-warning">Waiting</span></clr-dg-cell>
-            </ng-container>
-            <ng-container *ngIf="row.flag == 'declined'">
-                <clr-dg-cell [style.width.px]="100"><span class="label label-danger">Declined</span></clr-dg-cell>
-            </ng-container>
+        <ng-container *ngIf="row.flag == 'approved'">
+            <clr-dg-cell [style.width.px]="100"><span class="label label-success">Approved</span></clr-dg-cell>
+        </ng-container>
+        <ng-container *ngIf="row.flag == 'submit'">
+            <clr-dg-cell [style.width.px]="100"><span class="label label-warning">Waiting</span></clr-dg-cell>
+        </ng-container>
+        <ng-container *ngIf="row.flag == 'declined'">
+            <clr-dg-cell [style.width.px]="100"><span class="label label-danger">Declined</span></clr-dg-cell>
+        </ng-container>
     </clr-dg-row>
     <clr-dg-footer>
         <clr-dg-pagination #pagination [clrDgPageSize]="5">
-          <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Data per page</clr-dg-page-size>
-          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
-          of {{pagination.totalItems}} Data
+            <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Data per page</clr-dg-page-size>
+            {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+            of {{pagination.totalItems}} Data
         </clr-dg-pagination>
     </clr-dg-footer>
 </clr-datagrid>
@@ -75,7 +76,8 @@
                     <div class="clr-col-12">
                         <clr-select-container class="clr-form-control">
                             <label class="clr-control-label">Product Category</label>
-                            <select clrSelect name="product_category" [(ngModel)]="inputModel.productSelect" (change)="onChangeProduct($event.target.value)">
+                            <select clrSelect name="product_category" [(ngModel)]="inputModel.productSelect"
+                                (change)="onChangeProduct($event.target.value)">
                                 <ng-container *ngFor="let prod of product">
                                     <option value="{{prod._id}}">{{prod.name}}</option>
                                 </ng-container>
@@ -84,25 +86,25 @@
                     </div>
                     <div class="clr-col-6">
                         <div class="clr-form-control">
-                            <label for="basic" class="clr-control-label">Harga Buyback</label>
+                            <label for="basic" class="clr-control-label">Harga Dasar Jual</label>
                             <div class="clr-control-container">
-                            <div class="clr-input-wrapper">
-                                <input [(ngModel)]="inputModel.harga_buyback" name="harga_buyback" type="number" class="clr-input" />
-                                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
-                            </div>
-                            <span class="clr-subtext"></span>
+                                <div class="clr-input-wrapper">
+                                    <input [(ngModel)]="inputModel.harga_baku" name="harga_baku" type="text" mask="separator" thousandSeparator="," class="clr-input" />
+                                    <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                </div>
+                                <span class="clr-subtext"></span>
                             </div>
                         </div>
                     </div>
                     <div class="clr-col-6">
                         <div class="clr-form-control">
-                            <label for="basic" class="clr-control-label">Harga Dasar Jual</label>
+                            <label for="basic" class="clr-control-label">Harga Buyback</label>
                             <div class="clr-control-container">
-                            <div class="clr-input-wrapper">
-                                <input [(ngModel)]="inputModel.harga_baku" name="harga_baku" type="number" class="clr-input" />
-                                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
-                            </div>
-                            <span class="clr-subtext"></span>
+                                <div class="clr-input-wrapper">
+                                    <input [(ngModel)]="inputModel.harga_buyback" name="harga_buyback" type="text" mask="separator" thousandSeparator="," class="clr-input"/>
+                                    <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                </div>
+                                <span class="clr-subtext"></span>
                             </div>
                         </div>
                     </div>
@@ -110,11 +112,12 @@
                         <div class="clr-form-control">
                             <label for="basic" class="clr-control-label">Potongan BB Batu</label>
                             <div class="clr-control-container">
-                            <div class="clr-input-wrapper">
-                                <input [(ngModel)]="inputModel.potongan_batu" name="potongan_batu" type="number" class="clr-input" placeholder="0" min="0" max="100"/>
-                                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
-                            </div>
-                            <span class="clr-subtext"></span>
+                                <div class="clr-input-wrapper">
+                                    <input [(ngModel)]="inputModel.potongan_batu" name="potongan_batu" type="text"
+                                        class="clr-input" placeholder="0" min="0" max="100" mask="separator" thousandSeparator=","/>
+                                    <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                </div>
+                                <span class="clr-subtext"></span>
                             </div>
                         </div>
                     </div>
@@ -122,11 +125,12 @@
                         <div class="clr-form-control">
                             <label for="basic" class="clr-control-label">Potongan BB Berlian</label>
                             <div class="clr-control-container">
-                            <div class="clr-input-wrapper">
-                                <input [(ngModel)]="inputModel.potongan_berlian" name="potongan_berlian" type="number" class="clr-input" placeholder="0" min="0" max="100"/>
-                                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
-                            </div>
-                            <span class="clr-subtext"></span>
+                                <div class="clr-input-wrapper">
+                                    <input [(ngModel)]="inputModel.potongan_berlian" name="potongan_berlian"
+                                        type="text" class="clr-input" placeholder="0" min="0" max="100" mask="separator" thousandSeparator=","/>
+                                    <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                </div>
+                                <span class="clr-subtext"></span>
                             </div>
                         </div>
                     </div>
@@ -134,18 +138,20 @@
                         <div class="clr-form-control">
                             <label for="basic" class="clr-control-label">Potongan Ongkos</label>
                             <div class="clr-control-container">
-                            <div class="clr-input-wrapper">
-                                <input [(ngModel)]="inputModel.potongan_ongkos" name="potongan_ongkos" type="number" class="clr-input" placeholder="0" min="0" max="100"/>
-                                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
-                            </div>
-                            <span class="clr-subtext"></span>
+                                <div class="clr-input-wrapper">
+                                    <input [(ngModel)]="inputModel.potongan_ongkos" name="potongan_ongkos" type="text"
+                                        class="clr-input" placeholder="0" min="0" max="100" mask="separator" thousandSeparator=","/>
+                                    <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                </div>
+                                <span class="clr-subtext"></span>
                             </div>
                         </div>
                     </div>
                     <div class="clr-col-6">
                         <clr-textarea-container>
                             <label>Keterangan</label>
-                            <textarea clrTextarea [(ngModel)]="inputModel.keterangan" name="keterangan" required></textarea>
+                            <textarea clrTextarea [(ngModel)]="inputModel.keterangan" name="keterangan"
+                                required></textarea>
                             <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                         </clr-textarea-container>
                     </div>
@@ -185,11 +191,12 @@
                         <div class="clr-form-control">
                             <label for="basic" class="clr-control-label">Harga Buyback</label>
                             <div class="clr-control-container">
-                            <div class="clr-input-wrapper">
-                                <input name="harga_buyback" type="number" class="clr-input" [(ngModel)]="inputModel.harga_buyback"/>
-                                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
-                            </div>
-                            <span class="clr-subtext"></span>
+                                <div class="clr-input-wrapper">
+                                    <input name="harga_buyback" type="text" class="clr-input"
+                                        [(ngModel)]="inputModel.harga_buyback" mask="separator" thousandSeparator=","/>
+                                    <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                </div>
+                                <span class="clr-subtext"></span>
                             </div>
                         </div>
                     </div>
@@ -198,7 +205,8 @@
                             <label for="basic" class="clr-control-label">Harga Dasar Jual</label>
                             <div class="clr-control-container">
                                 <div class="clr-input-wrapper">
-                                    <input name="harga_baku" type="number" class="clr-input" [(ngModel)]="inputModel.harga_baku"/>
+                                    <input name="harga_baku" type="text" class="clr-input"
+                                        [(ngModel)]="inputModel.harga_baku" mask="separator" thousandSeparator=","/>
                                     <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                                 </div>
                                 <span class="clr-subtext"></span>
@@ -209,11 +217,12 @@
                         <div class="clr-form-control">
                             <label for="basic" class="clr-control-label">Potongan BB Batu</label>
                             <div class="clr-control-container">
-                            <div class="clr-input-wrapper">
-                                <input [(ngModel)]="inputModel.potongan_batu" name="potongan_batu" type="number" class="clr-input" placeholder="0" min="0" max="100"/>
-                                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
-                            </div>
-                            <span class="clr-subtext"></span>
+                                <div class="clr-input-wrapper">
+                                    <input [(ngModel)]="inputModel.potongan_batu" name="potongan_batu" type="text"
+                                        class="clr-input" placeholder="0" min="0" max="100" mask="separator" thousandSeparator=","/>
+                                    <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                </div>
+                                <span class="clr-subtext"></span>
                             </div>
                         </div>
                     </div>
@@ -221,11 +230,12 @@
                         <div class="clr-form-control">
                             <label for="basic" class="clr-control-label">Potongan BB Berlian</label>
                             <div class="clr-control-container">
-                            <div class="clr-input-wrapper">
-                                <input [(ngModel)]="inputModel.potongan_berlian" name="potongan_berlian" type="number" class="clr-input" placeholder="0" min="0" max="100"/>
-                                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
-                            </div>
-                            <span class="clr-subtext"></span>
+                                <div class="clr-input-wrapper">
+                                    <input [(ngModel)]="inputModel.potongan_berlian" name="potongan_berlian"
+                                        type="text" class="clr-input" placeholder="0" min="0" max="100" mask="separator" thousandSeparator=","/>
+                                    <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                </div>
+                                <span class="clr-subtext"></span>
                             </div>
                         </div>
                     </div>
@@ -233,18 +243,20 @@
                         <div class="clr-form-control">
                             <label for="basic" class="clr-control-label">Potongan Ongkos</label>
                             <div class="clr-control-container">
-                            <div class="clr-input-wrapper">
-                                <input [(ngModel)]="inputModel.potongan_ongkos" name="potongan_ongkos" type="number" class="clr-input" placeholder="0" min="0" max="100"/>
-                                <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
-                            </div>
-                            <span class="clr-subtext"></span>
+                                <div class="clr-input-wrapper">
+                                    <input [(ngModel)]="inputModel.potongan_ongkos" name="potongan_ongkos" type="text"
+                                        class="clr-input" placeholder="0" min="0" max="100" mask="separator" thousandSeparator=","/>
+                                    <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                                </div>
+                                <span class="clr-subtext"></span>
                             </div>
                         </div>
                     </div>
                     <div class="clr-col-6">
                         <clr-textarea-container>
                             <label>Keterangan</label>
-                            <textarea clrTextarea name="keterangan" [(ngModel)]="inputModel.keterangan" required></textarea>
+                            <textarea clrTextarea name="keterangan" [(ngModel)]="inputModel.keterangan"
+                                required></textarea>
                             <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                         </clr-textarea-container>
                     </div>
@@ -263,7 +275,7 @@
                         Decline
                     </ng-container>
                 </button>
-                <button type="submit" class="btn btn-primary"  (click)="mainApproveSubmit()">
+                <button type="submit" class="btn btn-primary" (click)="mainApproveSubmit()">
                     <span *ngIf="spinner==true" class="spinner spinner-inline">
                         Approved
                     </span>

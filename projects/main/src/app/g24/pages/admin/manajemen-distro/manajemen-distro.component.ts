@@ -69,14 +69,13 @@ export class ManajemenDistroComponent implements OnInit {
 
   defaultInput(): any {
     return {
-      code: null, nama: null, alamat: null
+      code: null, nama: null, alamat: null, regional: null
     }
   }
 
   ngOnInit(): void {
     this.getDateTime();
     this.loadRegional();
-    this.loadManager();
     this.inputModel = this.defaultInput;
     this.nikUser = this.sessionService.getUser();
     this.nikUser = { "_hash": btoa(JSON.stringify(this.nikUser)), "nik": this.nikUser["username"] };
@@ -85,7 +84,7 @@ export class ManajemenDistroComponent implements OnInit {
   validateInput() {
     for (let key in this.inputModel) {
       let value = this.inputModel[key];
-      // console.log(value, key, 'key')
+      // console.debug(value, key, 'key')
       if (value == null || value == "null" || value == 0 || (typeof value === 'number' && value === 0)) {
         this.toastrService.warning("Field belum diisi / sama dengan 0 ");
         return true
@@ -120,7 +119,7 @@ export class ManajemenDistroComponent implements OnInit {
   }
 
   loadManager() {
-    this.userServices.list().subscribe(out => {
+    this.userServices.list("?_sortby=name:1").subscribe(out => {
       this.managerList = out
     })
   }
@@ -166,30 +165,11 @@ export class ManajemenDistroComponent implements OnInit {
   mainAddSubmit() {
     if (this.validateInput()) return;
 
-    //get data Regional
-    let regional = null;
-    for (let i of this.regionalList) {
-      if (this.inputModel.regional == i._id) {
-        regional = btoa(JSON.stringify(i));
-      }
-    }
-
-    //get data manager
-    let manager = null;
-    for (let i of this.managerList) {
-      if (this.inputModel.manager == i.name) {
-        manager = btoa(JSON.stringify(i));
-      }
-    }
-
     const data = {
       "code": this.inputModel.code,
       "nama": this.inputModel.nama,
       "alamat": this.inputModel.alamat,
-      "regional": regional,
-      "regional_encoded": "base64",
-      "manager": manager,
-      "manager_encoded": "base64",
+      "parent_code": this.inputModel.regional,
       "create_by": this.nikUser["_hash"],
       "create_by_encoded": "base64",
       "create_date": this.date_now,
@@ -199,35 +179,32 @@ export class ManajemenDistroComponent implements OnInit {
 
     this.spinner = true;
     let kode = this.inputModel.code;
-    this.userServices.get("?name=" + this.inputModel.manager).subscribe(out => {
-      if (out == false) {
-        this.toastrService.error("User tidak ada");
+    this.unitServices.get("?code=" + kode).subscribe(resp => {
+      if (resp != false) {
+        this.toastrService.warning("Kode Outlet " + kode + " sudah ada");
+        this.spinner = false;
         return
       }
-      this.unitServices.get("?code=" + kode).subscribe(resp => {
-        if (resp != false) {
-          this.toastrService.warning("Kode Outlet " + kode + " sudah ada");
-          this.spinner = false;
+      this.unitServices.add(data).subscribe((response) => {
+        if (response == false) {
+          this.toastrService.error('Add Failed')
           return
         }
-        this.unitServices.add(data).subscribe((response) => {
-          if (response == false) {
-            this.toastrService.error('Add Failed')
-            return
-          }
-          this.spinner = false;
-          this.modalAddDialog = false;
-          this.toastrService.success('Add Success')
-        });
+        this.spinner = false;
+        this.modalAddDialog = false;
+        this.toastrService.success('Add Success')
       });
     });
-    console.log("submitted data", data);
+    console.debug("submitted data", data);
   }
 
   mainEdit(data) {
     this.inputModel = data;
-    this.inputModel.regional = data.regional._id;
-    this.inputModel.manager = data.manager.name;
+    if (data.parent_code == null) {
+      this.inputModel.regional = null;
+    } else {
+      this.inputModel.regional = data.parent_code;
+    }
     this.kodeLog = data.code;
 
     this.modalEditDialog = true;
@@ -243,23 +220,12 @@ export class ManajemenDistroComponent implements OnInit {
       }
     }
 
-    //get data manager
-    let manager = null;
-    for (let i of this.managerList) {
-      if (this.inputModel.manager == i.name) {
-        manager = btoa(JSON.stringify(i));
-      }
-    }
-
     const data = {
       "_id": this.inputModel._id,
       "code": this.inputModel.code,
       "nama": this.inputModel.nama,
       "alamat": this.inputModel.alamat,
-      "regional": regional,
-      "regional_encoded": "base64",
-      "manager": manager,
-      "manager_encoded": "base64",
+      "parent_code": this.inputModel.regional,
       "update_by": this.nikUser["_hash"],
       "update_by_encoded": "base64",
       "update_date": this.date_now,
@@ -269,37 +235,38 @@ export class ManajemenDistroComponent implements OnInit {
 
     this.spinner = true;
     let kode = this.inputModel.code;
-    this.userServices.get("?name=" + this.inputModel.manager).subscribe(out => {
-      if (out == false) {
-        this.toastrService.error("User tidak ada");
-        return
+    this.unitServices.get("?code=" + kode).subscribe(out => {
+      if (this.kodeLog != out.code) {
+        this.toastrService.warning('Kode sudah ada dengan nama ' + out.nama);
+        this.spinner = false;
+        return;
       }
-      this.unitServices.get("?code=" + kode).subscribe(out => {
-        if (this.kodeLog != out.code) {
-          this.toastrService.warning('Kode sudah ada dengan nama ' + out.nama);
-          this.spinner = false;
-          return;
+      this.unitServices.update(data).subscribe((response) => {
+        if (response == false) {
+          this.toastrService.error('Update Failed')
+          return
         }
-        this.unitServices.update(data).subscribe((response) => {
-          if (response == false) {
-            this.toastrService.error('Update Failed')
-            return
-          }
-          this.spinner = false;
-          this.modalEditDialog = false;
-          this.toastrService.success('Update Success')
-        });
+        this.spinner = false;
+        this.modalEditDialog = false;
+        this.toastrService.success('Update Success')
       });
     });
-    console.log("submitted data", data);
+    console.debug("submitted data", data);
   }
 
   mainDetail(data) {
     this.inputModel.kode = data.code;
     this.inputModel.nama = data.nama;
     this.inputModel.alamat = data.alamat;
-    this.inputModel.regional = data.regional.code + " - " + data.regional.nama;
-    this.inputModel.manager = data.manager.name;
+    if (data.parent_code == null) {
+      this.inputModel.regional = null;
+    } else {
+      for(let i of this.regionalList){
+        if (data.parent_code == i.code) {
+          this.inputModel.regional = i.nama;
+        }
+      }
+    }
     this.modalDetailDialog = true;
   }
 
@@ -328,5 +295,4 @@ export class ManajemenDistroComponent implements OnInit {
     });
     console.debug(data, "submited data")
   }
-
 }

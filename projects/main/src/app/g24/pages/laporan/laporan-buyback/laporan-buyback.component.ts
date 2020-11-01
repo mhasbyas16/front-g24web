@@ -77,7 +77,7 @@ export class LaporanBuybackComponent implements OnInit {
   filterTransaction(val){
     // CLR Datagrid loading
     this.loadingDg = true;
-
+    let paramTransaction = "&transaction-type.code=b01"
     let data = this.search.getRawValue(); 
     let params = "";
 
@@ -97,7 +97,7 @@ export class LaporanBuybackComponent implements OnInit {
         this.loadingDg = false;
         return;
       }else if(data.to != ""){
-        params = params+"&_between=makerDate&_start="+data.from+"&_end="+data.to;
+        params = params+paramTransaction+"&_between=makerDate&_start="+data.from+"&_end="+data.to;
       }
     }
 

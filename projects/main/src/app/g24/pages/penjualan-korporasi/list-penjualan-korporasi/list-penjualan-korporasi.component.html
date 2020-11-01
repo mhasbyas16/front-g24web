@@ -1,0 +1,78 @@
+<div class="clr-row">
+    <div class="card" style="margin-top: 0em;">
+        <div class="card-header">
+            List Penjualan Korporasi
+        </div>
+        <div class="card-block">
+            <div class="card-text">
+                <form clrForm [formGroup]="search" (ngSubmit)="filterTransaction('id')">
+                    <div class="clr-row clr-align-items-center">
+                        <div class="clr-col-3">
+                            <clr-date-container>
+                                <input clrDate type="date" formControlName="from">
+                            </clr-date-container>
+                        </div> 
+                        <div class="clr-col-3">
+                            <clr-date-container>
+                                <input clrDate type="date" formControlName="to">
+                            </clr-date-container>
+                        </div>
+                        <div class="clr-col-3">
+                            <clr-input-container>
+                                <input clrInput type="text" formControlName="text" placeholder="search" autofocus>
+                            </clr-input-container>
+                        </div>
+                        <div class="clr-col-2">
+                            <button type="submit" class="btn btn-icon btn-sm btn-success">Search</button>
+                        </div>
+                    </div>                   
+                </form>
+                <!-- Data Grid -->
+                <clr-datagrid [clrDgLoading]="loadingDg">
+                    <clr-dg-placeholder>{{placeholder}}</clr-dg-placeholder>
+
+                    <clr-dg-column>ID Transaksi</clr-dg-column>                    
+                    <clr-dg-column>Tanggal Pengajuan</clr-dg-column>
+                    <clr-dg-column>Periode Akhir</clr-dg-column>
+                    <clr-dg-column>CIF Nasabah</clr-dg-column>
+                    <clr-dg-column>Nama Nasabah</clr-dg-column>
+                    <clr-dg-column>Penanggung Jawab</clr-dg-column>
+                    <clr-dg-column>Total Keping</clr-dg-column>
+                    <clr-dg-column>Total Berat</clr-dg-column>
+                    <clr-dg-column>Total Penjualan</clr-dg-column>
+                    <clr-dg-column class="right"></clr-dg-column>
+                    <clr-dg-column class="right"></clr-dg-column>
+                    
+                    <clr-dg-row *clrDgItems="let isi of transactions | keyvalue" [clrDgItem]="isi"> 
+                        <clr-dg-action-overflow>
+                            <button class="action-item" (click)="detail.openModal(isi.value,isi.value.product.length,isi.value.totalHarga,'detail')">Detail</button>
+                            <button *ngIf="isi.value.flag == 'booking'" class="action-item" (click)="detail.openModal(isi.value,isi.value.product.length,isi.value.totalHarga,'action')">Action</button>
+                        </clr-dg-action-overflow>
+                        <clr-dg-cell></clr-dg-cell>
+                        <clr-dg-cell>{{isi.value.tglPengajuan}}</clr-dg-cell>
+                        <clr-dg-cell>{{isi.value.lastPeriode}}</clr-dg-cell>
+                        <clr-dg-cell>{{isi.value.client.cif}}</clr-dg-cell>
+                        <clr-dg-cell>{{isi.value.client.name}}</clr-dg-cell>
+                        <clr-dg-cell>{{isi.value.pic.namePIC}}</clr-dg-cell>
+                        <clr-dg-cell>{{isi.value.product.length}}</clr-dg-cell>
+                        <clr-dg-cell>{{listTotalHarga[isi.key]}}</clr-dg-cell>
+                        <clr-dg-cell>Rp. {{isi.value.totalHarga | number}}</clr-dg-cell>
+                        <!-- flag -->
+                        <clr-dg-cell *ngIf="isi.value.flag == 'jual'"><span class="badge badge-info">Jual</span></clr-dg-cell>
+                        <clr-dg-cell *ngIf="isi.value.flag == 'booking'"><span class="badge badge-success">Booking</span></clr-dg-cell>
+                        <clr-dg-cell *ngIf="isi.value.flag == 'rejected'"><span class="badge badge-danger">Rejected</span></clr-dg-cell>
+                        <clr-dg-cell >
+                            <ng-container *ngIf="isi.value.flag == 'jual'">
+                                <button class="btn btn-danger" (click)="export.PDFData(isi.value,listTotalHarga[isi.key])" >PDF</button>
+                            </ng-container> </clr-dg-cell>
+                    </clr-dg-row>
+                </clr-datagrid>
+            </div>
+        </div>
+    </div>
+
+</div>
+<app-card-detail (refresh)="refreshPage($event)" #detail></app-card-detail>
+<app-export-korporasi-proforma #export></app-export-korporasi-proforma>
+<!-- 
+-->

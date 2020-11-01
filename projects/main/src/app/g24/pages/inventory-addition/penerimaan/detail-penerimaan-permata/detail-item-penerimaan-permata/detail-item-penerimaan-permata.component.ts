@@ -203,7 +203,7 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
   defaultProduct()
   {
     return {
-      _id : "", code : "", sku : "", 
+      _id : "", code : "", sku : "", nomor_nota : "",
       "product-jenis" : null, "product-category" : null, "product-purity" : null, "product-gold-color" : null,
       berat : 0.00, baku_tukar : 0.0, ongkos : 0.0, unit : null,
       tipe_stock : "stock", vendor : null, flag : "stock", location : "",
@@ -361,6 +361,7 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
       for(let p = init; p < item.pieces; p++)
       {
         let def = this.defaultProduct();
+        def.nomor_nota = this.inisiasi['nomor_nota'];
         def.sku = item['sku'];
         def['product-category'] = this.inisiasi['product-category'];
         def['vendor'] = this.inisiasi['vendor'];
@@ -657,17 +658,20 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
     // Object.assign(tempInisiasi, this.inisiasi);
     DataTypeUtil.Encode(tempInisiasi);
 
-    let inisiasi = await this.inisiasiService.TerimaPermata(tempInisiasi).toPromise();
+    let inisiasi = await this.inisiasiService.update(tempInisiasi).toPromise();
     if(inisiasi == false)
     {
-      this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk.");
+      let msg = this.inisiasiService.message();
+      this.toastr.error("Harap hubungi IT Support/Helpdesk. Error: " + msg, "Penerimaan gagal.", {disableTimeOut: true, tapToDismiss : true});
+      this.Close();
+      this.doReset();
       return;
     } else {
       Object.assign(this.inisiasi, tempInisiasi);
       await this.doAccounting(inisiasi._id);
       console.log(this.inisiasi);
       this.parentListener.onAfterUpdate(this.inisiasi._id);
-      this.toastr.success("PO berhasil diterima.");
+      this.toastr.success("Penerimaan berhasil.");
       this.doReset();
       this.Close();
     }
@@ -696,11 +700,11 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
 
   async doAccounting(idInisiasi :string)
   {
-    await this.jurnalInisiasi.terima(idInisiasi).subscribe(output => {
+    await this.jurnalInisiasi.terimaPermata(idInisiasi).subscribe(output => {
       if(output == false)
       {
         let msg = this.jurnalInisiasi.message();
-        this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg);
+        this.toastr.error("Jurnal gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg);
         // console.log()
         return;
       } else {

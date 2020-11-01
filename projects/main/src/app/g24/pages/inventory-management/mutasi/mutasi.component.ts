@@ -25,6 +25,7 @@ import { TipeStock } from '../../../lib/enum/flag-product';
 import { FlagProduct } from '../../../lib/enum/flag-product';
 import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
 import { CetakMutasiComponent } from './cetak-mutasi/cetak-mutasi.component';
+import { JurnalMutasiService } from '../../../services/keuangan/jurnal/stock/jurnal-mutasi.service';
 import { StringHelper } from '../../../lib/helper/string-helper';
 
 @Component({
@@ -138,7 +139,9 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
   private productkategoryservice : ProductCategoryService,
   private klarityservice : ProductClarityService, private datetimeservice : ServerDateTimeService,
   private seriesservice : ProductSeriesService, private toastr : ToastrService,
-  private vendorservice : VendorService) { }
+  private vendorservice : VendorService,
+  private jurnalMutasiService : JurnalMutasiService
+  ) { }
 
 
   ngOnInit(): void {
@@ -600,7 +603,9 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
           }
         })
       }
-
+      this.doSearch();
+      // let id : string = output._id;
+      // this.doAccounting(id);
       this.spinner.Close();
       this.modalshow=false;
       // this.pdf.Makepdf(data);
@@ -613,7 +618,6 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
       
      
   }
-
 
   searchProduct(){
     this.spinner.SetSpinnerText("Sedang melakukan pencarian Produk...");

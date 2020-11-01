@@ -195,7 +195,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
   public setParentListener(listener : IDetailCallbackListener)
   {
     this.parentListener = listener;
-    console.log(listener);
+    console.debug(listener);
   }
 
   private Open() {
@@ -218,7 +218,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
   
   GetDisplayValue(object : any) : string
   {
-    // console.log(typeof object)
+    // console.debug(typeof object)
     if(object == null) return "null";
     if(typeof object == 'string' || typeof object == 'number' || typeof object == 'undefined') return object.toString();
 
@@ -229,7 +229,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
   defaultProduct()
   {
     return {
-      _id : "", code : "", sku : "", 
+      _id : "", code : "", sku : "", nomor_nota : "",
       "product-jenis" : null, "product-category" : null, "product-purity" : null, "product-gold-color" : null,
       berat : 0.00, baku_tukar : 0.0, gram_tukar : 0, ongkos : 0.0, unit : null,
       tipe_stock : "stock", vendor : null, flag : "stock", location : "",
@@ -280,7 +280,8 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     let product = item.products[productIndex];
 
     let baku_tukar = Math.round(Number(product.baku_tukar));
-    let berat = Math.round(Number(product.berat));
+    let berat = Math.round(Number(product.berat) * 100) / 100;
+    product.berat = berat;
 
     let gram_tukar = Math.round(berat * baku_tukar) / 100;
     product['gram_tukar'] = gram_tukar;
@@ -319,6 +320,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     let item = this.inisiasi.items[itemsIndex];
 
     let def = this.defaultProduct();
+    def.nomor_nota = this.inisiasi['nomor_nota'];
     def.sku = item['sku'];
     def['product-category'] = this.inisiasi['product-category'];
     def['vendor'] = this.inisiasi['vendor'];
@@ -521,13 +523,36 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     return true;
   }
 
+  validateBeratProducts(item : any, indexItem : number) : boolean
+  {
+    console.log(item.products)
+    for(let i = 0; i < item.products.length; i++)
+    {
+      let berat = item.products[i].berat;
+      if(berat == null || berat <= 0)
+      {
+        this.toastr.warning("Product nomor " + i + " pada Bulk Item: " + indexItem + " kurang dari atau sama dengan 0");
+        return false;
+      }
+      console.log(berat)
+    }
+
+    return true;
+  }
+
   validateItems() : boolean
   {
     let items = this.inisiasi.items;
-    for(let i = 0; i < items; i++)
+    for(let i = 0; i < items.length; i++)
     {
       let item = items[i];
+      console.log(item)
       if(!this.validateBeratItem(item, i))
+      {
+        return false;
+      }
+
+      if(!this.validateBeratProducts(item, i))
       {
         return false;
       }
@@ -536,18 +561,6 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
       // {
       //   return false;
       // }
-
-      if(item.berat == null || item.berat == 0)
-      {
-        this.toastr.warning("'Berat' barang pada Bulk Item nomor :" + i + " belum diisi.");
-        return false;
-      }
-
-      if(item.jenis == null || item.jenis == "")
-      {
-        this.toastr.warning("'Jenis' barang pada Bulk Item nomor :" + i + " belum diisi.");
-        return false;
-      }
     }
 
     return true;
@@ -582,6 +595,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
   async doTerima()
   {
     this.spinner.Open();
+    console.log("saving")
     if(this.mode == EPriviledge.READ)
     {
       this.toastr.info("Mode 'READ' only.");
@@ -595,11 +609,11 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
       return;
     }
 
-    if(!this.validateInisiasi())
-    {
-      this.spinner.Close();
-      return;
-    }
+    // if(!this.validateInisiasi())
+    // {
+    //   this.spinner.Close();
+    //   return;
+    // }
 
     this.inisiasi.order_status = OrderStatus.TERIMA_FULL.code;
     this.inisiasi.update_date = this.date;
@@ -609,7 +623,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     let tempInisiasi = {}
     Object.assign(tempInisiasi, this.inisiasi);
     DataTypeUtil.Encode(tempInisiasi);
-
+    
     let msg = "";
     let inisiasi :any = false;
     try {
@@ -628,8 +642,8 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
       return;
     } else {
       Object.assign(this.inisiasi, tempInisiasi);
-      this.doAccounting(inisiasi._id);
-      console.log(this.inisiasi);
+      // this.doAccounting(inisiasi._id);
+      console.debug(this.inisiasi);
       this.parentListener.onAfterUpdate(this.inisiasi._id);
       this.toastr.success("PO berhasil diterima.");
       this.doReset();
@@ -646,10 +660,10 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     // }
 
     // DataTypeUtil.Encode(enc);
-    // console.log('enc', enc);
+    // console.debug('enc', enc);
 
     // let result = await this.productService.batchAdd(enc).toPromise();
-    // console.log(result);
+    // console.debug(result);
     
     // for(let i = 0; i < result.length; i++)
     // {
@@ -684,7 +698,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     let tempInisiasi = {}
     Object.assign(tempInisiasi, this.inisiasi);
     DataTypeUtil.Encode(tempInisiasi);
-    console.log(tempInisiasi);
+    console.debug(tempInisiasi);
 
     let inisiasi = await this.inisiasiService.update(tempInisiasi).toPromise();
     if(inisiasi == false){
@@ -692,7 +706,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
       return;
     }else{
       Object.assign(this.inisiasi, tempInisiasi);
-      console.log(this.inisiasi);
+      console.debug(this.inisiasi);
       this.parentListener.onAfterUpdate(this.inisiasi._id);
       this.toastr.success("PO berhasil ditolak.");
       this.doReset();
@@ -703,12 +717,12 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
 
   doAccounting(idInisiasi :string)
     {
-    this.jurnalInisiasi.bayar(idInisiasi).subscribe(output => {
+    this.jurnalInisiasi.terimaPerhiasan(idInisiasi).subscribe(output => {
       if(output == false)
       {
         let msg = this.jurnalInisiasi.message();
         this.toastr.error("Inisiasi gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg);
-        // console.log()
+        // console.debug()
         return;
       } else {
         this.toastr.success("Jurnal berhasil.")

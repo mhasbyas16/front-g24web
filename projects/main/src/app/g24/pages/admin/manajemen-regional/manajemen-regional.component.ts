@@ -11,7 +11,6 @@ import { DatePipe } from '@angular/common';
 //database
 import { RegionalService } from "../../../services/admin/regional.service";
 import { UnitService } from "../../../services/system/unit.service";
-import { UserService } from "../../../services/security/user.service";
 
 @Component({
   selector: 'app-manajemen-regional',
@@ -63,7 +62,6 @@ export class ManajemenRegionalComponent implements OnInit {
     //database
     private unitServices: UnitService,
     private regionalServices: RegionalService,
-    private userServices: UserService,
   ) { }
 
 
@@ -74,7 +72,6 @@ export class ManajemenRegionalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadManager();
     this.getDateTime();
     this.inputModel = this.defaultInput;
     this.nikUser = this.sessionService.getUser();
@@ -110,12 +107,6 @@ export class ManajemenRegionalComponent implements OnInit {
         this.searchModel.tanggal = this.datePipe.transform(this.date_now, 'MM-dd-yyyy');
         console.log(this.searchModel.tanggal, 'wkwkwkwkkw')
       }
-    })
-  }
-
-  loadManager() {
-    this.userServices.list().subscribe(out => {
-      this.managerList = out
     })
   }
 
@@ -161,19 +152,9 @@ export class ManajemenRegionalComponent implements OnInit {
   mainAddSubmit() {
     if (this.validateInput()) return;
 
-    //get data manager
-    let manager = null;
-    for (let i of this.managerList) {
-      if (this.inputModel.manager == i.name) {
-        manager = btoa(JSON.stringify(i));
-      }
-    }
-
     const data = {
       "code": this.inputModel.code,
       "nama": this.inputModel.nama,
-      "manager": manager,
-      "manager_encoded": "base64",
       "create_by": this.nikUser["_hash"],
       "create_by_encoded": "base64",
       "create_date": this.date_now,
@@ -183,26 +164,20 @@ export class ManajemenRegionalComponent implements OnInit {
 
     this.spinner = true;
     let kode = this.inputModel.code;
-    this.userServices.get("?name=" + this.inputModel.manager).subscribe(out => {
-      if (out == false) {
-        this.toastrService.error("User tidak ada");
+    this.regionalServices.get("?code=" + kode).subscribe(out => {
+      if (out != false) {
+        this.toastrService.warning("Kode regional " + kode + " sudah ada");
+        this.spinner = false;
         return
       }
-      this.regionalServices.get("?code=" + kode).subscribe(out => {
-        if (out != false) {
-          this.toastrService.warning("Kode regional " + kode + " sudah ada");
-          this.spinner = false;
+      this.regionalServices.add(data).subscribe((response) => {
+        if (response == false) {
+          this.toastrService.error('Add Failed')
           return
         }
-        this.regionalServices.add(data).subscribe((response) => {
-          if (response == false) {
-            this.toastrService.error('Add Failed')
-            return
-          }
-          this.spinner = false;
-          this.modalAddDialog = false;
-          this.toastrService.success('Add Success')
-        });
+        this.spinner = false;
+        this.modalAddDialog = false;
+        this.toastrService.success('Add Success')
       });
     });
     console.log("submitted data", data);
@@ -211,13 +186,11 @@ export class ManajemenRegionalComponent implements OnInit {
   mainDetail(data) {
     this.inputModel.kode = data.code;
     this.inputModel.regional = data.nama;
-    this.inputModel.manager = data.manager.name;
     this.modalDetailDialog = true;
   }
 
   mainEdit(data) {
     this.inputModel = data;
-    this.inputModel.manager = data.manager.name;
     this.kodeLog = data.code;
     this.modalEditDialog = true;
   }
@@ -225,20 +198,10 @@ export class ManajemenRegionalComponent implements OnInit {
   mainEditSubmit() {
     if (this.validateInput()) return
 
-    //get data Regional
-    let manager = null;
-    for (let i of this.managerList) {
-      if (this.inputModel.manager == i.name) {
-        manager = btoa(JSON.stringify(i));
-      }
-    }
-
     const data = {
       "_id": this.inputModel._id,
       "code": this.inputModel.code,
       "nama": this.inputModel.nama,
-      "manager": manager,
-      "manager_encoded": "base64",
       "update_by": this.nikUser["_hash"],
       "update_by_encoded": "base64",
       "update_date": this.date_now,
@@ -247,27 +210,21 @@ export class ManajemenRegionalComponent implements OnInit {
     }
 
     this.spinner = true;
-    this.userServices.get("?name=" + this.inputModel.manager).subscribe(out => {
-      if (out == false) {
-        this.toastrService.error("User tidak ada");
-        return
+    let kode = this.inputModel.code;
+    this.regionalServices.get("?code=" + kode).subscribe(resp => {
+      if (this.kodeLog != resp.code) {
+        this.toastrService.warning('Kode sudah ada dengan nama ' + resp.nama);
+        this.spinner = false;
+        return;
       }
-      let kode = this.inputModel.code;
-      this.regionalServices.get("?code=" + kode).subscribe(resp => {
-        if (this.kodeLog != resp.code) {
-          this.toastrService.warning('Kode sudah ada dengan nama ' + resp.nama);
-          this.spinner = false;
-          return;
+      this.regionalServices.update(data).subscribe((response) => {
+        if (response == false) {
+          this.toastrService.error('Update Failed')
+          return
         }
-        this.regionalServices.update(data).subscribe((response) => {
-          if (response == false) {
-            this.toastrService.error('Update Failed')
-            return
-          }
-          this.spinner = false;
-          this.modalEditDialog = false;
-          this.toastrService.success('Update Success')
-        });
+        this.spinner = false;
+        this.modalEditDialog = false;
+        this.toastrService.success('Update Success')
       });
     });
     console.log("submitted data", data);

@@ -94,9 +94,9 @@ static key = EMenuID.PEMBUATAN;
     this.codeBankFound = true;
     this.bahan_baku["name_bank"] = code[0].name;
     this.bahan_baku["get_bank"] = code[0];
-      console.log(params);
-      console.log(this.bahan_baku["name_bank"]);
-      console.log(code);
+      console.debug(params);
+      console.debug(this.bahan_baku["name_bank"]);
+      console.debug(code);
   }
 
   async totalJumlahGram(){
@@ -161,7 +161,6 @@ static key = EMenuID.PEMBUATAN;
 
     this.toastr.success("Data berhasil disimpan","Sukses");
     this.spinner.Close();
-    this
   }
 
 

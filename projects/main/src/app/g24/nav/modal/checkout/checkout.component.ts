@@ -15,6 +15,7 @@ import { TransactionCardTypeService } from '../../../services/transaction/transa
 import { TransactionBankInstallmentService } from '../../../services/transaction/transaction-bank-installment.service';
 import { TransactionFlagService } from '../../../services/transaction/transaction-flag.service';
 import { TransactionTypeService } from '../../../services/transaction/transaction-type.service';
+import { CurrencyService } from '../../../services/transaction/currency.service';
 
 // session service
 import { UserService } from 'projects/platform/src/app/services/security/user.service';
@@ -90,6 +91,7 @@ export class CheckoutComponent implements OnInit {
     private transactionFlagService: TransactionFlagService,
     private productService: ProductService,
     private transactionTypeService: TransactionTypeService,
+    private currencyService:CurrencyService,
     //ng
     private toastr: ToastrService,
     private sessionService: SessionService,
@@ -110,13 +112,13 @@ export class CheckoutComponent implements OnInit {
     let unit = this.sessionService.getUnit();
 
     let params = "?_between=makerDate&_start=" + d1 + "&_end=" + d2;
-
     this.transactionService.list(params + '&_sortby=_id:0&_rows=1').subscribe((response: any) => {
       let count = null;
       if (response["0"]["idAi"] == null) {
         count = JSON.stringify(1);
       }else{
         count = JSON.stringify(Number(response["0"]["idAi"]) + 1);
+
       }
       switch (count.length) {
         case 1:
@@ -143,6 +145,7 @@ export class CheckoutComponent implements OnInit {
         default:
           break;
       }
+      // this.idtransaksi = "5502906200000054"
       this.idtransaksi = unit.code + "06" + d3 + inc;
       this.formData.patchValue({ idTransaction: this.idtransaksi, idAi: Number(response["0"]["idAi"]) + 1 });
     });
@@ -440,14 +443,17 @@ export class CheckoutComponent implements OnInit {
       delete data[LM[index].code]
     }
     // 
+    
     data.product = btoa(JSON.stringify({ PERHIASAN, LM, BERLIAN, GS, DINAR }));
     data.product_encoded = "base64";
+    data.currency_encoded = "base64";
     let nomT = data["nominalTransaksi"]
     data["nominalTransaksi"] = nomT.replace(/,/g, '')
     delete data["cif"];
     delete data["namaPemasar"];
     delete data["nik"];
-    console.debug(data, "ISI FORMDATA");
+    
+   
 
     // data.metodeBayar =
 
@@ -458,25 +464,36 @@ export class CheckoutComponent implements OnInit {
 
       console.debug(this.transactionFlagService.batchUpdate(), 'product flaf update success');
     })
-    this.transactionService.add(data).subscribe((response: any) => {
-      if (response != false) {
-        this.validModel = false;
-        this.toastr.success(this.transactionService.message(), "Transaction Success");
-        this.checkoutModal = false;
-        // remove isi cart
-        PERHIASAN.splice(0);
-        BERLIAN.splice(0);
-        LM.splice(0);
-        DINAR.splice(0);
-        GS.splice(0);
-        this.cartModal.emit(false);
-        this.ChangeContentArea('10003');
-      } else {
-        this.toastr.error(this.transactionService.message(), "Transaction");
-        this.idTransaksi()
+
+    this.currencyService.get('?code=360').subscribe((response:any)=>{
+      if (response == false) {
+        console.debug("gagal get currency");
         return;
       }
+      data.currency =  btoa(JSON.stringify(response));
+      console.debug(data, "ISI FORMDATA");
+      this.transactionService.add(data).subscribe((response: any) => {
+      
+        if (response != false) {
+          this.validModel = false;
+          this.toastr.success(this.transactionService.message(), "Transaction Success");
+          this.checkoutModal = false;
+          // remove isi cart
+          PERHIASAN.splice(0);
+          BERLIAN.splice(0);
+          LM.splice(0);
+          DINAR.splice(0);
+          GS.splice(0);
+          this.cartModal.emit(false);
+          this.ChangeContentArea('10003');
+        } else {
+          this.toastr.error(this.transactionService.message(), "Transaction");
+          this.idTransaksi()
+          return;
+        }
+      })
     })
+    
 
   }
 

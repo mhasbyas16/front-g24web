@@ -42,7 +42,7 @@ export class ContentComponent implements OnInit, IContent {
 
   public LoadContent() : any
   {
-    console.log('LoadContent called...')
+    console.debug('LoadContent called...')
     Pages.call()
     const pageID = this.GetActivePage();
     const class2Create = Pages.get(pageID)
@@ -52,9 +52,9 @@ export class ContentComponent implements OnInit, IContent {
       return;
     }
     const cls = Object.create(class2Create.prototype)
-    console.log(cls.constructor)
+    console.debug(cls.constructor)
     const factory = this.resolver.resolveComponentFactory(cls.constructor)
-    console.log(factory)
+    console.debug(factory)
      return this.content.createComponent(factory)
   }
 }

@@ -62,6 +62,7 @@
                                 <select required clrSelect formControlName="order_status">
                                     <option selected value="{{OrderStatus.SUBMIT.code}}">Submit</option>
                                     <option value="{{OrderStatus.APPROVAL.code}}">Approved</option>
+                                    <option value="{{OrderStatus.TOLAK.code}}">Tolak</option>
                                 </select>
                             <clr-control-error class="required" *clrIfError="'required'">This is a required field</clr-control-error>
                             <!-- <clr-control-helper class="required">*</clr-control-helper> -->
