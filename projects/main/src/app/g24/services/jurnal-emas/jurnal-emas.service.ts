@@ -4,8 +4,9 @@ import { CommonService } from 'projects/platform/src/app/core-services/common.se
 @Injectable({
   providedIn: 'root'
 })
-export class KonversiService {
-  key = "master-api/konversi";
+export class JurnalEmasService {
+
+  key = "journal-emas-api/hpp_persediaan_emas";
   constructor(private commonservice : CommonService) { }
 
   list(params?){
@@ -16,26 +17,32 @@ export class KonversiService {
     return this.commonservice.get(this.key, params);
   }
 
-  message() {
+  message(){
     return this.commonservice.message;
   }
 
-  update(data) {
-    return this.commonservice.update(this.key, data);
+  PostJournal(data){
+    return this.commonservice.task(this.key+"post-jurnal", data);
   }
 
-  //RESPONSE 404
-  approve(data){
-    return this.commonservice.task(this.key+"/approve",data);
+  ReverseJournal(data){
+    return this.commonservice.task(this.key+"reverse-jurnal-emas", data);
   }
 
-  add(data) {
-    return this.commonservice.add(this.key, data);
-  }
+  // update(data) {
+  //   return this.commonservice.update(this.key, data);
+  // }
+
+  // add(data) {
+  //   return this.commonservice.add(this.key, data);
+  // }
 
   // delete(data) {
   //   return this.commonservice.delete(this.key, data);
   // }
+
+  //post-journal
+  //reverse-journal
 
   count(data) {
     return this.commonservice.count(this.key, data);

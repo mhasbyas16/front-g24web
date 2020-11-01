@@ -1,11 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DContent } from '../../../decorators/content/pages';
 import { EMenuID } from '../../../lib/enums/emenu-id.enum';
-import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { DataTypeUtil } from '../../../lib/helper/data-type-util';
-import { environment } from 'src/environments/environment';
-import { Observable, config } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
 import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
 
 //ALERT
@@ -65,7 +61,7 @@ modalupdate : boolean = false;
   		if(this.search[key]==""||this.search[key]==null)continue;
   			switch (key) {
   				case "code":
-  					params += "code="+this.search[key]+"&code_encoded=int&code_encoded=string";
+  					params += "code="+this.search[key]+"&";
 				break;
 
 				case "code" : 

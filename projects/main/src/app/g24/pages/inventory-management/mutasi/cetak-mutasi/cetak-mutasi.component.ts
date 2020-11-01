@@ -11,6 +11,7 @@ import { TanggalService } from '../../../../lib/helper/tanggal.service';
 import { MutasiService } from '../../../../services/stock/mutasi.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { ServerDateTimeService } from '../../../../services/system/server-date-time.service';
+import { MutasiComponent } from '../../mutasi/mutasi.component';
 
 @Component({
   selector: 'cetak-mutasi',
@@ -27,32 +28,48 @@ export class CetakMutasiComponent implements OnInit {
   innerDoc = {};
   date : String  = "";
   time : String = "";
+  datamutasi : any = {};
+  noItem : number = 0;
 
   dataArray : any = [];
 
+  addinput : any = {};
+
   ngOnInit(): void {
   }
+
+
 
 
   PDFData(){
     this.mutasiservice.list('?flag=accept').subscribe((response:any)=>{
       if (response != false) {
         this.mutasiservice = response;
-        this.Content(this.mutasiservice[0]);
+        // this.Content(this.mutasiservice[0]);
       }
     })
     
   }
 
-  Content(data){
+  DataMutasi(data) {
+
+    return this.datamutasi = data;
 
   }
 
-  async Makepdf(data){
+  async Makepdf(){
+  this.noItem = 0;
 
-    for(let i = 0; i < data.length; i++){
-      console.log(data);
-    }
+  let data = await this.mutasiservice.list("?").toPromise();
+
+  // for(let i = data.length - 1; i >= 0; i--){
+  //  console.log(data[i].);
+  // }
+
+  const id =  data.map(el => el.key);
+  console.log(id.lastIndexOf(data.length));
+
+
 
   let datetime = await  this.timeservice.task("").toPromise();
   let tgl = datetime.split("T");
@@ -60,12 +77,14 @@ export class CetakMutasiComponent implements OnInit {
   this.time = tgl[1].split("Z")[0];
 
   this.innerDoc ={pageSize: 'A4', pageOrientation: 'landscape',pageMargins: [ 20, 20, 20, 40 ],};
-  this.innerDoc['content'] = [{
+  this.innerDoc['content'] = [
+    
+            {
         
               style: 'head',
               columns: [
                 {
-                  text: 'PT Pegadaian Galeri 24'
+                  text: 'PT Pegadaian Galeri 24 '+this.addinput.unit_tujuan
                 }
               ]
             },
@@ -120,49 +139,130 @@ export class CetakMutasiComponent implements OnInit {
               ]
             },
 
-            {
-              
-              //TABLE ITEMS
-              layout: 'lightHorizontalLines', // optional
-              table: {
-                headerRows: 2,
-                widths: [ 100, 200, 100, 100, 100, 100 ],
-        
-                body: [
-                        this.dataArray = data[0]
-                  // [ 'No', '_id', 'Berat', 'Harga', 'Flag', 'Status' ],
-                  // ['','Total','','','','']
-                ]
-              }
-            },
+            //CONTENT DATA
 
             {
-              style : 'head',
+              style : 'detail',
               columns : [
                 {
-                  //SPACE
+                  layout: 'lightHorizontalLines',
                   columns : [
-                    {lineHeight : 14, alignment : 'center', bold : true, text : ""}
-                  ]
-                }
-              ]
-            },
-
-            {
-              //BRANCH TUJUAN
-              style: 'head',
-              columns : [
-                {
-                  columns : [
-                    {width : 88, bold : true, text : 'Branch Tujuan'},
-                    {width : 5, bold : true, text : ' : '},
-                    {width : '*', bold : true, text :  this.session.getUser().unit.code}
+                    {alignment : 'center', lineHeight : 4, bold : true, text : "No",width : 40},
+                    {alignment : 'center', lineHeight : 4, bold : true, text : "_Id",width : '*'},
+                    {alignment : 'center', lineHeight : 4, bold : true, text : "Berat",width : 40},
+                    {alignment : 'center', lineHeight : 4, bold : true, text : "HPP",width : '*'},
+                    {alignment : 'center', lineHeight : 4, bold : true, text : "Flag",width : '*'},
+                    {alignment : 'center', lineHeight : 4, bold : true, text : "Status",width : '*'},
                   ]
                 }
               ]
             }
+        ];
 
-          ];
+        // for (let produk of data.items) {
+        //   this.noItem++;
+        //   this.innerDoc['content'].push([
+        //     {
+        //       style:'detail',
+        //       columns:[
+        //         {
+        //           width:"*",
+        //           columns:[
+        //             {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
+        //             {alignment : 'center', width:'*',text:produk._id},
+        //             {alignment : 'center', width:40,text:' '+produk.berat == undefined ? "-" : produk.berat},
+        //             {alignment : 'center', width:'*',text:' '+produk.hpp == undefined ? "-" : produk.hpp},
+        //             {alignment : 'center', width:'*',text:' '+produk.flag == undefined ? "-" : produk.flag},
+        //             {alignment : 'center', width:'*',text:' Dalam Pengiriman '}
+        //           ]
+        //         }
+        //       ]
+        //     }
+        //   ]);
+        // }
+
+
+        //SPACE KONTEN
+        this.innerDoc['content'].push([
+          {
+            style : 'detail',
+            lineHeight : 15,
+            columns : [
+              {
+                columns:[
+                  {width:40, text: ""},
+                  {width:'*', text: ""},
+                  {width:40, text:""},
+                  {width:'*', text:""},
+                  {width:'*', text:""},
+                  {width:'*', text:""}
+                ]
+              }
+            ]
+          }
+        ]);
+
+        this.innerDoc['content'].push([
+          {
+            style : 'detail',
+            lineHeight : 4,
+            columns : [
+              {
+                columns:[
+                  {width:40, text: ""},
+                  {alignment : 'left', width:'*', text: "TOTAL"},
+                  {width:40, text:""},
+                  {width:'*', text:""},
+                  {width:'*', text:""},
+                  {width:'*', text:""}
+                ]
+              }
+            ]
+          }
+        ]);
+
+        this.innerDoc['content'].push([
+          {
+            style : 'detail',
+            columns : [
+              {
+                columns : [
+                  {width:88, text: "Branch Tujuan"},
+                  {width:'*', text: " : "},
+                  {width:40, text: ""}
+                ]
+              }
+            ]
+          }
+        ])
+
+          // this.innerDoc['content'] =  [{
+          //     style : 'head',
+          //     columns : [
+          //       {
+          //         //SPACE
+          //         columns : [
+          //           {lineHeight : 14, alignment : 'center', bold : true, text : ""}
+          //         ]
+          //       }
+          //     ]
+          //   },
+
+          //   {
+          //     //BRANCH TUJUAN
+          //     style: 'detail',
+          //     columns : [
+          //       {
+          //         columns : [
+          //           {width : 88, bold : true, text : 'Branch Tujuan'},
+          //           {width : 5, bold : true, text : ' : '},
+          //           {width : '*', bold : true, text :  this.session.getUser().unit.code}
+          //         ]
+          //       }
+          //     ]
+          //   }
+          // ];
+
 
   pdfMake.createPdf(this.innerDoc).open()
 }

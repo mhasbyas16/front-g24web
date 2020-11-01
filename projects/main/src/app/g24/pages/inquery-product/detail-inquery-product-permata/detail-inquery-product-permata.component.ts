@@ -130,8 +130,13 @@ export class DetailInqueryProductPermataComponent implements OnInit {
   async Search(){
     this.spinner.SetSpinnerText("Mohon Tunggu...");
     this.spinner.Open();
-    let params = "?product-category.code=c03&";
     this.LoadingSearch = ClrLoadingState.LOADING;
+    let params = "?product-category.code=c03&";
+
+    if(this.sessionService.getUser().unit.code!="00005"){
+      params += "unit.code="+this.sessionService.getUser().unit.code+"&";
+    }
+    
     for(let key in this.inquery){
       if(this.inquery[key]==null)continue;
       switch(key){

@@ -4,8 +4,9 @@ import { CommonService } from 'projects/platform/src/app/core-services/common.se
 @Injectable({
   providedIn: 'root'
 })
-export class ApprovalKonversiService {
-  key = "master-api/konversi/approval/emas";
+export class InisiasiBahanBakuService {
+
+  key = "master-api/inisiasi-bahan-baku";
 
   constructor(private commonservice : CommonService) { }
 
@@ -21,8 +22,12 @@ export class ApprovalKonversiService {
     return this.commonservice.message;
   }
 
-  update(data) {
-    return this.commonservice.update(this.key, data);
+  // update(data) {
+  //   return this.commonservice.update(this.key, data);
+  // }
+
+  approve(data){
+    return this.commonservice.task(this.key+"/approve", data);
   }
 
   add(data) {
@@ -36,5 +41,4 @@ export class ApprovalKonversiService {
   count(data) {
     return this.commonservice.count(this.key, data);
   }
-  
 }

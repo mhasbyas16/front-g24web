@@ -12,6 +12,8 @@ import { ProductService } from '../../../services/product/product.service';
 import { FlagProduct } from '../../../lib/enum/flag-product';
 import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
 import { JurnalMutasiService } from '../../../services/keuangan/jurnal/stock/jurnal-mutasi.service';
+import { StringHelper } from '../../../lib/helper/string-helper';
+import { FlagMutasi } from '../../../lib/enum/flag-mutasi';
 
 
 @Component({
@@ -28,9 +30,9 @@ static key = EMenuID.APP_MUTASI;
 unitsal : any[] = [];
 unituju : any[] = [];
 productku : any[] = [];
-listdt : any[] = [];
-listdt2 : any[] = []; // data item dari mutasi nya
-data_view : any[] = [];
+listdt : any[] = [];        //DATA MUTASI
+listdt2 : any[] = [];       // data item dari mutasi nya
+data_view : any = {};
 
 input : any = {};
 add : any = {};
@@ -45,7 +47,7 @@ unittj : string;
 modalshow : boolean = false;
 modalview : boolean = false;
 Object = Object;
-listflag : any[] = [];
+view_mutasi : any[] = [];
 listdata : any[] = [];
 
 
@@ -122,7 +124,7 @@ time : String;
 
   }
 
-  doSearch(){
+  async doSearch(){
     this.spinner.SetSpinnerText("Mohon Tunggu...");
     this.spinner.Open();
     this.listdt = [];
@@ -138,16 +140,16 @@ time : String;
           params += 'unit_tujuan.code='+this.input[key].code+"&";
           break;
 
-        case 'tgl_approve':
-          params += 'approve_date='+this.input[key]+"&";
+        case 'approve_date':
+          params += 'approve_date='+StringHelper.StandardFormatDate('/',this.input[key],'MM/dd/yyyy')+"&";
           break;
 
         case 'tgl_terima':
-          params += 'tgl_terima='+this.input[key]+"&";
+          params += 'tgl_terima='+StringHelper.StandardFormatDate('/',this.input[key],'MM/dd/yyyy')+"&";
           break;
 
-        case 'tgl_kirim':
-          params += 'created_date='+this.input[key]+"&";
+        case 'created_date':
+          params += 'created_date='+StringHelper.StandardFormatDate('/',this.input[key],'MM/dd/yyyy')+"&";
           break;
 
         default:
@@ -156,28 +158,19 @@ time : String;
       }
       console.log(params);
     }
-    this.mutasiservice.list(params).subscribe(output=>{
-      if(output==false){
-        if(this.mutasiservice.message()!=""){
-          // this.modal = true;
-          this.toastr.info("Data tidak ditemukan","Informasi");
-          this.spinner.Close();
-          this.input = {};
-          this.listdt = [];
-          return;
-        }
-      }
+
+    let data = await this.mutasiservice.list(params).toPromise();
+    if(data==false){
+      this.toastr.info("Data tidak ditemukan","Informasi");
       this.spinner.Close();
-      this.toastr.success("Data ditemukan "+output.length,"Sukses");
-      this.listflag = output;
-	  this.listdt = this.listflag;
-//      for(let i = 0; i < this.listflag.length; i++){
-//		  if(this.listflag[i].flag=="submit"){
-//          this.listdt = this.listflag.splice(i,1);
-//          console.log(this.listdt);
-//      }
-//	  }
-	})
+      this.input = {};
+      this.listdt = [];
+      return;
+    }
+
+      this.spinner.Close();
+      this.toastr.success("Data ditemukan "+data.length,"Sukses");
+      this.view_mutasi = data;
 
 
   }
@@ -186,7 +179,7 @@ time : String;
     this.add = {};
     this.input = {};
     this.listdt = [];
-    this.listflag = [];
+    this.view_mutasi = [];
     this.listdt2 = [];
     this.items = [];
   }
@@ -199,8 +192,14 @@ time : String;
       this.toastr.warning("Data belum dipilih","Peringatan");
       return;
     }	  
-    this.listdt2 = [];
     this.items = [];
+
+    for(let i = 0; i < this.data_view.items.length; i++){
+      console.log(this.data_view.items[i]);
+    }
+
+
+    //------
 	
     this.listdt2 = [];
     this.listdt2.push(this.data_view);
@@ -221,12 +220,13 @@ time : String;
       this.toastr.warning("Data belum dipilih","Peringatan");
       return;
     }
-      this.listflag = [];
-      this.listflag.push(this.data_view);
+      this.view_mutasi = [];
+      this.view_mutasi.push(this.data_view);
     
-	 	for(let i = 0; i < this.listflag.length; i++){
-	  		this.DataFlowModalView = this.listflag[i];
-      		this.items = this.listflag[i].items;
+
+	 	for(let i = 0; i < this.view_mutasi.length; i++){
+	  		this.DataFlowModalView = this.view_mutasi[i];
+      		this.items = this.view_mutasi[i].items;
       		this.modalview=true;
     	}
   }
@@ -419,42 +419,81 @@ time : String;
     }
   }
 
-  approve(){
+
+  async approve(){
     this.spinner.SetSpinnerText("Mohon Tunggu...");
     this.spinner.Open();
-    for(let i=0; i < this.listdt2.length; i++){
-      if(this.listdt2[i].flag=="submit"){
+
+    console.log(this.data_view.flag);
+    if(this.data_view.flag=="submit"){
+
       let data = {
-        _id : this.listdt2[i]._id,
-        flag : 'approved',
+        _id : this.data_view._id,
+        flag : FlagMutasi.APPROVE.code,
         approve_by : this.sessionservice.getUser().username,
         approve_date : this.date_now,
         update_by : this.sessionservice.getUser().username,
         update_date : this.date_now,
         update_time : this.time
       };
-  
-      console.log(data);
 
       let r = DataTypeUtil.Encode(data);
-      this.mutasiservice.update(r).subscribe(output=>{
-        if(output!=false){
-         console.log(output);
-         this.modalshow = false;
-         this.listdt = [];
-         this.spinner.Close();
-         this.toastr.success("Data berhasil di approve","Sukses");
-         let id : string = output._id;
-         console.debug(id);
-         this.doAccounting(id);
-        }
-      })
 
-    }else if(this.listdt2[i].flag=="approved" || this.listdt2[i].flag=="accept" || this.listdt2[i].flag=="null"){
-    this.toastr.warning("Data Tersebut sudah disetujui / ditolak / diterima","Peringatan");
-    this.spinner.Close();
-	}
+      let dataUpdateMutasi = await this.mutasiservice.update(r).toPromise();
+      if(dataUpdateMutasi==false){
+        let msg = this.mutasiservice.message();
+        this.toastr.error("Data gagal di approve "+msg, "Error");
+        this.modalshow = false;
+        this.spinner.Close();
+        return;
+      }
+
+      this.toastr.success("Data berhasil diapproved","Sukses");
+      this.spinner.Close();
+      this.modalshow = false;
+      let id : string = dataUpdateMutasi._id;
+      console.debug(id);
+      this.doAccounting(id);
+
+
+    }else if(this.data_view.flag=="approve" || this.data_view.flag=="accept" || this.data_view.flag=="null" || this.data_view.flag=="ditolak"){
+        this.toastr.warning("Data Tersebut sudah disetujui / ditolak / diterima","Peringatan");
+        this.spinner.Close();
     }
+    
+    // for(let i=0; i < this.listdt2.length; i++){
+    //   if(this.listdt2[i].flag=="submit"){
+    //   let data = {
+    //     _id : this.listdt2[i]._id,
+    //     flag : 'approved',
+    //     approve_by : this.sessionservice.getUser().username,
+    //     approve_date : this.date_now,
+    //     update_by : this.sessionservice.getUser().username,
+    //     update_date : this.date_now,
+    //     update_time : this.time
+    //   };
+
+      // this.doJournalMutasi(this.listdt2[i]._id);
+  
+      // console.log(data);
+
+      // let r = DataTypeUtil.Encode(data);
+
+      // this.mutasiservice.update(r).subscribe(output=>{
+      //   if(output!=false){
+      //    console.log(output);
+      //    this.modalshow = false;
+      //    this.listdt = [];
+      //    this.spinner.Close();
+      //    this.toastr.success("Data berhasil di approve","Sukses");
+      //   }
+      // })
+
+  //   }else if(this.listdt2[i].flag=="approved" || this.listdt2[i].flag=="accept" || this.listdt2[i].flag=="null"){
+  //   this.toastr.warning("Data Tersebut sudah disetujui / ditolak / diterima","Peringatan");
+  //   this.spinner.Close();
+	// }
+  //   }
 
     
   }
@@ -479,64 +518,117 @@ time : String;
     })
   }
 
-  refuse(){
+ async refuse(){
     this.spinner.SetSpinnerText("Mohon Tunggu...");
     this.spinner.Open();
-    for(let i=0; i < this.listdt2.length; i++){
-      if(this.listdt2[i].flag=="submit"){
-      let data = {
-        _id : this.listdt2[i]._id,
-        flag : "null",
+    if(this.data_view.flag=="submit"){
+
+      let dataUpdateMutasi = {
+        _id : this.data_view._id,
+        flag : "ditolak",
         approve_by : "null",
         approve_date : "null",
         update_by : this.sessionservice.getUser().username,
         update_date : this.date_now,
         update_time : this.time
       };
-  
-      console.log(data);
-      
 
+      //UPDATE FLAG MUTASI MENJADI DITOLAK DAN UPDATE DATA MUTASI SESUAI DENGAN VARIABEL dataUpdateMutasi 
+      let encode_mutasi = DataTypeUtil.Encode(dataUpdateMutasi);
+      let datamutasi = await this.mutasiservice.update(encode_mutasi).toPromise();
+      if(datamutasi==false){
+        this.spinner.Close();
+        let msg = this.mutasiservice.message();
+        this.modalshow = false;
+        this.toastr.error("Gagal menolak mutasi "+msg, "Error");
+        return;
+      }
+
+      this.toastr.success("Data mutasi berhasil ditolak","Sukses");
+
+      //UPDATE PRODUK KETIKA DITOLAK RUBAH FLAG MENJADI STOCK KEMBALI
       for(let i = 0; i < this.items.length; i++){
+
         console.log(this.items[i]._id);
-        
-      let updateproduct = {
-        _id : this.items[i]._id,
-        flag : FlagProduct.STOCK.code
-      }
+        let updateFlagProduct = {
+          _id : this.items[i]._id,
+          flag : FlagProduct.STOCK.code
+        }
 
-        let encode = DataTypeUtil.Encode(updateproduct);
-        let ecnd = DataTypeUtil.Encode(data);
-
-        this.productservice.update(encode).subscribe(data=>{
-          if(data==false){
-            if(this.productservice.message()!=""){
-              this.spinner.Close();
-              return;
-            }
-          }
-          this.mutasiservice.update(ecnd).subscribe(data=>{
-            if(data==false){
-              if(this.mutasiservice.message()!=""){
-                this.spinner.Close();
-                return;
-              }
-            }
-          })
+        let encode_product = DataTypeUtil.Encode(updateFlagProduct);
+        let dataproduct = await this.productservice.update(encode_product).toPromise();
+        if(dataproduct==false){
           this.spinner.Close();
-          this.toastr.success("Data berhasil di tolak","Sukses");
-          this.modalshow = false;
-        })
-      
+          let msg = this.productservice.message();
+          this.toastr.error("Data flag product gagal diupdate ke stock "+msg, "Error");
+          return;
+        }
       }
+      this.spinner.Close();
+      this.toastr.success("Data flag product berhasil di update ke stock","Sukses");
+      this.modalshow = false;
+      this.listdt = [];
+
+    }else if(this.data_view.flag=="null" || this.data_view.flag=="accept" || this.data_view.flag=="approve" || this.data_view.flag=="ditolak"){
+      this.toastr.warning("Data tersebut sudah ditolak / disetujui / diterima","Peringatan");
+      this.spinner.Close();
+    }
+
+  //   for(let i=0; i < this.listdt2.length; i++){
+  //     if(this.listdt2[i].flag=="submit"){
+  //     let data = {
+  //       _id : this.listdt2[i]._id,
+  //       flag : "ditolak",
+  //       approve_by : "null",
+  //       approve_date : "null",
+  //       update_by : this.sessionservice.getUser().username,
+  //       update_date : this.date_now,
+  //       update_time : this.time
+  //     };
+  
+  //     console.log(data);
+      
+
+  //     for(let i = 0; i < this.items.length; i++){
+  //       console.log(this.items[i]._id);
+        
+  //     let updateproduct = {
+  //       _id : this.items[i]._id,
+  //       flag : FlagProduct.STOCK.code
+  //     }
+
+  //       let encode = DataTypeUtil.Encode(updateproduct);
+  //       let ecnd = DataTypeUtil.Encode(data);
+
+  //       this.productservice.update(encode).subscribe(data=>{
+  //         if(data==false){
+  //           if(this.productservice.message()!=""){
+  //             this.spinner.Close();
+  //             return;
+  //           }
+  //         }
+  //         this.mutasiservice.update(ecnd).subscribe(data=>{
+  //           if(data==false){
+  //             if(this.mutasiservice.message()!=""){
+  //               this.spinner.Close();
+  //               return;
+  //             }
+  //           }
+  //         })
+  //         this.spinner.Close();
+  //         this.toastr.success("Data berhasil di tolak","Sukses");
+  //         this.modalshow = false;
+  //       })
+      
+  //     }
       
 
       
-    }else if(this.listdt2[i].flag=="null" || this.listdt2[i].flag=="accept" || this.listdt2[i].flag=="approved"){
-    this.toastr.warning("Data tersebut sudah ditolak / disetujui / diterima","Peringatan");
-    this.spinner.Close();
-	}
-    }
+  //   }else if(this.listdt2[i].flag=="null" || this.listdt2[i].flag=="accept" || this.listdt2[i].flag=="approved"){
+  //   this.toastr.warning("Data tersebut sudah ditolak / disetujui / diterima","Peringatan");
+  //   this.spinner.Close();
+	// }
+  //   }
 
   }
 

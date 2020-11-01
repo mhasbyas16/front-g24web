@@ -150,9 +150,9 @@
                 <clr-dg-cell>{{data.no_po ? data.no_po : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data.sku ? data.sku : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data.vendor.name}}</clr-dg-cell>
-                <clr-dg-cell>{{data["product-purity"]?.code}}</clr-dg-cell>
-                <clr-dg-cell>{{data["product-gold-color"]?.name}}</clr-dg-cell>
-                <clr-dg-cell>{{data["product-jenis"]?.name}}</clr-dg-cell>
+                <clr-dg-cell>{{data["product-purity"] ? data['product-purity'].code : "-"}}</clr-dg-cell>
+                <clr-dg-cell>{{data["product-gold-color"] ? data['product-purity'].code : "-"}}</clr-dg-cell>
+                <clr-dg-cell>{{data["product-jenis"]? data['product-jenis'].name : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data.hpp}}</clr-dg-cell>
                 <clr-dg-cell>{{data.hpp_inisiasi}}</clr-dg-cell>
                 <clr-dg-cell>{{data.berat}}</clr-dg-cell>

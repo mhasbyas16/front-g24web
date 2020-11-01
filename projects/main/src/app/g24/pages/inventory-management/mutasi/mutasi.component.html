@@ -36,7 +36,9 @@
                         <div class="clr-form-control">
                             <label class="clr-control-label">Tanggal Kirim</label>
                             <div class="clr-control-container">
-                                <input  [(ngModel)]="input.created_date" class="clr-input" type="date" name="created_date" required />
+                                <clr-date-container>
+                                <input clrDate [(ngModel)]="input.created_date" type="date" name="created_date" required />
+                                </clr-date-container>
                             </div>
                         </div>
                     </div>
@@ -44,7 +46,9 @@
                         <div class="clr-form-control">
                             <label class="clr-control-label">Tanggal Terima</label>
                             <div class="clr-control-container">
-                                <input  [(ngModel)]="input.tgl_terima" class="clr-input" type="date" name="tgl_terima" required />
+                                <clr-date-container>
+                                <input clrDate [(ngModel)]="input.tgl_terima" type="date" name="tgl_terima" required />
+                                </clr-date-container>
                             </div>
                         </div>
                     </div>
@@ -73,18 +77,6 @@
                 <button type="button" class="btn btn-sm btn-secondary" (click)="onAdd()" ><clr-icon shape="plus"></clr-icon>Tambah</button>
                 <button type="button" class="btn btn-sm btn-secondary" (click)="onView()"><clr-icon shape="eye"></clr-icon> Lihat Data</button>
             </div>
-            <!-- <div class="btn-group">
-                <clr-dropdown>
-                    <button type="button" class="btn btn-sm btn-secondary" clrDropdownTrigger>
-                        Export
-                        <clr-icon shape="caret down"></clr-icon>
-                    </button>
-                    <clr-dropdown-menu clrPosition="bottom-left" *clrIfOpen>
-                        <button type="button"  clrDropdownItem>Export All</button>
-                        <button type="button"  clrDrItems></button>
-                    </clr-dropdown-menu>
-                </clr-dropdown>
-            </div> -->
         </clr-dg-action-bar>
         
         <!-- 5 Kolom -->
@@ -146,7 +138,7 @@
                 <div class="clr-col-6">
                     <div class="clr-form-control">
                         <label>Kode Unit Tujuan</label>
-                        <input [(ngModel)]="searchCode.code" name="code" clrInput required (keydown.enter)="oncekUnitCode()">
+                        <input [(ngModel)]="searchCode.code" name="code" clrInput required (keyup)="validateInputNumerik()" (keydown.enter)="oncekUnitCode()">
                         <clr-control-helper>Harap tekan enter. Untuk cek nama unit</clr-control-helper>
                     </div>
                 </div>
@@ -164,7 +156,7 @@
                         <label>Product Kategori</label>
                         <select [(ngModel)]="searchModel['product-category']" clrSelect name="kategori" (change)="onChange()">
                             <option value=""></option>
-                            <ng-container *ngFor="let prd of products2">
+                            <ng-container *ngFor="let prd of product_kategori">
                                 <option [ngValue]="prd">{{prd.name}}</option>
                             </ng-container>
                         </select>
@@ -272,7 +264,7 @@
                                 <select [(ngModel)]="searchModel.tipe_stock" #tipe_stock clrSelect name="tipe_stock">
                                     <option [ngValue]=""></option>
                                     <ng-container *ngFor="let tipe of Tipe">
-                                        <option [ngValue]="tipe">{{tipe.name}}</option>
+                                        <option [ngValue]="tipe">{{tipe.code}}</option>
                                     </ng-container>
                                 </select>
                             </div>
@@ -403,7 +395,7 @@
                                 <select [(ngModel)]="searchModel.tipe_stock" #tipe_stock clrSelect name="tipe_stock">
                                     <option [ngValue]=""></option>
                                     <ng-container *ngFor="let tipe of Tipe">
-                                        <option [ngValue]="tipe">{{tipe.name}}</option>
+                                        <option [ngValue]="tipe">{{tipe.code}}</option>
                                     </ng-container>
                                 </select>
                             </div>
@@ -465,7 +457,7 @@
                                 <select [(ngModel)]="searchModel.tipe_stock" #tipe_stock clrSelect name="tipe_stock">
                                     <option [ngValue]=""></option>
                                     <ng-container *ngFor="let tipe of Tipe">
-                                        <option [ngValue]="tipe">{{tipe.name}}</option>
+                                        <option [ngValue]="tipe">{{tipe.code}}</option>
                                     </ng-container>
                                 </select>
                             </div>
@@ -528,7 +520,7 @@
                                 <select [(ngModel)]="searchModel.tipe_stock" #tipe_stock clrSelect name="tipe_stock">
                                     <option [ngValue]=""></option>
                                     <ng-container *ngFor="let tipe of Tipe">
-                                        <option [ngValue]="tipe">{{tipe.name}}</option>
+                                        <option [ngValue]="tipe">{{tipe.code}}</option>
                                     </ng-container>
                                 </select>
                             </div>
@@ -590,7 +582,7 @@
                                 <select [(ngModel)]="searchModel.tipe_stock" #tipe_stock clrSelect name="tipe_stock">
                                     <option [ngValue]=""></option>
                                     <ng-container *ngFor="let tipe of Tipe">
-                                        <option [ngValue]="tipe">{{tipe.name}}</option>
+                                        <option [ngValue]="tipe">{{tipe.code}}</option>
                                     </ng-container>
                                 </select>
                             </div>
@@ -652,7 +644,7 @@
                                 <select [(ngModel)]="searchModel.tipe_stock" #tipe_stock clrSelect name="tipe_stock">
                                     <option [ngValue]=""></option>
                                     <ng-container *ngFor="let tipe of Tipe">
-                                        <option [ngValue]="tipe">{{tipe.name}}</option>
+                                        <option [ngValue]="tipe">{{tipe.code}}</option>
                                     </ng-container>
                                 </select>
                             </div>
@@ -784,7 +776,7 @@
                                 <select [(ngModel)]="searchModel.tipe_stock" #tipe_stock clrSelect name="tipe_stock">
                                     <option [ngValue]=""></option>
                                     <ng-container *ngFor="let tipe of Tipe">
-                                        <option [ngValue]="tipe">{{tipe.name}}</option>
+                                        <option [ngValue]="tipe">{{tipe.code}}</option>
                                     </ng-container>
                                 </select>
                             </div>
@@ -812,9 +804,9 @@
         <clr-datagrid [(clrDgSelected)]="selected">
             <clr-dg-action-bar>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-secondary" (click)="searchProduct()"><clr-icon shape="search"></clr-icon>Cari</button>
-                    <button type="button" class="btn btn-sm btn-secondary" (click)="Addmutasi()"><clr-icon shape="plus"></clr-icon>Tambah</button>
-                    <button type="button" class="btn btn-sm btn-secondary" (click)="refresh()"><clr-icon shape="refresh"></clr-icon> Reset</button>
+                    <button type="button" class="btn btn-sm btn-secondary" (click)="searchProduct()"><clr-icon shape="search"></clr-icon>Cari Produk</button>
+                    <button type="button" class="btn btn-sm btn-secondary" (click)="Addmutasi()"><clr-icon shape="plus"></clr-icon>Tambah Produk</button>
+                    <!-- <button type="button" class="btn btn-sm btn-secondary" (click)="refresh()"><clr-icon shape="refresh"></clr-icon> Reset</button> -->
                 </div>
                 </clr-dg-action-bar>
 
@@ -856,6 +848,13 @@
                     </tbody>
                 </table>
             </clr-dg-detail>
+            <clr-dg-footer>
+                <clr-dg-pagination #pagination [clrDgPageSize]="10">
+                    <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Product per page</clr-dg-page-size>
+                    {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                    of {{pagination.totalItems}} Product
+                </clr-dg-pagination>
+            </clr-dg-footer>
         </clr-datagrid>
 
         <!--DATAGRID DETAIL PICK-->
@@ -913,10 +912,10 @@
                 Tutup
             </button>
             <button type="button" class="btn btn-primary" (click)="Add()">
-                Tambah
+                Simpan
             </button>
-            <button type="button" class="btn btn-warning" (click)="cetakdata()"><clr-icon shape="bug"></clr-icon> Tes Cetak</button>
-        </div>
+            <!-- <button type="button" class="btn btn-primary" (click)="exportPDF.Makepdf()">Simpan</button> -->
+         </div>
     </clr-modal>
 
 

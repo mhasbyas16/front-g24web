@@ -30,6 +30,14 @@ export class MutasiService {
     return this.commonService.add(this.key, data);
   }
 
+  kirim(data) {
+    return this.commonService.task(this.key+"/kirim", data);
+  }
+
+  terima(data){
+    return this.commonService.task(this.key+"/terima", data);
+  }
+
   delete(data) {
     return this.commonService.delete(this.key, data);
   }
