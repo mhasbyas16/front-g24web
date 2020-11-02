@@ -414,6 +414,10 @@ time : String;
         return false;
         break;
 
+      case "isterima":
+        return false;
+        break;
+
       default:
         return true;
     }
@@ -453,10 +457,11 @@ time : String;
       this.modalshow = false;
       let id : string = dataUpdateMutasi._id;
       console.debug(id);
+      this.doSearch();
       this.doAccounting(id);
 
 
-    }else if(this.data_view.flag=="approve" || this.data_view.flag=="accept" || this.data_view.flag=="null" || this.data_view.flag=="ditolak"){
+    }else if(this.data_view.flag=="approve" || this.data_view.flag=="approved" || this.data_view.flag=="accept" || this.data_view.flag=="null" || this.data_view.flag=="ditolak"){
         this.toastr.warning("Data Tersebut sudah disetujui / ditolak / diterima","Peringatan");
         this.spinner.Close();
     }
@@ -545,6 +550,7 @@ time : String;
       }
 
       this.toastr.success("Data mutasi berhasil ditolak","Sukses");
+      this.doSearch();
 
       //UPDATE PRODUK KETIKA DITOLAK RUBAH FLAG MENJADI STOCK KEMBALI
       for(let i = 0; i < this.items.length; i++){

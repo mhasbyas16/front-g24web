@@ -424,6 +424,10 @@ static key = EMenuID.TERIMA_MUTASI;
         return false;
         break;
 
+      case "isterima":
+        return false;
+        break;
+
       default:
         return true;
     }
@@ -435,7 +439,7 @@ static key = EMenuID.TERIMA_MUTASI;
     console.log(this.data_view._id);
 
     //CEK TIPE FLAG MUTASI & UPDATE MUTASI
-    if(this.data_view.flag=="approved"){
+    if(this.data_view.flag=="approve" || this.data_view.flag=="approved"){
 
       let data = {
         _id : this.data_view._id,
@@ -490,29 +494,16 @@ static key = EMenuID.TERIMA_MUTASI;
       this.spinner.Close();
       let id : string = UpdateMutasi._id;
       this.doAccounting(id);
+      this.doSearch();
       
 
 
 
     }else{
           this.spinner.Close();
-          this.toastr.warning("Data yang bisa diterima adalah tipe flag approved","Peringatan");
+          this.toastr.warning("Data yang bisa diterima adalah tipe flag approve","Peringatan");
     }
 
-
-    //LOOP ITEMS MUTASI & UPDATE PRODUCT
-	  for(let i=0; i < this.data_view.length; i++){
-      if(this.data_view[i].flag=="approved"){
-        
-
-        
-
-
-    }else{
-          this.spinner.Close();
-          this.toastr.warning("Data yang bisa diterima adalah tipe flag approved","Peringatan");
-    }
-   }
 
 
   }
