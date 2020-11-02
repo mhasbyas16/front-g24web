@@ -12,13 +12,13 @@ export class HeaderComponent implements OnInit {
   title = "telolet"
 
   constructor(
-    // private autoLogout : AutoLogoutService
+    private autoLogout : AutoLogoutService
     )
   {
-    // autoLogout.check();
-    // autoLogout.initInterval();
-    // autoLogout.initListener();
-    // autoLogout.reset();
+    autoLogout.check();
+    autoLogout.initInterval();
+    autoLogout.initListener();
+    autoLogout.reset();
   }
 
   ngOnInit(): void {

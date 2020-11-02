@@ -378,6 +378,10 @@ export class DetailInisiasiApprovalPermataComponent extends BasePersistentFields
       case OrderStatus.APPROVAL.code:
         order_status_p = "";
         break;
+        
+      case OrderStatus.TOLAK.code:
+        order_status_p = "&order_status=" + OrderStatus.TOLAK.code;
+        break;
 
       default:
         this.toastr.error("Status Order tidak diketahui", "Error");
