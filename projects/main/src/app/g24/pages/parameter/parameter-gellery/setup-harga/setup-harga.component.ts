@@ -383,13 +383,15 @@ export class SetupHargaComponent implements OnInit {
     this.inputModel.productSelect = data['product-category'].name;
     this.inputModel.productS = data['product-category']._id;
     this.onChangeProduct(this.inputModel.productS);
-    this.inputModel.potongan_batu = data.potongan_bb_batu;
-    this.inputModel.potongan_berlian = data.potongan_bb_berlian;
+    if (this.inputModel.productSelect == '5ebba05bb980bd24b9201769') {
+      this.inputModel.potongan_batu = data.potongan_bb_batu;
+      this.inputModel.potongan_berlian = data.potongan_bb_berlian;
+    }
     this.modalConfirmDialog = true;
   }
 
   mainApproveSubmit(){
-    // if(this.validateInput()) return;
+    if(this.validateInput()) return;
 
     let setup = {
       "_id" : this.inputModel._id,

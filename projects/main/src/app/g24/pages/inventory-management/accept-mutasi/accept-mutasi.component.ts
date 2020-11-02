@@ -16,7 +16,6 @@ import { StringHelper } from '../../../lib/helper/string-helper';
 import { FlagMutasi } from '../../../lib/enum/flag-mutasi';
 import { JurnalMutasiService } from '../../../services/keuangan/jurnal/stock/jurnal-mutasi.service';
 
-
 @Component({
   selector: 'app-accept-mutasi',
   templateUrl: './accept-mutasi.component.html',
@@ -60,7 +59,6 @@ static key = EMenuID.TERIMA_MUTASI;
     private mutasiservice : MutasiService,
     private sessionservice : SessionService,
     private jurnalMutasiService : JurnalMutasiService,
-
     private productjenis : ProductJenisService,
 	  private datetimeservice : ServerDateTimeService,
     private toastr : ToastrService,

@@ -270,8 +270,8 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
 
   onBeratChanged(productIndex, itemIndex)
   {
-    this.hitungHPP(productIndex, itemIndex);
     this.hitungGramTukar(productIndex, itemIndex);
+    this.hitungHPP(productIndex, itemIndex);
   }
 
   hitungGramTukar(productIndex, itemIndex)

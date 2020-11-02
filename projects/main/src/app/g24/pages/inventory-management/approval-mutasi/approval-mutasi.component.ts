@@ -14,6 +14,10 @@ import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinn
 import { JurnalMutasiService } from '../../../services/keuangan/jurnal/stock/jurnal-mutasi.service';
 import { StringHelper } from '../../../lib/helper/string-helper';
 import { FlagMutasi } from '../../../lib/enum/flag-mutasi';
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7048db6c58a916c701b6f6285c0de2094ccfbf2d
 
 
 @Component({
@@ -31,7 +35,11 @@ unitsal : any[] = [];
 unituju : any[] = [];
 productku : any[] = [];
 listdt : any[] = [];        //DATA MUTASI
+<<<<<<< HEAD
 listdt2 : any[] = [];       // data item dari mutasi nya
+=======
+listdt2 : any[] = [];       //DATA ITEM DARI MUTASI
+>>>>>>> 7048db6c58a916c701b6f6285c0de2094ccfbf2d
 data_view : any = {};
 
 input : any = {};
@@ -162,6 +170,7 @@ time : String;
     let data = await this.mutasiservice.list(params).toPromise();
     if(data==false){
       this.toastr.info("Data tidak ditemukan","Informasi");
+<<<<<<< HEAD
       this.spinner.Close();
       this.input = {};
       this.listdt = [];
@@ -169,6 +178,15 @@ time : String;
     }
 
       this.spinner.Close();
+=======
+      this.spinner.Close();
+      this.input = {};
+      this.listdt = [];
+      return;
+    }
+
+      this.spinner.Close();
+>>>>>>> 7048db6c58a916c701b6f6285c0de2094ccfbf2d
       this.toastr.success("Data ditemukan "+data.length,"Sukses");
       this.view_mutasi = data;
 

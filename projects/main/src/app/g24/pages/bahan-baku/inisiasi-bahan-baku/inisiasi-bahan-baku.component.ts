@@ -161,7 +161,6 @@ static key = EMenuID.PEMBUATAN;
 
     this.toastr.success("Data berhasil disimpan","Sukses");
     this.spinner.Close();
-    this
   }
 
 
