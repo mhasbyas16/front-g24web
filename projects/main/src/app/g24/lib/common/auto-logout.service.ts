@@ -8,7 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 export class AutoLogoutService {
 
 
-  MINUTES_UNITL_AUTO_LOGOUT = .5 // in mins
+  MINUTES_UNITL_AUTO_LOGOUT = 10 // in mins
   CHECK_INTERVAL = 1000 // in ms
   STORE_KEY = 'lastAction';
   
@@ -34,14 +34,26 @@ export class AutoLogoutService {
     sessionStorage.setItem(this.STORE_KEY, lastAction.toString());
   }
 
+  storageHandler = this.storageEvt.bind(this);
+  resetHandler = this.reset.bind(this);
   initListener() {
-    document.body.addEventListener('click', () => this.reset());
-    document.body.addEventListener('mouseover', () => this.reset());
-    document.body.addEventListener('mouseout', () => this.reset());
-    document.body.addEventListener('keydown', () => this.reset());
-    document.body.addEventListener('keyup', () => this.reset());
-    document.body.addEventListener('keypress', () => this.reset());
-    window.addEventListener("storage", () => this.storageEvt());
+    document.body.addEventListener('click', this.resetHandler);
+    document.body.addEventListener('mouseover', this.resetHandler);
+    document.body.addEventListener('mouseout', this.resetHandler);
+    document.body.addEventListener('keydown', this.resetHandler);
+    document.body.addEventListener('keyup', this.resetHandler);
+    document.body.addEventListener('keypress', this.resetHandler);
+    window.addEventListener("storage", this.storageHandler);
+  }
+
+  removeResetListeners() {
+    document.body.removeEventListener('click', this.resetHandler);
+    document.body.removeEventListener('mouseover', this.resetHandler);
+    document.body.removeEventListener('mouseout', this.resetHandler);
+    document.body.removeEventListener('keydown', this.resetHandler);
+    document.body.removeEventListener('keyup', this.resetHandler);
+    document.body.removeEventListener('keypress', this.resetHandler);
+    window.removeEventListener("storage", this.storageHandler);
   }
 
   reset() {

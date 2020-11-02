@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as CryptoJS from 'crypto-js';
+import { AutoLogoutService } from 'projects/main/src/app/g24/lib/common/auto-logout.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,10 @@ export class SessionService {
   server: string = "https://dev.g24sys.com";
   pasphrase = "";
 
-  constructor() {
+  constructor
+  (
+    private logoutService : AutoLogoutService
+  ) {
   }
 
   setIp(params: any) {
@@ -93,6 +97,7 @@ export class SessionService {
   }
 
   logout() {
+    this.logoutService.removeResetListeners();
     sessionStorage.clear();
   }
 
