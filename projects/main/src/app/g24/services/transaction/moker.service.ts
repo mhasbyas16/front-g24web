@@ -37,4 +37,13 @@ export class MokerService {
   delete(data) {
     return this.commonService.delete(this.key, data);
   }
+
+  ApprovalTerimaMoker(data) {
+    return this.commonService.task("master-api/moker/approval-terima-moker", data);
+  }
+
+  ApprovalSetorMoker(data) {
+    return this.commonService.task("master-api/moker/approval-setor-moker", data);
+  }
+
 }

@@ -179,24 +179,18 @@ export class InputMokerComponent implements OnInit {
     })
   }
 
-  onCari(data) {
-    if (data.tanggal == null) {
-      this.toastrService.warning("Tanggal harus diisi");
-      return
-    }
-
-    this.loadingDg = true; // CLR Datagrid loading
-    let tgl = this.datePipe.transform(data.tanggal, 'yyyy-MM-dd');
-    this.param = "?_sortby=_id:2&create_date=" + tgl;
+  onCari() {
+    
+    this.param = "?_sortby=_id:2&create_date=" + this.date_now;
 
     this.mokerServices.list(this.param).subscribe(out => {
       if (out == false) {
-        this.toastrService.error("Modal anggaran not found");
+        this.toastrService.error("Data Setor Moker not found");
         this.loadingDg = false;
         return
       }
       this.dataList = out;
-      this.toastrService.success("Load "+out["length"]+" data", "Modal anggaran");
+      this.toastrService.success("Load "+out["length"]+" data", "Data Setor Moker");
       this.loadingDg = false;
     })
   }
@@ -268,7 +262,8 @@ export class InputMokerComponent implements OnInit {
       }
       this.spinner = false;
       this.modalAddDialog = false;
-      this.toastrService.success('Add Success')
+      this.toastrService.success('Add Success');
+      this.onCari();
     });
     console.log("submitted data", data);
   }

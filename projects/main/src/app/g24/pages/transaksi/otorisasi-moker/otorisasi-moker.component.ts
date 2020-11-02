@@ -83,7 +83,7 @@ export class OtorisasiMokerComponent implements OnInit {
     this.nikUser = this.sessionService.getUser();
     this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser)),"nik":this.nikUser["username"]};
   }
-
+ 
   validateInput(){
     for(let key in this.inputModel)
     {
@@ -126,24 +126,19 @@ export class OtorisasiMokerComponent implements OnInit {
     })
   }
 
-  onCari(data){
-    if (data.tanggal == null) {
-      this.toastrService.warning("Tanggal harus diisi");
-      return
-    }
+  onCari(){    
 
     this.loadingDg = true; // CLR Datagrid loading
-    let tgl = this.datePipe.transform(data.tanggal, 'yyyy-MM-dd');
-    this.param = "?_sortby=_id:2&create_date=" + tgl;
+    this.param = "?_sortby=_id:2&create_date=" + this.date_now;
 
     this.mokerServices.list(this.param).subscribe(out => {
       if (out == false) {
-        this.toastrService.error("Modal anggaran not found");
+        this.toastrService.error("Setor Moker not found");
         this.loadingDg = false;
         return
       }
       this.dataList = out;
-      this.toastrService.success("Load "+out["length"]+" data", "Modal anggaran");
+      this.toastrService.success("Load "+out["length"]+" data", "Setor Moker");
       this.loadingDg = false;
     })
   }
@@ -152,7 +147,7 @@ export class OtorisasiMokerComponent implements OnInit {
     console.debug(data, "detail data");
 
     this.inputModel = data;
-    this.inputModel.iam = data.otorisasi_by.name;
+    if(data.otorisasi_by!=null)this.inputModel.iam = data.otorisasi_by.name;     
     this.inputModel.tanggal_transaksi = data.create_date;
     this.inputModel.cab_pengirim = data.cabang_pengirim.code +" - "+ data.cabang_pengirim.nama;
     this.inputModel.cab_penerima = data.cabang_penerima.code +" - "+ data.cabang_penerima.name;
@@ -180,16 +175,19 @@ export class OtorisasiMokerComponent implements OnInit {
       "otorisasi_date" : this.date_now,
       "otorisasi_time" : this.time,
       "flag" : "approved",
+      "__version" : this.inputModel.__version,
+      "_log" : 1
     }
 
     this.spinner = true;
-    this.mokerServices.update(data).subscribe((response) => {
+    this.mokerServices.ApprovalSetorMoker(data).subscribe((response) => {
       if (response == false) {
         this.toastrService.error('Otorisasi Failed')
         return
       }
       this.spinner = false;
       this.modalApproveDialog = false;
+      this.onCari();
       this.toastrService.success('Otorisasi Success')
     });
     console.log("submitted data", data);
