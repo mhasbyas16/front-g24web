@@ -13,7 +13,8 @@ import { ServerDateTimeService } from "../../../services/system/server-date-time
 import { DatePipe } from '@angular/common';
 //database
 import { MokerService } from "../../../services/transaction/moker.service";
-import { BranchPegadaianService } from "../../../services/branch-pegadaian.service";
+// import { BranchPegadaianService } from "../../../services/branch-pegadaian.service";
+import { BranchPadananService } from "../../../services/admin/branch-padanan.service";
 import { UnitService } from "../../../services/system/unit.service";
 
 @Component({
@@ -74,7 +75,7 @@ export class InputMokerComponent implements OnInit {
     private datePipe: DatePipe,
     //database
     private mokerServices: MokerService,
-    private branchPegadaianServices: BranchPegadaianService,
+    private branchPadananServices: BranchPadananService,
     private unitServices : UnitService,
   ) { }
 
@@ -168,7 +169,7 @@ export class InputMokerComponent implements OnInit {
   }
 
   onListCabang(){
-    this.branchPegadaianServices.list("?unit.code="+this.unitCode).subscribe(out => {
+    this.branchPadananServices.list("?unit.code="+this.unitCode).subscribe(out => {
       this.listCabang = out;
       let cb =[]
       for(let data of out){

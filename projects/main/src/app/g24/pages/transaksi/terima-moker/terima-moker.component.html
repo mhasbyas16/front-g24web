@@ -5,7 +5,7 @@
       </div>
       <div class="card-block">
         <div class="card-text">
-          <form #search="ngForm" id="logam-mulia" clrForm (ngSubmit)="onCari(search.value)">
+          <form #search="ngForm" id="logam-mulia" clrForm (ngSubmit)="onCari()">
             <div class="clr-row">
               <div class="clr-col-12">
                 <h6 class="bg-blue1000"> Pencarian </h6>
@@ -13,7 +13,7 @@
               <div class="clr-col-6">
                 <clr-date-container>
                   <label class="clr-control-label">Tanggal</label>
-                  <input clrDate name="tanggal" type="date" [(ngModel)]="searchModel.tanggal">
+                  <input disabled clrDate name="tanggal" type="date" [(ngModel)]="searchModel.tanggal">
                 </clr-date-container>
               </div>
             </div>

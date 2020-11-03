@@ -9,14 +9,18 @@ import { SessionService } from 'projects/platform/src/app/core-services/session.
 import { DatePipe } from '@angular/common';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import {ClrDatagridComparatorInterface} from "@clr/angular";
 
 @Component({
   selector: 'app-rekening-koran',
   templateUrl: './rekening-koran.component.html',
   styleUrls: ['./rekening-koran.component.scss'],
   providers:[DatePipe],
+  
 })
 @DContent(RekeningKoranComponent.key)
+
+
 
 export class RekeningKoranComponent implements OnInit {
 
@@ -122,7 +126,7 @@ export class RekeningKoranComponent implements OnInit {
     const getUnit = this.sessionService.getUnit();
     params = params+"&unit="+getUnit["code"];
 
-    if (data.from == "" && data.text == "") {
+    if (data.from == "" && data.to == "") {
       this.toastrService.error("Please Complete Fill This From", "Rekening Koran");
       this.loadingDg = false;
        return;
@@ -147,24 +151,18 @@ export class RekeningKoranComponent implements OnInit {
             this.datatext = data.text;
             return
           }else{
-            this.filterTransaction('idJurnal');
-            return
+            this.toastrService.error("Data not found");
+          this.loadingDg = false;
+          return
           }
         })
       } 
-      // else if (val == 'noRek') {
-      //   this.rekeningKoranService.list("?"+params+"&detail.noRek_regex=1&detail.noRek="+data.text).subscribe((response:any)=>{
-      //     if (response["length"] != 0) {
-      //       params = params+"&detail.noRek_regex=1&detail.noRek="+data.text;
-      //       this.getJurnal(params);
-      //       return
-      //     }
-      //   })
-      // }
+      
     }
     else{
-      this.getJurnal(params);
-      return
+      this.toastrService.error("Complete This Form", "Rekening Koran");
+        this.loadingDg = false;
+        return;
     }
   }
 
@@ -174,13 +172,13 @@ export class RekeningKoranComponent implements OnInit {
     // this.listTotalHarga.splice(0);
     this.rekeningKoranService.list("?"+params).subscribe((response:any)=>{
       if (response == false) {
-        this.toastrService.error("Data Not Found", "Transaction");
+        this.toastrService.error("Data Not Found", "Jurnal");
         this.loadingDg = false;
         this.transactions = [];
         return;
       }  
       if (response["length"] == 0) {
-        this.toastrService.error("Data Not Found", "Transaction");
+        this.toastrService.error("Data Not Found", "Jurnal");
         this.loadingDg = false;
         this.transactions = [];
         return;
@@ -189,14 +187,10 @@ export class RekeningKoranComponent implements OnInit {
       this.loadingDg = false;
       let wew = response      
       this.transactions = response; 
-      let no = 1;    
+      let no = 1;   
 
-      
-      
-     
-      this.toastrService.success("Load "+this.transactions.length+" Data", "Transaction");
+      this.toastrService.success("Load "+this.transactions.length+" Data", "Jurnal");
 
-      
 
       for (let index=0; index <  wew.length; index++) {        
         
@@ -233,4 +227,8 @@ export class RekeningKoranComponent implements OnInit {
   }
   static key = EMenuID.REKENING_KORAN;
 
+  
 }
+
+
+

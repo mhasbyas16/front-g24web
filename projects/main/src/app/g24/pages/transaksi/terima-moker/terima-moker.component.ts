@@ -103,25 +103,19 @@ export class TerimaMokerComponent implements OnInit {
     })
   }
 
-  onCari(data){
-    if (data.tanggal == null) {
-      this.toastrService.warning("Tanggal harus diisi");
-      return
-    }
-
+  onCari(){
+   
     this.loadingDg = true; // CLR Datagrid loading
-    let tgl = this.datePipe.transform(data.tanggal, 'yyyy-MM-dd');
-    this.param = "?_sortby=_id:2&create_date=" + tgl;
-    // this.param = "?_sortby=_id:2&flag=approved&create_date=" + tgl;
+    this.param = "?_sortby=_id:2&flag=approved&create_date=" + this.date_now;
 
     this.mokerServices.list(this.param).subscribe(out => {
       if (out == false) {
-        this.toastrService.error("Modal anggaran not found");
+        this.toastrService.error("Terima Moker not found");
         this.loadingDg = false;
         return
       }
       this.dataList = out;
-      this.toastrService.success("Load "+out["length"]+" data", "Modal anggaran");
+      this.toastrService.success("Load "+out["length"]+" data", "Terima Moker");
       this.loadingDg = false;
     })
   }
