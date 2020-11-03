@@ -16,6 +16,7 @@ import { JurnalInisiasiService } from 'projects/main/src/app/g24/services/keuang
 import { ServerDateTimeService } from 'projects/main/src/app/g24/services/system/server-date-time.service';
 import { ViewChild } from '@angular/core';
 import { LoadingSpinnerComponent } from 'projects/main/src/app/g24/nav/modal/loading-spinner/loading-spinner.component';
+import { ParameterLookupSearchDTO, ParameterLookupService } from 'projects/main/src/app/g24/services/system/parameter-lookup.service';
 
 @Component({
   selector: 'detail-item-inisiasi-approval-emas-batangan',
@@ -30,6 +31,7 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
     private session : SessionService,
     private jurnalInisiasi : JurnalInisiasiService,
     private dateService : ServerDateTimeService,
+    private lookup : ParameterLookupService,
 
     private inisiasiService : InisiasiService,
     private jenisService : ProductJenisService
@@ -192,6 +194,7 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.lookup.loadByCode("nama-bank");
   }
   
   GetDisplayValue(object : any) : string
@@ -810,6 +813,21 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
 
     this.inisiasi['total_dpp'] = total_harga;
     return this.inisiasi['total_dpp'];
+  }
+
+  GetDisplayNameFromLookupByCode(code : string, value_code : string) : string
+  {
+    if(!code)
+    {
+      return code;
+    }
+
+    let dto : ParameterLookupSearchDTO = new ParameterLookupSearchDTO();
+    dto.code = code;
+    dto.value_code = value_code;
+    let name = code;
+    name = this.lookup.getName(dto);
+    return name;
   }
 
 }

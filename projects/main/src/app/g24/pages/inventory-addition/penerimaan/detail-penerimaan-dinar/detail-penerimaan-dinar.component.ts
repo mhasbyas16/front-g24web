@@ -17,6 +17,7 @@ import { EPriviledge } from '../../../../lib/enums/epriviledge.enum';
 import { OrderStatus } from '../../../../lib/enum/order-status';
 import { IDetailCallbackListener } from '../../../../lib/base/idetail-callback-listener';
 import { DetailItemPenerimaanDinarComponent } from './detail-item-penerimaan-dinar/detail-item-penerimaan-dinar.component';
+import { ParameterLookupSearchDTO, ParameterLookupService } from '../../../../services/system/parameter-lookup.service';
 
 @Component({
   selector: 'detail-penerimaan-dinar',
@@ -218,6 +219,7 @@ export class DetailPenerimaanDinarComponent extends BasePersistentFields impleme
   constructor(
     private inisiasiService : InisiasiService,
     private productCatService : ProductCategoryService,
+    private lookup : ParameterLookupService,
 
     private toastr : ToastrService,
     private session : SessionService)
@@ -246,6 +248,7 @@ export class DetailPenerimaanDinarComponent extends BasePersistentFields impleme
 
   async ngOnInit(): Promise<void>
   {
+    this.lookup.loadByCode("order-status");
     this.user = this.session.getUser();
 
     await this.LoadAllParameter();
@@ -695,5 +698,20 @@ export class DetailPenerimaanDinarComponent extends BasePersistentFields impleme
 
   public onCancel() {
 
+  }
+
+  GetDisplayNameFromLookup(code : string) : string
+  {
+    if(!code)
+    {
+      return code;
+    }
+
+    let dto : ParameterLookupSearchDTO = new ParameterLookupSearchDTO();
+    dto.code = "order-status";
+    dto.value_code = code;
+    let name = code;
+    name = this.lookup.getName(dto);
+    return name;
   }
 }
