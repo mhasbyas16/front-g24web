@@ -81,7 +81,8 @@ modalupdate : boolean = false;
   			if(data==false){
   				if(this.purityservice.message()!=""){
 					this.spinner.Close();
-  					this.toastr.info("Data tidak ditemukan","Informasi");
+					  this.toastr.info("Data tidak ditemukan","Informasi");
+					  this.listpurity = [];
   					return;
   				}
 			  }

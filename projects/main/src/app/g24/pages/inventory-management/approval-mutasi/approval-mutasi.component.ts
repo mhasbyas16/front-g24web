@@ -15,6 +15,8 @@ import { JurnalMutasiService } from '../../../services/keuangan/jurnal/stock/jur
 import { StringHelper } from '../../../lib/helper/string-helper';
 import { FlagMutasi } from '../../../lib/enum/flag-mutasi';
 
+//SORTING CLARITY LIB
+import {ClrDatagridSortOrder} from '@clr/angular';
 
 @Component({
   selector: 'app-approval-mutasi',
@@ -33,6 +35,8 @@ productku : any[] = [];
 listdt : any[] = [];        //DATA MUTASI
 listdt2 : any[] = [];       // data item dari mutasi nya
 data_view : any = {};
+
+mutasi_view : any[] = [];
 
 input : any = {};
 add : any = {};
@@ -59,6 +63,11 @@ date_time : String;
 timezone : String;
 date_now : String;
 time : String;
+
+//VARIABEL SORT 
+descSort_approve : any; 
+descSort_kirim : any; 
+descSort_terima : any;
 
   constructor(
     private UnitService : UnitService,
@@ -121,6 +130,9 @@ time : String;
       }
   });
 
+  this.descSort_approve = ClrDatagridSortOrder.ASC;
+  this.descSort_kirim = ClrDatagridSortOrder.ASC;
+  this.descSort_terima = ClrDatagridSortOrder.ASC;
 
   }
 
@@ -220,15 +232,14 @@ time : String;
       this.toastr.warning("Data belum dipilih","Peringatan");
       return;
     }
-      this.view_mutasi = [];
-      this.view_mutasi.push(this.data_view);
+    console.log(this.data_view);
+    this.mutasi_view.push(this.data_view);
+    for(let i = 0; i < this.mutasi_view.length; i++){
+      this.DataFlowModalView = this.mutasi_view[i];
+      this.items = this.mutasi_view[i].items;
+    }
+      this.modalview = true;
     
-
-	 	for(let i = 0; i < this.view_mutasi.length; i++){
-	  		this.DataFlowModalView = this.view_mutasi[i];
-      		this.items = this.view_mutasi[i].items;
-      		this.modalview=true;
-    	}
   }
 
   GetDisplayName(key : string) : string
@@ -452,7 +463,7 @@ time : String;
         return;
       }
 
-      this.toastr.success("Data berhasil diapproved","Sukses");
+      this.toastr.success("Data berhasil diapprove","Sukses");
       this.spinner.Close();
       this.modalshow = false;
       let id : string = dataUpdateMutasi._id;

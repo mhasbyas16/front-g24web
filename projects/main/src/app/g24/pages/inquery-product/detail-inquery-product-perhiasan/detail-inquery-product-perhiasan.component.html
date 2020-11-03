@@ -8,6 +8,24 @@
                 <div class="clr-row">
                     <div class="clr-col-6">
                         <div class="clr-form-control">
+                            <label class="clr-control-label">Id</label>
+                            <clr-input-container>
+                                <input clrInput [(ngModel)]="inquery.id" name="id">
+                            </clr-input-container>
+                        </div>
+                    </div>
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Kode</label>
+                            <clr-input-container>
+                                <input clrInput [(ngModel)]="inquery.code" name="code">
+                            </clr-input-container>
+                        </div>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
                             <label class="clr-control-label">Nomer PO</label>
                             <clr-input-container>
                                 <input clrInput [(ngModel)]="inquery.nopo" name="nopo">
@@ -130,7 +148,10 @@
 <div class="clr-row">
     <div class="clr-col-lg-12">
         <clr-datagrid>
+            <clr-dg-column>Id</clr-dg-column>
+            <clr-dg-column>No Urut</clr-dg-column>
             <clr-dg-column>No PO</clr-dg-column>
+            <clr-dg-column>Kode</clr-dg-column>
             <clr-dg-column>SKU</clr-dg-column>
             <clr-dg-column>Vendor</clr-dg-column>
             <clr-dg-column>Kadar</clr-dg-column>
@@ -142,16 +163,20 @@
             <clr-dg-column>Baku Tukar</clr-dg-column>
             <clr-dg-column>Gram Tukar</clr-dg-column>
             <clr-dg-column>Ongkos</clr-dg-column>
-            <clr-dg-column>Lokasi</clr-dg-column>
+            <clr-dg-column>Lokasi Distribusi</clr-dg-column>
             <clr-dg-column>Tipe Stock</clr-dg-column>
             <clr-dg-column>Flag</clr-dg-column>
+            <clr-dg-column>Unit</clr-dg-column>
 
-            <clr-dg-row *ngFor="let data of outputdata">
+            <clr-dg-row *clrDgItems="let data of outputdata">
+                <clr-dg-cell>{{data._id}}</clr-dg-cell>
+                <clr-dg-cell>{{data.no_urut ? data.no_urut : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data.no_po ? data.no_po : "-"}}</clr-dg-cell>
+                <clr-dg-cell>{{data.code ? data.code : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data.sku ? data.sku : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data.vendor.name}}</clr-dg-cell>
                 <clr-dg-cell>{{data["product-purity"] ? data['product-purity'].code : "-"}}</clr-dg-cell>
-                <clr-dg-cell>{{data["product-gold-color"] ? data['product-purity'].code : "-"}}</clr-dg-cell>
+                <clr-dg-cell>{{data["product-gold-color"] ? data['product-gold-color'].name : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data["product-jenis"]? data['product-jenis'].name : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data.hpp}}</clr-dg-cell>
                 <clr-dg-cell>{{data.hpp_inisiasi}}</clr-dg-cell>
@@ -162,7 +187,16 @@
                 <clr-dg-cell>{{data.location ? data.location : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data.tipe_stock}}</clr-dg-cell>
                 <clr-dg-cell>{{data.flag}}</clr-dg-cell>
+                <clr-dg-cell>{{data.unit?.nama}}</clr-dg-cell>
             </clr-dg-row>
+
+            <clr-dg-footer>
+                <clr-dg-pagination #pageproduct [clrDgPageSize]="10">
+                    <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Product per page</clr-dg-page-size>
+                    {{pageproduct.firstItem + 1}} - {{pageproduct.lastItem + 1}}
+                    of {{pageproduct.totalItems}} Product
+                </clr-dg-pagination>
+            </clr-dg-footer>
         </clr-datagrid>
     </div>
 </div>

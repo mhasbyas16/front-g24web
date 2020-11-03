@@ -75,8 +75,12 @@
         </clr-dg-row>
 
         <clr-dg-footer>
-            {{listkategori.length}} data
-        </clr-dg-footer>
+			<clr-dg-pagination #pagination [clrDgPageSize]="10">
+				<clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Product Kategori per page</clr-dg-page-size>
+				{{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+				of {{pagination.totalItems}} Product Kategori
+			</clr-dg-pagination>
+		</clr-dg-footer>
     </clr-datagrid>
             </div>
             <div class="card-footer">

@@ -82,11 +82,12 @@ listdata : any[] = [];
   				if(this.productclarity.message()!=""){
 					  this.toastr.info("Data tidak ditemukan","Informasi");
 					  this.spinner.Close();
+					  this.listclarity = [];
   					return;
   				}
   			}
 			  this.listclarity = data;
-			  this.toastr.success("Data ditemuka "+data.length,"Sukses");
+			  this.toastr.success("Data ditemukan "+data.length,"Sukses");
 			  this.spinner.Close();
   		})
   }

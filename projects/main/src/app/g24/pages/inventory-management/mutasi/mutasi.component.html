@@ -86,10 +86,10 @@
         <clr-dg-column>
             Unit Tujuan
         </clr-dg-column>
-        <clr-dg-column>
+        <clr-dg-column [clrDgField]="'created_date'" [clrDgSortOrder]="descSort">
             Tanggal Kirim
         </clr-dg-column>
-        <clr-dg-column>
+        <clr-dg-column [clrDgField]="'tgl_terima'" [clrDgSortOrder]="descSort_terima">
             Tanggal Terima
         </clr-dg-column>
         <clr-dg-column>
@@ -109,7 +109,11 @@
         </clr-dg-row>
 
         <clr-dg-footer>
-            {{listdt.length}} data
+            <clr-dg-pagination #pagination [clrDgPageSize]="10">
+                <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Mutasi per page</clr-dg-page-size>
+                {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                of {{pagination.totalItems}} mutasi
+            </clr-dg-pagination>
         </clr-dg-footer>
     </clr-datagrid>
 </div>

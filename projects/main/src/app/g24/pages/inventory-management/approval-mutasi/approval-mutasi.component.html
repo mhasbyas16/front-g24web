@@ -98,13 +98,13 @@
             <clr-dg-column>
                 Unit Tujuan
             </clr-dg-column>
-            <clr-dg-column>
+            <clr-dg-column [clrDgField]="'created_date'" [clrDgSortOrder]="descSort_kirim">
                 Tanggal Kirim
             </clr-dg-column>
-            <clr-dg-column>
+            <clr-dg-column [clrDgField]="'approve_date'" [clrDgSortOrder]="descSort_approve">
                 Tanggal Approve
             </clr-dg-column>
-            <clr-dg-column>
+            <clr-dg-column [clrDgField]="'tgl_terima'" [clrDgSortOrder]="descSort_terima">
                 Tanggal Terima
             </clr-dg-column>
             <clr-dg-column>
@@ -125,7 +125,11 @@
             </clr-dg-row>
     
             <clr-dg-footer>
-                
+                <clr-dg-pagination #pagination [clrDgPageSize]="10">
+                    <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Approval mutasi per page</clr-dg-page-size>
+                    {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                    of {{pagination.totalItems}} approval mutasi
+                </clr-dg-pagination>
             </clr-dg-footer>
         </clr-datagrid>
     </div>
