@@ -11,6 +11,7 @@ import { IDetailCallbackListener } from 'projects/main/src/app/g24/lib/base/idet
 import { PaymentType } from 'projects/main/src/app/g24/lib/enums/payment-type';
 import { LoadingSpinnerComponent } from 'projects/main/src/app/g24/nav/modal/loading-spinner/loading-spinner.component';
 import { ServerDateTimeService } from 'projects/main/src/app/g24/services/system/server-date-time.service';
+import { ParameterLookupSearchDTO, ParameterLookupService } from 'projects/main/src/app/g24/services/system/parameter-lookup.service';
 
 /**
  * Penerimaan gift baru isi ke stock/product
@@ -27,9 +28,9 @@ export class DetailItemPenerimaanDinarComponent implements OnInit {
     private toastr : ToastrService,
     private session : SessionService,
     private dateService : ServerDateTimeService,
+    private lookup : ParameterLookupService,
 
-    private inisiasiService : InisiasiService,
-    private productService : ProductService
+    private inisiasiService : InisiasiService
   ) { }
 
   @ViewChild('spinner', {static: false}) spinner : LoadingSpinnerComponent;
@@ -185,6 +186,7 @@ export class DetailItemPenerimaanDinarComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.lookup.loadByCode("nama-bank");
   }
   
   GetDisplayValue(object : any) : string
@@ -597,5 +599,20 @@ export class DetailItemPenerimaanDinarComponent implements OnInit {
     }
 
     return false;
+  }
+
+  GetDisplayNameFromLookupByCode(code : string, value_code : string) : string
+  {
+    if(!code)
+    {
+      return code;
+    }
+
+    let dto : ParameterLookupSearchDTO = new ParameterLookupSearchDTO();
+    dto.code = code;
+    dto.value_code = value_code;
+    let name = code;
+    name = this.lookup.getName(dto);
+    return name;
   }
 }

@@ -54,7 +54,7 @@ export class SignInPageComponent implements OnInit {
           }    
           return;
         }
-        console.debug("response", response);
+        // console.debug("response", response);
         this.company = response.name;
         this.state = 2;
       });

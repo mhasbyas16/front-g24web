@@ -20,6 +20,7 @@ import { ToastrService } from 'ngx-toastr';
 import { StringHelper } from '../../../../lib/helper/string-helper';
 import { EPriviledge } from '../../../../lib/enums/epriviledge.enum';
 import { InisiasiService } from '../../../../services/stock/inisiasi.service';
+import { ParameterLookupSearchDTO, ParameterLookupService } from '../../../../services/system/parameter-lookup.service';
 
 @Component({
   selector: 'detail-inisiasi-approval-souvenir',
@@ -204,6 +205,21 @@ export class DetailInisiasiApprovalSouvenirComponent extends BasePersistentField
     return name;
   }
 
+  GetDisplayNameFromLookup(code : string) : string
+  {
+    if(!code)
+    {
+      return code;
+    }
+
+    let dto : ParameterLookupSearchDTO = new ParameterLookupSearchDTO();
+    dto.code = "order-status";
+    dto.value_code = code;
+    let name = code;
+    name = this.lookup.getName(dto);
+    return name;
+  }
+
   GetDisplayValue(object : any) : string
   {
     // console.log(typeof object)
@@ -216,7 +232,8 @@ export class DetailInisiasiApprovalSouvenirComponent extends BasePersistentField
   constructor(private session : SessionService, private productCatService : ProductCategoryService,
               private jenisService : ProductJenisService, private kadarService : ProductPurityService,
               private gColorService : ProductGoldColorService, private vendorService : VendorService,
-              private toastr : ToastrService, private inisiasiService : InisiasiService) { super(); }
+              private toastr : ToastrService, private inisiasiService : InisiasiService,
+              private lookup : ParameterLookupService) { super(); }
   
   initFormSearch() {
     let fg : FormGroup = new FormGroup({
@@ -232,6 +249,7 @@ export class DetailInisiasiApprovalSouvenirComponent extends BasePersistentField
   }
 
   async ngOnInit(): Promise<void> {
+    this.lookup.loadByCode("order-status");
     this.input = this.defaultInput();
     this.user = this.session.getUser();
     window['slc'] = this.selected

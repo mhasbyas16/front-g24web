@@ -16,6 +16,7 @@ import { PaymentType } from 'projects/main/src/app/g24/lib/enums/payment-type';
 import { OrdersModule } from '../../../../orders/orders.module';
 import { LoadingSpinnerComponent } from 'projects/main/src/app/g24/nav/modal/loading-spinner/loading-spinner.component';
 import { ServerDateTimeService } from 'projects/main/src/app/g24/services/system/server-date-time.service';
+import { ParameterLookupSearchDTO, ParameterLookupService } from 'projects/main/src/app/g24/services/system/parameter-lookup.service';
 
 /**
  * Penerimaan perhiasan baru isi ke stock/product
@@ -32,10 +33,9 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
     private toastr : ToastrService,
     private session : SessionService,
     private dateService : ServerDateTimeService,
+    private lookup : ParameterLookupService,
 
-    private inisiasiService : InisiasiService,
-    private jenisService : ProductJenisService,
-    private productService : ProductService
+    private inisiasiService : InisiasiService
   ) { }
 
   @ViewChild('spinner', {static: false}) spinner : LoadingSpinnerComponent;
@@ -183,6 +183,7 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.lookup.loadByCode("nama-bank");
   }
   
   GetDisplayValue(object : any) : string
@@ -491,47 +492,18 @@ export class DetailItemPenerimaanSouvenirComponent implements OnInit {
     }
   }
 
-  async doTolak(){
-    if(this.mode == EPriviledge.READ)
+  GetDisplayNameFromLookupByCode(code : string, value_code : string) : string
+  {
+    if(!code)
     {
-      this.toastr.info("Mode 'READ' only.");
-      return;
+      return code;
     }
 
-    if(!this.validateItems())
-    {
-      return;
-    }
-
-    if(!this.validateInisiasi())
-    {
-      return;
-    }
-
-    this.inisiasi.order_status = OrderStatus.TOLAK.code;
-    this.inisiasi.update_date = new Date().toISOString().split("T")[0];
-    this.inisiasi.update_by = this.user.username;
-    this.inisiasi['tgl_tolak'] = this.inisiasi.update_date;
-    this.inisiasi.tolak_by = this.user.username;
-
-    console.log(this.inisiasi);
-    let tempInisiasi = {}
-    Object.assign(tempInisiasi, this.inisiasi);
-    DataTypeUtil.Encode(tempInisiasi);
-
-    // let inisiasi = await this.inisiasiService.update(tempInisiasi).toPromise();
-    // if(inisiasi == false)
-    // {
-    //   this.toastr.error("Update PO gagal. Harap hubungi IT Support/Helpdesk.");
-    //   return;
-    // } else {
-    //   Object.assign(this.inisiasi, tempInisiasi);
-    //   console.log(this.inisiasi);
-    //   this.parentListener.onAfterUpdate(this.inisiasi._id);
-    //   this.toastr.success("PO berhasil ditolak.");
-    //   this.doReset();
-    //   this.Close();
-    // }
-
+    let dto : ParameterLookupSearchDTO = new ParameterLookupSearchDTO();
+    dto.code = code;
+    dto.value_code = value_code;
+    let name = code;
+    name = this.lookup.getName(dto);
+    return name;
   }
 }

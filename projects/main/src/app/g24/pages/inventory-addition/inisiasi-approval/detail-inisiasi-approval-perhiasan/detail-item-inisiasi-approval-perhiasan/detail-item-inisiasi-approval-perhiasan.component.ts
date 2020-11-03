@@ -15,6 +15,7 @@ import { PaymentType } from 'projects/main/src/app/g24/lib/enums/payment-type';
 import { JurnalInisiasiService } from 'projects/main/src/app/g24/services/keuangan/jurnal/stock/jurnal-inisiasi.service';
 import { ServerDateTimeService } from 'projects/main/src/app/g24/services/system/server-date-time.service';
 import { LoadingSpinnerComponent } from 'projects/main/src/app/g24/nav/modal/loading-spinner/loading-spinner.component';
+import { ParameterLookupSearchDTO, ParameterLookupService } from 'projects/main/src/app/g24/services/system/parameter-lookup.service';
 
 @Component({
   selector: 'detail-item-inisiasi-approval-perhiasan',
@@ -29,6 +30,7 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
     private session : SessionService,
     private jurnalInisiasi : JurnalInisiasiService,
     private dateService : ServerDateTimeService,
+    private lookup : ParameterLookupService,
 
     private inisiasiService : InisiasiService,
     private jenisService : ProductJenisService,
@@ -188,7 +190,7 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
+    this.lookup.loadByCode("nama-bank");
   }
   
   GetDisplayValue(object : any) : string
@@ -873,5 +875,20 @@ export class DetailItemInisiasiApprovalPerhiasanComponent implements OnInit {
       this.toastr.error("Jurnal gagal. Harap hubungi IT Support/Helpdesk. Reason: " + msg, "Error!", {disableTimeOut : true, tapToDismiss : false, closeButton : true});
       return;
     });
+  }
+
+  GetDisplayNameFromLookupByCode(code : string, value_code : string) : string
+  {
+    if(!code)
+    {
+      return code;
+    }
+
+    let dto : ParameterLookupSearchDTO = new ParameterLookupSearchDTO();
+    dto.code = code;
+    dto.value_code = value_code;
+    let name = code;
+    name = this.lookup.getName(dto);
+    return name;
   }
 }
