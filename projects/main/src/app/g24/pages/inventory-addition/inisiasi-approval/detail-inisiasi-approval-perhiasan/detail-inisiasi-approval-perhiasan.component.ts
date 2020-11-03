@@ -29,6 +29,7 @@ import { OrderStatus } from '../../../../lib/enum/order-status';
 import { OrdersModule } from '../../../orders/orders.module';
 import { IDetailCallbackListener } from '../../../../lib/base/idetail-callback-listener';
 import { DetailItemInisiasiApprovalPerhiasanComponent } from './detail-item-inisiasi-approval-perhiasan/detail-item-inisiasi-approval-perhiasan.component';
+import { ParameterLookupSearchDTO, ParameterLookupService } from '../../../../services/system/parameter-lookup.service';
 
 @Component({
   selector: 'detail-inisiasi-approval-perhiasan',
@@ -240,6 +241,7 @@ export class DetailInisiasiApprovalPerhiasanComponent extends BasePersistentFiel
     private clarityService : ProductClarityService,
     private inisiasiService : InisiasiService,
     private productCatService : ProductCategoryService,
+    private lookup : ParameterLookupService,
     // private logService : LogService,
 
     private toastr : ToastrService,
@@ -874,5 +876,20 @@ export class DetailInisiasiApprovalPerhiasanComponent extends BasePersistentFiel
 
   public onCancel() {
 
+  }
+
+  GetDisplayNameFromLookup(code : string) : string
+  {
+    if(!code)
+    {
+      return code;
+    }
+
+    let dto : ParameterLookupSearchDTO = new ParameterLookupSearchDTO();
+    dto.code = "order-status";
+    dto.value_code = code;
+    let name = code;
+    name = this.lookup.getName(dto);
+    return name;
   }
 }

@@ -19,6 +19,7 @@ import { JurnalInisiasiService } from 'projects/main/src/app/g24/services/keuang
 import { ViewChild } from '@angular/core';
 import { LoadingSpinnerComponent } from 'projects/main/src/app/g24/nav/modal/loading-spinner/loading-spinner.component';
 import { ServerDateTimeService } from 'projects/main/src/app/g24/services/system/server-date-time.service';
+import { ParameterLookupSearchDTO, ParameterLookupService } from 'projects/main/src/app/g24/services/system/parameter-lookup.service';
 
 /**
  * Penerimaan perhiasan baru isi ke stock/product
@@ -36,6 +37,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     private session : SessionService,
     private jurnalInisiasi : JurnalInisiasiService,
     private dateService : ServerDateTimeService,
+    private lookup : ParameterLookupService,
 
     private inisiasiService : InisiasiService,
     // private kadarService : ProductPurityService,
@@ -214,6 +216,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.lookup.loadByCode("nama-bank");
   }
   
   GetDisplayValue(object : any) : string
@@ -716,7 +719,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
   }
 
   doAccounting(idInisiasi :string)
-    {
+  {
     this.jurnalInisiasi.terimaPerhiasan(idInisiasi).subscribe(output => {
       if(output == false)
       {
@@ -729,5 +732,20 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
         return;
       }
     });
+  }
+
+  GetDisplayNameFromLookupByCode(code : string, value_code : string) : string
+  {
+    if(!code)
+    {
+      return code;
     }
+
+    let dto : ParameterLookupSearchDTO = new ParameterLookupSearchDTO();
+    dto.code = code;
+    dto.value_code = value_code;
+    let name = code;
+    name = this.lookup.getName(dto);
+    return name;
+  }
 }
