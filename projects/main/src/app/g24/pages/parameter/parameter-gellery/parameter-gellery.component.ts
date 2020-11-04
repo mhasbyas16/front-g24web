@@ -164,7 +164,7 @@ export class ParameterGelleryComponent implements OnInit {
     let prod = null;
     let codeProd = null;
     for(let i of this.product){
-      if (this.inputModel.selectProduct == i._id) {
+      if (this.inputModel.selectProduct == i.code) {
         prod = btoa(JSON.stringify(i));
         codeProd = i.code;
       }
@@ -174,7 +174,7 @@ export class ParameterGelleryComponent implements OnInit {
     let vnd = null;
     let codeVnd = null;
     for(let i of this.list_vendors){
-      if (this.inputModel.selectVendor == i._id) {
+      if (this.inputModel.selectVendor == i.code) {
         vnd = btoa(JSON.stringify(i));
         codeVnd = i.code;
       }
@@ -204,101 +204,8 @@ export class ParameterGelleryComponent implements OnInit {
       }
       this.spinner = false;
       this.modalAddDialog = false;
+      this.onCariDefault();
       this.toastrService.success('Add Success')
-    })
-    console.debug('submitted data',  prmJual)
-  }
-
-  mainEdit(data) {
-    console.debug("dataEdit", data);
-
-    this.prmJualService.get("?_id="+data._id).subscribe((response) => {
-      if (response == false) {
-        this.toastrService.error(this.prmJualService.message());
-      }
-    });
-
-    
-    this.inputModel = data;
-    this.tempVendor = data.vendor;
-    this.inputModel.selectVendor = btoa(JSON.stringify(this.tempVendor)) ;
-    this.harga = this.inputModel.harga;
-    console.log('harga',this.harga);
-    this.modalEditDialog = true;
-  }
-
-  mainEditSubmit(){
-    if(this.validateInput()) return;
-
-    let now : Date = new Date;
-    let sNow = now.toISOString().split("T");
-    let time = sNow[1].split(".")[0];
-
-    let prmJual = {
-      "_id" : this.inputModel._id,
-      "jenis_barang" : this.inputModel.jenis_barang,
-      "vendor" : this.inputModel.selectVendor,
-      "vendor_encoded" : "base64",
-      "update_by" : this.nikUser["_hash"],
-      "update_by_encoded" : "base64",
-      "update_date" : new Date().toISOString().split("T")[0],
-      "update_time" : time,
-      "flag" : "submit",
-      "keterangan" : this.inputModel.keterangan,
-      "harga" : btoa(JSON.stringify(this.harga)),
-      "harga_encoded" : "base64array"
-    }
-
-    // untuk melakukan encoded tanpa mendeklarasikan
-    // let dataEdit = DataTypeUtil.Encode(prmJual)
-    
-    this.spinner = true;
-    this.prmJualService.update(prmJual).subscribe((response) => {
-      if (response == false) {
-        this.toastrService.error('Edit Failed')
-        return
-      }
-      this.spinner = false;
-      this.modalEditDialog = false;
-      this.toastrService.success('Edit Success')
-    })
-    // console.log('vendorku',this.inputModel.selectVendor)
-    console.debug('submitted data',  prmJual)
-  }
-
-  mainDelete(data) {
-    console.debug("dataDelete", data);
-
-    this.prmJualService.get("?_id="+data._id).subscribe((response) => {
-      if (response == false) {
-        this.toastrService.error(this.prmJualService.message());
-      }
-    });
-
-    this.inputModel = data;
-    this.harga = this.inputModel.harga
-    this.modalDeleteDialog = true;
-  }
-
-  // Submit delete data
-  mainDeleteSubmit() {
-
-    let prmJual = {
-      "_id" : this.inputModel._id,
-    }
-
-    // untuk melakukan encoded tanpa mendeklarasikan
-    // let dataEdit = DataTypeUtil.Encode(prmJual)
-    
-    this.spinner = true;
-    this.prmJualService.delete(prmJual).subscribe((response) => {
-      if (response == false) {
-        this.toastrService.error('Delete Failed')
-        return
-      }
-      this.spinner = false;
-      this.modalDeleteDialog = false;
-      this.toastrService.success('Delete Success')
     })
     console.debug('submitted data',  prmJual)
   }
@@ -409,6 +316,7 @@ export class ParameterGelleryComponent implements OnInit {
             }
             this.spinner = false;
             this.modalConfirmDialog = false;
+            this.onCariDefault();
             this.toastrService.success('Approved Success')
           })
         })
@@ -438,13 +346,14 @@ export class ParameterGelleryComponent implements OnInit {
       }
       this.spinner = false;
       this.modalConfirmDialog = false;
+      this.onCariDefault();
       this.toastrService.success('Decline Success')
     })
     console.debug('submitted data',  prmJual)
   }
 
   onListVendor(){
-    this.vendorService.list("?product-category._id="+this.produtCategory).subscribe((response: any) => {
+    this.vendorService.list("?product-category.code="+this.produtCategory).subscribe((response: any) => {
       if (response != false) {
         this.list_vendors = response;
       }      
@@ -497,7 +406,7 @@ export class ParameterGelleryComponent implements OnInit {
   harga : any[] =[];
 
   onProductDenom(){
-    this.ProductDenom.list("?product-category._id="+this.produtCategory+"&_sortby=value:1").subscribe((response :any) => {
+    this.ProductDenom.list("?product-category.code="+this.produtCategory+"&_sortby=value:1").subscribe((response :any) => {
       if (response != false) {
         this.denom = response;
         while(this.harga.length > 0) this.harga.pop(); // clear array
@@ -525,10 +434,6 @@ export class ParameterGelleryComponent implements OnInit {
     
     this.params = this.category;
     
-    // Session
-    // const getUnit = this.sessionService.getUnit();
-    // console.debug(getUnit + "Ini Unit");
-    // this.params = this.params+"&unit.code="+getUnit["code"];
     this.params = this.params;
 
     if (vendor != 'all') {
@@ -538,6 +443,30 @@ export class ParameterGelleryComponent implements OnInit {
       this.params = this.params+"&"+urlBarang;
     }
    
+    // prmjual
+    this.prmJualService.list(this.params).subscribe((response: any) => {
+      if (response == false) {
+        this.toastrService.error("Data Not Found", "Logam Mulia");
+        this.loadingDg = false;
+        return;
+      }  
+      if (response["length"] == 0) {
+        this.toastrService.error("Data Not Found", "Logam Mulia");
+        this.loadingDg = false;
+        return;
+      } 
+      this.logamMulia = response;
+      this.toastrService.success("Load "+response["length"]+" Data", "Logam Mulia");
+      this.loadingDg = false;
+    }); 
+  }
+
+  onCariDefault(){
+    // CLR Datagrid loading
+    this.loadingDg = true;
+    
+    this.params = this.category;
+
     // prmjual
     this.prmJualService.list(this.params).subscribe((response: any) => {
       if (response == false) {

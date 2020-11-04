@@ -123,7 +123,6 @@
             [clrModalStaticBackdrop]="true">
             <h3 class="modal-title">Add {{title}}</h3>
             <div class="modal-body ">
-                <h6>Detail</h6>
                 <div class="card">
                     <div class="card-block">
                         <div class="clr-row">
@@ -133,7 +132,7 @@
                                     <select [(ngModel)]="inputModel.selectProduct" name="vendor" clrSelect
                                         (change)="onChangeProduct($event.target.value)">
                                         <ng-container *ngFor="let prod of product">
-                                            <option value="{{prod._id}}">{{prod.name}}</option>
+                                            <option value="{{prod.code}}">{{prod.name}}</option>
                                         </ng-container>
                                     </select>
                                 </clr-select-container>
@@ -154,7 +153,7 @@
                                     <label class="clr-control-label">Vendor</label>
                                     <select [(ngModel)]="inputModel.selectVendor" name="vendor" clrSelect required>
                                         <ng-container *ngFor="let vendor of list_vendors">
-                                            <option value="{{vendor._id}}">{{vendor.name}}</option>
+                                            <option value="{{vendor.code}}">{{vendor.name}}</option>
                                         </ng-container>
                                     </select>
                                 </clr-select-container>
@@ -177,7 +176,7 @@
                     <thead>
                         <tr>
                             <th>Jenis Mulia (Gram)</th>
-                            <th style="text-align: left;">Harga Baku</th>
+                            <th>Harga Baku</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -185,9 +184,7 @@
                             <tr>
                                 <td>{{hargaItem['product-denom'].name}}</td>
                                 <td>
-                                    <clr-input-container><input clrInput name="harga_baku" type="text"
-                                            [(ngModel)]="hargaItem.harga_baku" mask="separator" thousandSeparator="," />
-                                    </clr-input-container>
+                                    <input  name="harga_baku" type="text"[(ngModel)]="hargaItem.harga_baku" mask="separator" thousandSeparator="," />
                                 </td>
                             </tr>
                         </ng-container>
@@ -232,8 +229,8 @@
                             <div class="clr-col-6">
                                 <clr-control-container>
                                     <label class="clr-control-label">Vendor</label>
-                                    <label>{{inputModel.selectVendor}}</label>
                                 </clr-control-container>
+                                <label>{{inputModel.selectVendor}}</label>
                             </div>
                             <div class="clr-col-6">
                                 <clr-textarea-container>
@@ -253,7 +250,7 @@
                     <thead>
                         <tr>
                             <th>Jenis Mulia (Gram)</th>
-                            <th style="text-align: left;">Harga Baku</th>
+                            <th>Harga Baku</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -261,8 +258,7 @@
                             <tr>
                                 <td>{{hargaItem['product-denom'].name}}</td>
                                 <td>
-                                    <clr-input-container><input clrInput name="{{hargaItem['product-denom'].name}}"
-                                            type="number" [(ngModel)]="hargaItem.harga_baku" /></clr-input-container>
+                                    <input  name="{{hargaItem['product-denom'].name}}" type="text" [(ngModel)]="hargaItem.harga_baku" mask="separator" thousandSeparator=","/>
                                 </td>
                             </tr>
                         </ng-container>
@@ -353,7 +349,7 @@
                         <tr>
                             <th>Jenis Mulia (Gram)</th>
                             <th>Harga Baku</th>
-                            <th>Harga Jual</th>
+                            <th *ngIf="this.inputModel.jenis_barang != 'Buyback'">Harga Jual</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -361,7 +357,7 @@
                             <tr>
                                 <td>{{hargaItem['product-denom'].name}}</td>
                                 <td>Rp. {{hargaItem.harga_baku | number}}</td>
-                                <td>Rp. {{(hargaItem.harga_baku * margin / 100) + hargaItem.harga_baku | number}}</td>
+                                <td *ngIf="this.inputModel.jenis_barang != 'Buyback'">Rp. {{(hargaItem.harga_baku * margin / 100) + hargaItem.harga_baku | number}}</td>
                             </tr>
                         </ng-container>
                     </tbody>

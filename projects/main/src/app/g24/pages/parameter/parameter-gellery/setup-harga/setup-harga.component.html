@@ -79,7 +79,7 @@
                             <select clrSelect name="product_category" [(ngModel)]="inputModel.productSelect"
                                 (change)="onChangeProduct($event.target.value)">
                                 <ng-container *ngFor="let prod of product">
-                                    <option value="{{prod._id}}">{{prod.name}}</option>
+                                    <option value="{{prod.code}}">{{prod.name}}</option>
                                 </ng-container>
                             </select>
                         </clr-select-container>
@@ -115,6 +115,7 @@
                                 <div class="clr-input-wrapper">
                                     <input [(ngModel)]="inputModel.potongan_batu" name="potongan_batu" type="text"
                                         class="clr-input" placeholder="0" min="0" max="100" mask="separator" thousandSeparator=","/>
+                                    <clr-control-helper>Percent (%)</clr-control-helper>
                                     <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                                 </div>
                                 <span class="clr-subtext"></span>
@@ -128,6 +129,7 @@
                                 <div class="clr-input-wrapper">
                                     <input [(ngModel)]="inputModel.potongan_berlian" name="potongan_berlian"
                                         type="text" class="clr-input" placeholder="0" min="0" max="100" mask="separator" thousandSeparator=","/>
+                                    <clr-control-helper>Percent (%)</clr-control-helper>
                                     <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                                 </div>
                                 <span class="clr-subtext"></span>
@@ -141,6 +143,7 @@
                                 <div class="clr-input-wrapper">
                                     <input [(ngModel)]="inputModel.potongan_ongkos" name="potongan_ongkos" type="text"
                                         class="clr-input" placeholder="0" min="0" max="100" mask="separator" thousandSeparator=","/>
+                                    <clr-control-helper>Percent (%)</clr-control-helper>
                                     <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                                 </div>
                                 <span class="clr-subtext"></span>
@@ -220,6 +223,7 @@
                                 <div class="clr-input-wrapper">
                                     <input [(ngModel)]="inputModel.potongan_batu" name="potongan_batu" type="text"
                                         class="clr-input" placeholder="0" min="0" max="100" mask="separator" thousandSeparator=","/>
+                                    <clr-control-helper>Percent (%)</clr-control-helper>
                                     <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                                 </div>
                                 <span class="clr-subtext"></span>
@@ -233,6 +237,7 @@
                                 <div class="clr-input-wrapper">
                                     <input [(ngModel)]="inputModel.potongan_berlian" name="potongan_berlian"
                                         type="text" class="clr-input" placeholder="0" min="0" max="100" mask="separator" thousandSeparator=","/>
+                                    <clr-control-helper>Percent (%)</clr-control-helper>
                                     <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                                 </div>
                                 <span class="clr-subtext"></span>
@@ -246,6 +251,7 @@
                                 <div class="clr-input-wrapper">
                                     <input [(ngModel)]="inputModel.potongan_ongkos" name="potongan_ongkos" type="text"
                                         class="clr-input" placeholder="0" min="0" max="100" mask="separator" thousandSeparator=","/>
+                                    <clr-control-helper>Percent (%)</clr-control-helper>
                                     <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
                                 </div>
                                 <span class="clr-subtext"></span>
@@ -255,7 +261,7 @@
                     <div class="clr-col-6">
                         <clr-textarea-container>
                             <label>Keterangan</label>
-                            <textarea clrTextarea name="keterangan" [(ngModel)]="inputModel.keterangan"
+                            <textarea clrTextarea [(ngModel)]="inputModel.keterangan" name="keterangan"
                                 required></textarea>
                             <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                         </clr-textarea-container>
@@ -312,15 +318,16 @@
                     <div class="clr-col-12 animate-show-hide" *ngIf="show" [@slideInOut]><br></div>
                     <div class="clr-col-6 animate-show-hide" *ngIf="show" [@slideInOut]>
                         <label for="basic" class="clr-control-label">Potongan BB Batu</label>
-                        <label>{{inputModel.potongan_batu}}</label>
+                        <label>{{inputModel.potongan_batu}} %</label>
                     </div>
                     <div class="clr-col-6 animate-show-hide" *ngIf="show" [@slideInOut]>
                         <label class="clr-control-label">Potongan BB Berlian</label>
-                        <label>{{inputModel.potongan_berlian}}</label>
+                        <label>{{inputModel.potongan_berlian}} %</label>
                     </div>
+                    <div class="clr-col-12"><br></div>
                     <div class="clr-col-6 animate-show-hide" *ngIf="show" [@slideInOut]>
                         <label class="clr-control-label">Potongan Ongkos</label>
-                        <label>{{inputModel.potongan_ongkos}}</label>
+                        <label>{{inputModel.potongan_ongkos}} %</label>
                     </div>
                     <div class="clr-col-6">
                         <label class="clr-control-label">Keterangan</label>

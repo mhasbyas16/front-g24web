@@ -62,10 +62,6 @@ export class SetupMarginComponent implements OnInit {
   myRole = null;
   getDataold = null;
 
-  // vendorCategory= "product-category.code=c05";
-  // category = "?_hash=1&product-category.code=c05";
-  // produtCategory = "?_hash=1&product-category.code=c05";
-
   //datetime
   timezone = "string";
   date_now = "string";
@@ -168,10 +164,10 @@ export class SetupMarginComponent implements OnInit {
 
   onChangeProduct(data){
     this.getProduct = data;
-    if (data == '5ebba05bb980bd24b9201769' || data == '5efc0d5c592e3349d15f05a8') {
+    if (data == 'c01' || data == 'c03') {
       this.show = true;
       this.showlm = false;
-    }else if (this.getProduct == '5ebba095b980bd24b9201cca' && this.getTransaction == '5f49a587e7413dbd1a518fa9'){
+    }else if (this.getProduct == 'c05' && this.getTransaction == 't06'){
       this.showlm = true;
       this.show = false;
     }else{
@@ -189,7 +185,7 @@ export class SetupMarginComponent implements OnInit {
 
   onChangeTransaction(data){
     this.getTransaction = data;
-    if (this.getProduct == '5ebba095b980bd24b9201cca' && data == '5f49a587e7413dbd1a518fa9') {
+    if (this.getProduct == 'c05' && data == 't06') {
       this.showlm = true;
     }else{
       this.showlm = false;
@@ -257,6 +253,31 @@ export class SetupMarginComponent implements OnInit {
     }); 
   }
 
+  onCariMarginDefault(){
+    // CLR Datagrid loading
+    this.loadingDg = true;
+
+    this.params = "?&_sortby=_id:2&_ne=flag:expired";
+
+   
+    // prmMargin
+    this.prmMarginService.list(this.params).subscribe((response: any) => {
+      if (response == false) {
+        this.toastrService.error("Data Not Found", "Setup Margin");
+        this.loadingDg = false;
+        return;
+      }  
+      if (response["length"] == 0) {
+        this.toastrService.error("Data Not Found", "Setup Margin");
+        this.loadingDg = false;
+        return;
+      } 
+      this.dataMargin = response;
+      this.toastrService.success("Load "+response["length"]+" Data", "Setup Margin");
+      this.loadingDg = false;
+    }); 
+  }
+
   //modalAdd
   mainAdd(){
     this.inputModel = this.defaultInput();
@@ -269,21 +290,21 @@ export class SetupMarginComponent implements OnInit {
     //get data channel
     let ch = null;
     for(let i of this.channel){
-      if (this.inputModel.mychannel == i._id) {
+      if (this.inputModel.mychannel == i.code) {
         ch = btoa(JSON.stringify(i));
       }
     }
     //get product
     let prod = null;
     for(let i of this.productCat){
-      if (this.inputModel.product_category == i._id) {
+      if (this.inputModel.product_category == i.code) {
         prod = btoa(JSON.stringify(i));
       }
     }
 
     let trans = null;
     for(let i of this.transactionType){
-      if (this.inputModel.transaction_type == i._id) {
+      if (this.inputModel.transaction_type == i.code) {
         trans = btoa(JSON.stringify(i));
       }
     }
@@ -304,7 +325,7 @@ export class SetupMarginComponent implements OnInit {
       "product-category_encoded" : "base64",
       "transaction-type" : trans,
       "transaction-type_encoded" : "base64",
-      "margin" : parseFloat(this.inputModel.margin),
+      "margin" : this.inputModel.margin,
       "margin_encoded": "double",
       // "vendor" : btoa(JSON.stringify(this.ven)),
       // "vendor_encoded" : "base64array",
@@ -323,11 +344,11 @@ export class SetupMarginComponent implements OnInit {
       "product-category_encoded" : "base64",
       "transaction-type" : trans,
       "transaction-type_encoded" : "base64",
-      "margin" : parseFloat(this.inputModel.margin),
+      "margin" : this.inputModel.margin,
       "margin_encoded": "double",
-      "margin_batu" : parseFloat(this.inputModel.margin_batu),
+      "margin_batu" : this.inputModel.margin_batu,
       "margin_batu_encoded": "double",
-      "margin_berlian" : parseFloat(this.inputModel.margin_berlian),
+      "margin_berlian" : this.inputModel.margin_berlian,
       "margin_berlian_encoded": "double",
       // "vendor" : btoa(JSON.stringify(this.ven)),
       // "vendor_encoded" : "base64array",
@@ -346,9 +367,9 @@ export class SetupMarginComponent implements OnInit {
       "product-category_encoded" : "base64",
       "transaction-type" : trans,
       "transaction-type_encoded" : "base64",
-      "margin" : parseFloat(this.inputModel.margin),
+      "margin" : this.inputModel.margin,
       "margin_encoded": "double",
-      "periode" : parseFloat(this.inputModel.periode),
+      "periode" : this.inputModel.periode,
       "periode_encoded": "double",
       // "vendor" : btoa(JSON.stringify(this.ven)),
       // "vendor_encoded" : "base64array",
@@ -361,9 +382,9 @@ export class SetupMarginComponent implements OnInit {
     }
 
     let tempSave = null;
-    if (this.getProduct == '5ebba05bb980bd24b9201769' || this.getProduct == '5efc0d5c592e3349d15f05a8'){
+    if (this.getProduct == 'c01' || this.getProduct == 'c03'){
       tempSave = margin1;
-    } else if (this.getProduct == '5ebba095b980bd24b9201cca' && this.getTransaction == '5f49a587e7413dbd1a518fa9'){
+    } else if (this.getProduct == 'c05' && this.getTransaction == 't06'){
       tempSave = margin2;
     } else {
       tempSave = margin;
@@ -377,159 +398,12 @@ export class SetupMarginComponent implements OnInit {
       }
       this.spinner = false;
       this.modalAddDialog = false;
+      this.onCariMarginDefault();
       this.toastrService.success('Add Success')
     });
     console.log("submitted data", tempSave);
   }
   
-  mainEdit(data){
-    console.debug("dataEdit", data);
-
-    this.prmMarginService.get("?_id="+data._id).subscribe((response) => {
-      if (response == false) {
-        this.toastrService.error(this.prmMarginService.message());
-      }
-    });
-
-    this.inputModel = data;
-    this.inputModel.product_category = btoa(JSON.stringify(data['product-category']));
-    this.onChangeProduct(this.inputModel.product_category);
-    this.inputModel.transaction_type = btoa(JSON.stringify(data['transaction-type']));
-    this.inputModel.mychannel = btoa(JSON.stringify(data.channel));
-
-    let productSelect = data['product-category'].code;
-    this.getProduct = productSelect;
-
-    this.vendorService.list("?_hash=1&product-category.code="+this.getProduct).subscribe(output =>{
-      let vd =[]
-      for(let data of output){
-        vd.push({id:data._hash,text:data.name});
-      }
-      this.listVendor = vd;
-      console.log('listVendor',this.listVendor);
-    });
-
-    let tempVendor = data.vendor;
-    let myselect= [];
-    let Selected= [];
-
-    for (let vs of tempVendor){
-      myselect.push(btoa(JSON.stringify(vs)));
-    }
-    Selected = myselect
-    // console.log('decode', Selected);
-
-    for (let i = 0; i < myselect.length; i++) {
-      this.vendorSelected.push(myselect);
-    }
-    this.inputModel.selectVendor =  Selected;
-    console.log('vselected',this.inputModel.selectVendor)
-
-    this.modalEditDialog = true;
-  }
-
-  mainEditSubmit(){
-    let now : Date = new Date;
-    let sNow = now.toISOString().split("T");
-    let time = sNow[1].split(".")[0];
-
-    let vnd = [];
-    for (let data of this.inputModel.selectVendor) {
-      vnd.push(JSON.parse(atob(data)))
-    }
-
-    let margin = {
-      "_id" : this.inputModel._id,
-      "channel" : this.inputModel.mychannel,
-      "channel_encoded" : "base64",
-      "product-category" : this.inputModel.product_category,
-      "product-category_encoded" : "base64",
-      "transaction-type" : this.inputModel.transaction_type,
-      "transaction-type_encoded" : "base64",
-      "margin" : parseInt(this.inputModel.margin),
-      "margin_batu" : parseFloat(this.inputModel.margin_batu),
-      "margin_berlian" : parseFloat(this.inputModel.margin_berlian),
-      "vendor" : btoa(JSON.stringify(vnd)),
-      "vendor_encoded" : "base64array",
-      "create_by" : this.nikUser["_hash"],
-      "create_by_encoded" : "base64",
-      "create_date" : new Date().toISOString().split("T")[0],
-      "create_time" : time,
-      "flag" : "submit",
-      "keterangan" : this.inputModel.keterangan,
-    }
-    let margin1 = {
-      "_id" : this.inputModel._id,
-      "channel" : this.inputModel.mychannel,
-      "channel_encoded" : "base64",
-      "product-category" : this.inputModel.product_category,
-      "product-category_encoded" : "base64",
-      "transaction-type" : this.inputModel.transaction_type,
-      "transaction-type_encoded" : "base64",
-      "margin" : parseInt(this.inputModel.margin),
-      "margin_batu" : parseFloat(this.inputModel.margin_batu),
-      "margin_berlian" : parseFloat(this.inputModel.margin_berlian),
-      "vendor" : btoa(JSON.stringify(vnd)),
-      "vendor_encoded" : "base64array",
-      "create_by" : this.nikUser["_hash"],
-      "create_by_encoded" : "base64",
-      "create_date" : new Date().toISOString().split("T")[0],
-      "create_time" : time,
-      "flag" : "submit",
-      "keterangan" : this.inputModel.keterangan,
-    }
-
-    let tempSave = null;
-    if (this.getProduct == 'c01' || this.getProduct == 'c03'){
-      tempSave = margin1;
-    } else {
-      tempSave = margin;
-    }
-    
-    this.spinner = true;
-    this.prmMarginService.update(tempSave).subscribe((response) => {
-      if (response == false) {
-        this.toastrService.error('Update Failed')
-        return
-      }
-      this.spinner = false;
-      this.modalEditDialog = false;
-      this.toastrService.success('Update Success')
-    });
-    console.log("submitted data", tempSave);
-  }
-
-  mainDelete(data) {
-    console.debug("dataDelete", data);
-
-    this.prmMarginService.get("?_id="+data._id).subscribe((response) => {
-      if (response == false) {
-        this.toastrService.error(this.prmMarginService.message());
-      }
-    });
-
-    this.inputModel = data;
-    this.modalDeleteDialog = true;
-  }
-
-  mainDeleteSubmit(){
-
-    let margin = {
-      "_id" : this.inputModel._id,
-    }
-    
-    this.spinner = true;
-    this.prmMarginService.delete(margin).subscribe((response) => {
-      if (response == false) {
-        this.toastrService.error('Delete Failed')
-        return
-      }
-      this.spinner = false;
-      this.modalDeleteDialog = false;
-      this.toastrService.success('Delete Success')
-    })
-    console.debug('submitted data',  margin)
-  }
 
   mainDetail(data){
     console.debug("dataDetail", data);
@@ -542,10 +416,10 @@ export class SetupMarginComponent implements OnInit {
 
     this.inputModel = data;
     this.inputModel.product_category = data['product-category'].name;
-    this.inputModel.product = data['product-category']._id;
+    this.inputModel.product = data['product-category'].code;
     this.onChangeProduct(this.inputModel.product);
     this.getProduct = this.inputModel.product;
-    this.onChangeTransaction(data['transaction-type']._id);
+    this.onChangeTransaction(data['transaction-type'].code);
     this.inputModel.transaction_type = data['transaction-type'].name;
     this.inputModel.mychannel = data.channel.name;
     this.inputModel.keterangan = data.keterangan;
@@ -563,9 +437,9 @@ export class SetupMarginComponent implements OnInit {
     });
 
     this.inputModel = data;
-    this.inputModel.product_category = data['product-category']._id;
+    this.inputModel.product_category = data['product-category'].code;
     this.onChangeProduct(this.inputModel.product_category);
-    this.inputModel.transaction_type = data['transaction-type']._id;
+    this.inputModel.transaction_type = data['transaction-type'].code;
     this.inputModel.mychannel = data.channel._id;
 
     // let productSelect = data['product-category']._id;
@@ -631,7 +505,7 @@ export class SetupMarginComponent implements OnInit {
     }
 
     let tempSave = null;
-    if (this.getProduct == '5ebba05bb980bd24b9201769' || this.getProduct == '5efc0d5c592e3349d15f05a8'){
+    if (this.getProduct == 'c01' || this.getProduct == 'c03'){
       tempSave = margin1;
     } else {
       tempSave = margin;
@@ -639,7 +513,7 @@ export class SetupMarginComponent implements OnInit {
 
     //get data approve lama
     this.spinner = true;
-    this.prmMarginService.get("?flag=approved&product-category._id="+this.inputModel.product_category).subscribe((out) => {
+    this.prmMarginService.get("?flag=approved&product-category.code="+this.inputModel.product_category).subscribe((out) => {
       this.getDataold = out._id;
 
       if (out == false){
@@ -674,6 +548,7 @@ export class SetupMarginComponent implements OnInit {
             }
             this.spinner = false;
             this.modalConfirmDialog = false;
+            this.onCariMarginDefault();
             this.toastrService.success('Approved Success')
           })
         })
@@ -715,7 +590,7 @@ export class SetupMarginComponent implements OnInit {
     }
 
     let tempSave = null;
-    if (this.getProduct == '5ebba05bb980bd24b9201769' || this.getProduct == '5efc0d5c592e3349d15f05a8'){
+    if (this.getProduct == 'c01' || this.getProduct == 'c03'){
       tempSave = margin1;
     } else {
       tempSave = margin;
@@ -729,6 +604,7 @@ export class SetupMarginComponent implements OnInit {
       }
       this.spinner = false;
       this.modalConfirmDialog = false;
+      this.onCariMarginDefault();
       this.toastrService.success('Declined Success')
     });
     console.log("submitted data", tempSave);

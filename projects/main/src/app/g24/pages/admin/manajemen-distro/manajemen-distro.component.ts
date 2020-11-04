@@ -9,7 +9,6 @@ import { SessionService } from 'projects/platform/src/app/core-services/session.
 import { ServerDateTimeService } from "../../../services/system/server-date-time.service";
 import { DatePipe } from '@angular/common';
 //database
-import { RegionalService } from "../../../services/admin/regional.service";
 import { UnitService } from "../../../services/system/unit.service";
 import { UserService } from "../../../services/security/user.service";
 
@@ -25,8 +24,8 @@ export class ManajemenDistroComponent implements OnInit {
   static key = EMenuID.ADMIN_ADD_DISTRO;
 
   //title
-  breadcrumb = "Manajemen Distro"
-  title = "Distro"
+  breadcrumb = "Manajemen Unit"
+  title = "Unit"
   // spinner 
   spinner = false;
   //placeholder datagrid
@@ -54,6 +53,7 @@ export class ManajemenDistroComponent implements OnInit {
   regionalList = null;
   kodeLog = null;
   managerList = null;
+  jnsUnit = null;
 
   constructor(
     private toastrService: ToastrService,
@@ -63,19 +63,17 @@ export class ManajemenDistroComponent implements OnInit {
     private datePipe: DatePipe,
     //database
     private unitServices: UnitService,
-    private regionalServices: RegionalService,
     private userServices: UserService,
   ) { }
 
   defaultInput(): any {
     return {
-      code: null, nama: null, alamat: null, regional: null
+      code: null, nama: null, alamat: null, jenis_unit: null
     }
   }
 
   ngOnInit(): void {
     this.getDateTime();
-    this.loadRegional();
     this.inputModel = this.defaultInput;
     this.nikUser = this.sessionService.getUser();
     this.nikUser = { "_hash": btoa(JSON.stringify(this.nikUser)), "nik": this.nikUser["username"] };
@@ -113,7 +111,7 @@ export class ManajemenDistroComponent implements OnInit {
   }
 
   loadRegional() {
-    this.regionalServices.list().subscribe(out => {
+    this.unitServices.list("?_sortby=name:1&jenis_unit=regional").subscribe(out => {
       this.regionalList = out
     })
   }
@@ -124,48 +122,84 @@ export class ManajemenDistroComponent implements OnInit {
     })
   }
 
+  onChangeJenis(data) {
+    console.log(data);
+    this.jnsUnit = data;
+  }
+
   onCari(data) {
     // CLR Datagrid loading
     this.loadingDg = true;
     this.param = "?_sortby=code:1";
 
-    let kd = data.kdout;
-    let outlet = data.outlet;
+    let kd = this.inputModel.kdout;
+    let outlet = this.inputModel.outlet;
+    let jenis = this.inputModel.jenis;
+
     const prmKode = "&code_regex=1&code=" + kd;
     const prmOutlet = "&nama_regex=1&nama=" + outlet;
+    const prmJenis = "&jenis_unit_regex=1&jenis_unit=" + jenis;
 
-    if (kd != null) {
-      this.param = this.param + "&" + prmKode;
+    if (kd != undefined ) {
+      this.param = this.param + prmKode;
     }
-    if (outlet != null) {
-      this.param = this.param + "&" + prmOutlet;
+    if (outlet != undefined ) {
+      this.param = this.param + prmOutlet;
+    }
+
+    if (jenis != undefined ) {
+      this.param = this.param + prmJenis;
     }
 
     this.unitServices.list(this.param).subscribe((response: any) => {
       if (response == false) {
-        this.toastrService.error("Data Not Found", "Distro");
+        this.toastrService.error("Data Not Found", "Unit");
         this.loadingDg = false;
         return;
       }
       if (response["length"] == 0) {
-        this.toastrService.error("Data Not Found", "Distro");
+        this.toastrService.error("Data Not Found", "Unit");
         this.loadingDg = false;
         return;
       }
       this.dataList = response;
-      this.toastrService.success("Load " + response["length"] + " Data", "Distro");
+      this.toastrService.success("Load " + response["length"] + " Data", "Unit");
+      this.loadingDg = false;
+    });
+  }
+
+  onCariDefault() {
+    // CLR Datagrid loading
+    this.loadingDg = true;
+    this.param = "?_sortby=code:1";
+
+    this.unitServices.list(this.param).subscribe((response: any) => {
+      if (response == false) {
+        this.toastrService.error("Data Not Found", "Unit");
+        this.loadingDg = false;
+        return;
+      }
+      if (response["length"] == 0) {
+        this.toastrService.error("Data Not Found", "Unit");
+        this.loadingDg = false;
+        return;
+      }
+      this.dataList = response;
+      this.toastrService.success("Load " + response["length"] + " Data", "Unit");
       this.loadingDg = false;
     });
   }
 
   mainAdd() {
     this.inputModel = this.defaultInput();
+    this.loadRegional();
     this.modalAddDialog = true
   }
   mainAddSubmit() {
     if (this.validateInput()) return;
 
     const data = {
+      "jenis_unit": this.inputModel.jenis_unit,
       "code": this.inputModel.code,
       "nama": this.inputModel.nama,
       "alamat": this.inputModel.alamat,
@@ -177,21 +211,41 @@ export class ManajemenDistroComponent implements OnInit {
       "_log": 1,
     }
 
+    const data1 = {
+      "jenis_unit": this.inputModel.jenis_unit,
+      "code": this.inputModel.code,
+      "nama": this.inputModel.nama,
+      "alamat": this.inputModel.alamat,
+      "create_by": this.nikUser["_hash"],
+      "create_by_encoded": "base64",
+      "create_date": this.date_now,
+      "create_time": this.time,
+      "_log": 1,
+    }
+
+    let tempSave = null;
+    if (this.jnsUnit == 'distro'){
+      tempSave = data;
+    } else {
+      tempSave = data1;
+    }
+
     this.spinner = true;
     let kode = this.inputModel.code;
     this.unitServices.get("?code=" + kode).subscribe(resp => {
       if (resp != false) {
-        this.toastrService.warning("Kode Outlet " + kode + " sudah ada");
+        this.toastrService.warning("Kode Unit " + kode + " sudah ada");
         this.spinner = false;
         return
       }
-      this.unitServices.add(data).subscribe((response) => {
+      this.unitServices.add(tempSave).subscribe((response) => {
         if (response == false) {
           this.toastrService.error('Add Failed')
           return
         }
         this.spinner = false;
         this.modalAddDialog = false;
+        this.onCariDefault();
         this.toastrService.success('Add Success')
       });
     });
@@ -209,19 +263,21 @@ export class ManajemenDistroComponent implements OnInit {
 
     this.modalEditDialog = true;
   }
+
   mainEditSubmit() {
     if (this.validateInput()) return;
 
     //get data Regional
     let regional = null;
     for (let i of this.regionalList) {
-      if (this.inputModel.regional == i._id) {
+      if (this.inputModel.regional == i.code) {
         regional = btoa(JSON.stringify(i));
       }
     }
 
     const data = {
       "_id": this.inputModel._id,
+      "jenis_unit": this.inputModel.jenis_unit,
       "code": this.inputModel.code,
       "nama": this.inputModel.nama,
       "alamat": this.inputModel.alamat,
@@ -233,6 +289,25 @@ export class ManajemenDistroComponent implements OnInit {
       "_log": 1,
     }
 
+    const data1 = {
+      "jenis_unit": this.inputModel.jenis_unit,
+      "code": this.inputModel.code,
+      "nama": this.inputModel.nama,
+      "alamat": this.inputModel.alamat,
+      "create_by": this.nikUser["_hash"],
+      "create_by_encoded": "base64",
+      "create_date": this.date_now,
+      "create_time": this.time,
+      "_log": 1,
+    }
+
+    let tempSave = null;
+    if (this.jnsUnit == 'distro'){
+      tempSave = data;
+    } else {
+      tempSave = data1;
+    }
+
     this.spinner = true;
     let kode = this.inputModel.code;
     this.unitServices.get("?code=" + kode).subscribe(out => {
@@ -241,13 +316,14 @@ export class ManajemenDistroComponent implements OnInit {
         this.spinner = false;
         return;
       }
-      this.unitServices.update(data).subscribe((response) => {
+      this.unitServices.update(tempSave).subscribe((response) => {
         if (response == false) {
           this.toastrService.error('Update Failed')
           return
         }
         this.spinner = false;
         this.modalEditDialog = false;
+        this.onCariDefault();
         this.toastrService.success('Update Success')
       });
     });
@@ -255,6 +331,7 @@ export class ManajemenDistroComponent implements OnInit {
   }
 
   mainDetail(data) {
+    this.inputModel.jenis_unit = data.jenis_unit
     this.inputModel.kode = data.code;
     this.inputModel.nama = data.nama;
     this.inputModel.alamat = data.alamat;
@@ -291,6 +368,7 @@ export class ManajemenDistroComponent implements OnInit {
       }
       this.spinner = false;
       this.modalDeleteDialog = false;
+      this.onCariDefault();
       this.toastrService.success('Delete Success')
     });
     console.debug(data, "submited data")

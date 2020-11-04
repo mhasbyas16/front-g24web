@@ -70,7 +70,7 @@ export class AppRoutingModule
     ModuleLoader.register('rl', () => import('./pages/security/security.module').then(m => m.SecurityModule))
     ModuleLoader.register('pr', () => import('./pages/parameter/parameter.module').then(m => m.ParameterModule))
     ModuleLoader.register('prp', () => import('./pages/parameter-product/parameter-product.module').then(m => m.ParameterProductModule))
-    ModuleLoader.register('kl', () => import('./pages/keuangan/laporan/laporan.module').then(m => m.LaporanKeuanganModule))
+    // ModuleLoader.register('kl', () => import('./pages/keuangan/laporan/laporan.module').then(m => m.LaporanKeuanganModule))
     // ModuleLoader.register('bblmnon', () => import('./pages/buyback/buyback.module').then(m => m.BuybackModule))
     ModuleLoader.register('ip', () => import('./pages/inquery-product/inquery-product.module').then(m => m.InqueryProductModule))
     ModuleLoader.register('kv', () => import('./pages/konversi-product/konversi-product.module').then(m => m.KonversiProductModule));

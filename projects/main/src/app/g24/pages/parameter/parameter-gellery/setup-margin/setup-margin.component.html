@@ -89,7 +89,7 @@
                         <clr-radio-container clrInline>
                             <label>Channel</label>
                             <clr-radio-wrapper *ngFor="let channels of channel">
-                                <input type="radio" clrRadio id="{{channels.name}}" name="channel" [(ngModel)]="inputModel.mychannel" [value]="channels._id"/>
+                                <input type="radio" clrRadio id="{{channels.name}}" name="channel" [(ngModel)]="inputModel.mychannel" [value]="channels.code"/>
                                 <label>{{channels.name}}</label>
                             </clr-radio-wrapper>
                             <!-- <clr-control-helper>Helper text</clr-control-helper>
@@ -102,8 +102,7 @@
                             <select clrSelect name="product_category" [(ngModel)]="inputModel.product_category" (change)="onChangeProduct($event.target.value)">
                             <!-- <select clrSelect name="product_category" [(ngModel)]="inputModel.product_category"> -->
                                 <ng-container>
-                                    <option [value]="">-- Please Select --</option>
-                                    <option *ngFor="let prod of productCat" value="{{prod._id}}">{{prod.name}}</option>
+                                    <option *ngFor="let prod of productCat" value="{{prod.code}}">{{prod.name}}</option>
                                 </ng-container>
                             </select>
                         </clr-select-container>
@@ -121,7 +120,7 @@
                             <label class="clr-control-label">Transaction Tpye</label>
                             <select [(ngModel)]="inputModel.transaction_type" clrSelect name="transaction_type" (change)="onChangeTransaction($event.target.value)">
                                 <ng-container *ngFor="let transaction of transactionType">
-                                    <option value="{{transaction._id}}">{{transaction.name}}</option>
+                                    <option value="{{transaction.code}}">{{transaction.name}}</option>
                                 </ng-container>
                             </select>
                         </clr-select-container>
@@ -226,11 +225,11 @@
                             <label class="clr-control-label">Product Category</label>
                             <select clrSelect name="product_category" [(ngModel)]="inputModel.product_category" (change)="onChangeProduct($event.target.value)" disabled>
                                 <ng-container>
-                                    <option [value]="">-- Please Select --</option>
-                                    <option *ngFor="let prod of productCat" value="{{prod._id}}">{{prod.name}}</option>
+                                    
+                                    <option *ngFor="let prod of productCat" value="{{prod.code}}">{{prod.name}}</option>
                                 </ng-container>
                             </select>
-                        </clr-select-container> -->
+                        </clr-select-container>
                     </div>
                     <!-- <div class="clr-col-6">
                         <label class="clr-control-label">Vendor</label>
@@ -245,7 +244,7 @@
                             <label class="clr-control-label">Transaction Tpye</label>
                             <select [(ngModel)]="inputModel.transaction_type" clrSelect name="transaction_type" disabled>
                                 <ng-container *ngFor="let transaction of transactionType">
-                                    <option value="{{transaction._id}}">{{transaction.name}}</option>
+                                    <option value="{{transaction.code}}">{{transaction.name}}</option>
                                 </ng-container>
                             </select>
                         </clr-select-container>
