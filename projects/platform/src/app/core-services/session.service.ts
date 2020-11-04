@@ -101,6 +101,14 @@ export class SessionService {
     sessionStorage.clear();
   }
 
+  gotoSignIn() {
+    let protocol = window.location.protocol;
+    let dom = window.location.hostname;
+    let port = window.location.port;
+    port = port == "" || port == "0" ? "" : port;
+    window.location.href = protocol + "//" + dom + ":" + port + "/auth/signin";
+  }
+
   public postHeader(isJSON? : boolean) {
     if(this.getLoginId() != null && isJSON)
     {
