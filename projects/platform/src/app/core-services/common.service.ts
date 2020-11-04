@@ -10,7 +10,9 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class CommonService {
 
+  logoutMessage: string = "Session Expired";
   message: string;
+  code : string;
   originalResult: any;
 
   constructor(
@@ -56,6 +58,13 @@ export class CommonService {
         console.debug("choices", url, respond);
         if (respond.status == "failed") {
 
+          if(respond.code && respond.code == "401")
+          {
+            this.sessionService.logout();
+            this.sessionService.gotoSignIn();
+            this.showLogoutNotification();
+          }
+
           this.message = respond.message;
           observer.next(false);
           observer.complete();
@@ -82,6 +91,13 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
+        if(error.status = "401")
+        {
+          this.sessionService.logout();
+          this.sessionService.gotoSignIn();
+          this.showLogoutNotification();
+        }
+
         observer.error(error);
         observer.complete();
         throw error;
@@ -104,6 +120,13 @@ export class CommonService {
         console.debug("list", url, respond);
         if (respond.status == "failed") {
 
+          if(respond.code && respond.code == "401")
+          {
+            this.sessionService.logout();
+            this.sessionService.gotoSignIn();
+            this.showLogoutNotification();
+          }
+
           this.message = respond.message;
           observer.next(false);
           observer.complete();
@@ -124,6 +147,12 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();;
       }, error => {
+        if(error.status = "401")
+        {
+          this.sessionService.logout();
+          this.sessionService.gotoSignIn();
+          this.showLogoutNotification();
+        }
         observer.error(error);
         observer.complete();
         throw error;
@@ -147,6 +176,13 @@ export class CommonService {
         console.debug("list", url, respond);
         if (respond.status == "failed") {
 
+          if(respond.code && respond.code == "401")
+          {
+            this.sessionService.logout();
+            this.sessionService.gotoSignIn();
+            this.showLogoutNotification();
+          }
+
           this.message = respond.message;
           observer.next(false);
           observer.complete();
@@ -167,6 +203,13 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();;
       }, error => {
+        if(error.status = "401")
+        {
+          this.sessionService.logout();
+          this.sessionService.gotoSignIn();
+          this.showLogoutNotification();
+        }
+
         observer.error(error);
         throw error;
       });
@@ -184,38 +227,12 @@ export class CommonService {
         console.debug("generate voucher", url, respond);
         if (respond.status == "failed") {
 
-          this.message = respond.message;
-          observer.next(false);
-          observer.complete();
-          return (observer).unsubscribe();
-        }
-
-        if(respond.status == "auth-failed")
-        {
-          this.sessionService.logout();
-          observer.next(false);
-          observer.complete();
-          return (observer).unsubscribe();
-        }
-
-        console.debug(respond.data);
-        observer.next(respond.data);
-        observer.complete();
-        return (observer).unsubscribe();
-      });
-    });
-  }
-
-  public get(key: string, params: string): Observable<any> {
-    return new Observable(observer => {
-
-      const url = `${this.sessionService.server}/${key}/get${params}`;
-      console.debug(key, url);
-
-      let request = this.http.get(url, { headers: this.sessionService.getHeader() });
-      request.subscribe((respond: any) => {
-        console.debug("get", url, respond);
-        if (respond.status == "failed") {
+          if(respond.code && respond.code == "401")
+          {
+            this.sessionService.logout();
+            this.sessionService.gotoSignIn();
+            this.showLogoutNotification();
+          }
 
           this.message = respond.message;
           observer.next(false);
@@ -236,6 +253,62 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
+        if(error.status = "401")
+        {
+          this.sessionService.logout();
+          this.sessionService.gotoSignIn();
+          this.showLogoutNotification();
+        }
+        observer.error(error);
+        observer.complete();
+        throw error;
+      });
+    });
+  }
+
+  public get(key: string, params: string): Observable<any> {
+    return new Observable(observer => {
+
+      const url = `${this.sessionService.server}/${key}/get${params}`;
+      console.debug(key, url);
+
+      let request = this.http.get(url, { headers: this.sessionService.getHeader() });
+      request.subscribe((respond: any) => {
+        console.debug("get", url, respond);
+        if (respond.status == "failed") {
+
+          if(respond.code && respond.code == "401")
+          {
+            this.sessionService.logout();
+            this.sessionService.gotoSignIn();
+            this.showLogoutNotification();
+          }
+
+          this.message = respond.message;
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();
+        }
+
+        if(respond.status == "auth-failed")
+        {
+          this.sessionService.logout();
+          observer.next(false);
+          observer.complete();
+          return (observer).unsubscribe();
+        }
+
+        console.debug(respond.data);
+        observer.next(respond.data);
+        observer.complete();
+        return (observer).unsubscribe();
+      }, error => {
+        if(error.status = "401")
+        {
+          this.sessionService.logout();
+          this.sessionService.gotoSignIn();
+          this.showLogoutNotification();
+        }
         observer.error(error);
         observer.complete();
         throw error;
@@ -254,6 +327,14 @@ export class CommonService {
         console.debug("add", url, respond);
         const json = { "status": respond.status, "message": respond.message, "data": respond.data };
         if (json.status == "failed") {
+
+          if(respond.code && respond.code == "401")
+          {
+            this.sessionService.logout();
+            this.sessionService.gotoSignIn();
+            this.showLogoutNotification();
+          }
+
           this.message = json.message;
           observer.next(false);
           observer.complete();
@@ -274,6 +355,12 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
+        if(error.status = "401")
+        {
+          this.sessionService.logout();
+          this.sessionService.gotoSignIn();
+          this.showLogoutNotification();
+        }
         observer.error(error);
         observer.complete();
         throw error;
@@ -290,6 +377,14 @@ export class CommonService {
         console.debug("batch-add", url, respond);
         const json = { "status": respond.status, "message": respond.message, "data": respond.data };
         if (json.status == "failed") {
+
+          if(respond.code && respond.code == "401")
+          {
+            this.sessionService.logout();
+            this.sessionService.gotoSignIn();
+            this.showLogoutNotification();
+          }
+
           this.message = json.message;
           observer.next(false);
           observer.complete();
@@ -310,6 +405,12 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
+        if(error.status = "401")
+        {
+          this.sessionService.logout();
+          this.sessionService.gotoSignIn();
+          this.showLogoutNotification();
+        }
         observer.error(error);
         observer.complete();
         throw error;
@@ -326,6 +427,14 @@ export class CommonService {
         console.debug("batch-update", url, respond);
         const json = { "status": respond.status, "message": respond.message, "data": respond.data };
         if (json.status == "failed") {
+
+          if(respond.code && respond.code == "401")
+          {
+            this.sessionService.logout();
+            this.sessionService.gotoSignIn();
+            this.showLogoutNotification();
+          }
+          
           this.message = json.message;
           observer.next(false);
           observer.complete();
@@ -346,6 +455,12 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
+        if(error.status = "401")
+        {
+          this.sessionService.logout();
+          this.sessionService.gotoSignIn();
+          this.showLogoutNotification();
+        }
         observer.error(error);
         observer.complete();
         throw error;
@@ -362,6 +477,14 @@ export class CommonService {
         console.debug("task", url, respond);
         const json = { "status": respond.status, "message": respond.message, "data": respond.data };
         if (json.status == "failed") {
+
+          if(respond.code && respond.code == "401")
+          {
+            this.sessionService.logout();
+            this.sessionService.gotoSignIn();
+            this.showLogoutNotification();
+          }
+          
           this.message = json.message;
           observer.next(false);
           observer.complete();
@@ -382,6 +505,12 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
+        if(error.status = "401")
+        {
+          this.sessionService.logout();
+          this.sessionService.gotoSignIn();
+          this.showLogoutNotification();
+        }
         observer.error(error);
         observer.complete();
         throw error;
@@ -400,6 +529,14 @@ export class CommonService {
         console.debug("update", url, respond);
         const json = { "status": respond.status, "message": respond.message, "data": respond.data };
         if (json.status == "failed") {
+
+          if(respond.code && respond.code == "401")
+          {
+            this.sessionService.logout();
+            this.sessionService.gotoSignIn();
+            this.showLogoutNotification();
+          }
+          
           this.message = json.message;
           observer.next(false);
           observer.complete();
@@ -418,6 +555,12 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
+        if(error.status = "401")
+        {
+          this.sessionService.logout();
+          this.sessionService.gotoSignIn();
+          this.showLogoutNotification();
+        }
         observer.error(error);
         observer.complete();
         throw error;
@@ -434,6 +577,14 @@ export class CommonService {
         console.debug("delete", url, respond);
         const json = { "status": respond.status, "message": respond.message, "data": respond.data };
         if (json.status == "failed") {
+
+          if(respond.code && respond.code == "401")
+          {
+            this.sessionService.logout();
+            this.sessionService.gotoSignIn();
+            this.showLogoutNotification();
+          }
+          
           this.message = json.message;
           observer.next(false);
           observer.complete();
@@ -452,6 +603,12 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
+        if(error.status = "401")
+        {
+          this.sessionService.logout();
+          this.sessionService.gotoSignIn();
+          this.showLogoutNotification();
+        }
         observer.error(error);
         observer.complete();
         throw error;
@@ -469,6 +626,14 @@ export class CommonService {
         console.debug("customPost", url, respond);
         const json = { "status": respond.status, "message": respond.message, "data": respond.data };
         if (json.status == "failed") {
+
+          if(respond.code && respond.code == "401")
+          {
+            this.sessionService.logout();
+            this.sessionService.gotoSignIn();
+            this.showLogoutNotification();
+          }
+          
           this.message = json.message;
           observer.next(false);
           observer.complete();
@@ -489,6 +654,12 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
+        if(error.status = "401")
+        {
+          this.sessionService.logout();
+          this.sessionService.gotoSignIn();
+          this.showLogoutNotification();
+        }
         observer.error(error);
         observer.complete();
         throw error;
@@ -506,6 +677,14 @@ export class CommonService {
 
         const json = { "status": respond.status, "message": respond.message, "data": respond.data };
         if (json.status == "failed") {
+
+          if(respond.code && respond.code == "401")
+          {
+            this.sessionService.logout();
+            this.sessionService.gotoSignIn();
+            this.showLogoutNotification();
+          }
+          
           console.debug(json.message);
           this.message = json.message;
           observer.next(false);
@@ -525,6 +704,12 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
+        if(error.status = "401")
+        {
+          this.sessionService.logout();
+          this.sessionService.gotoSignIn();
+          this.showLogoutNotification();
+        }
         observer.error(error);
         observer.complete();
         throw error;
@@ -541,6 +726,14 @@ export class CommonService {
         console.debug("customUpload", url, respond);
         const json = { "status": respond.status, "message": respond.message, "data": respond.data };
         if (json.status == "failed") {
+
+          if(respond.code && respond.code == "401")
+          {
+            this.sessionService.logout();
+            this.sessionService.gotoSignIn();
+            this.showLogoutNotification();
+          }
+          
           this.message = json.message;
           observer.next(false);
           observer.complete();
@@ -561,6 +754,12 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
+        if(error.status = "401")
+        {
+          this.sessionService.logout();
+          this.sessionService.gotoSignIn();
+          this.showLogoutNotification();
+        }
         observer.error(error);
         observer.complete();
         throw error;
@@ -577,6 +776,14 @@ export class CommonService {
         console.debug("customGet", url, respond);
         const json = { "status": respond.status, "message": respond.message, "data": respond.data };
         if (json.status == "failed") {
+
+          if(respond.code && respond.code == "401")
+          {
+            this.sessionService.logout();
+            this.sessionService.gotoSignIn();
+            this.showLogoutNotification();
+          }
+          
           this.message = json.message;
           observer.next(false);
           observer.complete();
@@ -595,6 +802,12 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
+        if(error.status = "401")
+        {
+          this.sessionService.logout();
+          this.sessionService.gotoSignIn();
+          this.showLogoutNotification();
+        }
         observer.error(error);
         observer.complete();
         throw error;
@@ -613,6 +826,14 @@ export class CommonService {
       request.subscribe((respond: any) => {
         console.debug("download", url, respond);
         if (respond.status == "failed") {
+
+          if(respond.code && respond.code == "401")
+          {
+            this.sessionService.logout();
+            this.sessionService.gotoSignIn();
+            this.showLogoutNotification();
+          }
+          
           console.debug(respond.message);
           this.message = respond.message;
           observer.next(false);
@@ -632,6 +853,12 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
+        if(error.status = "401")
+        {
+          this.sessionService.logout();
+          this.sessionService.gotoSignIn();
+          this.showLogoutNotification();
+        }
         observer.error(error);
         observer.complete();
         throw error;
@@ -649,6 +876,14 @@ export class CommonService {
       request.subscribe((respond: any) => {
         console.debug("download", url, respond);
         if (respond.status == "failed") {
+
+          if(respond.code && respond.code == "401")
+          {
+            this.sessionService.logout();
+            this.sessionService.gotoSignIn();
+            this.showLogoutNotification();
+          }
+          
           console.debug(respond.message);
           this.message = respond.message;
           observer.next(false);
@@ -668,6 +903,12 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
+        if(error.status = "401")
+        {
+          this.sessionService.logout();
+          this.sessionService.gotoSignIn();
+          this.showLogoutNotification();
+        }
         observer.error(error);
         observer.complete();
         throw error;
@@ -685,6 +926,14 @@ export class CommonService {
       request.subscribe((respond: any) => {
         console.debug("download", url, respond);
         if (respond.status == "failed") {
+
+          if(respond.code && respond.code == "401")
+          {
+            this.sessionService.logout();
+            this.sessionService.gotoSignIn();
+            this.showLogoutNotification();
+          }
+          
           console.debug(respond.message);
           this.message = respond.message;
           observer.next(false);
@@ -704,6 +953,12 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
+        if(error.status = "401")
+        {
+          this.sessionService.logout();
+          this.sessionService.gotoSignIn();
+          this.showLogoutNotification();
+        }
         observer.error(error);
         observer.complete();
         throw error;
@@ -719,6 +974,11 @@ export class CommonService {
       formBody.push(encodedKey + '=' + encodedValue);
     }
     return formBody.join('&');
+  }
+
+  private showLogoutNotification()
+  {
+    this.toastr.error(this.logoutMessage, "Session Expired", {disableTimeOut: true, tapToDismiss: true, positionClass: "toast-top-center"});
   }
 
 }
