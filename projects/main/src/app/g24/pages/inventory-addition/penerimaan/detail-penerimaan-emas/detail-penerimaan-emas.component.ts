@@ -248,6 +248,7 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
 
   async ngOnInit(): Promise<void>
   {
+    this.lookup.loadByCode("order-status");
     this.user = this.session.getUser();
 
     await this.LoadAllParameter();

@@ -231,6 +231,7 @@ export class DetailInisiasiApprovalEmasBatanganComponent extends BasePersistentF
   }
 
   async ngOnInit(): Promise<void> {
+    this.lookup.loadByCode("order-status");
     this.input = this.defaultInput();
     this.user = this.session.getUser();
     window['slc'] = this.selected
@@ -378,7 +379,7 @@ export class DetailInisiasiApprovalEmasBatanganComponent extends BasePersistentF
         break;
 
       case OrderStatus.APPROVAL.code:
-        order_status_p = "&order_status="+ OrderStatus.APPROVAL.code;
+        order_status_p = "&_or=order_status:" + OrderStatus.APPROVAL.code + "," + OrderStatus.TERIMA_PARTIAL.code + "," + OrderStatus.TERIMA_FULL.code;
         break;
 
       case OrderStatus.TOLAK.code:

@@ -397,7 +397,7 @@ export class DetailInisiasiApprovalSouvenirComponent extends BasePersistentField
         break;
 
       case OrderStatus.APPROVAL.code:
-        order_status_p = "&order_status="+OrderStatus.APPROVAL.code;
+        order_status_p = "&_or=order_status:" + OrderStatus.APPROVAL.code + "," + OrderStatus.TERIMA_PARTIAL.code + "," + OrderStatus.TERIMA_FULL.code;
         break;
       
       case OrderStatus.TOLAK.code:
