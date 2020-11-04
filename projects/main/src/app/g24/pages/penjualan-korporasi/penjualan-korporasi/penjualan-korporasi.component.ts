@@ -225,6 +225,8 @@ export class PenjualanKorporasiComponent implements OnInit {
       return;
     }
 
+    let products = btoa(JSON.stringify({ 'PERHIASAN':[], 'LM':this.productData, 'BERLIAN':[], 'GS':[], 'DINAR':[] }));
+
     let form = this.formData.getRawValue();
     form.pic_encoded = "base64";
     form.product_encoded = "base64array";
@@ -234,7 +236,7 @@ export class PenjualanKorporasiComponent implements OnInit {
     let harga = this.formPembayaran.getRawValue();
     delete harga.sisaPembayaran;
 
-    let data = Object.assign(form,{'pic': btoa(JSON.stringify(Pic))}, {product:btoa(JSON.stringify(this.productData)),rekening_encoded:"base64"}, harga,this.maker);
+    let data = Object.assign(form,{'pic': btoa(JSON.stringify(Pic))}, {product:products,rekening_encoded:"base64"}, harga,this.maker);
 
     // this.transactionFlagService.batchUpdateOne(this.productData, 'bookingCorporate');
 
