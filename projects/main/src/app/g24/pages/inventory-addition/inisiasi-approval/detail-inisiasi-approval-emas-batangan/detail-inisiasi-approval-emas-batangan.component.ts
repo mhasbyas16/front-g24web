@@ -20,6 +20,7 @@ import { ToastrService } from 'ngx-toastr';
 import { StringHelper } from '../../../../lib/helper/string-helper';
 import { EPriviledge } from '../../../../lib/enums/epriviledge.enum';
 import { InisiasiService } from '../../../../services/stock/inisiasi.service';
+import { ParameterLookupSearchDTO, ParameterLookupService } from '../../../../services/system/parameter-lookup.service';
 
 @Component({
   selector: 'detail-inisiasi-approval-emas-batangan',
@@ -213,7 +214,8 @@ export class DetailInisiasiApprovalEmasBatanganComponent extends BasePersistentF
   constructor(private session : SessionService, private productCatService : ProductCategoryService,
               private jenisService : ProductJenisService, private kadarService : ProductPurityService,
               private gColorService : ProductGoldColorService, private vendorService : VendorService,
-              private toastr : ToastrService, private inisiasiService : InisiasiService) { super(); }
+              private toastr : ToastrService, private inisiasiService : InisiasiService,
+              private lookup : ParameterLookupService) { super(); }
   
   initFormSearch() {
     let fg : FormGroup = new FormGroup({
@@ -229,6 +231,7 @@ export class DetailInisiasiApprovalEmasBatanganComponent extends BasePersistentF
   }
 
   async ngOnInit(): Promise<void> {
+    this.lookup.loadByCode("order-status");
     this.input = this.defaultInput();
     this.user = this.session.getUser();
     window['slc'] = this.selected
@@ -376,7 +379,7 @@ export class DetailInisiasiApprovalEmasBatanganComponent extends BasePersistentF
         break;
 
       case OrderStatus.APPROVAL.code:
-        order_status_p = "&order_status="+ OrderStatus.APPROVAL.code;
+        order_status_p = "&_or=order_status:" + OrderStatus.APPROVAL.code + "," + OrderStatus.TERIMA_PARTIAL.code + "," + OrderStatus.TERIMA_FULL.code;
         break;
 
       case OrderStatus.TOLAK.code:
@@ -829,6 +832,21 @@ export class DetailInisiasiApprovalEmasBatanganComponent extends BasePersistentF
 
   public onCancel() {
 
+  }
+
+  GetDisplayNameFromLookup(code : string) : string
+  {
+    if(!code)
+    {
+      return code;
+    }
+
+    let dto : ParameterLookupSearchDTO = new ParameterLookupSearchDTO();
+    dto.code = "order-status";
+    dto.value_code = code;
+    let name = code;
+    name = this.lookup.getName(dto);
+    return name;
   }
 
 }

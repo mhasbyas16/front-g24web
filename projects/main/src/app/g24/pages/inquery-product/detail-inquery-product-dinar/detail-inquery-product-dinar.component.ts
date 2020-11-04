@@ -8,6 +8,7 @@ import { SessionService } from 'projects/platform/src/app/core-services/session.
 import { UnitService } from '../../../services/system/unit.service';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
+import { TipeStock } from '../../../lib/enum/flag-product';
 
 
 @Component({
@@ -35,6 +36,7 @@ export class DetailInqueryProductDinarComponent implements OnInit {
   unit : any = [];
   showUnit : Boolean = false;
 
+  Tipe = Object.values(TipeStock);
   ErrorPage : Boolean = false;
   LoadingSearch : ClrLoadingState = ClrLoadingState.DEFAULT;
   LoadingPage : ClrLoadingState = ClrLoadingState.DEFAULT;
@@ -111,8 +113,16 @@ export class DetailInqueryProductDinarComponent implements OnInit {
     for(let key in this.inquery){
       if(this.inquery[key]==null)continue;
       switch(key){
+        case "id" : 
+          params += "_id="+this.inquery[key]+"&";
+          break;
+
         case "code" :
           params += "code="+this.inquery[key]+"&";
+          break;
+
+        case "nopo" :
+          params += 'no_po='+this.inquery[key]+"&";
           break;
 
         case "vendor" :
@@ -122,6 +132,14 @@ export class DetailInqueryProductDinarComponent implements OnInit {
         case "denom" :
           params += "product-denom.code="+this.inquery[key].code+"&";
           break;
+
+          case "unit" : 
+          params += "unit.code="+this.inquery[key].code+"&";
+          break;
+
+          case "location" :
+            params += "location="+this.inquery[key].code+"&";
+            break;
 
         default : 
         params += key +="="+this.inquery[key]+"&";

@@ -87,6 +87,9 @@ export const kasir = [
   { _id: "0006", type: "sub-menu", name: "Kirim Moker", icons: "", color: "warna-warni", componentId: "31001", parentId: "S31000", module: "tm", menu: { _id: "0008" } },
   { _id: "0006", type: "sub-menu", name: "Terima Moker", icons: "", color: "warna-warni", componentId: "31003", parentId: "S31000", module: "tm", menu: { _id: "0008" } },
 
+  //INQUERY PRODUCT
+  { _id: "0011", type: "menu", name: "Inquery", icons: "data-cluster", color: "warna-warni", componentId: "IP101", parentId: "", module: "ip" },
+  { _id: "0011", type: "sub-menu", name: "Inquery Product", icons: "yang bagus", color: "warna-warni", componentId: "99101", parentId: "IP101", module: "ip", menu: { _id: "0011" } },
 ];
 export const managerDistro = [
 

@@ -5,7 +5,7 @@
     </div>
     <div class="card-block">
       <div class="card-text">
-        <form #search="ngForm" id="logam-mulia" clrForm (ngSubmit)="onCari(search.value)">
+        <form #search="ngForm" id="logam-mulia" clrForm (ngSubmit)="onCari()">
           <div class="clr-row">
             <div class="clr-col-12">
               <h6 class="bg-blue1000"> Pencarian </h6>
@@ -13,7 +13,7 @@
             <div class="clr-col-6">
               <clr-date-container>
                 <label class="clr-control-label">Tanggal</label>
-                <input clrDate name="tanggal" type="date" [(ngModel)]="searchModel.tanggal">
+                <input disabled clrDate name="tanggal" type="date" [(ngModel)]="searchModel.tanggal">
               </clr-date-container>
             </div>
           </div>
@@ -40,7 +40,7 @@
           <clr-dg-row *clrDgItems="let data of dataList">
             <clr-dg-action-overflow>
               <button class="action-item" (click)="mainDetail(data)">Detail</button>
-              <button class="action-item" *ngIf="data.flag == 'submit'&& myRole == 'Keuangan';" (click)="mainApprove(data)">Otorisasi</button>
+              <button class="action-item" *ngIf="data.flag == 'submit';" (click)="mainApprove(data)">Otorisasi</button>
             </clr-dg-action-overflow>
             <clr-dg-cell hidden>{{data._id}}</clr-dg-cell>
             <clr-dg-cell class="width-1">{{data.id_transaksi}}</clr-dg-cell>
@@ -86,6 +86,7 @@
             <div class="clr-row">
               <div class="clr-col-4">
                 <div class="clr-form-control">
+                  <input hidden type=text name="version" [(ngModel)]="inputModel.__version">
                   <label for="basic" class="clr-control-label">ID Transaksi</label>
                 </div>
               </div>

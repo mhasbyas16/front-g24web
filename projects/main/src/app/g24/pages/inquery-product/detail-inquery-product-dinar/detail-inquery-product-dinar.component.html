@@ -6,6 +6,14 @@
             </div>
             <div class="card-block">
                 <div class="clr-row">
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Id</label>
+                            <clr-input-container>
+                                <input clrInput [(ngModel)]="inquery.id" name="id">
+                            </clr-input-container>
+                        </div>
+                    </div>
                 <div class="clr-col-6">
                     <div class="clr-form-control">
                         <label class="clr-control-label">Code</label>
@@ -14,6 +22,16 @@
                         </clr-input-container>
                     </div>
                 </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Nomer PO</label>
+                            <clr-input-container>
+                                <input clrInput [(ngModel)]="inquery.nopo" name="nopo">
+                            </clr-input-container>
+                        </div>
+                    </div>
                 <div class="clr-col-6">
                     <div class="clr-form-control">
                         <label class="clr-control-label">Vendor</label>
@@ -70,6 +88,18 @@
                             </clr-select-container>
                         </div>
                     </div>
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Tipe Stock</label>
+                            <clr-select-container>
+                                <select clrSelect [(ngModel)]="inquery.tipe_stock" name="tipe_stock">
+                                    <ng-container *ngFor="let data of Tipe">
+                                        <option [ngValue]="data">{{data.code}}</option> 
+                                    </ng-container>
+                                </select>
+                            </clr-select-container>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="card-footer">
@@ -83,17 +113,22 @@
 <div class="clr-row">
     <div class="clr-col-md-12">
         <clr-datagrid>
+            <clr-dg-column>Id</clr-dg-column>
+            <clr-dg-column>No Urut</clr-dg-column>
             <clr-dg-column>No PO</clr-dg-column>
-            <clr-dg-column>Code</clr-dg-column>
+            <clr-dg-column>Kode</clr-dg-column>
             <clr-dg-column>Vendor</clr-dg-column>
             <clr-dg-column>Denom</clr-dg-column>
             <clr-dg-column>HPP</clr-dg-column>
             <clr-dg-column>Hpp Inisiasi</clr-dg-column>
             <clr-dg-column>Flag</clr-dg-column>
-            <clr-dg-column>Lokasi</clr-dg-column>
+            <clr-dg-column>Lokasi Distribusi</clr-dg-column>
             <clr-dg-column>Tipe Stock</clr-dg-column>
+            <clr-dg-column>Unit</clr-dg-column>
 
-            <clr-dg-row *ngFor="let data of outputdata">
+            <clr-dg-row *clrDgItems="let data of outputdata">
+                <clr-dg-cell>{{data._id}}</clr-dg-cell>
+                <clr-dg-cell>{{data.no_urut ? data.no_urut : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data.no_po ? data.no_po : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data.code}}</clr-dg-cell>
                 <clr-dg-cell>{{data.vendor.name}}</clr-dg-cell>
@@ -103,7 +138,15 @@
                 <clr-dg-cell>{{data.flag}}</clr-dg-cell>
                 <clr-dg-cell>{{data.location ? data.location : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data.tipe_stock}}</clr-dg-cell>
+                <clr-dg-cell>{{data.unit.nama}}</clr-dg-cell>
             </clr-dg-row>
+            <clr-dg-footer>
+                <clr-dg-pagination #pagination [clrDgPageSize]="10">
+                    <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Product per page</clr-dg-page-size>
+                    {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                    of {{pagination.totalItems}} product
+                </clr-dg-pagination>
+            </clr-dg-footer>
         </clr-datagrid>
     </div>
 </div>

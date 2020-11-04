@@ -77,6 +77,7 @@ modalupdate : boolean = false;
   				if(this.diamondservice.message()!=""){
 					  this.toastr.info("Data tidak ditemukan","Informasi");
 					  this.spinner.Close();
+					  this.listdiamond = [];
   					return;
   				}
 			  }

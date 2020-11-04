@@ -16,6 +16,9 @@ import { StringHelper } from '../../../lib/helper/string-helper';
 import { FlagMutasi } from '../../../lib/enum/flag-mutasi';
 import { JurnalMutasiService } from '../../../services/keuangan/jurnal/stock/jurnal-mutasi.service';
 
+//SORTING CLARITY LIB
+import {ClrDatagridSortOrder} from '@clr/angular';
+
 @Component({
   selector: 'app-accept-mutasi',
   templateUrl: './accept-mutasi.component.html',
@@ -53,6 +56,11 @@ static key = EMenuID.TERIMA_MUTASI;
   time : String;
 	
   Object = Object;
+  
+  //VARIABEL SORT 
+  descSort_terima : any; 
+  descSort_approve : any; 
+  descSort_kirim : any;
 
   constructor(
     private UnitService : UnitService,
@@ -111,6 +119,10 @@ static key = EMenuID.TERIMA_MUTASI;
         
       }
   });
+
+  this.descSort_terima = ClrDatagridSortOrder.ASC;
+  this.descSort_kirim = ClrDatagridSortOrder.ASC;
+  this.descSort_approve = ClrDatagridSortOrder.ASC;
   }
 
   async doSearch(){
@@ -442,6 +454,7 @@ static key = EMenuID.TERIMA_MUTASI;
       let data = {
         _id : this.data_view._id,
         update_by : this.sessionservice.getUser().username,
+        terima_by : this.sessionservice.getUser().unit,
         update_date : this.date_now,
         update_time : this.time,
         tgl_terima : this.date_now,

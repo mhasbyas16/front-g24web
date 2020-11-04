@@ -15,6 +15,7 @@ import { PaymentType } from 'projects/main/src/app/g24/lib/enums/payment-type';
 import { LoadingSpinnerComponent } from 'projects/main/src/app/g24/nav/modal/loading-spinner/loading-spinner.component';
 import { ServerDateTimeService } from 'projects/main/src/app/g24/services/system/server-date-time.service';
 import { JurnalInisiasiService } from 'projects/main/src/app/g24/services/keuangan/jurnal/stock/jurnal-inisiasi.service';
+import { ParameterLookupSearchDTO, ParameterLookupService } from 'projects/main/src/app/g24/services/system/parameter-lookup.service';
 
 @Component({
   selector: 'detail-item-inisiasi-approval-permata',
@@ -29,6 +30,7 @@ export class DetailItemInisiasiApprovalPermataComponent implements OnInit {
     private session : SessionService,
     private dateService : ServerDateTimeService,
     private jurnalInisiasi : JurnalInisiasiService,
+    private lookup : ParameterLookupService,
 
     private inisiasiService : InisiasiService
   ) { }
@@ -167,6 +169,7 @@ export class DetailItemInisiasiApprovalPermataComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.lookup.loadByCode("nama-bank");
   }
   
   GetDisplayValue(object : any) : string
@@ -804,6 +807,21 @@ export class DetailItemInisiasiApprovalPermataComponent implements OnInit {
 
     this.inisiasi['total_harga'] = Math.round(hbaku * total_gram_tukar * 100) /100;
     return this.inisiasi['total_harga'];
+  }
+
+  GetDisplayNameFromLookupByCode(code : string, value_code : string) : string
+  {
+    if(!code)
+    {
+      return code;
+    }
+
+    let dto : ParameterLookupSearchDTO = new ParameterLookupSearchDTO();
+    dto.code = code;
+    dto.value_code = value_code;
+    let name = code;
+    name = this.lookup.getName(dto);
+    return name;
   }
 
 }

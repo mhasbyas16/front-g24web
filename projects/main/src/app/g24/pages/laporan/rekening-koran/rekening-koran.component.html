@@ -11,19 +11,19 @@
                 <div class="clr-row clr-align-items-center">
                     <div class="clr-col-3">
                         <clr-input-container>
-                            <input clrInput type="text" formControlName="text" placeholder="No Rekening" autofocus>
+                            <input clrInput required type="text" formControlName="text" placeholder="No Rekening" autofocus>
                             <clr-control-helper>Masukkan No Rekening</clr-control-helper>
                         </clr-input-container>
                     </div>
                     <div class="clr-col-3">
                         <clr-date-container>
-                            <input clrDate type="date" formControlName="from" (clrDateChange)="startDate($event)" >
+                            <input required clrDate type="date" formControlName="from" (clrDateChange)="startDate($event)" >
                             <clr-control-helper>Tanggal Awal</clr-control-helper>
                         </clr-date-container>
                     </div>
                     <div class="clr-col-3">
                         <clr-date-container>
-                            <input clrDate type="date" formControlName="to" [min]="minDate | date:'yyyy-MM-dd'" [max]="maxDate | date:'yyyy-MM-dd'">
+                            <input required clrDate type="date" formControlName="to" [min]="minDate | date:'yyyy-MM-dd'" [max]="maxDate | date:'yyyy-MM-dd'">
                             <clr-control-helper>Tanggal Akhir</clr-control-helper>
                         </clr-date-container>
                     </div>
@@ -105,26 +105,42 @@
                     <clr-dg-detail-body>
                         <ng-container>
                             <div class="clr-row">
+                                <div class="clr-col-2">
+                                    <clr-input-container>
+                                        <label for="basic" class="clr-control-label">ID Jurnal</label>
+                                    </clr-input-container>
+                                </div>
                                 <div class="clr-col-6">
                                     <clr-input-container>
-                                        <label for="basic" class="clr-control-label">Kode Transaksi</label>
-                                        <input type="text" [value]="content.trxCode" clrInput />
-                                        <input type="text" [value]="content.keterangan" clrInput />
+                                        <label for="basic" class="clr-control-label">: {{content.idJurnal}}</label>
                                     </clr-input-container>
                                 </div>
                             </div>
-            
+                            <div class="clr-row">
+                                <div class="clr-col-2">
+                                    <clr-input-container>
+                                        <label for="basic" class="clr-control-label">Kode Transaksi</label>                                                                         
+                                    </clr-input-container>
+                                </div>   
+                                <div class="clr-col-6">
+                                    <clr-input-container>
+                                        <label for="basic" class="clr-control-label">: {{content.trxCode}} - {{content.keterangan}}</label>                                                                         
+                                    </clr-input-container>
+                                </div>                          
+                                
+                            </div>
+                            
                              <div class="clr-row">
                                 <div class="clr-col-6">
                                     <clr-input-container>
                                         <label for="basic" class="clr-control-label">Tanggal Jurnal</label>
-                                        <input type="text" [value]="content.postDate" clrInput />
+                                        <input type="text" [value]="content.postDate" clrInput readonly/>
                                     </clr-input-container>
                                 </div>
                                 <div class="clr-col-6">
                                     <clr-input-container>
                                         <label for="basic" class="clr-control-label">Tanggal Transaksi</label>
-                                        <input type="text" [value]="content.trxDate" clrInput />
+                                        <input type="text" [value]="content.trxDate" clrInput readonly/>
                                     </clr-input-container>
                                 </div>
                             </div>
@@ -133,13 +149,13 @@
                                 <div class="clr-col-6">
                                     <clr-input-container>
                                         <label for="noRek" class="clr-control-label">Nomor Rekening</label>
-                                        <input type="text" [value]="content.noRek" clrInput />
+                                        <input type="text" [value]="content.noRek" clrInput readonly/>
                                     </clr-input-container>
                                 </div>
                                 <div class="clr-col-6">
                                     <clr-input-container>
                                         <label for="noCoa" class="clr-control-label">Mata Anggaran</label>
-                                        <input type="text" [value]="content.noCoa" clrInput />
+                                        <input type="text" [value]="content.noCoa" clrInput readonly/>
                                     </clr-input-container>
                                 </div>
                             </div>
@@ -148,13 +164,13 @@
                                 <div class="clr-col-6">
                                     <clr-input-container>
                                         <label for="noRek" class="clr-control-label">Dibuat Oleh</label>
-                                        <input type="text" [value]="content.createBy" clrInput />
+                                        <input type="text" [value]="content.createBy" clrInput readonly/>
                                     </clr-input-container>
                                 </div>
                                 <div class="clr-col-6">
                                     <clr-input-container>
                                         <label for="noCoa" class="clr-control-label">Tanggal Dibuat</label>
-                                        <input type="text" [value]="content.createDate" clrInput />
+                                        <input type="text" [value]="content.createDate" clrInput readonly/>
                                     </clr-input-container>
                                 </div>
                             </div>
@@ -163,13 +179,13 @@
                                 <div class="clr-col-6">
                                     <clr-input-container>
                                         <label for="noRek" class="clr-control-label">Diotorisasi Oleh</label>
-                                        <input type="text" [value]="content.authorizedBy" clrInput />
+                                        <input type="text" [value]="content.authorizedBy" clrInput readonly/>
                                     </clr-input-container>
                                 </div>
                                 <div class="clr-col-6">
                                     <clr-input-container>
                                         <label for="noCoa" class="clr-control-label">Tanggal Otorisasi</label>
-                                        <input type="text" [value]="content.authorizedDate" clrInput />
+                                        <input type="text" [value]="content.authorizedDate" clrInput readonly/>
                                     </clr-input-container>
                                 </div>
                             </div>
@@ -178,7 +194,7 @@
                                 <div class="clr-col-6">
                                     <clr-input-container>
                                         <label for="noRek" class="clr-control-label">Kode Cabang</label>
-                                        <input type="text" [value]="content.unit" clrInput />
+                                        <input type="text" [value]="content.unit" clrInput readonly/>
                                     </clr-input-container>
                                 </div>                           
                                     
@@ -215,7 +231,7 @@
                     <clr-dg-pagination #pagination [clrDgPageSize]="5">
                         <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Users per page</clr-dg-page-size>
                         {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
-                        of {{pagination.totalItems}} Produk
+                        of {{pagination.totalItems}} Data
                     </clr-dg-pagination>
                 </clr-dg-footer>
             </clr-datagrid>

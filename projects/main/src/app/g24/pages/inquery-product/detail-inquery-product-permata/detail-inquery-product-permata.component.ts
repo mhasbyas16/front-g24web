@@ -140,6 +140,15 @@ export class DetailInqueryProductPermataComponent implements OnInit {
     for(let key in this.inquery){
       if(this.inquery[key]==null)continue;
       switch(key){
+
+        case "id" :
+          params += "_id="+this.inquery[key]+"&";
+          break;
+
+        case "code" :
+          params += "code="+this.inquery[key]+"&";
+          break;
+
         case "nopo" :
           params += "no_po="+this.inquery[key]+"&";
           break;

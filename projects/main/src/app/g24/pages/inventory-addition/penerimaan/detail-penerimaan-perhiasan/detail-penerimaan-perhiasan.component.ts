@@ -29,6 +29,7 @@ import { EPriviledge } from '../../../../lib/enums/epriviledge.enum';
 import { OrderStatus } from '../../../../lib/enum/order-status';
 import { OrdersModule } from '../../../orders/orders.module';
 import { IDetailCallbackListener } from '../../../../lib/base/idetail-callback-listener';
+import { ParameterLookupSearchDTO, ParameterLookupService } from '../../../../services/system/parameter-lookup.service';
 
 @Component({
   selector: 'detail-penerimaan-perhiasan',
@@ -242,6 +243,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
     private productCatService : ProductCategoryService,
     // private logService : LogService,
 
+    private lookup : ParameterLookupService,
     private toastr : ToastrService,
     private session : SessionService)
   {
@@ -269,6 +271,7 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
 
   async ngOnInit(): Promise<void>
   {
+    this.lookup.loadByCode("order-status");
     this.input = this.defaultInput();
     this.user = this.session.getUser();
     window['slc'] = this.selected
@@ -890,5 +893,20 @@ export class DetailPenerimaanPerhiasanComponent extends BasePersistentFields imp
 
   public onCancel() {
 
+  }
+
+  GetDisplayNameFromLookup(code : string) : string
+  {
+    if(!code)
+    {
+      return code;
+    }
+
+    let dto : ParameterLookupSearchDTO = new ParameterLookupSearchDTO();
+    dto.code = "order-status";
+    dto.value_code = code;
+    let name = code;
+    name = this.lookup.getName(dto);
+    return name;
   }
 }

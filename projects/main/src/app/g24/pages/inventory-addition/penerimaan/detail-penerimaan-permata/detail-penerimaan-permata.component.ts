@@ -1,8 +1,6 @@
-import { Component, OnInit, ComponentFactoryResolver, ViewChild, Input, ElementRef, AfterViewInit, TemplateRef, ChangeDetectionStrategy, ViewContainerRef, Output } from '@angular/core';
-import { NgForm, Form, FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { Component, OnInit, ComponentFactoryResolver, ViewChild, ElementRef, AfterViewInit, TemplateRef, ViewContainerRef } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
 
-import { isArray } from 'util';
-import { ClarityModule } from '@clr/angular';
 import { ToastrService } from 'ngx-toastr';
 import { BasePersistentFields } from '../../../../lib/base/base-persistent-fields';
 import { InitiationType } from '../../../../lib/enums/initiation-type';
@@ -14,22 +12,16 @@ import { VendorService } from '../../../../services/vendor.service';
 import { InisiasiService } from '../../../../services/stock/inisiasi.service';
 import { ProductCategoryService } from '../../../../services/product/product-category.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
-import { DataTypeUtil } from '../../../../lib/helper/data-type-util';
 import { ProductJenisService } from '../../../../services/product/product-jenis.service';
 import { ProductPurityService } from '../../../../services/product/product-purity.service';
 import { ProductGoldColorService } from '../../../../services/product/product-gold-color.service';
-import { ProductDiamondColorService } from '../../../../services/product/product-diamond-color.service';
-import { ProductDenomService } from '../../../../services/product/product-denom.service';
-import { ProductClarityService } from '../../../../services/product/product-clarity.service';
 import { DatePipe } from '@angular/common';
 import { StringHelper } from '../../../../lib/helper/string-helper';
-import { ModalOutlet } from '../../../../lib/helper/modal-outlet';
 import { EPriviledge } from '../../../../lib/enums/epriviledge.enum';
 import { OrderStatus } from '../../../../lib/enum/order-status';
-import { OrdersModule } from '../../../orders/orders.module';
-import { IDetailCallbackListener } from '../../../../lib/base/idetail-callback-listener';
 import { DetailItemPenerimaanPermataComponent } from './detail-item-penerimaan-permata/detail-item-penerimaan-permata.component';
 import { ServerDateTimeService } from '../../../../services/system/server-date-time.service';
+import { ParameterLookupSearchDTO, ParameterLookupService } from '../../../../services/system/parameter-lookup.service';
 
 @Component({
   selector: 'detail-penerimaan-permata',
@@ -251,6 +243,7 @@ export class DetailPenerimaanPermataComponent extends BasePersistentFields imple
     private productCatService : ProductCategoryService,
     // private logService : LogService,
 
+    private lookup : ParameterLookupService,
     private toastr : ToastrService,
     private session : SessionService)
   {
@@ -278,6 +271,7 @@ export class DetailPenerimaanPermataComponent extends BasePersistentFields imple
 
   async ngOnInit(): Promise<void>
   {
+    this.lookup.loadByCode("order-status");
     this.input = this.defaultInput();
     this.user = this.session.getUser();
     window['slc'] = this.selected
@@ -978,5 +972,20 @@ export class DetailPenerimaanPermataComponent extends BasePersistentFields imple
 
   public onCancel() {
 
+  }
+
+  GetDisplayNameFromLookup(code : string) : string
+  {
+    if(!code)
+    {
+      return code;
+    }
+
+    let dto : ParameterLookupSearchDTO = new ParameterLookupSearchDTO();
+    dto.code = "order-status";
+    dto.value_code = code;
+    let name = code;
+    name = this.lookup.getName(dto);
+    return name;
   }
 }

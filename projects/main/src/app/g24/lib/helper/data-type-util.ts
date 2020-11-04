@@ -32,6 +32,21 @@ export class DataTypeUtil {
     }
 
     /**
+     * 
+     * @param source 
+     */
+    public static URLEncode(toConvert)
+    {
+        const formBody = [];
+        for (const property in toConvert) {
+          const encodedKey = encodeURIComponent(property);
+          const encodedValue = encodeURIComponent(toConvert[property]);
+          formBody.push(encodedKey + '=' + encodedValue);
+        }
+        return formBody.join('&');
+    }
+
+    /**
      * Append '*_encoded' to 'source' to 'source' field if there is any
      * 
      * Note: see ConvertTo()

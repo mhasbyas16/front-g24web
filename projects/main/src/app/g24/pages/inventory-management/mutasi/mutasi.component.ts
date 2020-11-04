@@ -24,9 +24,12 @@ import { ProductSeriesService } from '../../../services/product/product-series.s
 import { TipeStock } from '../../../lib/enum/flag-product';
 import { FlagProduct } from '../../../lib/enum/flag-product';
 import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
-import { CetakMutasiComponent } from './cetak-mutasi/cetak-mutasi.component';
+import { CetakMutasiComponent } from '../../../cetakan/stock/cetak-mutasi/cetak-mutasi.component';
 import { JurnalMutasiService } from '../../../services/keuangan/jurnal/stock/jurnal-mutasi.service';
 import { StringHelper } from '../../../lib/helper/string-helper';
+
+//SORTING CLARITY LIB
+import {ClrDatagridSortOrder} from '@clr/angular';
 
 @Component({
   selector: 'app-mutasi',
@@ -132,6 +135,10 @@ noItem : number = 0;
 innerDoc : any = {};
 date : String = "";
 
+//VARIABEL SORT 
+descSort : any; 
+descSort_terima : any;
+
 constructor(private UnitService : UnitService, private sessionservice : SessionService, 
   private mutasiservice : MutasiService, private productservice : ProductService,
   private warnaservice : ProductGoldColorService, private kadarservice : ProductPurityService,
@@ -139,8 +146,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
   private productkategoryservice : ProductCategoryService,
   private klarityservice : ProductClarityService, private datetimeservice : ServerDateTimeService,
   private seriesservice : ProductSeriesService, private toastr : ToastrService,
-  private vendorservice : VendorService,
-  private jurnalMutasiService : JurnalMutasiService
+  private vendorservice : VendorService
   ) { }
 
 
@@ -175,6 +181,9 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     });
 
     this.LoadAllAtribut();
+    
+    this.descSort = ClrDatagridSortOrder.ASC;
+    this.descSort_terima = ClrDatagridSortOrder.ASC;
 
   }
 
@@ -274,12 +283,6 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     }
       this.series = data;
   }
-  
-
-
-  onPrint(){
-    
-  }
 
 
   async doSearch(){
@@ -287,8 +290,13 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     let params = "?";
     this.spinner.SetSpinnerText("Mohon Tunggu...");
     this.spinner.Open();
+
+    if(this.sessionservice.getUser().unit.code!="00005"){
+      params += "unit_asal.code="+this.sessionservice.getUser().unit.code+"&";
+    }
+
     for(let key in this.input){
-      if(this.input[key] == null)continue;
+      if(this.input[key] == null || this.input[key]=="null" || this.input[key]=="")continue;
 
       switch(key){
         case 'unit_tujuan':
@@ -469,9 +477,10 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
   async Add(){
 
     console.log(this.date_now);
+    let tujuan = this.addinput['unit_tujuan'];
+
     this.spinner.SetSpinnerText("Mohon Tunggu...");
     this.spinner.Open();
-    let tujuan = this.addinput['unit_tujuan'];
 	  let ktr = this.addinput['keterangan'];
     let vdr = this.addinput['vndr'];
 
@@ -525,6 +534,18 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
       console.log(this.jml_hpp,"Jumlah HPP");
     }
 
+    let cetak = {
+      created_by : this.sessionservice.getUser().username,
+      created_date : this.date_now,
+      unit_tujuan : tujuan,
+      unit_asal : this.sessionservice.getUser().unit,
+      total_hpp : this.jml_hpp.toString(),
+      total_berat : this.berat.toString(),
+      keterangan : ktr,
+      items : []
+    }
+    
+
 
     let data = {
       created_by : this.sessionservice.getUser().username,
@@ -550,12 +571,9 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     }
 
     
-
-
-
-
     for(let index =0; index < this.itemsdata.length; index++){
       data.items.push(this.itemsdata[index]);
+      cetak.items.push(this.itemsdata[index]);
     }
 
     console.log(data);
@@ -609,7 +627,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
 
       this.spinner.Close();
       this.modalshow=false;
-      // this.pdf.Makepdf(data);
+      this.pdf.Makepdf(cetak);
       this.toastr.success("Data berhasil di mutasi","Berhasil");
 
     });
@@ -620,7 +638,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
      
   }
 
-  searchProduct(){
+  async searchProduct(){
     this.spinner.SetSpinnerText("Sedang melakukan pencarian Produk...");
     this.spinner.Open();
 
@@ -632,8 +650,9 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     this.products = [];
     this.modal_pick = false;
     let params = "?flag=stock&";
+    params += "unit.code="+this.sessionservice.getUser().unit.code+"&";
     for (let key in this.searchModel) {
-      if(this.searchModel[key] == null||this.searchModel[key] == "null")continue;
+      if(this.searchModel[key] == null||this.searchModel[key] == "null"||this.searchModel[key]=="")continue;
       switch(key){
         case "vndr":
           params += "vendor.code="+this.searchModel[key].code+"&";
@@ -690,19 +709,18 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     }
     params.endsWith("&") ? params = params.substring(0, params.length-1) : null;
     console.log(this.searchModel);
-    this.productservice.list(params).subscribe(output => {
-      if(output != false){
-        this.spinner.Close();
-        this.toastr.success("Data ditemukan "+output.length,"Sukses");
-        this.products = output;
-        // this.searchModel = {};
-        this.formInput = null;
-      }else{
-        // this.modal = true;
-        this.spinner.Close();
-        this.toastr.info("Data Produk tidak ditemukan","Informasi");
-      }
-    })
+    let search = await this.productservice.list(params).toPromise();
+    if(search==false){
+      let msg = this.productservice.message();
+      this.toastr.info("Data tidak ditemukan","Informasi");
+      this.spinner.Close();
+      return;
+    }
+    this.spinner.Close();
+    this.toastr.success("Data ditemukan "+search.length,"Sukses");
+    this.products = search;
+    this.formInput = null;
+
   }
 
 pickitem(){

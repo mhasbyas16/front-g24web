@@ -13,7 +13,8 @@ import { ServerDateTimeService } from "../../../services/system/server-date-time
 import { DatePipe } from '@angular/common';
 //database
 import { MokerService } from "../../../services/transaction/moker.service";
-import { BranchPegadaianService } from "../../../services/branch-pegadaian.service";
+// import { BranchPegadaianService } from "../../../services/branch-pegadaian.service";
+import { BranchPadananService } from "../../../services/admin/branch-padanan.service";
 import { UnitService } from "../../../services/system/unit.service";
 
 @Component({
@@ -74,7 +75,7 @@ export class InputMokerComponent implements OnInit {
     private datePipe: DatePipe,
     //database
     private mokerServices: MokerService,
-    private branchPegadaianServices: BranchPegadaianService,
+    private branchPadananServices: BranchPadananService,
     private unitServices : UnitService,
   ) { }
 
@@ -168,7 +169,7 @@ export class InputMokerComponent implements OnInit {
   }
 
   onListCabang(){
-    this.branchPegadaianServices.list("?unit.code="+this.unitCode).subscribe(out => {
+    this.branchPadananServices.list("?unit.code="+this.unitCode).subscribe(out => {
       this.listCabang = out;
       let cb =[]
       for(let data of out){
@@ -179,24 +180,18 @@ export class InputMokerComponent implements OnInit {
     })
   }
 
-  onCari(data) {
-    if (data.tanggal == null) {
-      this.toastrService.warning("Tanggal harus diisi");
-      return
-    }
-
-    this.loadingDg = true; // CLR Datagrid loading
-    let tgl = this.datePipe.transform(data.tanggal, 'yyyy-MM-dd');
-    this.param = "?_sortby=_id:2&create_date=" + tgl;
+  onCari() {
+    
+    this.param = "?_sortby=_id:2&create_date=" + this.date_now;
 
     this.mokerServices.list(this.param).subscribe(out => {
       if (out == false) {
-        this.toastrService.error("Modal anggaran not found");
+        this.toastrService.error("Data Setor Moker not found");
         this.loadingDg = false;
         return
       }
       this.dataList = out;
-      this.toastrService.success("Load "+out["length"]+" data", "Modal anggaran");
+      this.toastrService.success("Load "+out["length"]+" data", "Data Setor Moker");
       this.loadingDg = false;
     })
   }
@@ -268,7 +263,8 @@ export class InputMokerComponent implements OnInit {
       }
       this.spinner = false;
       this.modalAddDialog = false;
-      this.toastrService.success('Add Success')
+      this.toastrService.success('Add Success');
+      this.onCari();
     });
     console.log("submitted data", data);
   }
