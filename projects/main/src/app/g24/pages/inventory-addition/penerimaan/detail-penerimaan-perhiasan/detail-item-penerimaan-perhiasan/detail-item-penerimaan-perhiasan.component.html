@@ -247,7 +247,7 @@
                                         <td>{{product?.gram_tukar}}</td>
                                         <td>{{product?.ongkos}}</td>
                                         <td>{{product?.baku_tukar}}</td>
-                                        <td>{{product?.hpp_inisiasi}}</td>
+                                        <td>{{product?.hpp_inisiasi | mask : 'separator' : ','}}</td>
                                     </tr>
                                 </ng-container>
                             </tbody>

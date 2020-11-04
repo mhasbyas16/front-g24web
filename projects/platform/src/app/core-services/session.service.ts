@@ -41,6 +41,12 @@ export class SessionService {
     return CryptoJS.AES.decrypt(encrypted.trim(), this.pasphrase.trim()).toString(CryptoJS.enc.Utf8);
   }
 
+  removeCompany()
+  {
+    sessionStorage.removeItem("__company");
+    sessionStorage.removeItem("__db");
+  }
+
   setCompany(params: any) {
     sessionStorage.setItem("__company", this.encrypt(JSON.stringify(params)));
     sessionStorage.setItem("__db", this.encrypt(params.db));
@@ -48,6 +54,11 @@ export class SessionService {
 
   getCompany() {
     return JSON.parse(this.decrypt(sessionStorage.getItem("__company")));
+  }
+
+  removeDb()
+  {
+    sessionStorage.removeItem("__db");
   }
 
   getDb() {
@@ -64,8 +75,18 @@ export class SessionService {
     }
   }
 
+  public removeLoginId()
+  {
+    sessionStorage.removeItem("__loginId");
+  }
+
   public getLoginId() {
     return this.decrypt(sessionStorage.getItem("__loginId"));
+  }
+
+  public removeBearer()
+  {
+    sessionStorage.removeItem("__bearer");
   }
 
   public getBearer() {

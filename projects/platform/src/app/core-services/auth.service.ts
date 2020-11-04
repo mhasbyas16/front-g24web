@@ -53,6 +53,11 @@ export class AuthService {
     return file;
   }
 
+  backCompany()
+  {
+    this.sessionService.removeCompany();
+  }
+
   authCompany(params: string) {
     this.getServerConfig();
     // let json = 
@@ -99,7 +104,7 @@ export class AuthService {
         return (observer).unsubscribe();        
       });
     });
-  }  
+  }
 
   authLogin(username: string, password: string) {
     return new Observable(observer => {
