@@ -101,6 +101,7 @@ export class RolePageComponent implements OnInit {
     this.form = new FormGroup({
       _id: new FormControl("", [Validators.required]),
       name: new FormControl("", [Validators.required, Validators.maxLength(15), Validators.pattern(/^[a-zA-Z]*$/)]),
+      display_name: new FormControl("", [Validators.required, Validators.pattern(/^[a-zA-Z ]*$/)]),
       name_validation: new FormControl("unique:name")
     });
 

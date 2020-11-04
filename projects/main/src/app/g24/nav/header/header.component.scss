@@ -4,3 +4,18 @@
 {
     cursor: pointer;
 }
+
+.header-button
+{
+    background-color: #008580;
+    border-radius: 10px;
+    border-color: black;
+    border-width: 5px;
+}
+
+.header-button:hover
+{
+    background-color: hsl(38deg 50% 57%);
+    color: black;
+    border-radius: 10px;
+}
