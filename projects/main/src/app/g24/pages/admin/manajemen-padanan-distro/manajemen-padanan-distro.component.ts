@@ -121,7 +121,7 @@ export class ManajemenPadananDistroComponent implements OnInit {
   }
 
   loadUnit() {
-    this.unitServices.list().subscribe(out => {
+    this.unitServices.list("?_sortby=code:1&jenis_unit=distro").subscribe(out => {
       this.unitList = out
     })
   }
