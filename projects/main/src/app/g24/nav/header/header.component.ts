@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { AutoLogoutService } from '../../lib/common/auto-logout.service';
+import { ContentPage } from '../../lib/helper/content-page';
 
 @Component({
   selector: 'app-header',
@@ -8,11 +10,15 @@ import { AutoLogoutService } from '../../lib/common/auto-logout.service';
 })
 export class HeaderComponent implements OnInit {
 
-  user = {name: "cinta"}
-  title = "telolet"
+  user = "Account";
+  user_nama = "";
+  role = "";
+  title = "telolet";
 
   constructor(
-    private autoLogout : AutoLogoutService
+    private autoLogout : AutoLogoutService,
+    private session : SessionService
+
     )
   {
     autoLogout.check();
@@ -22,6 +28,29 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.user = this.session.getUser().username;
+    this.user_nama = this.session.getUnit().name;
+    this.role = this.session.getRole()?.display_name;
+  }
+
+  showBranchMappingScreen()
+  {
+    ContentPage.ChangeContent("", true);
+  }
+
+  logout()
+  {
+    this.session.logout();
+  }
+
+  getKodeUnit() : string
+  {
+    return this.session.getUnit().code;
+  }
+
+  getNamaUnit() : string
+  {
+    return this.session.getUnit().nama;
   }
 
 }

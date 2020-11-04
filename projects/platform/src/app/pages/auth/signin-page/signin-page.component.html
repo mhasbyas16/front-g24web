@@ -31,11 +31,18 @@
             <div *ngIf="error != null" class="error active">
                 {{error}}
             </div>
-            <button type="submit" class="btn btn-primary" >
-                <span *ngIf="spinner==true" class="spinner spinner-inline">
-                    
-                </span>
-                NEXT</button>
+            <div class="btn-group btn-primary">
+                <button *ngIf="state > 1" type="button" class="btn btn-danger" (click)="back()">
+                    BACK
+                </button>
+
+                <button type="submit" class="btn btn-primary btn-spinner" >
+                    <span *ngIf="spinner==true" class="spinner spinner-inline">
+                        
+                    </span>
+                    NEXT
+                </button>
+            </div>    
             <!--
             <a href="javascript://" class="signup">Sign up for a Company ID</a>
             -->

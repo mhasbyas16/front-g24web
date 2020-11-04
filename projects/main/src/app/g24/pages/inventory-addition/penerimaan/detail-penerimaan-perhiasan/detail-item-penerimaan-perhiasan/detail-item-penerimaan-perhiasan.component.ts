@@ -296,17 +296,19 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     let product = item.products[productIndex];
 
     let hbaku = this.inisiasi.harga_baku;
-    let berat = product.berat;
-    let kadar = product['product-purity'].name;
-    let ongkos = product.ongkos;
-    let persenPPN = 2.00;
+    // let berat = product.berat;
+    let gram_tukar = product.gram_tukar;
+    // let kadar = product['product-purity'].name;
+    // let ongkos = product.ongkos;
+    // let persenPPN = 2.00;
 
-    let bahan_baku = Number(hbaku) * Number(berat) * (Number(kadar)/1000);
-    let ongkos_desain = Number(hbaku) * (Number(ongkos)/1000) * berat;
-    let ppn_desain = ongkos_desain * (persenPPN/100);
-    ppn_desain = Math.trunc(ppn_desain);
+    // let bahan_baku = Number(hbaku) * Number(berat) * (Number(kadar)/1000);
+    // let ongkos_desain = Number(hbaku) * (Number(ongkos)/1000) * berat;
+    // let ppn_desain = ongkos_desain * (persenPPN/100);
+    // ppn_desain = Math.trunc(ppn_desain);
 
-    let hpp = bahan_baku + ongkos_desain + ppn_desain;
+    // let hpp = bahan_baku + ongkos_desain + ppn_desain;
+    let hpp = Number(hbaku) * Math.round((Number(gram_tukar) * 100)) / 100;
 
     product.hpp = hpp;
     product.hpp_inisiasi = hpp;

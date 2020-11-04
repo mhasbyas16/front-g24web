@@ -36,6 +36,20 @@ export class SignInPageComponent implements OnInit {
 
   }
 
+  back() {
+    if(this.state == 1)
+    {
+      this.authService.backCompany();
+      return;
+    }
+
+    if(this.state == 2)
+    {
+      this.authService.backCompany();
+      return;
+    }
+  }
+
   submit(data) {
 
     // company
