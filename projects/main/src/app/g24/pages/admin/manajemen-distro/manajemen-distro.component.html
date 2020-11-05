@@ -55,6 +55,7 @@
         <div class="clr-col-sm-12 clr-col-md-12 clr-col-lg-12"></div>
         <clr-datagrid [clrDgLoading]="loadingDg">
           <clr-dg-placeholder>{{placeholderDatagrid}}</clr-dg-placeholder>
+          <clr-dg-column class="width-14">Jenis Unit</clr-dg-column>
           <clr-dg-column class="width-14">Kode Unit</clr-dg-column>
           <clr-dg-column class="width-14">Unit</clr-dg-column>
 
@@ -65,6 +66,7 @@
               <button class="action-item" (click)="mainDelete(data)">Hapus</button>
             </clr-dg-action-overflow>
             <clr-dg-cell hidden>{{data._id}}</clr-dg-cell>
+            <clr-dg-cell class="width-10">{{data.jenis_unit | titlecase}}</clr-dg-cell>
             <clr-dg-cell class="width-10">{{data.code}}</clr-dg-cell>
             <clr-dg-cell class="width-10">{{data.nama}}</clr-dg-cell>
           </clr-dg-row>
@@ -128,7 +130,17 @@
                   </clr-textarea-container>
                 </div>
               </div>
-              <div class="clr-col-6" *ngIf="jnsUnit == 'distro';">
+              <div class="clr-col-6 animate-show-hide" *ngIf="jnsUnit == 'distro';" [@slideInOut]>
+                <clr-select-container class="clr-form-control">
+                  <label class="clr-control-label">Province</label>
+                  <select [(ngModel)]="inputModel.province" clrSelect name="province">
+                    <ng-container *ngFor="let item of provinceList">
+                      <option value="{{item.code}}">{{item.name}}</option>
+                    </ng-container>
+                  </select>
+                </clr-select-container>
+              </div>
+              <div class="clr-col-6 animate-show-hide" *ngIf="jnsUnit == 'distro';" [@slideInOut]>
                 <clr-select-container class="clr-form-control">
                   <label class="clr-control-label">Regional</label>
                   <select [(ngModel)]="inputModel.regional" clrSelect name="regional">
@@ -205,6 +217,16 @@
                   </clr-textarea-container>
                 </div>
               </div>
+              <div class="clr-col-6 animate-show-hide" *ngIf="jnsUnit == 'distro';" [@slideInOut]>
+                <clr-select-container class="clr-form-control">
+                  <label class="clr-control-label">Province</label>
+                  <select [(ngModel)]="inputModel.province" clrSelect name="province">
+                    <ng-container *ngFor="let item of provinceList">
+                      <option value="{{item.code}}">{{item.name}}</option>
+                    </ng-container>
+                  </select>
+                </clr-select-container>
+              </div>
               <div class="clr-col-6" *ngIf="jnsUnit == 'distro';">
                 <clr-select-container class="clr-form-control">
                   <label class="clr-control-label">Regional</label>
@@ -274,6 +296,12 @@
               </div>
               <div class="clr-col-9" *ngIf="this.inputModel.regional != undefined;">
                 <label>{{this.inputModel.regional}}</label>
+              </div>
+              <div class="clr-col-3" *ngIf="this.inputModel.prov != undefined;">
+                <label for="basic" class="clr-control-label">Province</label>
+              </div>
+              <div class="clr-col-9" *ngIf="this.inputModel.prov != undefined;">
+                <label>{{this.inputModel.prov}}</label>
               </div>
             </div>
           </div>

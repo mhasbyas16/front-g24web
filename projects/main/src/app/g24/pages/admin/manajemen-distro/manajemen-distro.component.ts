@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { trigger, transition, animate, style } from '@angular/animations'
 // Sidebar
 import { EMenuID } from '../../../lib/enums/emenu-id.enum';
 import { DContent } from '../../../decorators/content/pages';
@@ -10,13 +11,25 @@ import { ServerDateTimeService } from "../../../services/system/server-date-time
 import { DatePipe } from '@angular/common';
 //database
 import { UnitService } from "../../../services/system/unit.service";
-import { UserService } from "../../../services/security/user.service";
+import { ProvinceService } from "../../../services/client/province.service";
 
 @Component({
   selector: 'app-manajemen-distro',
   templateUrl: './manajemen-distro.component.html',
   styleUrls: ['./manajemen-distro.component.scss'],
   providers: [DatePipe],
+
+  animations: [
+    trigger('slideInOut', [
+      transition(':enter', [
+        style({transform: 'translateY(-100%)'}),
+        animate('500ms ease-in', style({transform: 'translateY(0%)'}))
+      ]),
+      transition(':leave', [
+        animate('500ms ease-in', style({transform: 'translateY(-100%)'}))
+      ])
+    ])
+  ]
 })
 
 @DContent(ManajemenDistroComponent.key)
@@ -54,6 +67,7 @@ export class ManajemenDistroComponent implements OnInit {
   kodeLog = null;
   managerList = null;
   jnsUnit = null;
+  provinceList = null;
 
   constructor(
     private toastrService: ToastrService,
@@ -63,7 +77,7 @@ export class ManajemenDistroComponent implements OnInit {
     private datePipe: DatePipe,
     //database
     private unitServices: UnitService,
-    private userServices: UserService,
+    private provinceServices: ProvinceService,
   ) { }
 
   defaultInput(): any {
@@ -74,6 +88,8 @@ export class ManajemenDistroComponent implements OnInit {
 
   ngOnInit(): void {
     this.getDateTime();
+    this.loadRegional();
+    this.loadProvince();
     this.inputModel = this.defaultInput;
     this.nikUser = this.sessionService.getUser();
     this.nikUser = { "_hash": btoa(JSON.stringify(this.nikUser)), "nik": this.nikUser["username"] };
@@ -116,14 +132,13 @@ export class ManajemenDistroComponent implements OnInit {
     })
   }
 
-  loadManager() {
-    this.userServices.list("?_sortby=name:1").subscribe(out => {
-      this.managerList = out
+  loadProvince() {
+    this.provinceServices.list("?_sortby=name:1").subscribe(out => {
+      this.provinceList = out
     })
   }
 
   onChangeJenis(data) {
-    console.log(data);
     this.jnsUnit = data;
   }
 
@@ -204,6 +219,7 @@ export class ManajemenDistroComponent implements OnInit {
       "nama": this.inputModel.nama,
       "alamat": this.inputModel.alamat,
       "parent_code": this.inputModel.regional,
+      "province": this.inputModel.province,
       "create_by": this.nikUser["_hash"],
       "create_by_encoded": "base64",
       "create_date": this.date_now,
@@ -254,10 +270,13 @@ export class ManajemenDistroComponent implements OnInit {
 
   mainEdit(data) {
     this.inputModel = data;
+    this.jnsUnit = data.jenis_unit;
     if (data.parent_code == null) {
       this.inputModel.regional = null;
+      this.inputModel.province = null;
     } else {
       this.inputModel.regional = data.parent_code;
+      this.inputModel.province = data.province;
     }
     this.kodeLog = data.code;
 
@@ -282,6 +301,7 @@ export class ManajemenDistroComponent implements OnInit {
       "nama": this.inputModel.nama,
       "alamat": this.inputModel.alamat,
       "parent_code": this.inputModel.regional,
+      "province": this.inputModel.province,
       "update_by": this.nikUser["_hash"],
       "update_by_encoded": "base64",
       "update_date": this.date_now,
@@ -341,6 +361,11 @@ export class ManajemenDistroComponent implements OnInit {
       for(let i of this.regionalList){
         if (data.parent_code == i.code) {
           this.inputModel.regional = i.nama;
+        }
+      }
+      for (let i of this.provinceList){
+        if (data.province == i.code) {
+          this.inputModel.prov = i.name;
         }
       }
     }
