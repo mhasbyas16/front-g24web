@@ -448,10 +448,20 @@ export class CheckoutComponent implements OnInit {
     data.product_encoded = "base64";
     data.currency_encoded = "base64";
     let nomT = data["nominalTransaksi"]
-    data["nominalTransaksi"] = nomT.replace(/,/g, '')
+    data["nominalTransaksi"] = nomT.replace(/,/g, '');
     delete data["cif"];
     delete data["namaPemasar"];
     delete data["nik"];
+    // new
+    //per product
+    // data["hjual"] = nomT.replace(/,/g, '');
+    // data["hjual_diskon"] = '';
+    // data["hjual_aftdiskon"] = '';
+    // data["egc_kategori"] = '';
+    // data["egc_exp"] = '';
+    // data["egc_status"] = '';
+    // data["egc_nik"] = '';
+    // data["emas_nik"] = '';
     
    
 

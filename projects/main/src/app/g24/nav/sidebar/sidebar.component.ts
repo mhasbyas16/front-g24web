@@ -35,6 +35,7 @@ export class SidebarComponent implements OnInit {
   SS = staffStock;
   SP = staffPurchasing;
   KS = kadepStock;
+  IT = management;
 
   constructor(private cdRef : ChangeDetectorRef, private router : Router,private sessionService: SessionService)
   {
@@ -83,6 +84,10 @@ export class SidebarComponent implements OnInit {
         break;
       case "kadepStock":
         this.output = this.output.concat(this.KS);
+        break;
+
+      case "ITs":
+        this.output = this.output.concat(this.listManagement);
         break;
 
       default:

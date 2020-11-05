@@ -250,6 +250,7 @@ export class DetailInisiasiApprovalSouvenirComponent extends BasePersistentField
 
   async ngOnInit(): Promise<void> {
     this.lookup.loadByCode("order-status");
+    await this.lookup.loadByCode("order-status");
     this.input = this.defaultInput();
     this.user = this.session.getUser();
     window['slc'] = this.selected

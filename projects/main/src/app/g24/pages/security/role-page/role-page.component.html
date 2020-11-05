@@ -79,6 +79,16 @@
 
                 </clr-input-container>
                 
+                <clr-input-container>
+                    <label>Display Name</label>
+                    <input clrInput type="text" formControlName="display_name" />
+                    <clr-control-helper>Please input Display name</clr-control-helper>
+                    <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                    <clr-control-error *clrIfError="'maxlength'; error as err">Must be at maximum {{ err.requiredLength }} characters</clr-control-error>
+                    <clr-control-error *clrIfError="'pattern'; error as err">Text Required</clr-control-error>
+
+                </clr-input-container>
+                
             </div>
             <!-- hidden field put here-->
             <input type="hidden" formaControlName="name_validation">
@@ -109,6 +119,16 @@
                 <clr-input-container>
                     <input clrInput type="text" formControlName="name" />
                     <clr-control-helper>Edit name role</clr-control-helper>
+                    <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
+                    <clr-control-error *clrIfError="'maxlength'; error as err">Must be at maximum {{ err.requiredLength }} characters</clr-control-error>
+                    <clr-control-error *clrIfError="'pattern'; error as err">Text Required</clr-control-error>
+
+                </clr-input-container>
+                
+                <clr-input-container>
+                    <label>Display Name</label>
+                    <input clrInput type="text" formControlName="display_name" />
+                    <clr-control-helper>Please input Display name</clr-control-helper>
                     <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                     <clr-control-error *clrIfError="'maxlength'; error as err">Must be at maximum {{ err.requiredLength }} characters</clr-control-error>
                     <clr-control-error *clrIfError="'pattern'; error as err">Text Required</clr-control-error>

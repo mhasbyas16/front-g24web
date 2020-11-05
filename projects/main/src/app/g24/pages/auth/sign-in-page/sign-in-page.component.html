@@ -36,6 +36,10 @@
                     
                 </span>
                 NEXT</button>
+
+            <button *ngIf="state > 1" type="button" class="btn btn-primary" (click)="back()">
+                BACK
+            </button>
             <!--
             <a href="javascript://" class="signup">Sign up for a Company ID</a>
             -->

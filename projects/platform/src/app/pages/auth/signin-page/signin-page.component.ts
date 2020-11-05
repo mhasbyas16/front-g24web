@@ -48,6 +48,32 @@ export class SigninPageComponent implements OnInit {
     });  
   }
 
+  back() {
+    if(this.state == 1)
+    {
+      this.error = null
+      this.authService.backCompany();
+      this.state--;
+      return;
+    }
+
+    if(this.state == 2)
+    {
+      this.error = null
+      // this.authService.backCompany();
+      this.state--;
+      return;
+    }
+
+    if(this.state == 3)
+    {
+      this.error = null
+      // this.authService.backCompany();
+      this.state--;
+      return;
+    }
+  }
+
   submit(data) {
 
     // company

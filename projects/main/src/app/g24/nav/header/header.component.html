@@ -6,21 +6,33 @@
             <img src="assets/images/Galeri24.png" height="70%" style="margin-right: 1rem;">
         </a>
     </div>
+    <div class="header-nav">
+        <div class="nav-link">
+            <span class="nav-text">
+                Role: {{role}}
+            </span>
+        </div>
+    </div>
     
     <!-- User -->
-    <div class="header-actions">   
+    <div class="header-actions">
+        
+        <div class="nav-link cursor-hand header-button" (click)="showBranchMappingScreen()">
+            <span class="nav-text">
+                {{getKodeUnit()}} - {{getNamaUnit()}}
+            </span>
+        </div>
 
         <clr-dropdown>
             <button class="nav-text dropdown-toggle" clrDropdownTrigger aria-label="open user profile">
-                Account
+                {{user}} - {{user_nama}}
                 <clr-icon shape="caret down"></clr-icon>
             </button>
             <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
                 <a href="#" clrDropdownItem>Change Password</a>
-                <a href="/auth/signout" clrDropdownItem>Log out</a>
+                <a href="/auth/signout" clrDropdownItem (click)="logout()">Log out</a>
             </clr-dropdown-menu>
         </clr-dropdown>
-
     </div>
 
 </header>
