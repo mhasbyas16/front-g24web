@@ -87,7 +87,7 @@ export class SidebarComponent implements OnInit {
         break;
 
       case "ITs":
-        this.output = this.output.concat(this.KS);
+        this.output = this.output.concat(this.listManagement);
         break;
 
       default:

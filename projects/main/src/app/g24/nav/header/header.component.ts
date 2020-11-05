@@ -28,8 +28,8 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.user = this.session.getUser().username;
-    this.user_nama = this.session.getUser().name;
+    this.user = this.session.getUser()?.username;
+    this.user_nama = this.session.getUser()?.name;
     this.role = this.session.getRole()?.display_name;
   }
 
@@ -45,11 +45,21 @@ export class HeaderComponent implements OnInit {
 
   getKodeUnit() : string
   {
+    if(!this.session.getUnit())
+    {
+      return "";
+    }
+
     return this.session.getUnit().code;
   }
 
   getNamaUnit() : string
   {
+    if(!this.session.getUnit())
+    {
+      return "";
+    }
+
     return this.session.getUnit().nama;
   }
 
