@@ -415,7 +415,7 @@ console.debug(this.hbeli);
   setBeratEmasPrecision()
   {
     let berat_emas = Number(this.input.berat_emas);
-    berat_emas = Math.trunc(Math.round(berat_emas * 100) / 100);
+    berat_emas = Math.round(berat_emas * 100) / 100;
     this.input.berat_emas = berat_emas;
   }
 
@@ -433,7 +433,8 @@ console.debug(this.hbeli);
     let hpp_emas = kadar * berat_emas * hbuy / 1000;
     hpp_emas = Math.round(hpp_emas);
 // console.debug(hpp_emas, kadar,berat_emas,hbuy);
-    this.input.gram_tukar = gram_tukar;
+    this.input['gram_tukar'] = Math.round(gram_tukar * 100) / 100;
+    console.log(this.input['gram_tukar'])
     this.input.hpp_emas = hpp_emas;
     return this.input.hpp_emas;
   }

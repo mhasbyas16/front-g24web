@@ -639,6 +639,8 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
       'hpp_batu' : this.inisiasi.hpp_batu,
       'hpp_batu_encoded' : "double",
 
+      'gram_tukar' : this.inisiasi.gram_tukar,
+      'gram_tukar_encoded' : "double",
       'ongkos_pembuatan' : this.inisiasi.ongkos,
       'ongkos_pembuatan_encoded' : "double",
       'total_berat' : this.inisiasi.berat,
@@ -646,7 +648,7 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
     }
     
     DataTypeUtil.Encode(product);
-    let result = await this.productService.add(product).subscribe(result => {
+    let subscriptionProduct = this.productService.add(product).subscribe(result => {
       if(result == false)
       {
         this.toastr.error("Gagal Menambah Stock. Harap proses ulang, jika error masih terjadi harap hubungi IT Helpdesk/Support.");
@@ -660,7 +662,7 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
       throw error;
     });
 
-    this.inisiasi.product = result;
+    // this.inisiasi.product = result;
 
     console.log(this.inisiasi);
     let tempInisiasi : any = {};
@@ -672,7 +674,7 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
     tempInisiasi.terima_by = this.user;
     tempInisiasi.no_po = this.inisiasi.no_po;
     tempInisiasi._id = this.inisiasi._id;
-    tempInisiasi.product = this.inisiasi.product;
+    // tempInisiasi.product = this.inisiasi.product;
     tempInisiasi._log = true;
     // Object.assign(tempInisiasi, this.inisiasi);
     DataTypeUtil.Encode(tempInisiasi);
