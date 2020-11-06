@@ -707,6 +707,7 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
     this.inisiasi.update_by = this.user.username;
     this.inisiasi['tgl_terima'] = this.inisiasi.update_date;
     this.inisiasi.terima_by = this.user.username;
+    this.inisiasi._log = true
 
     let tempInisiasi = {}
     Object.assign(tempInisiasi, this.inisiasi);

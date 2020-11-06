@@ -107,6 +107,10 @@ export enum EMenuID {
     TOKO_PENYEDIA       = '9909',
     VENDOR              = '9910',
 
+    
+    // AUDIT
+    AUDIT_LOG           = '111001',
+
     //INQUERY PRODUCT
     INQUERY_PRODUCT = '99101',
     DETAIL_INQUERY_PERHIASAN = '99102',

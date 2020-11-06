@@ -64,7 +64,10 @@ export const management = [
   { _id: "0012", type: "sub-menu", name: "Approval Konversi", icons: "yang bagus", color: "warna-warni", componentId: "3002", parentId: "KV101", module: "kv", menu: { _id: "0012" } },
   // LAPORAN KEUANGAN
   //   {_id: "0004", type: "menu", name : "Laporan", icons: "list", color : "warna-warni", componentId : "S21000", parentId: "", module: "kl"},
-
+  
+  // AUDIT
+  { _id: "0012", type: "menu", name: "Audit", icons: "yang bagus", color: "warna-warni", componentId: "A111001", parentId: "KV101", module: "audit", menu: { _id: "0012" } },
+  { _id: "0012", type: "sub-menu", name: "Audit Logs", icons: "yang bagus", color: "warna-warni", componentId: "111001", parentId: "A111001", module: "audit", menu: { _id: "0012" } },
 ];
 
 export const kasir = [

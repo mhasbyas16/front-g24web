@@ -1,0 +1,175 @@
+<div class="clr-row">
+    <div class="card" style="margin-top: 0em;">
+    <div class="card-header">
+        <b>Logs</b>
+    </div>
+        <div class="card-block">
+            <form [formGroup]="searchFG" clrLayout="compact" #penerimaan id="log" clrForm>
+                <div class="clr-row">
+                    <div class="clr-col-4">
+                        <clr-input-container>
+                            <label class="clr-control-label">ID Log</label>
+                            <input required clrInput #_id formControlName="_id" placeholder="1234567890abcdef" />
+                        </clr-input-container>
+                    </div>
+                </div>
+
+                <div class="clr-row">
+                    <div class="clr-col-12">
+                        &nbsp;
+                    </div>
+                </div>
+
+                <div class="clr-row">
+                    <div class="clr-col-12">
+                        <label class="clr-control-label">Tanggal Eksekusi</label>
+                    </div>
+                </div>
+
+                <div class="clr-row">
+                    <div class="clr-col-2">
+                        <clr-date-container>
+                            <input clrDate type="text" formControlName="create_date_start" required />
+                            <clr-control-error class="required" *clrIfError="'required'">This is a required field</clr-control-error>
+                            <!-- <clr-control-helper class="required">*</clr-control-helper> -->
+                            <clr-control-helper class="clr-subtext">Tanggal Awal</clr-control-helper>
+                            <clr-control-helper class="required"></clr-control-helper>
+                        </clr-date-container>
+                    </div>
+                    <div class="clr-col-2">
+                    </div>
+                    <div class="clr-col-2">
+                        <clr-date-container>
+                            <input clrDate type="text" formControlName="create_date_end" />
+                            <clr-control-helper class="clr-subtext">Tanggal Akhir</clr-control-helper>
+                        </clr-date-container>
+                    </div>
+                </div>
+
+                <div class="clr-row">
+                    <div class="clr-col-12">
+                        &nbsp;
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-4">
+                        <clr-input-container>
+                            <label class="clr-control-label">ID Log</label>
+                            <input required clrInput #_id formControlName="_id" placeholder="1234567890abcdef" />
+                        </clr-input-container>
+                    </div>
+                </div>
+
+                <div class="clr-row">
+                    <div class="clr-col-4">
+                        <clr-input-container>
+                            <label class="clr-control-label">User Name</label>
+                            <input clrInput formControlName="user" name="user"/>
+                        </clr-input-container>
+                    </div>
+                </div>
+
+                <div class="clr-row">
+                    <div class="clr-col-12">
+                        &nbsp;
+                    </div>
+                </div>
+
+                <div class="clr-row">
+                    <div class="clr-col-4">
+                        <clr-input-container>
+                            <label class="clr-control-label">Query</label>
+                            <input clrInput formControlName="query" name="query"/>
+                        </clr-input-container>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="card-footer">
+            <!-- <button class="btn btn-primary align-right">
+                Simpan
+            </button> -->
+            <button (click)="doSearch(searchFG)" type="button" class="btn btn-secondary align-right">
+                Cari
+            </button>
+            <button type="reset" form="inisiasi" class="btn btn-secondary" (click)="ResetAll(searchFG)">
+                Reset
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="clr-row">
+    <div class="card" style="margin-top: 0em;">
+        <div class="card-header">
+                List Log
+        </div>
+        <clr-datagrid [clrDgLoading]="loading" [(clrDgSingleSelected)]="selected">
+            <clr-dg-action-bar>
+                <div class="btn-group">
+                    <!-- <button type="button" class="btn btn-sm btn-secondary" (click)="onApprove()" *ngIf="Selected?.order_status == OrderStatus.SUBMIT.code && Selected?.order_status != null"><clr-icon shape="pencil"></clr-icon>Approve</button> -->
+                    <button type="button" class="btn btn-sm btn-secondary" (click)="onLihat()" *ngIf="Selected?._id != ''"><clr-icon shape="view-list"></clr-icon>Lihat</button>
+                    <!-- <button type="button" class="btn btn-sm btn-secondary" (click)="Debug()"><clr-icon shape="bug"></clr-icon>Debug</button> -->
+                </div>
+                <!-- <div class="btn-group">
+                    <clr-dropdown>
+                        <button type="button" class="btn btn-sm btn-secondary" clrDropdownTrigger>
+                            Export
+                            <clr-icon shape="caret down"></clr-icon>
+                        </button>
+                        <clr-dropdown-menu clrPos\ition="bottom-left" *clrIfOpen>
+                            <button type="button" (click)="onExportAll()" clrDropdownItem>Export All</button>
+                            <button type="button" (click)="onExportSelected()" [disabled]="selected.length === 0" clrDropdownItem>Export Selected Items</button>
+                        </clr-dropdown-menu>
+                    </clr-dropdown>
+                </div> -->
+            </clr-dg-action-bar>
+            
+            <!-- 10 Kolom -->
+            <clr-dg-column [clrDgField]="'no_po'">
+                ID
+            </clr-dg-column>
+            <clr-dg-column>
+                Tanggal Eksekusi
+            </clr-dg-column>
+            <clr-dg-column [clrDgField]="'operation'">
+                Operation
+            </clr-dg-column>
+            <clr-dg-column>
+                URL
+            </clr-dg-column>
+
+            <clr-dg-row *clrDgItems="let data of datas; let i = index;" [clrDgItem]="data">
+                <clr-dg-cell>{{data?._id}} </clr-dg-cell>
+                <!-- <clr-dg-cell>{{GetDisplayValue(data['product-category'])}}</clr-dg-cell> -->
+                <clr-dg-cell>{{data?.date}}</clr-dg-cell>
+                <clr-dg-cell>{{data?.operation}}</clr-dg-cell>
+                <clr-dg-cell>{{data?.url}}</clr-dg-cell>
+            </clr-dg-row>
+
+            <clr-dg-footer>
+                <div>
+                    <clr-dg-pagination #pagination [clrDgPageSize]="10">
+                        <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Items per page</clr-dg-page-size>
+                        {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                        of {{pagination.totalItems}} items
+                    </clr-dg-pagination>
+                </div>
+                  {{ datas ? datas?.length : 0}} items.
+            </clr-dg-footer>
+        </clr-datagrid>
+    </div>
+</div>
+
+<detail-audit-log #detail_screen>
+
+</detail-audit-log>
+
+<clr-modal #modalMsg [(clrModalOpen)]="modalOpen" [clrModalStaticBackdrop]="false">
+    <h3 class="modal-title">{{errorTitle}}</h3>
+    <div class="modal-body">
+        <p *ngIf="errorType == ErrorType.ERROR" style="color: red">{{errorMessage}}</p>
+        <p *ngIf="errorType == ErrorType.WARN" style="color: yellow">{{errorMessage}}</p>
+        <p *ngIf="errorType == ErrorType.NORMAL">{{errorMessage}}</p>
+    </div>
+    </clr-modal>

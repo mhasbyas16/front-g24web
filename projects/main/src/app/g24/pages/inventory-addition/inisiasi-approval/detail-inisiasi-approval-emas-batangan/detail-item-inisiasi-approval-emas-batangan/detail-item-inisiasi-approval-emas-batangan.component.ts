@@ -617,6 +617,7 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
     this.inisiasi.update_by = this.user.username;
     this.inisiasi['tgl_approved'] = this.inisiasi.update_date;
     this.inisiasi.approved_by = this.user.username;
+    this.inisiasi._log = true
     let items = this.inisiasi.items;
     console.log(items);
 
