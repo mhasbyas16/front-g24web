@@ -569,6 +569,7 @@ export class DetailItemInisiasiApprovalGiftComponent implements OnInit {
     this.inisiasi.update_by = this.user;
     this.inisiasi['tgl_approved'] = this.date;
     this.inisiasi.approved_by = this.user;
+    this.inisiasi._log = true
 
     let tempInisiasi = {}
     Object.assign(tempInisiasi, this.inisiasi);
@@ -628,6 +629,7 @@ export class DetailItemInisiasiApprovalGiftComponent implements OnInit {
     this.inisiasi.update_by = this.user;
     this.inisiasi['tgl_approved'] = this.date;
     this.inisiasi.approved_by = this.user;
+    this.inisiasi._log = true
 
     let tempInisiasi = {}
     Object.assign(tempInisiasi, this.inisiasi);

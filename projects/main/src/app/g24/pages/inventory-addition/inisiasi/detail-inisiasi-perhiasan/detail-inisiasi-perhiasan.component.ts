@@ -743,7 +743,7 @@ export class DetailInisiasiPerhiasanComponent extends BasePersistentFields imple
       __version : new Date().getMilliseconds(),
       __version_d : "0",
       items : this.input['items'],
-      _log : 1
+      _log : true
       // vendor : null,
       // 'product-category' : null,
     };

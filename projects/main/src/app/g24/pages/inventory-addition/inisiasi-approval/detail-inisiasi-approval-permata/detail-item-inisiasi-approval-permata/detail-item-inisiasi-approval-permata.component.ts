@@ -587,6 +587,7 @@ export class DetailItemInisiasiApprovalPermataComponent implements OnInit {
     this.inisiasi.update_by = this.user;
     this.inisiasi['tgl_approved'] = this.date;
     this.inisiasi.approved_by = this.user;
+    this.inisiasi._log = true
 
     console.log(this.inisiasi);
     let tempInisiasi = {}
@@ -645,6 +646,7 @@ export class DetailItemInisiasiApprovalPermataComponent implements OnInit {
     this.inisiasi.update_by = this.user;
     this.inisiasi['tgl_approved'] = this.date;
     this.inisiasi.approved_by = this.user;
+    this.inisiasi._log = true
 
     console.log(this.inisiasi);
     let tempInisiasi = {}

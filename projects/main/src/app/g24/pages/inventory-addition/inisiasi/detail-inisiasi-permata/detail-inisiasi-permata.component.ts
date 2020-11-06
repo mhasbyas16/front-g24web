@@ -793,7 +793,7 @@ console.debug(hpp_emas, kadar,berat_emas,hbuy)
       order_status : OrderStatus.SUBMIT.code,
       __version : new Date().getMilliseconds(),
       __version_d : "0",
-      _log : 1
+      _log : true
     }
 
     Object.assign(this.input, def);

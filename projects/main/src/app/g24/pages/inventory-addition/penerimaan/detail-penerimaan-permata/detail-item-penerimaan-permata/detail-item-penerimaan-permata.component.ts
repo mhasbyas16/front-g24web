@@ -657,7 +657,7 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
     tempInisiasi.no_po = this.inisiasi.no_po;
     tempInisiasi._id = this.inisiasi._id;
     tempInisiasi.product = this.inisiasi.product;
-    tempInisiasi._log = "1";
+    tempInisiasi._log = true;
     // Object.assign(tempInisiasi, this.inisiasi);
     DataTypeUtil.Encode(tempInisiasi);
 
