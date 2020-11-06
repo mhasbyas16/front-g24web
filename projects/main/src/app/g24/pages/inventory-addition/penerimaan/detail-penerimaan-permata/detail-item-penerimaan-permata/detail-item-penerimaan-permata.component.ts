@@ -642,7 +642,7 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
       'total_berat' : this.inisiasi.berat,
       'total_berat_encoded' : "double",
     }
-return;
+    
     DataTypeUtil.Encode(product);
     let result = await this.productService.add(product).subscribe(result => {
       if(result == false)
