@@ -403,12 +403,20 @@ console.debug(this.hbeli);
 
   onBeratEmasChanged()
   {
+    this.setBeratEmasPrecision();
     this.hitungHPPEmas();
   }
 
   onKadarEmasChanged()
   {
     this.hitungHPPEmas();
+  }
+
+  setBeratEmasPrecision()
+  {
+    let berat_emas = Number(this.input.berat_emas);
+    berat_emas = Math.trunc(Math.round(berat_emas * 100) / 100);
+    this.input.berat_emas = berat_emas;
   }
 
   hitungHPPEmas()
@@ -421,9 +429,11 @@ console.debug(this.hbeli);
     let berat_emas = Number(this.input.berat_emas);
     let hbuy = Number(this.hbeli.harga_buyback);
 
+    let gram_tukar = kadar * berat_emas / 1000;
     let hpp_emas = kadar * berat_emas * hbuy / 1000;
     hpp_emas = Math.round(hpp_emas);
-console.debug(hpp_emas, kadar,berat_emas,hbuy)
+// console.debug(hpp_emas, kadar,berat_emas,hbuy);
+    this.input.gram_tukar = gram_tukar;
     this.input.hpp_emas = hpp_emas;
     return this.input.hpp_emas;
   }
@@ -494,7 +504,7 @@ console.debug(hpp_emas, kadar,berat_emas,hbuy)
 
 
     // BATU
-    let batu_empty : boolean = false;
+    let batu_empty : boolean = true;
     if( // jika param batu ada yang keisi, semua param batu kena validasi
       (input['jenis_batu'] != "" ) ||
       input['warna_batu'] != "" ||
@@ -522,7 +532,7 @@ console.debug(hpp_emas, kadar,berat_emas,hbuy)
     // BATU
 
     // BERLIAN
-    let berlian_empty : boolean = false; // salah satu harus true
+    let berlian_empty : boolean = true; // salah satu harus true
     if( // jika param batu ada yang keisi, semua param batu kena validasi
       input['warna_berlian'] != "" ||
       input['clarity_berlian'] != "" ||
@@ -551,7 +561,7 @@ console.debug(hpp_emas, kadar,berat_emas,hbuy)
     }
     // BERLIAN
 
-    if(berlian_empty && batu_empty)
+    if(!berlian_empty && !batu_empty)
     {
       this.toastr.warning("Kedua Atribut Berlian dan Batu kosong.");
       return true;

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { InisiasiService } from 'projects/main/src/app/g24/services/stock/inisiasi.service';
 import { ProductPurityService } from 'projects/main/src/app/g24/services/product/product-purity.service';
 import { ProductJenisService } from 'projects/main/src/app/g24/services/product/product-jenis.service';
@@ -15,6 +15,7 @@ import { JurnalInisiasiService } from 'projects/main/src/app/g24/services/keuang
 import { ServerDateTimeService } from 'projects/main/src/app/g24/services/system/server-date-time.service';
 import { PaymentType } from 'projects/main/src/app/g24/lib/enums/payment-type';
 import { ParameterLookupSearchDTO, ParameterLookupService } from 'projects/main/src/app/g24/services/system/parameter-lookup.service';
+import { LoadingSpinnerComponent } from 'projects/main/src/app/g24/nav/modal/loading-spinner/loading-spinner.component';
 
 /**
  * Penerimaan permata baru isi ke stock/product
@@ -39,6 +40,8 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
   ) { }
 
   parentListener : IDetailCallbackListener;
+  
+  @ViewChild('spinner', {static: false}) spinner : LoadingSpinnerComponent;
   
   user : any = this.session.getUser();
   unit : any = this.session.getUnit();
@@ -564,9 +567,11 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
 
   async doSave()
   {
+    this.spinner.Open();
     if(this.mode == EPriviledge.READ)
     {
       this.toastr.info("Mode 'READ' only.");
+      this.spinner.Close();
       return;
     }
 
@@ -577,6 +582,7 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
 
     if(!this.validateInisiasi())
     {
+      this.spinner.Close();
       return;
     }
 
@@ -586,6 +592,7 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
     this.inisiasi.update_by = this.user;
     this.inisiasi['tgl_terima'] = this.inisiasi.update_date;
     this.inisiasi.terima_by = this.user;
+    this.inisiasi._log = true;
 
     let product = {
       tipe_stock : TipeStock.STOCK.code,
@@ -606,6 +613,8 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
       'product-purity' : this.inisiasi['product-purity'],
       'product-jenis' : this.inisiasi['product-jenis'],
       'product-gold-color' : this.inisiasi['product-gold-color'],
+      'berat' : this.inisiasi['berat_emas'],
+      'berat_encoded' : "double",
       'hpp_inisiasi' : this.inisiasi.hpp_emas,
       'hpp_inisiasi_encoded' : "double",
       'hpp' : this.inisiasi.hpp_emas,
@@ -629,20 +638,25 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
       'hpp_batu_inisiasi_encoded' : "double",
       'hpp_batu' : this.inisiasi.hpp_batu,
       'hpp_batu_encoded' : "double",
+
+      'total_berat' : this.inisiasi.berat,
+      'total_berat_encoded' : "double",
     }
+return;
     DataTypeUtil.Encode(product);
-    let result = await this.productService.add(product).toPromise();
-    if(result == false)
-    {
-      this.toastr.error("Gagal Menambah Stock. Harap proses ulang, jika error masih terjadi harap hubungi IT Helpdesk/Support.");
-      return;
-    } 
-    // else {
-    //   let product = itemProduct.get(fail.itemIndex + "," + fail.productIndex);
-    //   Object.assign(product, result);
-    //   itemProduct.set(fail.itemIndex + "," + fail.productIndex, result);
-    //   console.log(result);
-    // }
+    let result = await this.productService.add(product).subscribe(result => {
+      if(result == false)
+      {
+        this.toastr.error("Gagal Menambah Stock. Harap proses ulang, jika error masih terjadi harap hubungi IT Helpdesk/Support.");
+        return;
+      }
+    }, error => {
+      this.toastr.error(error.message, "Stock Error!", {disableTimeOut : true, tapToDismiss: true});
+      this.doReset();
+      this.Close();
+      this.spinner.Close();
+      throw error;
+    });
 
     this.inisiasi.product = result;
 
@@ -668,6 +682,7 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
       this.toastr.error("Harap hubungi IT Support/Helpdesk. Error: " + msg, "Penerimaan gagal.", {disableTimeOut: true, tapToDismiss : true});
       this.Close();
       this.doReset();
+      this.spinner.Close();
       return;
     } else {
       Object.assign(this.inisiasi, tempInisiasi);
@@ -677,28 +692,8 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
       this.toastr.success("Penerimaan berhasil.");
       this.doReset();
       this.Close();
+      this.spinner.Close();
     }
-
-    // HERE BATCH_ADD
-    // let counter : number = this.inisiasi.total_piece;
-    // let enc = {batch_counter : counter};
-    // for(let i = 0; i < counter; i++)
-    // {
-    //   delete productNoId[i]._id;
-    //   enc[i+1] = productNoId[i];
-    // }
-
-    // DataTypeUtil.Encode(enc);
-    // console.log('enc', enc);
-
-    // let result = await this.productService.batchAdd(enc).toPromise();
-    // console.log(result);
-    
-    // for(let i = 0; i < result.length; i++)
-    // {
-    //   let product = result[i];
-      
-    // }
   }
 
   async doAccounting(idInisiasi :string)
