@@ -639,6 +639,8 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
       'hpp_batu' : this.inisiasi.hpp_batu,
       'hpp_batu_encoded' : "double",
 
+      'ongkos_pembuatan' : this.inisiasi.ongkos,
+      'ongkos_pembuatan_encoded' : "double",
       'total_berat' : this.inisiasi.berat,
       'total_berat_encoded' : "double",
     }
