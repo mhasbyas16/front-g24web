@@ -6,7 +6,7 @@ import { CountCartService } from '../../../../services/count-cart.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 // Database
 import { VendorService } from '../../../../services/vendor.service';
-import { ProductService } from '../../../../services/product/product.service';
+import { ProductListService } from '../../../../services/product/product-list.service';
 import { ProductJenisService } from '../../../../services/product/product-jenis.service';
 import { PrmJualService } from '../../../../services/parameter/prm-jual.service';
 import { PrmMarginService } from '../../../../services/parameter/prm-margin.service';
@@ -58,7 +58,7 @@ export class PerhiasanComponent implements OnInit {
   constructor(
     //app
     private vendorService: VendorService,
-    private productService: ProductService,
+    private productService: ProductListService,
     private productJenisService: ProductJenisService,
 
     //pricing
@@ -140,7 +140,7 @@ export class PerhiasanComponent implements OnInit {
       }
       
       // product
-      this.productService.list(this.params).subscribe((response: any) => {
+      this.productService.list(this.params+'&_transactionType=t01&_ch=ch02').subscribe((response: any) => {
         if (response == false) {
           this.toastrService.error("Data Not Found", "Perhiasan");
           this.loadingDg = false;
@@ -154,34 +154,39 @@ export class PerhiasanComponent implements OnInit {
           return;
         }  
         this.perhiasans = response;
-        // pricing
-        this.prmJualService.get("?"+this.perhiasanCategory+"&"+this.flagApp).subscribe((Jualresponse: any) => {
-          if (Jualresponse != false) {
-            this.hargaBaku = Jualresponse.harga_baku;
-          }
-          this.prmPpnService.list().subscribe((PPNresponse: any) => {
-            if (PPNresponse != false) {
-              ppn = PPNresponse['0']['ppn']; 
-            }      
-            this.prmMarginService.get("?"+this.perhiasanCategory+"&"+this.channel+"&"+this.transactionType).subscribe((Marginresponse: any) => {
-              if (Marginresponse != false) {
-                this.margin = Marginresponse;
-              }      
+        this.dataperhiasans = this.perhiasans;
+        
+        console.debug(this.dataperhiasans,"dataperhiasan")
+        this.toastrService.success("Load "+response["length"]+" Data", "Perhiasan");
+        this.loadingDg = false;
+        // // pricing
+        // this.prmJualService.get("?"+this.perhiasanCategory+"&"+this.flagApp).subscribe((Jualresponse: any) => {
+        //   if (Jualresponse != false) {
+        //     this.hargaBaku = Jualresponse.harga_baku;
+        //   }
+        //   this.prmPpnService.list().subscribe((PPNresponse: any) => {
+        //     if (PPNresponse != false) {
+        //       ppn = PPNresponse['0']['ppn']; 
+        //     }      
+        //     this.prmMarginService.get("?"+this.perhiasanCategory+"&"+this.channel+"&"+this.transactionType).subscribe((Marginresponse: any) => {
+        //       if (Marginresponse != false) {
+        //         this.margin = Marginresponse;
+        //       }      
   
-              for (let index = 0, len = this.perhiasans.length; index < len; index++) {
+        //       for (let index = 0, len = this.perhiasans.length; index < len; index++) {
                 
-                this.datalist=this.pricingService.pricePerhiasan(Number(this.perhiasans[index]['berat']),this.hargaBaku,this.perhiasans[index]['baku_tukar'],this.margin['margin'],ppn);
+        //         this.datalist=this.pricingService.pricePerhiasan(Number(this.perhiasans[index]['berat']),this.hargaBaku,this.perhiasans[index]['baku_tukar'],this.margin['margin'],ppn);
                 
-                this.perhiasans[index].hargaJual =  Math.ceil(this.datalist/1000)*1000;
-              }
+        //         this.perhiasans[index].hargaJual =  Math.ceil(this.datalist/1000)*1000;
+        //       }
 
-              this.dataperhiasans = this.perhiasans;
-              console.debug(this.dataperhiasans,"dataperhiasan")
-              this.toastrService.success("Load "+response["length"]+" Data", "Perhiasan");
-              this.loadingDg = false;
-            });          
-          });
-        }); 
+        //       this.dataperhiasans = this.perhiasans;
+        //       console.debug(this.dataperhiasans,"dataperhiasan")
+        //       this.toastrService.success("Load "+response["length"]+" Data", "Perhiasan");
+        //       this.loadingDg = false;
+        //     });          
+        //   });
+        // }); 
       });  
       
      

@@ -20,7 +20,7 @@ export class PricingService {
     hjual_plusmargin = harga_kadar+margin;
     ppn_jual = hjual_plusmargin*ppn_baku/100;
     harga_jual = ppn_jual+hjual_plusmargin; 
-    
+    console.debug(berat, harga_baku, baku_tukar, margin_baku, ppn_baku)
     return harga_jual;
   }
   priceBatuMulia(harga_baku:any,kadar:any,berat:number,margin:any,hppBatu:any,marginBatu:any,hppBerlian:any,marginBerlian:any,ongkos:any){
