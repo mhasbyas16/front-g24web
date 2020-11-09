@@ -247,7 +247,7 @@ export class SouvenirComponent implements OnInit {
 
       // lm = this.Souvenir
      
-      this.productService.list(params).subscribe((response: any) => {
+      this.productService.list(params+'&_transactionType=t01&_ch=ch02').subscribe((response: any) => {
         sv = response
         let udahDiCart = 0;
 
@@ -274,7 +274,7 @@ export class SouvenirComponent implements OnInit {
                 'code': sv[index].code,
                 'vendor' : sv[index].vendor.name,
                 'denom' : sv[index]['product-denom'].name,
-                'harga' : harga,
+                'harga' : sv[index].harga,
                 'detail' : JSON.parse(atob(sv[index]._hash))
             })
             this.refresh(harga, "p")

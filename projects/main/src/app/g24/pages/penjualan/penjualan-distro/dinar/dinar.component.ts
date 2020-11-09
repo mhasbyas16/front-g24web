@@ -195,7 +195,7 @@ export class DinarComponent implements OnInit {
       let codeDinar = this.cartList.map(el => el.code);
       let cekItem : any;
       
-      this.productService.list(params+"&"+this.flagBarang).subscribe((response: any) => {
+      this.productService.list(params+"&"+this.flagBarang+'&_transactionType=t01&_ch=ch02').subscribe((response: any) => {
         dn = response
         let udahDiCart = 0;
         console.debug(dn, 'awal')
@@ -218,7 +218,7 @@ export class DinarComponent implements OnInit {
                 'code': dn[index].code,
                 'vendor' : dn[index].vendor.name,
                 'denom' : dn[index]['product-denom'].name,
-                'harga' : harga,
+                'harga' : dn[index].harga,
                 'flag' : dn[index].flag,
                 'detail' : JSON.parse(atob(dn[index]._hash))
             })

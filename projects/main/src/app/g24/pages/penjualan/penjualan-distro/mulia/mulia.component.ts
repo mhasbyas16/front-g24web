@@ -221,7 +221,7 @@ export class MuliaComponent implements OnInit {
       let codeLM = this.cartList.map(el => el.code);
       let cekItem : any;
       
-      this.productService.list(params).subscribe((response: any) => {
+      this.productService.list(params+'&_transactionType=t01&_ch=ch02').subscribe((response: any) => {
         lm = response
         let udahDiCart = 0;
         console.debug(lm, 'awal')
@@ -247,7 +247,7 @@ export class MuliaComponent implements OnInit {
                 'code': lm[index].code,
                 'vendor' : lm[index].vendor.name,
                 'denom' : lm[index]['product-denom'].name,
-                'harga' : harga,
+                'harga' : lm[index].harga,
                 'flag' : lm[index].flag,
                 'detail' : JSON.parse(atob(lm[index]._hash))
             })
