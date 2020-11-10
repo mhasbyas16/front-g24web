@@ -77,5 +77,6 @@ export class AppRoutingModule
     ModuleLoader.register('ag', () => import('./pages/anggaran/anggaran.module').then(m => m.AnggaranModule))
     ModuleLoader.register('tm', () => import('./pages/transaksi/transaksi.module').then(m => m.TransaksiModule))
     ModuleLoader.register('adm', () => import('./pages/admin/admin.module').then(m => m.AdminModule))
+    ModuleLoader.register('audit', () => import('./pages/audit/audit.module').then(m => m.AuditModule))
   }
 }

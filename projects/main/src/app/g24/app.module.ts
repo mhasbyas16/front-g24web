@@ -1,5 +1,5 @@
 
-import { NgModule, SystemJsNgModuleLoader, Type } from '@angular/core';
+import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { ClarityModule } from '@clr/angular';

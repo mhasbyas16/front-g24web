@@ -2,7 +2,7 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 
 // Database
 import { VendorService } from '../../../../services/vendor.service';
-import { ProductService } from '../../../../services/product/product.service';
+import { ProductListService } from '../../../../services/product/product-list.service';
 import { ProductDenomService } from '../../../../services/product/product-denom.service';
 import { ToastrService } from 'ngx-toastr';
 
@@ -65,7 +65,7 @@ export class DinarComponent implements OnInit {
       //app
     private vendorService: VendorService,
     private denomService: ProductDenomService,
-    private productService: ProductService,
+    private productService: ProductListService,
   
     //parameter
     private prmJualService : PrmJualService,
@@ -133,7 +133,7 @@ export class DinarComponent implements OnInit {
       this.toastrService.error("Pilih Denom Terlebih Dahulu");
       this.loadingDg = false;
     }else{
-      this.productService.list(this.params+"&"+this.flagBarang).subscribe((response: any) => {
+      this.productService.list(this.params+"&"+this.flagBarang+'&_transactionType=t01&_ch=ch02').subscribe((response: any) => {
         this.datadinars = null
         if (response == false) {
           this.toastrService.error("Data Not Found", "Dinar");
@@ -146,30 +146,32 @@ export class DinarComponent implements OnInit {
           return;
         }
         this.dinars = response
+        
         this.productService.count(this.params+"&"+this.flagBarang).subscribe((response: any) => {
           this.qty = response.count;
-          this.prmJualService.get("?"+this.dinarCategory+"&"+this.flagApp+"&"+this.jenisBarang).subscribe((Jualresponse: any) => {
-            let prmJual = Jualresponse.harga
-            for (let index = 0; index < prmJual.length; index++) {
-              if (prmJual[index]["product-denom"].code == denom) {
-                this.hargaBaku = prmJual[index].harga_baku
-              }
-            }
-            this.prmMarginService.get("?"+this.dinarCategory+"&"+this.channel+"&"+this.transactionType+"&"+this.flagApp).subscribe((Marginresponse: any) => {
-              let prmMargin = Marginresponse
-              let hargaDinar = this.pricingService.priceDinar(this.hargaBaku, Number(prmMargin.margin));
-              hargaDinar = Math.ceil(hargaDinar/1000)*1000;
-                cariDinar.push({
-                  "vendor" : this.dinars[0].vendor.name,
-                  "denom" : this.dinars[0]['product-denom'].name,
-                  "qty" : this.qty,
-                  "flag" : this.dinars[0].flag,
-                  "harga" : hargaDinar
-                });
-                this.datadinars = cariDinar
-                this.loadingDg = false;
-            });
+          cariDinar.push({
+            "vendor" : this.dinars[0].vendor.name,
+            "denom" : this.dinars[0]['product-denom'].name,
+            "qty" : this.qty,
+            "flag" : this.dinars[0].flag,
+            "harga" :this.dinars[0].harga
           });
+          this.datadinars = cariDinar
+          this.loadingDg = false;
+          // this.prmJualService.get("?"+this.dinarCategory+"&"+this.flagApp+"&"+this.jenisBarang).subscribe((Jualresponse: any) => {
+          //   let prmJual = Jualresponse.harga
+          //   for (let index = 0; index < prmJual.length; index++) {
+          //     if (prmJual[index]["product-denom"].code == denom) {
+          //       this.hargaBaku = prmJual[index].harga_baku
+          //     }
+          //   }
+          //   this.prmMarginService.get("?"+this.dinarCategory+"&"+this.channel+"&"+this.transactionType+"&"+this.flagApp).subscribe((Marginresponse: any) => {
+          //     let prmMargin = Marginresponse
+          //     let hargaDinar = this.pricingService.priceDinar(this.hargaBaku, Number(prmMargin.margin));
+          //     hargaDinar = Math.ceil(hargaDinar/1000)*1000;
+                
+          //   });
+          // });
         });
       });
     }
@@ -193,7 +195,7 @@ export class DinarComponent implements OnInit {
       let codeDinar = this.cartList.map(el => el.code);
       let cekItem : any;
       
-      this.productService.list(params+"&"+this.flagBarang).subscribe((response: any) => {
+      this.productService.list(params+"&"+this.flagBarang+'&_transactionType=t01&_ch=ch02').subscribe((response: any) => {
         dn = response
         let udahDiCart = 0;
         console.debug(dn, 'awal')
@@ -216,7 +218,7 @@ export class DinarComponent implements OnInit {
                 'code': dn[index].code,
                 'vendor' : dn[index].vendor.name,
                 'denom' : dn[index]['product-denom'].name,
-                'harga' : harga,
+                'harga' : dn[index].harga,
                 'flag' : dn[index].flag,
                 'detail' : JSON.parse(atob(dn[index]._hash))
             })

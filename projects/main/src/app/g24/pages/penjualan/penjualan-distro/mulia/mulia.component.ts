@@ -2,7 +2,7 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 
 // Database
 import { VendorService } from '../../../../services/vendor.service';
-import { ProductService } from '../../../../services/product/product.service';
+import { ProductListService } from '../../../../services/product/product-list.service';
 import { ProductDenomService } from '../../../../services/product/product-denom.service';
 import { ToastrService } from 'ngx-toastr';
 
@@ -65,7 +65,7 @@ export class MuliaComponent implements OnInit {
   //app
   private vendorService: VendorService,
   private denomService: ProductDenomService,
-  private productService: ProductService,
+  private productService: ProductListService,
  
   //parameter
   private prmJualService : PrmJualService,
@@ -143,7 +143,7 @@ export class MuliaComponent implements OnInit {
         // this.params = this.params+"&"+urlFlag;
 
         //cari product
-        this.productService.list(this.params+"&"+urlFlag).subscribe((response: any) => {
+        this.productService.list(this.params+"&"+urlFlag+'&_transactionType=t01&_ch=ch02').subscribe((response: any) => {
           this.datamulias = null
           if (response == false) {
             this.toastrService.error("Data Not Found", "Mulia");
@@ -156,7 +156,7 @@ export class MuliaComponent implements OnInit {
             return;
           }
           this.mulias = response;
-          //count product
+          // count product
           this.productService.count(this.params+"&"+urlFlag).subscribe((response: any) => {
             this.qty = response.count;
             // cari prm-jual product
@@ -168,24 +168,26 @@ export class MuliaComponent implements OnInit {
                     this.hargaBaku = prmJual[index].harga_baku
                   }
               }
+              cariMulia.push({
+                "vendor" : this.mulias[0].vendor.name,
+                "denom" : this.mulias[0]['product-denom'].name,
+                "qty" : this.qty,
+                "flag" : this.mulias[0].flag,
+                "harga" : this.mulias[0].harga
+                
+              });
+              this.datamulias = cariMulia;
+              console.debug(this.datamulias, "kamu")
+              this.loadingDg = false;
               console.debug(this.hargaBaku,"hargaBaku")
               //cari margin penjualan
-              this.prmMarginService.get(this.muliaCategory+"&"+this.channel+"&"+this.transactionType+"&"+this.flagApp).subscribe((Marginresponse: any) => {
-                let prmMargin = Marginresponse.margin
-                let hargaLM = this.pricingService.priceLogamMulia(this.hargaBaku, Number(prmMargin));
-                hargaLM =  Math.ceil(hargaLM/1000)*1000;
-                cariMulia.push({
-                  "vendor" : this.mulias[0].vendor.name,
-                  "denom" : this.mulias[0]['product-denom'].name,
-                  "qty" : this.qty,
-                  "flag" : this.mulias[0].flag,
-                  "harga" : hargaLM
-                  
-                });
-                  this.datamulias = cariMulia;
-                  console.debug(this.datamulias, "kamu")
-                  this.loadingDg = false;
-              });
+              // this.prmMarginService.get(this.muliaCategory+"&"+this.channel+"&"+this.transactionType+"&"+this.flagApp).subscribe((Marginresponse: any) => {
+              //   let prmMargin = Marginresponse.margin
+              //   let hargaLM = this.pricingService.priceLogamMulia(this.hargaBaku, Number(prmMargin));
+              //   hargaLM =  Math.ceil(hargaLM/1000)*1000;
+                
+                 
+              // });
             });
         });
       });
@@ -219,7 +221,7 @@ export class MuliaComponent implements OnInit {
       let codeLM = this.cartList.map(el => el.code);
       let cekItem : any;
       
-      this.productService.list(params).subscribe((response: any) => {
+      this.productService.list(params+'&_transactionType=t01&_ch=ch02').subscribe((response: any) => {
         lm = response
         let udahDiCart = 0;
         console.debug(lm, 'awal')
@@ -245,7 +247,7 @@ export class MuliaComponent implements OnInit {
                 'code': lm[index].code,
                 'vendor' : lm[index].vendor.name,
                 'denom' : lm[index]['product-denom'].name,
-                'harga' : harga,
+                'harga' : lm[index].harga,
                 'flag' : lm[index].flag,
                 'detail' : JSON.parse(atob(lm[index]._hash))
             })

@@ -64,7 +64,10 @@ export const management = [
   { _id: "0012", type: "sub-menu", name: "Approval Konversi", icons: "yang bagus", color: "warna-warni", componentId: "3002", parentId: "KV101", module: "kv", menu: { _id: "0012" } },
   // LAPORAN KEUANGAN
   //   {_id: "0004", type: "menu", name : "Laporan", icons: "list", color : "warna-warni", componentId : "S21000", parentId: "", module: "kl"},
-
+  
+  // AUDIT
+  { _id: "0012", type: "menu", name: "Audit", icons: "yang bagus", color: "warna-warni", componentId: "A111001", parentId: "KV101", module: "audit", menu: { _id: "0012" } },
+  { _id: "0012", type: "sub-menu", name: "Audit Logs", icons: "yang bagus", color: "warna-warni", componentId: "111001", parentId: "A111001", module: "audit", menu: { _id: "0012" } },
 ];
 
 export const kasir = [
@@ -163,7 +166,7 @@ export const staffRetail = [
 export const staffStock = [
   // INVENTORY
   { _id: "0001", type: "menu", name: "Inventory Addition", icons: "yang bagus", color: "warna-warni", componentId: "x1001", parentId: "", module: "x1" },
-  { _id: "0002", type: "sub-menu", name: "Inisiasi", icons: "yang bagus", color: "warna-warni", componentId: "1001", parentId: "x1001", module: "x1", menu: { _id: "0001" } },
+  // { _id: "0002", type: "sub-menu", name: "Inisiasi", icons: "yang bagus", color: "warna-warni", componentId: "1001", parentId: "x1001", module: "x1", menu: { _id: "0001" } },
   // {_id: "0002",type: "sub-menu", name : "Approval Inisiasi", icons: "yang bagus", color : "warna-warni", componentId : "1002", parentId: "x1001", module: "x1", menu : {_id: "0001"}},
   { _id: "0002", type: "sub-menu", name: "Penerimaan", icons: "yang bagus", color: "warna-warni", componentId: "1005", parentId: "x1001", module: "x1", menu: { _id: "0001" } },
   // Mutasi

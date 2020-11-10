@@ -12,6 +12,8 @@ import { ContentPage } from '../../../lib/helper/content-page';
 import { PrmMarginService } from '../../../services/parameter/prm-margin.service';
 import { TransactionBookingService } from '../../../services/transaction/transaction-booking.service';
 import { TransactionFlagService } from '../../../services/transaction/transaction-flag.service';
+import { TransactionTypeService } from  '../../../services/transaction/transaction-type.service';
+import {TransactionService} from '../../../services/transaction/transaction.service'
 import { ProductService } from '../../../services/product/product.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { BankService } from '../../../services/transaction/bank.service';
@@ -45,6 +47,7 @@ export class PenjualanKorporasiComponent implements OnInit {
 
   muliaCategory = "?_hash=1&product-category.code=c05";
   channel = "channel.code=ch02";
+  transaction_type:any;
   transactionType = "transaction-type.code=t06";
   flagApp = "flag=approved";
 
@@ -55,6 +58,8 @@ export class PenjualanKorporasiComponent implements OnInit {
     private transactionBookingService:TransactionBookingService,
     private toastrService:ToastrService,
     private transactionFlagService:TransactionFlagService,
+    private transactionTypeService:TransactionTypeService,
+    private transactionService:TransactionService,
     private productService:ProductService,
     private sessionService:SessionService,
     private bankService:BankService
@@ -225,10 +230,13 @@ export class PenjualanKorporasiComponent implements OnInit {
       return;
     }
 
+    
+
     let products = btoa(JSON.stringify({ 'PERHIASAN':[], 'LM':this.productData, 'BERLIAN':[], 'GS':[], 'DINAR':[] }));
 
     let form = this.formData.getRawValue();
     form.pic_encoded = "base64";
+    form['transaction-type'] = "base64";
     form.product_encoded = "base64array";
     delete form.cif;
     delete form.name;
@@ -236,20 +244,28 @@ export class PenjualanKorporasiComponent implements OnInit {
     let harga = this.formPembayaran.getRawValue();
     delete harga.sisaPembayaran;
 
-    let data = Object.assign(form,{'pic': btoa(JSON.stringify(Pic))}, {product:products,rekening_encoded:"base64"}, harga,this.maker);
-
-    // this.transactionFlagService.batchUpdateOne(this.productData, 'bookingCorporate');
-
-      this.transactionBookingService.add(data).subscribe((response)=>{
-        if (response == false) {
-        this.toastrService.error("Add Data Failed !!");
-        return;
-      }
+    let data:any;
+    
+     // this.transactionFlagService.batchUpdateOne(this.productData, 'bookingCorporate');
+    this.transactionTypeService.get('?code=t06').subscribe((response:any)=>{
+      this.transaction_type = btoa(JSON.stringify(response));
+      data = Object.assign(form,{'pic': btoa(JSON.stringify(Pic))},{product:products,rekening_encoded:"base64",'transaction-type':this.transaction_type}, harga,this.maker);
       
-      this.ChangeContentArea('13002');
-      this.toastrService.success("Success Add Data !!");
-      return;
+      this.transactionBookingService.add(data).subscribe((response:any)=>{
+        if (response == false) {
+          this.toastrService.error("Add Data Failed !!");
+          return;
+        }
+        
+        this.ChangeContentArea('13002');
+        this.toastrService.success("Success Add Data !!");
+        return;
+      })
+      console.debug(data);
+    return
     })
+    
+  
   }
 
   onDibayar(val){

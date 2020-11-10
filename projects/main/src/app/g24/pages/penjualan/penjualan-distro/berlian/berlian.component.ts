@@ -4,7 +4,7 @@ import { CountCartService } from '../../../../services/count-cart.service';
 
 // Database
 import { VendorService } from '../../../../services/vendor.service';
-import { ProductService } from '../../../../services/product/product.service';
+import { ProductListService } from '../../../../services/product/product-list.service';
 import { ProductJenisService } from '../../../../services/product/product-jenis.service';
 import { PrmJualService } from '../../../../services/parameter/prm-jual.service';
 import { PrmMarginService } from '../../../../services/parameter/prm-margin.service';
@@ -34,7 +34,7 @@ export class BerlianComponent implements OnInit {
   loadingDg: boolean = false;
   //params
   params = null;
-  berlianCategory= "product-category.code=c01";
+  berlianCategory= "product-category.code=c03";
   category = "?_hash=1&product-category.code=c03&flag=stock";
 
   channel = "channel.code=ch02";
@@ -58,7 +58,7 @@ export class BerlianComponent implements OnInit {
   constructor(
     private vendorService: VendorService,
     private productJenisService: ProductJenisService,
-    private productService: ProductService,
+    private productService: ProductListService,
 
     private toastrService: ToastrService,
 
@@ -138,7 +138,7 @@ export class BerlianComponent implements OnInit {
       }
 
       // product
-      this.productService.list(this.params).subscribe((response: any) => {
+      this.productService.list(this.params+'&_transactionType=t01&_ch=ch02').subscribe((response: any) => {
         if (response == false) {
           this.toastrService.error("Data Not Found", "Berlian");
           this.loadingDg = false;
@@ -152,44 +152,47 @@ export class BerlianComponent implements OnInit {
           return;
         }  
         this.berlians = response;
-        // pricing
-        this.prmJualService.get("?"+this.berlianCategory+"&flag=approved").subscribe((Jualresponse: any) => {
-          if (Jualresponse != false) {
-            this.hargaBaku = Jualresponse.harga_baku;
-          }
-          this.prmPpnService.list().subscribe((PPNresponse: any) => {
-            if (PPNresponse != false) {
-              ppn = PPNresponse['0']['ppn'];
-            }      
-            this.prmMarginService.get("?"+this.berlianCategory+"&"+this.channel+"&"+this.transactionType+"&"+this.flagApp).subscribe((Marginresponse: any) => {
-              if (Marginresponse != false) {
-                this.margin = Marginresponse;
-              }      
-  
-              for (let index = 0, len = this.berlians.length; index < len; index++) {
-               this.datalist=this.pricingService.priceBatuMulia(
-                 this.hargaBaku,
-                 this.berlians[index]['product-purity']['name'],
-                 Number(this.berlians[index]['berat']),
-                 this.margin['margin'],
-                 Number(this.berlians[index]['hppBatu']),
-                 Number(this.margin['margin_batu']),
-                 Number(this.berlians[index]['hppBerlian']),
-                 Number(this.margin['margin_berlian']),
-                 Number(this.berlians[index]['ongkosPembuatan']));
-                // harga_baku:any,kadar:any,berat:any,margin:any,hppBatu:any,marginBatu:any,hppBerlian:any,marginBerlian:any,ongkos:any
-                this.datalist = this.datalist*((100/100)+(Number(ppn)/100));
-                this.berlians[index].hargaJual = Math.ceil(this.datalist/10000)*10000  ;
-                //Math.ceil(this.datalist/100000)*100000
-                console.debug(this.berlians,"itungan")
-              }
-
-              this.databerlians = this.berlians;
+        this.databerlians = this.berlians;
               this.toastrService.success("Load "+response["length"]+" Data", "Berlian");
               this.loadingDg = false;
-            });          
-          });
-        }); 
+        // pricing
+        // this.prmJualService.get("?"+this.berlianCategory+"&flag=approved").subscribe((Jualresponse: any) => {
+        //   if (Jualresponse != false) {
+        //     this.hargaBaku = Jualresponse.harga_baku;
+        //   }
+        //   this.prmPpnService.list().subscribe((PPNresponse: any) => {
+        //     if (PPNresponse != false) {
+        //       ppn = PPNresponse['0']['ppn'];
+        //     }      
+        //     this.prmMarginService.get("?"+this.berlianCategory+"&"+this.channel+"&"+this.transactionType+"&"+this.flagApp).subscribe((Marginresponse: any) => {
+        //       if (Marginresponse != false) {
+        //         this.margin = Marginresponse;
+        //       }      
+  
+        //       for (let index = 0, len = this.berlians.length; index < len; index++) {
+        //        this.datalist=this.pricingService.priceBatuMulia(
+        //          this.hargaBaku,
+        //          this.berlians[index]['product-purity']['name'],
+        //          Number(this.berlians[index]['berat']),
+        //          this.margin['margin'],
+        //          Number(this.berlians[index]['hppBatu']),
+        //          Number(this.margin['margin_batu']),
+        //          Number(this.berlians[index]['hppBerlian']),
+        //          Number(this.margin['margin_berlian']),
+        //          Number(this.berlians[index]['ongkosPembuatan']));
+        //         // harga_baku:any,kadar:any,berat:any,margin:any,hppBatu:any,marginBatu:any,hppBerlian:any,marginBerlian:any,ongkos:any
+        //         this.datalist = this.datalist*((100/100)+(Number(ppn)/100));
+        //         this.berlians[index].hargaJual = Math.ceil(this.datalist/10000)*10000  ;
+        //         //Math.ceil(this.datalist/100000)*100000
+        //         console.debug(this.berlians,"itungan")
+        //       }
+
+        //       this.databerlians = this.berlians;
+        //       this.toastrService.success("Load "+response["length"]+" Data", "Berlian");
+        //       this.loadingDg = false;
+        //     });          
+        //   });
+        // }); 
       }); 
     }
 

@@ -699,6 +699,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     this.inisiasi.update_by = this.user.username;
     this.inisiasi['tgl_tolak'] = this.inisiasi.update_date;
     this.inisiasi.tolak_by = this.user.username;
+    this.inisiasi._log = true
 
     let tempInisiasi = {}
     Object.assign(tempInisiasi, this.inisiasi);

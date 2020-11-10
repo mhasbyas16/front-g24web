@@ -64,13 +64,13 @@
 
     <clr-dg-row *clrDgItems="let d of dataperhiasans">
         <ng-container *ngIf="d.id == null || d.id == ''; else dId">
-            <clr-dg-cell>Not Set</clr-dg-cell>
+            <clr-dg-cell><span class="label label-danger" style="float: right;" >Not Set</span></clr-dg-cell>
         </ng-container>
         <ng-template #dId>
             <clr-dg-cell>{{d.id}}</clr-dg-cell>
         </ng-template>
         <ng-container *ngIf="d.code == null || d.code == ''; else dCode">
-            <clr-dg-cell>Not Set</clr-dg-cell>
+            <clr-dg-cell><span class="label label-danger" style="float: right;" >Not Set</span></clr-dg-cell>
         </ng-container>
         <ng-template #dCode>
             <clr-dg-cell>{{d.code}}</clr-dg-cell>
@@ -95,7 +95,7 @@
             </ng-container>
             <ng-template #plusDefault>
                 <span style="float: left;">
-                    <ng-container *ngIf="cekItemArray(d._id); else plus">
+                    <ng-container *ngIf="cekItemArray(d._id) || d.hargaJual == 0 || d.hargaJual == '0'; else plus">
                         <button type="button" class="btn btn-icon btn-sm btn-danger disabled" aria-label="home" >
                             <clr-icon shape="minus"></clr-icon>
                         </button>                

@@ -2,7 +2,7 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 
 // Database
 import { VendorService } from '../../../../services/vendor.service';
-import { ProductService } from '../../../../services/product/product.service';
+import { ProductListService } from '../../../../services/product/product-list.service';
 import { ProductDenomService } from '../../../../services/product/product-denom.service';
 import { ProductSeriesService } from '../../../../services/product/product-series.service';
 
@@ -64,7 +64,7 @@ export class SouvenirComponent implements OnInit {
   private vendorService: VendorService,
   private denomService: ProductDenomService,
   private seriesService: ProductSeriesService,
-  private productService: ProductService,
+  private productService: ProductListService,
  
  
   //parameter
@@ -155,7 +155,7 @@ export class SouvenirComponent implements OnInit {
         this.params = this.params+"&"+urlVendor;
         this.params = this.params+"&"+urlDenom;
         this.params = this.params+"&"+urlSeries;
-        this.productService.list(this.params+'&'+this.flagBarang).subscribe((response: any) => {
+        this.productService.list(this.params+'&'+this.flagBarang+'&_transactionType=t01&_ch=ch02').subscribe((response: any) => {
           console.debug(response, "bangsat")
           if (response == false) {
             this.toastrService.error("Data Not Found", "Souvenir");
@@ -175,36 +175,36 @@ export class SouvenirComponent implements OnInit {
             this.qty = response.count;
             this.prmJualService.get("?"+this.souvenirCategory+"&"+this.flagApp).subscribe((Jualresponse: any) => {
               let prmJual = Jualresponse;
-              
-              // console.debug(prmJual[0]['harga_baku'],'hargabaku')
-              this.prmMarginService.get("?"+this.souvenirCategory+"&"+this.flagApp).subscribe((Marginresponse: any) => {
-                let prmMargin = Marginresponse
-               
-                this.prmPpnService.list().subscribe((PPNresponse: any) => {
-                  let ppn = PPNresponse
-                  
-                  let hargaSouvenir = this.pricingService.priceSouvenir((prmJual['harga_baku']), Number(prmMargin.margin), Number(this.souvenirs[0]['product-denom'].value), Number(ppn[0].ppn), Number(this.souvenirs[0].ongkos_pieces));
-                  
-                  console.debug(prmJual['harga_baku'], "harga_baku")
-                  console.debug(prmMargin.margin, "margin")
-                  console.debug(this.souvenirs[0]['product-denom'].value, "denom")
-                  console.debug(ppn[0].ppn, "ppn")
-                  console.debug(this.souvenirs[0].ongkos_pieces, "souvenirs")
-                  
-                  hargaSouvenir =  Math.ceil(hargaSouvenir/1000)*1000;
-                  console.debug( hargaSouvenir,'hargaSouvenir')
-                  cariSouvenir.push({
-                    "vendor" : this.souvenirs[0].vendor.name,
-                    "denom" : this.souvenirs[0]['product-denom'].name,
-                    "series" : this.souvenirs[0]['product-series'].name,
-                    "qty" : this.qty,
-                    "harga" : hargaSouvenir
+              cariSouvenir.push({
+                "vendor" : this.souvenirs[0].vendor.name,
+                "denom" : this.souvenirs[0]['product-denom'].name,
+                "series" : this.souvenirs[0]['product-series'].name,
+                "qty" : this.qty,
+                "harga" : this.souvenirs[0].harga
 
-                  });
-                  this.datasouvenirs = cariSouvenir;
-                  this.loadingDg = false;
-                });
               });
+              this.datasouvenirs = cariSouvenir;
+              this.loadingDg = false;
+              // console.debug(prmJual[0]['harga_baku'],'hargabaku')
+              // this.prmMarginService.get("?"+this.souvenirCategory+"&"+this.flagApp).subscribe((Marginresponse: any) => {
+              //   let prmMargin = Marginresponse
+               
+              //   this.prmPpnService.list().subscribe((PPNresponse: any) => {
+              //     let ppn = PPNresponse
+                  
+              //     let hargaSouvenir = this.pricingService.priceSouvenir((prmJual['harga_baku']), Number(prmMargin.margin), Number(this.souvenirs[0]['product-denom'].value), Number(ppn[0].ppn), Number(this.souvenirs[0].ongkos_pieces));
+                  
+              //     console.debug(prmJual['harga_baku'], "harga_baku")
+              //     console.debug(prmMargin.margin, "margin")
+              //     console.debug(this.souvenirs[0]['product-denom'].value, "denom")
+              //     console.debug(ppn[0].ppn, "ppn")
+              //     console.debug(this.souvenirs[0].ongkos_pieces, "souvenirs")
+                  
+              //     hargaSouvenir =  Math.ceil(hargaSouvenir/1000)*1000;
+              //     console.debug( hargaSouvenir,'hargaSouvenir')
+                  
+              //   });
+              // });
             });
           });
       });
@@ -247,7 +247,7 @@ export class SouvenirComponent implements OnInit {
 
       // lm = this.Souvenir
      
-      this.productService.list(params).subscribe((response: any) => {
+      this.productService.list(params+'&_transactionType=t01&_ch=ch02').subscribe((response: any) => {
         sv = response
         let udahDiCart = 0;
 
@@ -274,7 +274,7 @@ export class SouvenirComponent implements OnInit {
                 'code': sv[index].code,
                 'vendor' : sv[index].vendor.name,
                 'denom' : sv[index]['product-denom'].name,
-                'harga' : harga,
+                'harga' : sv[index].harga,
                 'detail' : JSON.parse(atob(sv[index]._hash))
             })
             this.refresh(harga, "p")
