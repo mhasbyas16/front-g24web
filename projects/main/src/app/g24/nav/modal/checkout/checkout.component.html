@@ -288,6 +288,8 @@
                     </div>
                     <div class="card-block">
                         <div class="card-text">
+                                                          
+
                             <div class="clr-row">
                                 <div class="clr-col-4">
                                     <clr-input-container class="margin-top-remove">
@@ -302,6 +304,8 @@
                                     </button>
                                 </div>
                             </div>
+
+                            
 
 
                             <clr-radio-container clrInline>
@@ -455,8 +459,22 @@
                                 <label>Nama Pemasar</label>
                                 <input clrInput type="text" [value]="" formControlName="namaPemasar" readonly>
                             </clr-input-container>
+                            
 
+                            <div class="clr-row">
+                                <div class="clr-col-4">
+                                    <clr-input-container class="margin-top-15">
+                                        <label>Kasir ID (Emas)</label>
+                                        <input clrInput type="text" [value]="" formControlName="kasirId">
+                                    </clr-input-container>
+                                </div>
+                                <div class="clr-col-3" style="margin-left: 30px; margin-top: 15px;">
+                                    <button type="button" class="btn btn-sm btn-primary-outline"
+                                        (click)="cek()">Check</button>
+                                </div>
+                            </div>
                         </div>
+                            
                     </div>
                     <!-- Hidden Form -->
                     <input type="hidden" formControlName="admBank">

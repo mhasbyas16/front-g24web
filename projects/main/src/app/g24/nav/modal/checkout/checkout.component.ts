@@ -77,6 +77,17 @@ export class CheckoutComponent implements OnInit {
   kembali: any;
   diterima: any;
 
+  kasirId: FormControl= null;
+  coa: FormControl= null;
+  valid: boolean = false;
+
+  nikValid : boolean = false;
+jual = null;
+branchCode = "";
+select = null;
+isBuyback = false;
+dat = null;
+
   idtransaksi: any;
   constructor(
     private clientService: ClientService,
@@ -101,6 +112,7 @@ export class CheckoutComponent implements OnInit {
   ngOnInit(): void {
     this.nikUser = this.sessionService.getUser();
     this.nikUser = { "_hash": btoa(JSON.stringify(this.nikUser)), "nik": this.nikUser["username"], "name": this.nikUser["name"], "username": this.nikUser["username"] };
+    
   }
 
   idTransaksi() {
@@ -196,6 +208,7 @@ export class CheckoutComponent implements OnInit {
       namaPemasar: new FormControl(this.nikUser["name"]),
       'transaction-type': new FormControl("", Validators.required),
       'transaction-type_encoded': new FormControl("base64"),
+      
     });
 
     for (let isi of LM) {
@@ -531,4 +544,167 @@ export class CheckoutComponent implements OnInit {
     if (pageId.startsWith("x")) return;
     ContentPage.ChangeContent(pageId, true)
   }
+
+  
+
+  cek(){
+    var valid = false;
+    var jual = null;
+    var branchCode = "";
+    var select = null;
+    var bank = null;
+    var jenisEDC = null;
+    var jenisRTGS = null;
+    var coa = null;
+    var isBuyback = false;
+    var dat = null;
+    // var nik = this.formData.get('kasirId').value;
+    const value = this.formData.get('kasirId').value;
+    var metodeBayarCode = this.formData.get('metodeBayar').value;
+    metodeBayarCode = atob(metodeBayarCode);
+    // metodeBayarCode = this.metodeBayar.code;
+    var unitCode = this.formData.get('unit').value;
+    unitCode = atob(unitCode);
+    var nikP = this.formData.get('nikPemasar').value;
+    // var unitCode = this.formData.get('unit.code').value;
+    var unita = this.sessionService.getUnit();
+    if(this.coa != null)
+    {
+      this.coa.value;
+    }
+    this.nikValid = false;
+    // checkNIK();
+    console.debug(value, "nikP");
+    console.debug(metodeBayarCode, "metode");
+    console.debug(unitCode, "unit");
+    console.debug(unita, "unita");
+    // this.mesinCheckNik(metodeBayar);
+
+  }
+
+//   mesinCheckNik(metodeBayar)
+// {
+// 	if(metodeBayar != '1')
+// 	{
+// 		coa = $("#coa");
+// 		coa.val("");
+// 		// setKasir(null);
+// 		// return;
+// 	}
+
+//   var userEmas = $('#userEmas');
+//   if(userEmas == null)
+//   {
+//     alert("Error. Gagal checking User Emas !!!");
+//     console.log("Gaada input dengan ID = userEmas");
+//     return;
+//   }
+
+//   var tgDistro = $("#distro");
+//   if(tgDistro == null)
+//   {
+//     alert("Error. Gagal checking User Emas !!!");
+//     console.log("Gaada input hidden dengan ID = distro");
+//     return;
+//   }
+
+//   branchCode = tgDistro.val();
+//   user = userEmas.val();
+
+//   if(user == "")
+//   {
+//     alert("Error. Harap input User ID Emas !!!");
+//     console.log("Input User ID Emas kosong.");
+//     return;
+//   }
+
+//   if(branchCode == "")
+//   {
+// 	alert("Error. Distro kosong !!!");
+//     console.log(" Tolong jangan diubah-ubah tag nya ya :). Atau yang ngoding bodoh XD.");
+//     return;
+//   }
+
+//   // cuma branch code ini yang valid aja
+//   if(branchCode == "55099" || branchCode == "55098" || branchCode == "55097")
+//   {
+// 	setKasir(null);
+// 	return;
+//   }
+
+//   var url = "https://"+window.location.hostname+"/api/channel/get-kasir-on-emas.php?branchCode="+branchCode;
+//   console.log(url);
+
+//   if(getKasirHandler != null)
+//   {
+// 	getKasirHandler.abort();
+// 	show(false, "loading");
+//   }
+
+//   show(true, "loading");
+//   getKasirHandler = $.ajax({ url : url, timeout: 5000,
+// 	error: function(request, textStatus) {
+// 		let j = request.responseText;
+// 		console.debug(request)
+// 		show(false, "loading");
+// 		alert("Error. " + textStatus + ". Harap hubungi IT Support/Helpdesk.\n &nbsp" + j);
+// 		console.info();
+// 	},
+// 	success: function(data) {
+
+// 		var d = JSON.parse(data.data);
+// 		dat = data;
+
+// 		if(data.responseCode != '00')
+// 		{
+// 			alert(data.responseDesc);
+// 			show(false, "loading");
+// 			return;
+// 		}
+
+// 		var tutup = false;
+// 		// console.debug(d);
+// 		for(let i = 0; i < d.data.length; i++)
+// 		{
+// 			var kasir = d.data[i];
+// 			// console.debug(kasir.userId);
+// 			if(kasir.userId == user)
+// 			{
+// 				if(kasir.status == 0)
+// 				{
+// 					tutup = true;
+// 					break;
+// 				}
+
+// 				if(select.value == '1')
+// 				{
+// 					if(kasir == null)
+// 					{
+// 						alert("Error. Harap hubungi IT Support/Helpdesk.");
+// 						return;
+// 					}
+					
+// 					setKasir(kasir);
+// 				}
+// 				else
+// 				{
+// 					setKasir(null);
+// 				}
+
+// 				break;
+// 			}
+// 		}
+
+// 		if(tutup)
+// 		{
+// 			alert("Kasir ditutup. Mohon buka kasir atau hubungi Pimpinan anda");
+// 		}
+// 		else if(!valid)
+// 		{
+// 			alert("USER ID tidak memiliki rekening pada branch ini");
+// 		}
+// 		show(false, "loading");
+//   }});
+
+// }
 }
