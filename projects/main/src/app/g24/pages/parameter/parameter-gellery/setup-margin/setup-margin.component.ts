@@ -440,7 +440,7 @@ export class SetupMarginComponent implements OnInit {
     this.inputModel.product_category = data['product-category'].code;
     this.onChangeProduct(this.inputModel.product_category);
     this.inputModel.transaction_type = data['transaction-type'].code;
-    this.inputModel.mychannel = data.channel._id;
+    this.inputModel.mychannel = data.channel.code;
 
     // let productSelect = data['product-category']._id;
     // this.getProduct = productSelect;
@@ -513,7 +513,7 @@ export class SetupMarginComponent implements OnInit {
 
     //get data approve lama
     this.spinner = true;
-    this.prmMarginService.get("?flag=approved&product-category.code="+this.inputModel.product_category).subscribe((out) => {
+    this.prmMarginService.get("?flag=approved&product-category.code="+this.inputModel.product_category+"&channel.code="+this.inputModel.mychannel+"&transaction-type.code="+this.inputModel.transaction_type).subscribe((out) => {
       this.getDataold = out._id;
 
       if (out == false){

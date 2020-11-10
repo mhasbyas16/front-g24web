@@ -89,7 +89,7 @@
                         <clr-radio-container clrInline>
                             <label>Channel</label>
                             <clr-radio-wrapper *ngFor="let channels of channel">
-                                <input type="radio" clrRadio id="{{channels.name}}" name="channel" [(ngModel)]="inputModel.mychannel" [value]="channels.code"/>
+                                <input type="radio" clrRadio id="{{channels.code}}" name="channel" [(ngModel)]="inputModel.mychannel" [value]="channels.code"/>
                                 <label>{{channels.name}}</label>
                             </clr-radio-wrapper>
                             <!-- <clr-control-helper>Helper text</clr-control-helper>
@@ -213,7 +213,7 @@
                         <clr-radio-container clrInline>
                             <label>Channel</label>
                             <clr-radio-wrapper *ngFor="let channels of channel">
-                                <input type="radio" clrRadio id="{{channels.name}}" name="channel" [(ngModel)]="inputModel.mychannel" [value]="channels._id" disabled/>
+                                <input type="radio" clrRadio id="{{channels.code}}" name="channel" [(ngModel)]="inputModel.mychannel" [value]="channels._id" disabled/>
                                 <label>{{channels.name}}</label>
                             </clr-radio-wrapper>
                             <!-- <clr-control-helper>Helper text</clr-control-helper>
@@ -301,7 +301,7 @@
                     <div class="clr-col-6">
                         <clr-textarea-container>
                             <label>Keterangan</label>
-                            <textarea clrTextarea [(ngModel)]="inputModel.keterangan" name="keterangan" required readonly></textarea>
+                            <textarea clrTextarea [(ngModel)]="inputModel.keterangan" name="keterangan" required></textarea>
                             <clr-control-error *clrIfError="'required'">This is a required field</clr-control-error>
                         </clr-textarea-container>
                     </div>

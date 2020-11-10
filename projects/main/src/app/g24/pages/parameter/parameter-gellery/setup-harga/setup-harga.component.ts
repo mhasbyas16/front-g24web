@@ -60,7 +60,7 @@ export class SetupHargaComponent implements OnInit {
   //params
   params = null;
   vendorCategory= "product-category.code=c00";
-  productFilter= "code=c00,c01,c02,c03,c04&_sortby=name:1";
+  productFilter= "code=c00,c02,c03,c04&_sortby=name:1";
 
   //datetime
   timezone = "string";
@@ -142,7 +142,7 @@ export class SetupHargaComponent implements OnInit {
 
   onChangeProduct(data){
     this.getProduct = data;
-    if (this.getProduct == 'c01') {
+    if (this.getProduct == 'c03') {
       this.show = true;
     }else{
       this.show = false;
@@ -267,7 +267,7 @@ export class SetupHargaComponent implements OnInit {
     }
 
     let tempSetup = null;
-    if (this.inputModel.productSelect == 'c01'){
+    if (this.inputModel.productSelect == 'c03'){
       tempSetup = setup1;
     }else{
       tempSetup = setup;
@@ -369,7 +369,7 @@ export class SetupHargaComponent implements OnInit {
     }
 
     let tempSetup = null;
-    if (this.inputModel.productSelect == 'c01'){
+    if (this.inputModel.productSelect == 'c03'){
       tempSetup = setup1;
     }else{
       tempSetup = setup;
