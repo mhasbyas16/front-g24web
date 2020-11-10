@@ -7,7 +7,7 @@ import { CommonService } from "../../../../../../platform/src/app/core-services/
 })
 export class ProductListService {
 
-  key = "price-api/product";
+  key = "master-api/product-price";
 
   constructor(private commonService:CommonService) { }
 
