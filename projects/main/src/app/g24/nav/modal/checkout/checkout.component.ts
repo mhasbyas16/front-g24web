@@ -89,6 +89,7 @@ isBuyback = false;
 dat = null;
 
   idtransaksi: any;
+  metodeBayar: any;
   constructor(
     private clientService: ClientService,
     private bankService: BankService,
@@ -208,6 +209,8 @@ dat = null;
       namaPemasar: new FormControl(this.nikUser["name"]),
       'transaction-type': new FormControl("", Validators.required),
       'transaction-type_encoded': new FormControl("base64"),
+      kasirId: new FormControl(""),
+      coa: new FormControl("")
       
     });
 
@@ -555,18 +558,24 @@ dat = null;
     var bank = null;
     var jenisEDC = null;
     var jenisRTGS = null;
-    var coa = null;
+    
     var isBuyback = false;
     var dat = null;
-    // var nik = this.formData.get('kasirId').value;
+    
     const value = this.formData.get('kasirId').value;
-    var metodeBayarCode = this.formData.get('metodeBayar').value;
-    metodeBayarCode = atob(metodeBayarCode);
-    // metodeBayarCode = this.metodeBayar.code;
+    var metodeBayar = this.formData.get('metodeBayar').value;
+    metodeBayar = atob(metodeBayar);
+    var metodeBayarObject = JSON.parse(metodeBayar);   
+    
+    var metodeBayarCode = metodeBayarObject["code"]; 
+    
+
+      
+    
     var unitCode = this.formData.get('unit').value;
     unitCode = atob(unitCode);
     var nikP = this.formData.get('nikPemasar').value;
-    // var unitCode = this.formData.get('unit.code').value;
+    
     var unita = this.sessionService.getUnit();
     if(this.coa != null)
     {
@@ -575,57 +584,57 @@ dat = null;
     this.nikValid = false;
     // checkNIK();
     console.debug(value, "nikP");
-    console.debug(metodeBayarCode, "metode");
+    console.debug(metodeBayarCode, "metodeBayarCode");
     console.debug(unitCode, "unit");
     console.debug(unita, "unita");
-    // this.mesinCheckNik(metodeBayar);
+    this.mesinCheckNik(metodeBayarCode);
 
   }
 
-//   mesinCheckNik(metodeBayar)
-// {
-// 	if(metodeBayar != '1')
-// 	{
-// 		coa = $("#coa");
-// 		coa.val("");
-// 		// setKasir(null);
-// 		// return;
-// 	}
+  mesinCheckNik(metodeBayarCode)
+{
+	if(metodeBayarCode != '01')
+	{
+		var coa = this.formData.get('coa').value;
+		coa.val("");
+		// setKasir(null);
+		// return;
+	}
 
-//   var userEmas = $('#userEmas');
-//   if(userEmas == null)
-//   {
-//     alert("Error. Gagal checking User Emas !!!");
-//     console.log("Gaada input dengan ID = userEmas");
-//     return;
-//   }
+  var userEmas = this.formData.get('kasirId').value;
+  if(userEmas == null)
+  {
+    alert("Error. Gagal checking User Emas !!!");
+    console.log("Gaada input dengan ID = userEmas");
+    return;
+  }
 
-//   var tgDistro = $("#distro");
-//   if(tgDistro == null)
-//   {
-//     alert("Error. Gagal checking User Emas !!!");
-//     console.log("Gaada input hidden dengan ID = distro");
-//     return;
-//   }
+  var tgDistro = this.sessionService.getUnit();
+  if(tgDistro == null)
+  {
+    alert("Error. Gagal checking User Emas !!!");
+    console.log("Gaada input hidden dengan ID = distro");
+    return;
+  }
 
-//   branchCode = tgDistro.val();
-//   user = userEmas.val();
+  var branchCode = tgDistro.val();
+  var user = userEmas.val();
 
-//   if(user == "")
-//   {
-//     alert("Error. Harap input User ID Emas !!!");
-//     console.log("Input User ID Emas kosong.");
-//     return;
-//   }
+  if(user == "")
+  {
+    alert("Error. Harap input User ID Emas !!!");
+    console.log("Input User ID Emas kosong.");
+    return;
+  }
 
-//   if(branchCode == "")
-//   {
-// 	alert("Error. Distro kosong !!!");
-//     console.log(" Tolong jangan diubah-ubah tag nya ya :). Atau yang ngoding bodoh XD.");
-//     return;
-//   }
+  if(branchCode == "")
+  {
+	alert("Error. Distro kosong !!!");
+    console.log(" Tolong jangan diubah-ubah tag nya ya :). Atau yang ngoding bodoh XD.");
+    return;
+  }
 
-//   // cuma branch code ini yang valid aja
+  // cuma branch code ini yang valid aja
 //   if(branchCode == "55099" || branchCode == "55098" || branchCode == "55097")
 //   {
 // 	setKasir(null);
@@ -707,4 +716,26 @@ dat = null;
 //   }});
 
 // }
+
+// setKasir(kasir)
+// {
+// 	alert("NIK valid !!");
+// 	nikValid = true;
+
+// 	if(kasir != null)
+// 	{
+// 		let coaKasir = kasir.norek;
+// 		console.debug(coaKasir);
+// 		$("#coa").val(coaKasir);
+// 	}
+// 	hitungKembalian();
+// }
+
+// changingNIK()
+// {
+// 	this.nikValid = false;
+// 	$("#coa").val("");
+
+// 	hitungKembalian();
+}
 }
