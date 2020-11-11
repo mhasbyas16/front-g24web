@@ -122,7 +122,7 @@ export class SigninPageComponent implements OnInit {
         }
         console.debug("response", response);
         this.name = response.name;
-        this.username = response.email;
+        this.username = response.username;
         this.state = 3;
       });
       return;   

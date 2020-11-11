@@ -3,6 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'projects/platform/src/app/core-services/auth.service';
 
+/**
+ * @note Bukan yang ini
+ */
 @Component({
   selector: 'app-signin-page',
   templateUrl: './sign-in-page.component.html',
@@ -100,7 +103,7 @@ export class SignInPageComponent implements OnInit {
         }
         console.debug("response", response);
         this.name = response.name;
-        this.username = response.email;
+        this.username = response.username;
         this.state = 3;
       });
       return;   
