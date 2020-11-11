@@ -7,7 +7,7 @@ import { PrmLookupService } from '../../../services/location/prm-lookup.service'
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { UnitService } from '../../../services/system/unit.service';
 import { ClrLoadingState } from '@clr/angular';
-import { TipeStock } from '../../../lib/enum/flag-product';
+import { FlagProduct, TipeStock } from '../../../lib/enum/flag-product';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
 
@@ -39,6 +39,7 @@ export class DetailInqueryProductGiftComponent implements OnInit {
   unit : any = [];
   showUnit : Boolean = false;
   Tipe = Object.values(TipeStock);
+  Flag = Object.values(FlagProduct);
   ErrorPage : Boolean = false;
   LoadingSearch : ClrLoadingState = ClrLoadingState.DEFAULT;
   LoadingPage : ClrLoadingState = ClrLoadingState.DEFAULT;
@@ -162,6 +163,10 @@ export class DetailInqueryProductGiftComponent implements OnInit {
 
           case "tipe_stock" : 
           params += "tipe_stock="+this.inquery[key].code+"&";
+          break;
+
+          case "flag" :
+          params += "flag="+this.inquery[key].code+"&";
           break;
 
           default:

@@ -6,7 +6,7 @@ import { ProductGoldColorService } from '../../../services/product/product-gold-
 import { ProductPurityService } from '../../../services/product/product-purity.service';
 import { ProductJenisService } from '../../../services/product/product-jenis.service';
 import { ProductService } from '../../../services/product/product.service';
-import { TipeStock } from '../../../lib/enum/flag-product';
+import { FlagProduct, TipeStock } from '../../../lib/enum/flag-product';
 import { PrmLookupService } from '../../../services/location/prm-lookup.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { UnitService } from '../../../services/system/unit.service';
@@ -49,6 +49,7 @@ static key = EMenuID.DETAIL_INQUERY_PERHIASAN;
   unit : any = [];
   showUnit : Boolean = false;
 
+  Flag = Object.values(FlagProduct);
   Tipe = Object.values(TipeStock);
   outputdata : any[] = [];
 
@@ -179,7 +180,7 @@ static key = EMenuID.DETAIL_INQUERY_PERHIASAN;
           params += "product-gold-color.name="+this.inquery[key].name+"&";
           break;
 
-          case "jeniss" : 
+          case "jenis" : 
           params += "product-jenis.code="+this.inquery[key].code+"&";
           break;
 
@@ -197,6 +198,10 @@ static key = EMenuID.DETAIL_INQUERY_PERHIASAN;
 
           case "tipe_stock" :
             params += "tipe_stock="+this.inquery[key].code+"&";
+            break;
+
+          case "flag" :
+            params += "flag="+this.inquery[key].code+"&";
             break;
 
           default:

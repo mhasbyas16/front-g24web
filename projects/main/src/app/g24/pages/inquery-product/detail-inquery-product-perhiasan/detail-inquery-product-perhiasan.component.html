@@ -62,7 +62,7 @@
                     </div>
                     <div class="clr-col-6">
                         <div class="clr-form-control">
-                            <label class="clr-control-label">Warna</label>
+                            <label class="clr-control-label">Warna Emas</label>
                             <clr-select-container>
                                 <select clrSelect [(ngModel)]="inquery.warnas" name="warnas">
                                     <option [ngValue]=""></option>
@@ -79,7 +79,7 @@
                         <div class="clr-form-control">
                             <label class="clr-control-label">Jenis</label>
                             <clr-select-container>
-                                <select clrSelect [(ngModel)]="inquery.jeniss" name="jeniss">
+                                <select clrSelect [(ngModel)]="inquery.jeniss" name="jenis">
                                     <option [ngValue]=""></option>
                                     <ng-container *ngFor="let data of jenis">
                                         <option [ngValue]="data">{{data.name}}</option>
@@ -135,6 +135,19 @@
                             </clr-select-container>
                         </div>
                     </div>
+                    <div class="clr-col-md-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Tipe Flag</label>
+                            <clr-select-container>
+                                <select name="flag" clrSelect [(ngModel)]="inquery.flag">
+                                    <option [ngValue]=""></option>
+                                    <ng-container *ngFor="let data of Flag">
+                                        <option [ngValue]="data">{{data.code}}</option>
+                                    </ng-container>
+                                </select>
+                            </clr-select-container>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="card-footer">
@@ -155,7 +168,7 @@
             <clr-dg-column>SKU</clr-dg-column>
             <clr-dg-column>Vendor</clr-dg-column>
             <clr-dg-column>Kadar</clr-dg-column>
-            <clr-dg-column>Warna</clr-dg-column>
+            <clr-dg-column>Warna Emas</clr-dg-column>
             <clr-dg-column>Jenis</clr-dg-column>
             <clr-dg-column>Hpp</clr-dg-column>
             <clr-dg-column>Hpp Inisiasi</clr-dg-column>
@@ -174,10 +187,10 @@
                 <clr-dg-cell>{{data.no_po ? data.no_po : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data.code ? data.code : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data.sku ? data.sku : "-"}}</clr-dg-cell>
-                <clr-dg-cell>{{data.vendor.name}}</clr-dg-cell>
+                <clr-dg-cell>{{data.vendor? data.vendor.name : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data["product-purity"] ? data['product-purity'].code : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data["product-gold-color"] ? data['product-gold-color'].name : "-"}}</clr-dg-cell>
-                <clr-dg-cell>{{data["product-jenis"]? data['product-jenis'].name : "-"}}</clr-dg-cell>
+                <clr-dg-cell>{{data["product-jenis"] ? data['product-jenis'].name : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data.hpp}}</clr-dg-cell>
                 <clr-dg-cell>{{data.hpp_inisiasi}}</clr-dg-cell>
                 <clr-dg-cell>{{data.berat}}</clr-dg-cell>

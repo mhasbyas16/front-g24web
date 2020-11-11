@@ -87,7 +87,7 @@
         <clr-datagrid [(clrDgSingleSelected)]="data_view">  
             <clr-dg-action-bar>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-secondary" (click)="onProove()" ><clr-icon shape="plus"></clr-icon>Approve</button>
+                    <button type="button" class="btn btn-sm btn-secondary" (click)="onProove()" *ngIf="data_view?.flag == 'submit'"><clr-icon shape="plus"></clr-icon>Approve</button>
                     <button type="button" class="btn btn-sm btn-secondary" (click)="onView()"><clr-icon shape="eye"></clr-icon> Lihat Data</button>
                 </div>
             </clr-dg-action-bar>

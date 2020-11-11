@@ -10,6 +10,10 @@ export class FlagProduct {
     public static BOOKING_CORPORATE = {code : "booking-corporate", name : "Sedang Booking (Corporate)"}
     public static SOLD = {code : "sale", name : "Sudah Terjual"}
     public static ISSUE = {code : "issue", name : "Barang bermasalah"}
+    public static KONVERSI = {code : "konversi", name : "Konversi" }
+
+    //DI DB FLAGNYA JUAL SEMENTARA BUAT FLAG BARU
+    public static JUAL = {code : "jual", name : "Sudah Terjual"}
 }
 
 export class LocationProduct {

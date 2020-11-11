@@ -18,6 +18,17 @@
                             </div>
                         </div>
                     </div>
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Tipe Flag</label>
+                            <select [(ngModel)]="input.flag" #flag clrSelect name="flag">
+                                <option [ngValue]=null></option>
+                                <ng-container *ngFor="let flagku of Flag">
+                                    <option [ngValue]="flagku">{{flagku.name}}</option>
+                                </ng-container>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div class="clr-row">
                     <div class="clr-col-6">
@@ -74,7 +85,7 @@
         <clr-datagrid [(clrDgSingleSelected)]="data_view">  
             <clr-dg-action-bar>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-secondary" (click)="onAccept()" ><clr-icon shape="plus"></clr-icon>Terima</button>
+                    <button type="button" class="btn btn-sm btn-secondary" (click)="onAccept()" *ngIf="data_view?.flag == 'approve' || data_view?.flag == 'approved'"><clr-icon shape="plus"></clr-icon>Terima</button>
                     <button type="button" class="btn btn-sm btn-secondary" (click)="onView()"><clr-icon shape="eye"></clr-icon> Lihat Data</button>
                 </div>
             </clr-dg-action-bar>
@@ -268,3 +279,6 @@
 </clr-modal>
 
 <loading-spinner #spinner></loading-spinner>
+
+<!-- CETAK Terima MUTASI -->
+<cetak-terima-mutasi #exportPDF></cetak-terima-mutasi>
