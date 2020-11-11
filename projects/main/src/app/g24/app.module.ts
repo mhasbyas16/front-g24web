@@ -13,7 +13,7 @@ import { NavModule } from './nav/nav.module';
     AppRoutingModule,
     ClarityModule,
     HttpClientModule,
-    NavModule,
+    NavModule
   ],
 })
 export class AppModule{} 

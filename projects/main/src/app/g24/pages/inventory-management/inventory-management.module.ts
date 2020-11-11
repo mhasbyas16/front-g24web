@@ -8,6 +8,7 @@ import { ClarityModule } from '@clr/angular';
 import { ApprovalMutasiComponent } from './approval-mutasi/approval-mutasi.component';
 import { AcceptMutasiComponent } from './accept-mutasi/accept-mutasi.component';
 import { NavModule } from '../../nav/nav.module';
+import { CetakMutasiModule } from '../../cetakan/stock/cetak-mutasi/cetak-mutasi.module';
 import { CetakMutasiComponent } from './mutasi/cetak-mutasi/cetak-mutasi.component';
 
 
@@ -17,6 +18,7 @@ import { CetakMutasiComponent } from './mutasi/cetak-mutasi/cetak-mutasi.compone
     CommonModule,
     FormsModule,
     NavModule,
+    CetakMutasiModule,
     ClarityModule,
     InventoryManagementRoutingModule
   ]

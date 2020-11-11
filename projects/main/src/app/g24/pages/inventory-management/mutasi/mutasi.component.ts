@@ -21,11 +21,12 @@ import { ProductDenomService } from '../../../services/product/product-denom.ser
 import { ProductClarityService } from '../../../services/product/product-clarity.service';
 import { ServerDateTimeService } from '../../../services/system/server-date-time.service';
 import { ProductSeriesService } from '../../../services/product/product-series.service';
+import { ProductDiamondColorService } from '../../../services/product/product-diamond-color.service';
 import { TipeStock } from '../../../lib/enum/flag-product';
 import { FlagProduct } from '../../../lib/enum/flag-product';
 import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
-import { CetakMutasiComponent } from '../../../cetakan/stock/cetak-mutasi/cetak-mutasi.component';
-import { JurnalMutasiService } from '../../../services/keuangan/jurnal/stock/jurnal-mutasi.service';
+import { CetakMutasiComponent } from '../../../../g24/cetakan/stock/cetak-mutasi/cetak-mutasi.component';
+// import { CetakMutasiComponent } from '../../../../g24/pages/inventory-management/mutasi/cetak-mutasi/cetak-mutasi.component';
 import { StringHelper } from '../../../lib/helper/string-helper';
 
 //SORTING CLARITY LIB
@@ -58,7 +59,7 @@ static key = EMenuID.MUTASI;
 
 
   selected : any[] = [];
-  selected_detail : any[] = [];
+  selected_items : any[] = [];
   data_view : any = {};
 
   //SEARCHCODE
@@ -131,6 +132,8 @@ timezone : String;
 date_now : String;
 time : String;
 
+product_cut : any[] = [];
+
 noItem : number = 0;
 innerDoc : any = {};
 date : String = "";
@@ -141,7 +144,9 @@ descSort_terima : any;
 
 constructor(private UnitService : UnitService, private sessionservice : SessionService, 
   private mutasiservice : MutasiService, private productservice : ProductService,
-  private warnaservice : ProductGoldColorService, private kadarservice : ProductPurityService,
+  private warnaservice : ProductGoldColorService, 
+  private diamondservice : ProductDiamondColorService,
+  private kadarservice : ProductPurityService,
   private jenisservice : ProductJenisService, private denomservice : ProductDenomService,
   private productkategoryservice : ProductCategoryService,
   private klarityservice : ProductClarityService, private datetimeservice : ServerDateTimeService,
@@ -195,6 +200,8 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
       this.LoadDenom();
       this.LoadKlarity();
       this.LoadSeries();
+      this.LoadDiamondColor();
+      this.LoadProductCutArray();
   }
 
   async LoadUnit(){
@@ -215,7 +222,24 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
       this.toastr.error("Data kategori gagal diload "+msg,"Error");
       return;
     }    
-    this.product_kategori = data;
+    let datakategori = data;
+    for(let i = 0; i < datakategori.length; i++){
+      if(datakategori[i].name=="Berlian"){
+        this.product_kategori = datakategori;
+        this.product_kategori.splice(i,1);
+      }
+    }
+    
+  }
+
+  async LoadDiamondColor(){
+    let data = await this.diamondservice.list("?").toPromise();
+    if(data==false){
+      let msg = this.diamondservice.message();
+      this.toastr.error("Data Load Diamond Color gagal diload "+msg, "Error");
+      return;
+    }
+    this.colors = data;
   }
 
   async LoadColor(){
@@ -284,6 +308,13 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
       this.series = data;
   }
 
+  async LoadProductCutArray(){
+    this.product_cut = [
+      {code : "vg" , name : "very good"},
+      {code : "g" , name : "good"}
+    ]
+  }
+
 
   async doSearch(){
 
@@ -291,9 +322,11 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     this.spinner.SetSpinnerText("Mohon Tunggu...");
     this.spinner.Open();
 
-    if(this.sessionservice.getUser().unit.code!="00005"){
-      params += "unit_asal.code="+this.sessionservice.getUser().unit.code+"&";
-    }
+    // if(this.sessionservice.getUser().unit.code!="00005"){
+    //   params += "unit_asal.code="+this.sessionservice.getUser().unit.code+"&";
+    // }
+
+    params += "unit_asal.code="+this.sessionservice.getUser().unit.code+"&";
 
     for(let key in this.input){
       if(this.input[key] == null || this.input[key]=="null" || this.input[key]=="")continue;
@@ -339,7 +372,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
   }
 
   onAdd(){    
-    this.itemsdata = [];
+    this.items = [];
     this.itempick = 0;
     this.searchModel = {};
     this.addinput={};
@@ -414,13 +447,14 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
 
   vendorReset(){
     this.itemsinmutasi = [];
-    this.itemsdata = [];
+    this.items = [];
     this.products = [];
   }
 
   async onChange(){
 
   this.itemsinmutasi = [];
+  this.items = [];
   this.vendor = [];
   this.products = [];
   this.isVendor = true;
@@ -510,14 +544,14 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
 
     //UPDATE PRODUK
     let value = 0;
-    for(let index = 0; index < this.itemsdata.length; index++){
+    for(let index = 0; index < this.items.length; index++){
 
-      if(this.itemsdata[index]['berat'] == undefined)
+      if(this.items[index]['berat'] == undefined)
       {
-        value = this.itemsdata[index]['product-denom'].value;
+        value = this.items[index]['product-denom'].value;
         console.log(value, "denom");
       }else {
-        value = parseFloat(this.itemsdata[index]['berat']);
+        value = parseFloat(this.items[index]['berat']);
         console.log(value, 'berat');
       }
       this.berat = this.berat + value;
@@ -525,12 +559,12 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
       // this.berat = this.berat + value;
 
      console.log(this.berat.toString(),"total berat");
-    console.log(this.itemsdata.length);
-    let jml = this.itemsdata.length;
+    console.log(this.items.length);
+    let jml = this.items.length;
 
     //JUMLAH HPP
-    for(let p = 0; p < this.itemsdata.length; p++){
-      this.jml_hpp = this.jml_hpp + this.itemsdata[p].hpp;
+    for(let p = 0; p < this.items.length; p++){
+      this.jml_hpp = this.jml_hpp + this.items[p].hpp;
       console.log(this.jml_hpp,"Jumlah HPP");
     }
 
@@ -571,9 +605,9 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     }
 
     
-    for(let index =0; index < this.itemsdata.length; index++){
-      data.items.push(this.itemsdata[index]);
-      cetak.items.push(this.itemsdata[index]);
+    for(let index =0; index < this.items.length; index++){
+      data.items.push(this.items[index]);
+      cetak.items.push(this.items[index]);
     }
 
     console.log(data);
@@ -581,7 +615,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     let cfg = DataTypeUtil.Encode(data);
     console.log(cfg);
 
-    if(this.itemsdata.length <= 0 || tujuan == null || tujuan == "" || ktr == "" || ktr == null){
+    if(this.items.length <= 0 || tujuan == null || tujuan == "" || ktr == "" || ktr == null){
       this.spinner.Close();
       this.toastr.warning("Field Unit Tujuan belum dipilih atau data barang yang dimutasi belum di tambah. Dan cek kembali field keterangan","Peringatan");
     
@@ -604,10 +638,10 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
         this.itemsinmutasi = [];
       }
 
-      for(let i = 0; i < this.itemsdata.length; i++){
-        console.log(this.itemsdata[i]._id);
+      for(let i = 0; i < this.items.length; i++){
+        console.log(this.items[i]._id);
         let updateproduk = {
-          _id : this.itemsdata[i]._id,
+          _id : this.items[i]._id,
           flag : FlagProduct.TRANSIT.code
         }
   
@@ -642,12 +676,15 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     this.spinner.SetSpinnerText("Sedang melakukan pencarian Produk...");
     this.spinner.Open();
 
-    if(!this.searchModel["product-category"]||!this.searchModel.vndr){
+    if(!this.searchModel["product-category"]||!this.searchModel.vndr)
+    {
       this.toastr.warning("Produk kategori atau vendor belum dipilih","Peringatan");
       this.spinner.Close();
       return;
     }
-    this.products = [];
+
+    // this.products = [];
+
     this.modal_pick = false;
     let params = "?flag=stock&";
     params += "unit.code="+this.sessionservice.getUser().unit.code+"&";
@@ -669,9 +706,13 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
         case "warna":
           params += "product-gold-color.name="+this.searchModel[key].name+"&";
           break;
+
+        case "color":
+          params += "product-diamond-color.name="+this.searchModel[key].name+"&";
+          break;
         
         case "berat":
-          params += "berat="+this.searchModel[key]+"&";
+          params += "berat="+this.searchModel[key]+"&berat_encoded=int&";
           break;
 
         case "kadar":
@@ -687,7 +728,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
           break;        
         
         case "carat":
-          params += "carat="+this.searchModel[key]+"&";
+          params += "product-carat="+this.searchModel[key]+"&";
           break;
 
         case "denom":
@@ -713,13 +754,14 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     if(search==false){
       let msg = this.productservice.message();
       this.toastr.info("Data tidak ditemukan","Informasi");
+      this.products = [];
       this.spinner.Close();
       return;
     }
     this.spinner.Close();
     this.toastr.success("Data ditemukan "+search.length,"Sukses");
     this.products = search;
-    this.formInput = null;
+    // this.formInput = null;
 
   }
 
@@ -738,20 +780,43 @@ pickitem(){
 //--------------------------------------------------------------------------------------------
 
 Addmutasi(){
+  this.selected_items = [];
   if(!this.selected.length){
     this.toastr.warning("Data produk belum dipilih","Peringatan");
   }
-   
-  this.itemsinmutasi.push(this.selected);
-  for(let r = 0; r < this.itemsinmutasi.length; r++){
-    this.dorong[r] = this.itemsinmutasi[r];
-    this.itemsdata = this.dorong[r];
-    // if(this.selected[r]._id  == this.itemsdata[r]._id){
-    //   alert("data sudah ada");
-    // }
+
+  for(let r = 0; r < this.selected.length; r++){
+    if(this.items.indexOf(this.selected[r])=== -1){
+      this.items.push(this.selected[r]);
+    }
   }
 
+}
 
+deleteItems(){
+  // const index = this.items.indexOf(this.selected_items);
+  // if (index > -1) {
+  //   this.items.splice(index, 1);
+  // }
+
+  //tes array hapus multiple
+  if(this.selected_items.length <= 0){
+    this.toastr.warning("Harap pilih item terlebih dahulu","Warning");
+    return;
+  }
+  const idofselected : string[] = this.selected_items.map((e : any) => e._id);
+  this.removeData(idofselected);
+
+
+}
+
+private removeData(idnya : string[]){
+  const indexData : number = this.items.findIndex((e : any)=> e._id == idnya[0]);
+  this.items.splice(indexData,1);
+  idnya.shift();
+  if(idnya.length){
+    this.removeData(idnya);
+  }
 }
 
 
