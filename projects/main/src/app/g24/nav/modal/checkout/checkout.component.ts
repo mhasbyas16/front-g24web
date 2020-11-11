@@ -136,7 +136,7 @@ dat = null;
         this.sequenceService.use({key:this.idtransaksi}).subscribe((sq:any)=>{
           let id = sq["key"];
           console.debug(id);
-          this.formData.patchValue({ idTransaction: id, idAi: sq["key"] });
+          this.formData.patchValue({ idTransaction: id, idAi: id });
         })
       }else{
     
@@ -173,7 +173,7 @@ dat = null;
 
           
           this.idtransaksi = unit.code + "06" + d3 + inc;
-          this.formData.patchValue({ idTransaction:  this.idtransaksi, idAi: sq["key"] });
+          this.formData.patchValue({ idTransaction:  this.idtransaksi, idAi: id });
         })
         
       }
