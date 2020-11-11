@@ -17,6 +17,7 @@ import { TransactionFlagService } from '../../../services/transaction/transactio
 import { TransactionTypeService } from '../../../services/transaction/transaction-type.service';
 import { CurrencyService } from '../../../services/transaction/currency.service';
 import { SequenceService } from '../../../services/system/sequence.service';
+import { ServerDateTimeService } from '../../../services/system/server-date-time.service';
 
 // session service
 import { UserService } from 'projects/platform/src/app/services/security/user.service';
@@ -36,6 +37,8 @@ export class CheckoutComponent implements OnInit {
   //
   @Output() cartModal = new EventEmitter();
 
+  date:any;
+  time:any;
   validModel: boolean = false;
   bankForm: boolean = false;
   edc: boolean = false;
@@ -115,6 +118,7 @@ dat = null;
     private toastr: ToastrService,
     private sessionService: SessionService,
     private datePipe: DatePipe,
+    private serverDateTimeService:ServerDateTimeService
   ) { }
 
   ngOnInit(): void {
@@ -126,19 +130,19 @@ dat = null;
   idTransaksi() {
     this.idtransaksi = null;
     let inc = null;
-    let d1 = this.datePipe.transform(Date.now(), '01/01/yyyy');
-    let d2 = this.datePipe.transform(Date.now(), '12/31/yyyy');
+    let d1 = this.datePipe.transform(Date.now(), 'yyyy-01-01');
+    let d2 = this.datePipe.transform(Date.now(), 'yyyy-12-31');
     let d3 = this.datePipe.transform(Date.now(), 'yy');
     let unit = this.sessionService.getUnit();
 
     let params = "?_between=makerDate&_start=" + d1 + "&_end=" + d2;
     this.transactionService.list(params + '&_sortby=_id:0&_rows=1').subscribe((response: any) => {
       let count = null;
-      if (response["0"]["idAi"] == null) {
+      if (response["length"] == 0) {
         count = JSON.stringify(1);
         this.idtransaksi = unit.code + "06" + d3 + "0000001";
         this.sequenceService.use({key:this.idtransaksi}).subscribe((sq:any)=>{
-          let id = sq["key"];
+          let id = sq["value"];
           console.debug(id);
           this.formData.patchValue({ idTransaction: id, idAi: id });
         })
@@ -147,7 +151,13 @@ dat = null;
         this.idtransaksi = unit.code + "06" + d3 + "0000001";
 
         this.sequenceService.peek({key:this.idtransaksi}).subscribe((sq:any)=>{
+          let idAi = JSON.stringify(response["0"]["idAi"]);
           let id = JSON.stringify(Number(sq["value"]) + 1);
+          
+          if (idAi == id) {
+            this.sequenceService.use({key:this.idtransaksi}).subscribe((sq:any)=>{});
+            this.idtransaksi();
+          }
 
           switch (id.length) {
             case 1:
@@ -212,8 +222,8 @@ dat = null;
       admBank: new FormControl(""),
       maker: new FormControl(this.nikUser["_hash"], [Validators.required]),
       maker_encoded: new FormControl("base64"),
-      makerDate: new FormControl(this.datePipe.transform(Date.now(), 'MM/dd/yyyy'), Validators.required),
-      makerTime: new FormControl(this.datePipe.transform(Date.now(), 'h:mm:ss a'), Validators.required),
+      makerDate: new FormControl(this.date, Validators.required),
+      makerTime: new FormControl(this.time, Validators.required),
       jumlahTerima: new FormControl(totalHarga, Validators.required),
       unit: new FormControl(""),
       unit_encoded: new FormControl("base64"),
@@ -237,6 +247,20 @@ dat = null;
       coa: new FormControl("")
       
     });
+    let params = "?";
+    this.serverDateTimeService.task(params).subscribe(output=>{
+
+      if(output==false){
+        console.debug("Date gagal")
+      }
+        this.date = this.serverDateTimeService.getDateOnly(output);
+        this.time = this.serverDateTimeService.getTimeOnly(output);
+      this.formData.patchValue({makerDate:this.date, makerTime:this.time});
+    })
+
+
+
+    
 
     for (let isi of LM) {
       this.formData.addControl(isi.code, new FormControl(isi.Value, [Validators.required, Validators.minLength(9)]))
