@@ -702,7 +702,7 @@ export class DetailInisiasiEmasComponent extends BasePersistentFields implements
       // __format : "no_po:inc",
       create_date : this.input['create_date'],
       create_time : time,
-      create_by : this.user.username,
+      create_by : this.user,
       unit : this.user.unit.code,
       order_status : OrderStatus.SUBMIT.code,
       status_bayar : '1',

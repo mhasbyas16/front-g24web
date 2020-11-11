@@ -793,7 +793,7 @@ console.debug(this.hbeli);
     let st = StringHelper.LeftZeroPad(Number(seq.value).toString(), 5);
     let PO = "PO" + this.session.getUnit()?.code + date_split[0].substring(2, 4) + date_split[1] + date_split[2] + st;
 
-    let def = {
+    let inisiasi = {
       no_po : PO,
       // __format : "no_po:inc",
       create_by : this.user,
@@ -807,7 +807,7 @@ console.debug(this.hbeli);
       _log : true
     }
 
-    Object.assign(this.input, def);
+    Object.assign(this.input, inisiasi);
     let init = DataTypeUtil.Encode(this.input);
 
     // this.input.id_harga = this.hbeli._id;

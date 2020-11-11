@@ -702,7 +702,7 @@ export class DetailInisiasiDinarComponent extends BasePersistentFields implement
       // __format : "no_po:inc",
       create_date : this.input['create_date'],
       create_time : time,
-      create_by : this.user.username,
+      create_by : this.user,
       unit : this.user.unit.code,
       order_status : "submit",
       status_bayar : '1',
