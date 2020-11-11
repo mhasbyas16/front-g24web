@@ -12,11 +12,12 @@ export class SessionService {
    * 
    * JANGAN GANTI DISINI, CARI KE FILE ..src/assets/config/server-config.json
    */
-  // server: string = "http://localhost:8000";
+  server: string = "http://localhost:8000";
   // server: string = "http://192.168.100.186:8000";
   // server: string = "http://192.168.100.254:8000";
   // server: string = "http://34.87.141.184:8000";
-  server: string = "https://dev.g24sys.com";
+  // server: string = "https://dev.g24sys.com";
+  // server: string = "https://api.g24sys.com";
   pasphrase = "";
 
   constructor

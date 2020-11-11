@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output,  EventEmitter } from '@angular/core';
 import { PERHIASAN } from "projects/main/src/app/g24/sample/cart-buyback";
 import { PricingService } from '../../../../services/pricing.service';
 import { PrmJualService } from '../../../../services/parameter/prm-jual.service';
+import { PerhiasanBuybackPriceService } from '../../../../services/product/perhiasan-buyback-price.service';
 
 
 @Component({
@@ -33,7 +34,8 @@ export class PerhiasanBycodeComponent implements OnInit {
   constructor(
     //pricing
     private pricingService: PricingService,
-    private prmJualService: PrmJualService
+    private prmJualService: PrmJualService,
+    private perhiasanBuybackPriceService:PerhiasanBuybackPriceService
 
   ) { }
 
@@ -41,29 +43,37 @@ export class PerhiasanBycodeComponent implements OnInit {
     
   }
   
-  hitungHargaBB(kondisi: any , code : any, kadar : any, berat: any){
+  hitungHargaBB(kondisi: any , code : any, kadar : any, berat: any, hargaBaku:any){
     this.loadingDg = true
     this.hargaBB = 0
-    this.prmJualService.get("?"+this.productCategory+"&flag=approved").subscribe((BBresponse: any) => {
-        this.hargaDasarBuyback = BBresponse.harga_buyback
-        
-    })
+    this.perhiasanBuybackPriceService.get("?kondisi="+kondisi+"&kadar="+kadar+"&berat="+berat+"&hargaBuyback="+hargaBaku+"").subscribe((response:any)=>{
+      if (response == false) {
+        return console.debug("error");
+      }
+      this.hargaBB = response["hargaBB"];
 
-    if (kondisi == 1) {
-      this.tampilKondisi = "Baik"
-    }else if(kondisi == 2){
-      this.tampilKondisi = "Rusak"
-    }else{
-      this.hargaBB = 0
-    }
-    this.hargaBB = this.pricingService.buybackPricePerhiasan(kondisi, kadar, berat,this.hargaDasarBuyback )
+      for (let index = 0; index < this.isiPerhiasan.data.length; index++) {
+        if (this.isiPerhiasan.data[index]["code"] == code) {
+          this.isiPerhiasan.data[index]['hargaBB'] =  this.hargaBB
+        }
+       }
+       this.loadingDg = false
+    })
+    // this.prmJualService.get("?"+this.productCategory+"&flag=approved").subscribe((BBresponse: any) => {
+    //     this.hargaDasarBuyback = BBresponse.harga_buyback
+        
+    // })
+
+    // if (kondisi == 1) {
+    //   this.tampilKondisi = "Baik"
+    // }else if(kondisi == 2){
+    //   this.tampilKondisi = "Rusak"
+    // }else{
+    //   this.hargaBB = 0
+    // }
+    // this.hargaBB = this.pricingService.buybackPricePerhiasan(kondisi, kadar, berat,this.hargaDasarBuyback )
     
-   for (let index = 0; index < this.isiPerhiasan.data.length; index++) {
-    if (this.isiPerhiasan.data[index]["code"] == code) {
-      this.isiPerhiasan.data[index]['hargaBB'] =  this.hargaBB
-    }
-   }
-   this.loadingDg = false
+   
   }
 
   addToCart(code, jenis, berat, kadar, hargaTbb, detail, idTransaction ){

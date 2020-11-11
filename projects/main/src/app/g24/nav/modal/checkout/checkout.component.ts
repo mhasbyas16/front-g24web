@@ -16,6 +16,7 @@ import { TransactionBankInstallmentService } from '../../../services/transaction
 import { TransactionFlagService } from '../../../services/transaction/transaction-flag.service';
 import { TransactionTypeService } from '../../../services/transaction/transaction-type.service';
 import { CurrencyService } from '../../../services/transaction/currency.service';
+import { SequenceService } from '../../../services/system/sequence.service';
 
 // session service
 import { UserService } from 'projects/platform/src/app/services/security/user.service';
@@ -76,6 +77,7 @@ export class CheckoutComponent implements OnInit {
   installmentPeriod: any;
   kembali: any;
   diterima: any;
+  check:boolean;
 
   kasirId: FormControl= null;
   coa: FormControl= null;
@@ -104,6 +106,7 @@ dat = null;
     private productService: ProductService,
     private transactionTypeService: TransactionTypeService,
     private currencyService:CurrencyService,
+    private sequenceService:SequenceService,
     //ng
     private toastr: ToastrService,
     private sessionService: SessionService,
@@ -129,38 +132,55 @@ dat = null;
       let count = null;
       if (response["0"]["idAi"] == null) {
         count = JSON.stringify(1);
+        this.idtransaksi = unit.code + "06" + d3 + "0000001";
+        this.sequenceService.use({key:this.idtransaksi}).subscribe((sq:any)=>{
+          let id = sq["key"];
+          console.debug(id);
+          this.formData.patchValue({ idTransaction: id, idAi: sq["key"] });
+        })
       }else{
-        count = JSON.stringify(Number(response["0"]["idAi"]) + 1);
+    
+        this.idtransaksi = unit.code + "06" + d3 + "0000001";
 
+        this.sequenceService.peek({key:this.idtransaksi}).subscribe((sq:any)=>{
+          let id = JSON.stringify(Number(sq["value"]) + 1);
+
+          switch (id.length) {
+            case 1:
+              inc = "000000" + id;
+              break;
+            case 2:
+              inc = "00000" + id;
+              break;
+            case 3:
+              inc = "0000" + id;
+              break;
+            case 4:
+              inc = "000" + id;
+              break;
+            case 5:
+              inc = "00" + id;
+              break;
+            case 6:
+              inc = "0" + id;
+              break;
+            case 7:
+              inc = id;
+              break;
+            default:
+              break;
+          }
+
+          
+          this.idtransaksi = unit.code + "06" + d3 + inc;
+          this.formData.patchValue({ idTransaction:  this.idtransaksi, idAi: sq["key"] });
+        })
+        
       }
-      switch (count.length) {
-        case 1:
-          inc = "000000" + count;
-          break;
-        case 2:
-          inc = "00000" + count;
-          break;
-        case 3:
-          inc = "0000" + count;
-          break;
-        case 4:
-          inc = "000" + count;
-          break;
-        case 5:
-          inc = "00" + count;
-          break;
-        case 6:
-          inc = "0" + count;
-          break;
-        case 7:
-          inc = count;
-          break;
-        default:
-          break;
-      }
+      
       // this.idtransaksi = "5502906200000054"
-      this.idtransaksi = unit.code + "06" + d3 + inc;
-      this.formData.patchValue({ idTransaction: this.idtransaksi, idAi: Number(response["0"]["idAi"]) + 1 });
+      // this.idtransaksi = unit.code + "06" + d3 + inc;
+      // this.formData.patchValue({ idTransaction: this.idtransaksi, idAi: Number(response["0"]["idAi"]) + 1 });
     });
 
   }
@@ -458,7 +478,9 @@ dat = null;
       LM[index].noSeri = data[LM[index].code]
       delete data[LM[index].code]
     }
-    // 
+    // idTransaction Sqeuencer
+
+    this.sequenceService.use({key:data.idTransaction}).toPromise();
     
     data.product = btoa(JSON.stringify({ PERHIASAN, LM, BERLIAN, GS, DINAR }));
     data.product_encoded = "base64";
