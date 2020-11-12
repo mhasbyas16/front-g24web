@@ -141,14 +141,17 @@ dat = null;
       if (response["length"] == 0) {
         count = JSON.stringify(1);
         this.idtransaksi = unit.code + "06" + d3 + "0000001";
+        this.formData.patchValue({ idSequencer: this.idtransaksi});
         this.sequenceService.use({key:this.idtransaksi}).subscribe((sq:any)=>{
           let id = sq["value"];
           console.debug(id);
           this.formData.patchValue({ idTransaction: id, idAi: id });
+          console.debug(this.idtransaksi,"ID")
         })
       }else{
     
         this.idtransaksi = unit.code + "06" + d3 + "0000001";
+        this.formData.patchValue({ idSequencer: this.idtransaksi});
 
         this.sequenceService.peek({key:this.idtransaksi}).subscribe((sq:any)=>{
           let idAi = JSON.stringify(response["0"]["idAi"]);
@@ -187,6 +190,7 @@ dat = null;
 
           
           this.idtransaksi = unit.code + "06" + d3 + inc;
+          console.debug(this.idtransaksi,"ID")
           this.formData.patchValue({ idTransaction:  this.idtransaksi, idAi: id });
         })
         
@@ -207,6 +211,7 @@ dat = null;
 
     this.formData = new FormGroup({
       idTransaction: new FormControl(""),
+      idSequencer: new FormControl(""),
       idTransaction_validation: new FormControl("unique:idTransaction"),
       cif: new FormControl("", [Validators.required, Validators.pattern(/^[0-9]*$/)]),
       name: new FormControl("", [Validators.required]),
@@ -508,7 +513,7 @@ dat = null;
     }
     // idTransaction Sqeuencer
 
-    this.sequenceService.use({key:data.idTransaction}).toPromise();
+    this.sequenceService.use({key:data.idSequencer}).toPromise();
     
     data.product = btoa(JSON.stringify({ PERHIASAN, LM, BERLIAN, GS, DINAR }));
     data.product_encoded = "base64";
@@ -518,6 +523,7 @@ dat = null;
     delete data["cif"];
     delete data["namaPemasar"];
     delete data["nik"];
+    delete data["idSequencer"];
     // new
     //per product
     // data["hjual"] = nomT.replace(/,/g, '');

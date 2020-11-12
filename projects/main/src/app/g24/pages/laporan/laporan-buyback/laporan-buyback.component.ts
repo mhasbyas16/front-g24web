@@ -7,6 +7,8 @@ import { ToastrService } from 'ngx-toastr';
 
 // services
 import { BuybackTransactionService } from '../../../services/buyback/buyback-transaction.service';
+import { SplitDateServiceService } from '../../../services/split-date-service.service';
+
 //Session
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 
@@ -45,6 +47,7 @@ export class LaporanBuybackComponent implements OnInit {
     //session
     private sessionService: SessionService,
     private datePipe: DatePipe,
+    private splitDateServiceService:SplitDateServiceService
   ) { }
 
   ngOnInit(): void {
@@ -79,6 +82,8 @@ export class LaporanBuybackComponent implements OnInit {
     this.loadingDg = true;
     let paramTransaction = "&transaction-type.code=b01"
     let data = this.search.getRawValue(); 
+    data.from = this.splitDateServiceService.split(data.from);
+    data.to = this.splitDateServiceService.split(data.to);
     let params = "";
 
     // Session

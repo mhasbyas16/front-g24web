@@ -18,6 +18,8 @@ import { TransactionTypeService } from '../../../services/transaction/transactio
 
 import { UserService } from 'projects/platform/src/app/services/security/user.service';
 import { ContentPage } from '../../../lib/helper/content-page';
+import { SequenceService } from '../../../services/system/sequence.service';
+import { ServerDateTimeService } from '../../../services/system/server-date-time.service';
 // import { promises } from 'fs';
 
 @Component({
@@ -60,6 +62,8 @@ export class CheckoutBuybackComponent implements OnInit {
   diterima: any;
   kembali: number;
   incId = 0
+  date:any;
+  time:any;
 
   constructor(
     private sessionService: SessionService,
@@ -72,6 +76,8 @@ export class CheckoutBuybackComponent implements OnInit {
     private transactionFlagBuybackService:TransactionFlagBuybackService,
     private transactionService : TransactionService,
     private transactionTypeService: TransactionTypeService,
+    private sequenceService:SequenceService,
+    private serverDateTimeService:ServerDateTimeService
   ) { }
 
   ngOnInit(): void {
@@ -90,10 +96,11 @@ export class CheckoutBuybackComponent implements OnInit {
       client_encoded: new FormControl("base64"),
       name: new FormControl ("",[ Validators.required]),
       idTransactionBB: new FormControl ("",[ Validators.required]),
+      idSequencer: new FormControl(""),
       metodeBayar: new FormControl ("", Validators.required),
       metodeBayar_encoded: new FormControl("base64"),
-      makerDate: new FormControl(this.datePipe.transform(Date.now(), 'MM/dd/yyyy'), Validators.required),
-      makerTime: new FormControl(this.datePipe.transform(Date.now(), 'h:mm:ss a'), Validators.required),
+      makerDate: new FormControl("", Validators.required),
+      makerTime: new FormControl("", Validators.required),
       nominalTransaksi: new FormControl (""),
       kembali: new FormControl (""),
       unit: new FormControl(""),
@@ -101,6 +108,17 @@ export class CheckoutBuybackComponent implements OnInit {
       maker: new FormControl(this.nikUser["_hash"], [Validators.required]),
       maker_encoded: new FormControl("base64"),
       idAi: new FormControl("", Validators.required),
+    })
+
+    let params = "?";
+    this.serverDateTimeService.task(params).subscribe(output=>{
+
+      if(output==false){
+        console.debug("Date gagal")
+      }
+        this.date = this.serverDateTimeService.getDateOnly(output);
+        this.time = this.serverDateTimeService.getTimeOnly(output);
+      this.formData.patchValue({makerDate:this.date, makerTime:this.time});
     })
 
     console.debug(LM, "sadsda")
@@ -165,8 +183,8 @@ export class CheckoutBuybackComponent implements OnInit {
   idTransaksi(){
     this.idtransaksiBB = null;
     let inc = null;
-    let d1 = this.datePipe.transform(Date.now(),'01/01/yyyy');
-    let d2 = this.datePipe.transform(Date.now(),'12/31/yyyy');
+    let d1 = this.datePipe.transform(Date.now(),'yyyy-01-01');
+    let d2 = this.datePipe.transform(Date.now(),'yyyy-12-31');
     let d3 = this.datePipe.transform(Date.now(),'yy');
     let unit = this.sessionService.getUnit();
     
@@ -177,41 +195,67 @@ export class CheckoutBuybackComponent implements OnInit {
       // if (response == false) {
       //   this.incId = 0
       // }else{
-        this.incId = Number(response["0"]["idAi"])+1;
+        // this.incId = Number(response["0"]["idAi"])+1;
       // }
       let count = null;
-      if (response["0"]["idAi"] == null) {
+      if (response["length"] == 0) {
         count = JSON.stringify(1);
+        this.idtransaksiBB = unit.code+"09"+d3+"0000001";
+        this.formData.patchValue({idSequencer: this.idtransaksiBB });
+        this.sequenceService.use({key:this.idtransaksiBB}).subscribe((sq:any)=>{
+          let id = sq["value"];
+          console.debug(id);
+          console.debug(this.idtransaksiBB,"id")
+          this.formData.patchValue({idTransactionBB: this.idtransaksiBB, idAi: id });
+        })
       }else{
-        count = JSON.stringify(Number(response["0"]["idAi"]) + 1);
+        // count = JSON.stringify(Number(response["0"]["idAi"]) + 1);
+
+        this.idtransaksiBB = unit.code+"09"+d3+"0000001";
+        this.formData.patchValue({idSequencer: this.idtransaksiBB });
+        this.sequenceService.peek({key:this.idtransaksiBB}).subscribe((sq:any)=>{
+          let idAi = JSON.stringify(response["0"]["idAi"]);
+          let id = JSON.stringify(Number(sq["value"]) + 1);
+          
+          if (idAi == id) {
+            this.sequenceService.use({key:this.idtransaksiBB}).subscribe((sq:any)=>{});
+            this.idTransaksi();
+          }
+
+          switch (id.length) {
+            case 1:
+              inc = "000000" + id;
+              break;
+            case 2:
+              inc = "00000" + id;
+              break;
+            case 3:
+              inc = "0000" + id;
+              break;
+            case 4:
+              inc = "000" + id;
+              break;
+            case 5:
+              inc = "00" + id;
+              break;
+            case 6:
+              inc = "0" + id;
+              break;
+            case 7:
+              inc = id;
+              break;
+            default:
+              break;
+          }
+
+          
+          this.idtransaksiBB = unit.code + "09" + d3 + inc;
+          console.debug(this.idtransaksiBB,"id")
+          this.formData.patchValue({ idTransactionBB:  this.idtransaksiBB, idAi: id });
+        })
       }
-      switch (count.length) {
-        case 1:
-          inc = "000000"+count;
-          break;
-        case 2:
-          inc = "00000"+count;
-          break;
-        case 3:
-          inc = "0000"+count;
-          break;
-        case 4:
-          inc = "000"+count;
-          break;
-        case 5:
-          inc = "00"+count;
-          break;
-        case 6:
-          inc = "0"+count;
-          break;
-        case 7:
-          inc = count;
-          break;
-        default:
-          break;
-      }
-      this.idtransaksiBB = unit.code+"09"+d3+inc;
-      this.formData.patchValue({idTransactionBB:this.idtransaksiBB,idAi:Number(this.incId)+1});
+      // this.idtransaksiBB = unit.code+"09"+d3+inc;
+      // this.formData.patchValue({idTransactionBB:this.idtransaksiBB,idAi:Number(this.incId)+1});
     });
   }
 
@@ -253,6 +297,9 @@ export class CheckoutBuybackComponent implements OnInit {
     data["idAi"] =  this.incId
     
     console.debug(this.kembali, "kembali")
+    // idTransaction Sqeuencer
+
+    this.sequenceService.use({key:data.idSequencer}).toPromise();
 
     data.product = btoa(JSON.stringify({ PERHIASAN, LM, BERLIAN, GS, DINAR }));
     data.product_encoded = "base64";
@@ -261,6 +308,7 @@ export class CheckoutBuybackComponent implements OnInit {
     delete data["cif"];
     delete data["namaPemasar"];
     delete data["nik"];
+    delete data["idSequencer"];
     data['transaction-type_encoded'] = "base64";
     
     // this.productService.batchUpdate(this.transactionFlagBuybackService.batchUpdate(btoa(JSON.stringify(this.sessionService.getUnit())))).subscribe((response: any) => {
