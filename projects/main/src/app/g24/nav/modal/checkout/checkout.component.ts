@@ -249,7 +249,7 @@ dat = null;
       namaPemasar: new FormControl(this.nikUser["name"]),
       'transaction-type': new FormControl("", Validators.required),
       'transaction-type_encoded': new FormControl("base64"),
-      kasirId: new FormControl(""),
+      kasirId: new FormControl("", Validators.required),
       coa: new FormControl("")
       
     });
@@ -501,6 +501,10 @@ dat = null;
       this.toastr.error("Nilai Tidak Cukup", "Transaction");
       return;
     }
+    // if (!this.nikValid) {
+    //   this.toastr.error("Kasir ID (Emas) tidak Valid", "Transaction");
+    //   return;
+    // }
     console.debug(this.gs, "wew")
     this.validModel = true;
   }
