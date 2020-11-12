@@ -17,6 +17,8 @@ import { PricingService }  from '../../../../services/pricing.service';
 
 import { GS } from '../../../../sample/cart';
 import { CountCartService } from '../../../../services/count-cart.service';
+//Session
+import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 
 
 
@@ -80,6 +82,8 @@ export class SouvenirComponent implements OnInit {
 
   //pricing 
   private pricingService: PricingService,
+  private sessionService:SessionService
+
   
   
 
@@ -144,8 +148,12 @@ export class SouvenirComponent implements OnInit {
     const urlVendor = "vendor.code="+vendor;
     const urlDenom = "product-denom.code="+denom;
     const urlSeries = "product-series.code="+series;
+    
 
     this.params = this.category;
+    // Session
+    const getUnit = this.sessionService.getUnit();
+    this.params = this.params+"&unit.code="+getUnit["code"];
 
     console.debug(this.params)
     if (vendor == "pilih" || denom == "pilih") {

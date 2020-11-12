@@ -157,8 +157,8 @@ dat = null;
         this.sequenceService.peek({key:this.idtransaksi}).subscribe((sq:any)=>{
           let idAi = JSON.stringify(response["0"]["idAi"]);
           let id = JSON.stringify(Number(sq["value"]) + 1);
-          
-          if (idAi == id) {
+          console.debug(idAi,)
+          if (idAi == JSON.stringify(id)) {
             this.sequenceService.use({key:this.idtransaksi}).subscribe((sq:any)=>{});
             this.idtransaksi();
           }
