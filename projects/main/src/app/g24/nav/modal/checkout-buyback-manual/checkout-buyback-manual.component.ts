@@ -233,7 +233,7 @@ export class CheckoutBuybackManualComponent implements OnInit {
           let idAi = JSON.stringify(response["0"]["idAi"]);
           let id = JSON.stringify(Number(sq["value"]) + 1);
           
-          if (idAi == id) {
+          if (idAi == JSON.stringify(id)) {
             this.sequenceService.use({key:this.idtransaksiBB}).subscribe((sq:any)=>{});
             this.idTransaksi();
           }

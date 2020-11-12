@@ -15,7 +15,8 @@ import { PricingService }  from '../../../../services/pricing.service';
 
 import { LM } from '../../../../sample/cart';
 import { CountCartService } from '../../../../services/count-cart.service';
-
+//Session
+import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 
 @Component({
   selector: 'app-mulia',
@@ -79,6 +80,7 @@ export class MuliaComponent implements OnInit {
   
   //pricing 
   private pricingService: PricingService,
+  private sessionService:SessionService
   
 
 
@@ -131,9 +133,14 @@ export class MuliaComponent implements OnInit {
     const urlVendor = "vendor.code="+vendor;
     const urlDenom = "product-denom.code="+denom;
     const urlFlag = "flag="+flag;
+     
     // const urlQty = "_rows="+jumlah;
 
     this.params = this.category;
+    // Session
+    const getUnit = this.sessionService.getUnit();
+    this.params = this.params+"&unit.code="+getUnit["code"];
+    
     if (vendor == "pilih" || denom == "pilih" || flag == "pilih") {
       this.toastrService.error("Pilih Vendor , Denom dan Flag Barang Terlebih Dahulu");
       this.loadingDg = false;
