@@ -38,6 +38,7 @@ export class HeaderComponent implements OnInit {
     this.user = this.session.getUser()?.username;
     this.user_nama = this.session.getUser()?.name;
     this.role = this.session.getRole()?.display_name;
+    this.session.setServerConfig();
     this.loadDate();
   }
 

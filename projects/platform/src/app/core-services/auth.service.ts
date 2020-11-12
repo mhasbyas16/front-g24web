@@ -36,7 +36,7 @@ export class AuthService {
     })
   }
 
-  async getServerConfig() {
+  async setServerConfig() {
     let protocol = window.location.protocol;
     let name = window.location.hostname;
     let port = window.location.port;
@@ -59,7 +59,7 @@ export class AuthService {
   }
 
   authCompany(params: string) {
-    this.getServerConfig();
+    this.setServerConfig();
     // let json = 
     // console.debug(json);
 
