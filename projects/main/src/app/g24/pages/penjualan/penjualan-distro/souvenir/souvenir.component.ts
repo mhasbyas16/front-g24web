@@ -171,8 +171,8 @@ export class SouvenirComponent implements OnInit {
           this.souvenirs = response;
 
           console.debug(this.souvenirs[0].ongkos_pieces , "ongkos")
-          this.productService.count(this.params+'&'+this.flagBarang).subscribe((response: any) => {
-            this.qty = response.count;
+          // this.productService.count(this.params+'&'+this.flagBarang).subscribe((response: any) => {
+            this.qty = response["length"];
             this.prmJualService.get("?"+this.souvenirCategory+"&"+this.flagApp).subscribe((Jualresponse: any) => {
               let prmJual = Jualresponse;
               cariSouvenir.push({
@@ -185,28 +185,8 @@ export class SouvenirComponent implements OnInit {
               });
               this.datasouvenirs = cariSouvenir;
               this.loadingDg = false;
-              // console.debug(prmJual[0]['harga_baku'],'hargabaku')
-              // this.prmMarginService.get("?"+this.souvenirCategory+"&"+this.flagApp).subscribe((Marginresponse: any) => {
-              //   let prmMargin = Marginresponse
-               
-              //   this.prmPpnService.list().subscribe((PPNresponse: any) => {
-              //     let ppn = PPNresponse
-                  
-              //     let hargaSouvenir = this.pricingService.priceSouvenir((prmJual['harga_baku']), Number(prmMargin.margin), Number(this.souvenirs[0]['product-denom'].value), Number(ppn[0].ppn), Number(this.souvenirs[0].ongkos_pieces));
-                  
-              //     console.debug(prmJual['harga_baku'], "harga_baku")
-              //     console.debug(prmMargin.margin, "margin")
-              //     console.debug(this.souvenirs[0]['product-denom'].value, "denom")
-              //     console.debug(ppn[0].ppn, "ppn")
-              //     console.debug(this.souvenirs[0].ongkos_pieces, "souvenirs")
-                  
-              //     hargaSouvenir =  Math.ceil(hargaSouvenir/1000)*1000;
-              //     console.debug( hargaSouvenir,'hargaSouvenir')
-                  
-              //   });
-              // });
             });
-          });
+          // });
       });
     }
       
