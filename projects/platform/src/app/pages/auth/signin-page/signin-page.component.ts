@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../core-services/auth.service';
 import { Router } from '@angular/router';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-signin-page',
@@ -19,6 +20,10 @@ export class SigninPageComponent implements OnInit {
 
   error:string = null;
 
+  authCompany : Subscription = null;
+  authUsername : Subscription = null;
+  authLogin : Subscription = null;
+
   constructor(
     // app
     private authService:AuthService,
@@ -34,7 +39,7 @@ export class SigninPageComponent implements OnInit {
   ngOnInit(): void {
     this.authService.logout();
     const company= "g24";
-    this.authService.authCompany(company).subscribe((response:any) => {
+    this.authCompany = this.authService.authCompany(company).subscribe((response:any) => {
       this.spinner = false;
       if (response == false) {
         if (this.authService.getMessage() != null) {
@@ -49,10 +54,12 @@ export class SigninPageComponent implements OnInit {
   }
 
   back() {
+    this.spinner = false;
     if(this.state == 1)
     {
       this.error = null
       this.authService.backCompany();
+      this.authCompany.unsubscribe();
       this.state--;
       return;
     }
@@ -61,6 +68,7 @@ export class SigninPageComponent implements OnInit {
     {
       this.error = null
       // this.authService.backCompany();
+      this.authUsername.unsubscribe();
       this.state--;
       return;
     }
@@ -69,6 +77,7 @@ export class SigninPageComponent implements OnInit {
     {
       this.error = null
       // this.authService.backCompany();
+      this.authLogin.unsubscribe();
       this.state--;
       return;
     }
@@ -107,7 +116,7 @@ export class SigninPageComponent implements OnInit {
       }   
       console.debug("username", data.value.username);
       this.spinner = true;
-      this.authService.authUsername(data.value.username).subscribe((response:any) => {
+      this.authUsername = this.authService.authUsername(data.value.username).subscribe((response:any) => {
         this.spinner = false;
         if (response == false) {
           if (this.authService.getMessage() != null) {
@@ -122,7 +131,7 @@ export class SigninPageComponent implements OnInit {
         }
         console.debug("response", response);
         this.name = response.name;
-        this.username = response.email;
+        this.username = response.username;
         this.state = 3;
       });
       return;   
@@ -135,7 +144,7 @@ export class SigninPageComponent implements OnInit {
         return;
       }   
       this.spinner = true;
-      this.authService.authLogin(this.username, data.value.password).subscribe((response:any) => {
+      this.authLogin = this.authService.authLogin(this.username, data.value.password).subscribe((response:any) => {
         this.spinner = false;
         if (response == false) {
           if (this.authService.getMessage() != null) {

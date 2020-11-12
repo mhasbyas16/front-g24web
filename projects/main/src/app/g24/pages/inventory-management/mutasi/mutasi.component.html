@@ -215,7 +215,7 @@
                     Atribut Perhiasan
                 </div>
                 <div class="card-body">
-                    <div class="clr-row">
+                    <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <clr-select-container>
                                 <label class="clr-control-label" style="padding-left: 10px">Kadar</label>
@@ -229,7 +229,7 @@
                         </div>
                         <div class="clr-col-6">
                             <clr-select-container>
-                                <label class="clr-control-label" style="padding-left: 10px">Warna</label>
+                                <label class="clr-control-label" style="padding-left: 10px">Warna Emas</label>
                                 <select [(ngModel)]="searchModel.warna" #warna clrSelect name="warna">
                                     <option [ngValue]="null"></option>
                                     <ng-container *ngFor="let warna of warnas">
@@ -239,10 +239,10 @@
                             </clr-select-container>
                         </div>
                     </div>
-                    <div class="clr-row">
+                    <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                                 <clr-select-container>
-                                    <label class="clr-control-label" style="padding-left: 10px">Jenis</label>
+                                    <label class="clr-control-label" style="padding-left: 10px">Jenis Produk</label>
                                     <select [(ngModel)]="searchModel.jenis" #jenis clrSelect name="jenis">
                                         <option [ngValue]="null"></option>
                                         <ng-container *ngFor="let jenis of jeniss">
@@ -261,7 +261,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="clr-row">
+                    <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <label class="clr-control-label" style="padding-left: 10px">Tipe Stock</label>
                             <div class="clr-control-container">
@@ -298,7 +298,7 @@
                     Attribute Berlian
                 </div>
                 <div class="card-body">
-                    <div class="clr-row">
+                    <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <clr-select-container class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Kadar</label>
@@ -312,8 +312,8 @@
                         </div>
                         <div class="clr-col-6">
                             <clr-select-container class="clr-form-control">
-                                <label class="clr-control-label" style="padding-left: 10px">Warna</label>
-                                <select [(ngModel)]="searchModel.warna" #jenis clrSelect name="warna">
+                                <label class="clr-control-label" style="padding-left: 10px">Warna Emas</label>
+                                <select [(ngModel)]="searchModel.warna" #warna clrSelect name="warna">
                                     <option [ngValue]="null"></option>
                                     <ng-container *ngFor="let warna of warnas">
                                         <option [ngValue]="warna">{{warna.name}}</option>
@@ -322,10 +322,10 @@
                             </clr-select-container>
                         </div>
                     </div>
-                    <div class="clr-row">
+                    <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                                 <clr-select-container class="clr-form-control">
-                                    <label class="clr-control-label" style="padding-left: 10px">Jenis</label>
+                                    <label class="clr-control-label" style="padding-left: 10px">Jenis Product</label>
                                     <select [(ngModel)]="searchModel.jenis" #jenis clrSelect name="jenis">
                                         <option [ngValue]="null"></option>
                                         <ng-container *ngFor="let jenis of jeniss">
@@ -345,20 +345,28 @@
                         </div>
                     </div>
                     
-                    <div class="clr-row">
+                    <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <div class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Cut</label>
-                                <div class="clr-control-container">
+                                <!-- <div class="clr-control-container">
                                     <input [(ngModel)]="searchModel.cut" class="clr-input" type="text" name="cut" placeholder="00.51" />
                                     <span class="clr-subtext">Harap gunakan titik (.)</span>
-                                </div>
+                                </div> -->
+                                <clr-select-container>
+                                    <select name="cut" clrSelect [(ngModel)]="searchModel.cut">
+                                        <option [ngValue]=""></option>
+                                        <ng-container *ngFor="let data of product_cut">
+                                            <option [ngValue]="data">{{data.name}}</option>
+                                        </ng-container>
+                                    </select>
+                                </clr-select-container>
                             </div>
                         </div>
                         <div class="clr-col-6">
                             <div class="clr-form-control">
                                 <clr-select-container class="clr-form-control">
-                                    <label class="clr-control-label" style="padding-left: 10px">Color</label>
+                                    <label class="clr-control-label" style="padding-left: 10px">Warna Diamond</label>
                                     <select [(ngModel)]="searchModel.color" #color clrSelect name="color">
                                         <option [ngValue]="null"></option>
                                         <ng-container *ngFor="let color of colors">
@@ -370,7 +378,7 @@
                         </div>
                     </div>
         
-                    <div class="clr-row">
+                    <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                                 <clr-select-container class="clr-form-control">
                                     <label class="clr-control-label" style="padding-left: 10px">Clarity</label>
@@ -392,7 +400,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="clr-row">
+                    <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <label class="clr-control-label" style="padding-left: 10px">Tipe Stock</label>
                             <div class="clr-control-container">
@@ -430,7 +438,7 @@
                     Attribute Souvenir
                 </div>
                 <div class="card-body">
-                    <div class="clr-row">
+                    <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <clr-select-container class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Seri</label>
@@ -454,7 +462,7 @@
                             </clr-select-container>
                         </div>
                     </div>
-                    <div class="clr-row">
+                    <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <label class="clr-control-label" style="padding-left: 10px">Tipe Stock</label>
                             <div class="clr-control-container">
@@ -493,7 +501,7 @@
                     Attribute Gift
                 </div>
                 <div class="card-body">
-                    <div class="clr-row">
+                    <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <clr-select-container class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Seri</label>
@@ -517,7 +525,7 @@
                             </clr-select-container>
                         </div>
                     </div>
-                    <div class="clr-row">
+                    <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <label class="clr-control-label" style="padding-left: 10px">Tipe Stock</label>
                             <div class="clr-control-container">
@@ -555,7 +563,7 @@
                     Attribute Emas Batangan
                 </div>
                 <div class="card-body">
-                    <div class="clr-row">
+                    <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <clr-select-container class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Seri</label>
@@ -579,7 +587,7 @@
                             </clr-select-container>
                         </div>
                     </div>
-                    <div class="clr-row">
+                    <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <label class="clr-control-label" style="padding-left: 10px">Tipe Stock</label>
                             <div class="clr-control-container">
@@ -617,7 +625,7 @@
                     Attribute Dinar
                 </div>
                 <div class="card-body">
-                    <div class="clr-row">
+                    <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <clr-select-container class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Seri</label>
@@ -641,7 +649,7 @@
                             </clr-select-container>
                         </div>
                     </div>
-                    <div class="clr-row">
+                    <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <label class="clr-control-label" style="padding-left: 10px">Tipe Stock</label>
                             <div class="clr-control-container">
@@ -671,14 +679,14 @@
             </div>
         </ng-template>
         
-        <!--ADIRATNA-->
+        <!--PERMATA-->
         <ng-template #Adiratna>
             <div class="card">
                 <div class="card-header">
-                    Attribute Adiratna
+                    Attribute Permata
                 </div>
                 <div class="card-body">
-                    <div class="clr-row">
+                    <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <clr-select-container class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Kadar</label>
@@ -692,7 +700,7 @@
                         </div>
                         <div class="clr-col-6">
                             <clr-select-container class="clr-form-control">
-                                <label class="clr-control-label" style="padding-left: 10px">Warna</label>
+                                <label class="clr-control-label" style="padding-left: 10px">Warna Emas</label>
                                 <select [(ngModel)]="searchModel.warna" #warna clrSelect name="warna">
                                     <option [ngValue]="null"></option>
                                     <ng-container *ngFor="let warna of warnas">
@@ -702,10 +710,10 @@
                             </clr-select-container>
                         </div>
                     </div>
-                    <div class="clr-row">
+                    <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                                 <clr-select-container class="clr-form-control">
-                                    <label class="clr-control-label" style="padding-left: 10px">Jenis</label>
+                                    <label class="clr-control-label" style="padding-left: 10px">Jenis Product</label>
                                     <select [(ngModel)]="searchModel.jenis" #jenis clrSelect name="jenis">
                                         <option [ngValue]="null"></option>
                                         <ng-container *ngFor="let jenis of jeniss">
@@ -725,20 +733,28 @@
                         </div>
                     </div>
                     
-                    <div class="clr-row">
+                    <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <div class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Cut</label>
-                                <div class="clr-control-container">
+                                <!-- <div class="clr-control-container">
                                     <input [(ngModel)]="searchModel.cut" class="clr-input" type="text" name="cut" placeholder="00.51" />
                                     <span class="clr-subtext">Harap gunakan titik (.)</span>
-                                </div>
+                                </div> -->
+                                <clr-select-container>
+                                    <select name="cut" clrSelect [(ngModel)]="searchModel.cut">
+                                        <option [ngValue]=""></option>
+                                        <ng-container *ngFor="let data of product_cut">
+                                            <option [ngValue]="data">{{data.name}}</option>
+                                        </ng-container>
+                                    </select>
+                                </clr-select-container>
                             </div>
                         </div>
                         <div class="clr-col-6">
                             <div class="clr-form-control">
                                 <clr-select-container class="clr-form-control">
-                                    <label class="clr-control-label" style="padding-left: 10px">Color</label>
+                                    <label class="clr-control-label" style="padding-left: 10px">Warna Diamond</label>
                                     <select [(ngModel)]="searchModel.color" #color clrSelect name="color">
                                         <option [ngValue]="null"></option>
                                         <ng-container *ngFor="let color of colors">
@@ -750,7 +766,7 @@
                         </div>
                     </div>
         
-                    <div class="clr-row">
+                    <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                                 <clr-select-container class="clr-form-control">
                                     <label class="clr-control-label" style="padding-left: 10px">Clarity</label>
@@ -773,7 +789,7 @@
                         </div>
                     </div>
 
-                    <div class="clr-row">
+                    <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <label class="clr-control-label" style="padding-left: 10px">Tipe Stock</label>
                             <div class="clr-control-container">
@@ -826,15 +842,15 @@
             <clr-dg-column>
                 Branch
             </clr-dg-column>
-            <clr-dg-row *clrDgItems="let data of products" [clrDgItem]="data">
-                <clr-dg-cell>{{data.code}}</clr-dg-cell>
-                <clr-dg-cell>{{data.sku}}</clr-dg-cell>
-                <clr-dg-cell>{{data.vendor == undefined ? "-" : data.vendor.name}}</clr-dg-cell>
-                <clr-dg-cell>{{data.branch == undefined ? "-" : data.branch.name}}</clr-dg-cell>
+            <clr-dg-row *clrDgItems="let dataproduct of products" [clrDgItem]="dataproduct">
+                <clr-dg-cell>{{dataproduct.code}}</clr-dg-cell>
+                <clr-dg-cell>{{dataproduct.sku}}</clr-dg-cell>
+                <clr-dg-cell>{{dataproduct.vendor == undefined ? "-" : dataproduct.vendor.name}}</clr-dg-cell>
+                <clr-dg-cell>{{dataproduct.branch == undefined ? "-" : dataproduct.branch.name}}</clr-dg-cell>
             </clr-dg-row>
         
             <clr-dg-detail *clrIfDetail="let data">
-                <clr-dg-detail-header>Detail data</clr-dg-detail-header>
+                <clr-dg-detail-header>Detail data product</clr-dg-detail-header>
                 <table class="table">
                     <thead>
                         <tr>
@@ -853,21 +869,21 @@
                 </table>
             </clr-dg-detail>
             <clr-dg-footer>
-                <clr-dg-pagination #pagination [clrDgPageSize]="10">
+                <clr-dg-pagination #pagingProduct [clrDgPageSize]="10">
                     <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Product per page</clr-dg-page-size>
-                    {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
-                    of {{pagination.totalItems}} Product
+                    {{pagingProduct.firstItem + 1}} - {{pagingProduct.lastItem + 1}}
+                    of {{pagingProduct.totalItems}} Product
                 </clr-dg-pagination>
             </clr-dg-footer>
         </clr-datagrid>
 
         <!--DATAGRID DETAIL PICK-->
-        <clr-datagrid>
-            <!--clr-dg-action-bar>
+        <clr-datagrid [(clrDgSelected)]="selected_items">
+            <clr-dg-action-bar>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-secondary" (click)="deleteData()"><clr-icon shape="close"></clr-icon> Hapus</button>
+                    <button type="button" class="btn btn-sm btn-secondary" (click)="deleteItems()"><clr-icon shape="close"></clr-icon> Hapus</button>
                 </div>
-                </clr-dg-action-bar-->
+            </clr-dg-action-bar>
 
             <clr-dg-column>
                 Kode
@@ -881,15 +897,22 @@
             <clr-dg-column>
                 Branch
             </clr-dg-column>
-            <clr-dg-row *clrDgItems="let data of itemsdata" [clrDgItem]="data">
-                <clr-dg-cell>{{data?.code}}</clr-dg-cell>
-                <clr-dg-cell>{{data.sku}}</clr-dg-cell>
-                <clr-dg-cell>{{data.vendor == undefined ? "-" : data.vendor.name}}</clr-dg-cell>
-                <clr-dg-cell>{{data.branch == undefined ? "-" : data.branch.name}}</clr-dg-cell>
+            <clr-dg-row *clrDgItems="let dataItems of items" [clrDgItem]="dataItems">
+                <clr-dg-cell>{{dataItems.code}}</clr-dg-cell>
+                <clr-dg-cell>{{dataItems.sku}}</clr-dg-cell>
+                <clr-dg-cell>{{dataItems.vendor == undefined ? "-" : dataItems.vendor.name}}</clr-dg-cell>
+                <clr-dg-cell>{{dataItems.branch == undefined ? "-" : dataItems.branch.name}}</clr-dg-cell>
             </clr-dg-row>
+            <clr-dg-footer>
+                <clr-dg-pagination #pagingItem [clrDgPageSize]="10">
+                    <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Item dipilih per page</clr-dg-page-size>
+                    {{pagingItem.firstItem + 1}} - {{pagingItem.lastItem + 1}}
+                    of {{pagingItem.totalItems}} item dipilih
+                </clr-dg-pagination>
+            </clr-dg-footer>
         
             <clr-dg-detail *clrIfDetail="let data">
-                <clr-dg-detail-header>Detail data</clr-dg-detail-header>
+                <clr-dg-detail-header>Detail data Items</clr-dg-detail-header>
                 <table class="table">
                     <thead>
                         <tr>
@@ -1003,21 +1026,11 @@
     </div>
 </clr-modal>
 
-<!--MODAL SHOW DATA NOT FOUND-->
-<clr-modal *ngIf="modal" [(clrModalOpen)]="modal">
-    <h3 class="modal-title">Data Tidak Ditemukan</h3>
-    <div class="modal-body">
-        <p>Silahkan cari kembali</p>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="modal = false">Ok</button>
-    </div>
-</clr-modal>
 
 <loading-spinner #spinner></loading-spinner>
 
 <!-- CETAK MUTASI -->
-<cetak-mutasi #exportPDF></cetak-mutasi>
+<app-cetak-mutasi #exportPDF></app-cetak-mutasi>
 
 <p *ngIf="errorType == ErrorType.ERROR" style="color: red">{{errorMessage}}</p>
 <p *ngIf="errorType == ErrorType.WARN" style="color: yellow">{{errorMessage}}</p>

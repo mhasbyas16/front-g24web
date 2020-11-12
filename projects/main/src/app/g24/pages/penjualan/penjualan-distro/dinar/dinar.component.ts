@@ -147,8 +147,8 @@ export class DinarComponent implements OnInit {
         }
         this.dinars = response
         
-        this.productService.count(this.params+"&"+this.flagBarang).subscribe((response: any) => {
-          this.qty = response.count;
+        // this.productService.count(this.params+"&"+this.flagBarang).subscribe((response: any) => {
+          this.qty = response["length"];
           cariDinar.push({
             "vendor" : this.dinars[0].vendor.name,
             "denom" : this.dinars[0]['product-denom'].name,
@@ -158,21 +158,7 @@ export class DinarComponent implements OnInit {
           });
           this.datadinars = cariDinar
           this.loadingDg = false;
-          // this.prmJualService.get("?"+this.dinarCategory+"&"+this.flagApp+"&"+this.jenisBarang).subscribe((Jualresponse: any) => {
-          //   let prmJual = Jualresponse.harga
-          //   for (let index = 0; index < prmJual.length; index++) {
-          //     if (prmJual[index]["product-denom"].code == denom) {
-          //       this.hargaBaku = prmJual[index].harga_baku
-          //     }
-          //   }
-          //   this.prmMarginService.get("?"+this.dinarCategory+"&"+this.channel+"&"+this.transactionType+"&"+this.flagApp).subscribe((Marginresponse: any) => {
-          //     let prmMargin = Marginresponse
-          //     let hargaDinar = this.pricingService.priceDinar(this.hargaBaku, Number(prmMargin.margin));
-          //     hargaDinar = Math.ceil(hargaDinar/1000)*1000;
-                
-          //   });
-          // });
-        });
+        // });
       });
     }
   }

@@ -281,13 +281,11 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
   fillItemTerima()
   {
     let items = this.inisiasi.items;
-    for(let i = 0; i < items.length; i++)
+    for(let item of items)
     {
-      let item = items[i];
       let products = item.products;
-      for(let x = 0; x < products.length; x++)
+      for(let product of products)
       {
-        let product = products[x];
         if(product.isTerima)
         {
           this.idTerima.set(product.no_item_po +"-"+ product.no_index_products, product);
@@ -704,9 +702,9 @@ export class DetailItemPenerimaanEmasComponent implements OnInit {
     }
 
     this.inisiasi.update_date = new Date().toISOString().split("T")[0];
-    this.inisiasi.update_by = this.user.username;
+    this.inisiasi.update_by = this.user;
     this.inisiasi['tgl_terima'] = this.inisiasi.update_date;
-    this.inisiasi.terima_by = this.user.username;
+    this.inisiasi.terima_by = this.user;
     this.inisiasi._log = true
 
     let tempInisiasi = {}

@@ -16,6 +16,9 @@ import { StringHelper } from '../../../lib/helper/string-helper';
 import { FlagMutasi } from '../../../lib/enum/flag-mutasi';
 import { JurnalMutasiService } from '../../../services/keuangan/jurnal/stock/jurnal-mutasi.service';
 
+//CETAKAN TERIMA MUTASI
+import { CetakTerimaMutasiComponent } from '../../../../g24/cetakan/stock/cetak-mutasi/cetak-terima-mutasi/cetak-terima-mutasi.component';
+
 //SORTING CLARITY LIB
 import {ClrDatagridSortOrder} from '@clr/angular';
 
@@ -56,6 +59,7 @@ static key = EMenuID.TERIMA_MUTASI;
   time : String;
 	
   Object = Object;
+  Flag = Object.values(FlagMutasi);
   
   //VARIABEL SORT 
   descSort_terima : any; 
@@ -74,6 +78,7 @@ static key = EMenuID.TERIMA_MUTASI;
   ) { }
 
   @ViewChild('spinner',{static:false}) spinner : LoadingSpinnerComponent;
+  @ViewChild('exportPDF',{static:false}) pdf : CetakTerimaMutasiComponent;
 
   ngOnInit(): void {
 //    let waktu = (new Date()).getTimezoneOffset() * 60000;
@@ -134,6 +139,10 @@ static key = EMenuID.TERIMA_MUTASI;
       switch(key){
         case 'unit_asal':
           params += 'unit_asal.code='+this.input[key].code+"&";
+          break;
+
+        case 'flag':
+          params += 'flag='+this.input[key].code+"&";
           break;
 
         case 'approve_date':
@@ -500,10 +509,19 @@ static key = EMenuID.TERIMA_MUTASI;
            }
       }
 
+      
+      let Cetakterima = {
+        _id : this.data_view._id,
+        items : this.items
+      }
+      console.log(Cetakterima);
+      this.pdf.Makepdf(Cetakterima);
+
       this.toastr.success("Data berhasil diterima","Sukses");
       this.modalaccept = false;
       this.spinner.Close();
       let id : string = UpdateMutasi._id;
+      this.data_mutasi = [];
       this.doAccounting(id);
       this.doSearch();
       

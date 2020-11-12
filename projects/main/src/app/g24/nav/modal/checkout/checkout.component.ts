@@ -16,12 +16,15 @@ import { TransactionBankInstallmentService } from '../../../services/transaction
 import { TransactionFlagService } from '../../../services/transaction/transaction-flag.service';
 import { TransactionTypeService } from '../../../services/transaction/transaction-type.service';
 import { CurrencyService } from '../../../services/transaction/currency.service';
+import { SequenceService } from '../../../services/system/sequence.service';
+import { ServerDateTimeService } from '../../../services/system/server-date-time.service';
 
 // session service
 import { UserService } from 'projects/platform/src/app/services/security/user.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { DatePipe } from '@angular/common';
 import { ContentPage } from '../../../lib/helper/content-page';
+import { CheckNikService } from '../../../services/app-emas/check-nik.service';
 
 @Component({
   selector: 'app-checkout',
@@ -34,6 +37,8 @@ export class CheckoutComponent implements OnInit {
   //
   @Output() cartModal = new EventEmitter();
 
+  date:any;
+  time:any;
   validModel: boolean = false;
   bankForm: boolean = false;
   edc: boolean = false;
@@ -76,19 +81,23 @@ export class CheckoutComponent implements OnInit {
   installmentPeriod: any;
   kembali: any;
   diterima: any;
+  check:boolean;
 
   kasirId: FormControl= null;
   coa: FormControl= null;
   valid: boolean = false;
 
   nikValid : boolean = false;
+  getKasirHandler = null;
 jual = null;
 branchCode = "";
 select = null;
 isBuyback = false;
 dat = null;
 
+
   idtransaksi: any;
+  metodeBayar: any;
   constructor(
     private clientService: ClientService,
     private bankService: BankService,
@@ -103,10 +112,13 @@ dat = null;
     private productService: ProductService,
     private transactionTypeService: TransactionTypeService,
     private currencyService:CurrencyService,
+    private sequenceService:SequenceService,
+    private checkNikService:CheckNikService,
     //ng
     private toastr: ToastrService,
     private sessionService: SessionService,
     private datePipe: DatePipe,
+    private serverDateTimeService:ServerDateTimeService
   ) { }
 
   ngOnInit(): void {
@@ -118,48 +130,71 @@ dat = null;
   idTransaksi() {
     this.idtransaksi = null;
     let inc = null;
-    let d1 = this.datePipe.transform(Date.now(), '01/01/yyyy');
-    let d2 = this.datePipe.transform(Date.now(), '12/31/yyyy');
+    let d1 = this.datePipe.transform(Date.now(), 'yyyy-01-01');
+    let d2 = this.datePipe.transform(Date.now(), 'yyyy-12-31');
     let d3 = this.datePipe.transform(Date.now(), 'yy');
     let unit = this.sessionService.getUnit();
 
     let params = "?_between=makerDate&_start=" + d1 + "&_end=" + d2;
     this.transactionService.list(params + '&_sortby=_id:0&_rows=1').subscribe((response: any) => {
       let count = null;
-      if (response["0"]["idAi"] == null) {
+      if (response["length"] == 0) {
         count = JSON.stringify(1);
+        this.idtransaksi = unit.code + "06" + d3 + "0000001";
+        this.sequenceService.use({key:this.idtransaksi}).subscribe((sq:any)=>{
+          let id = sq["value"];
+          console.debug(id);
+          this.formData.patchValue({ idTransaction: id, idAi: id });
+        })
       }else{
-        count = JSON.stringify(Number(response["0"]["idAi"]) + 1);
+    
+        this.idtransaksi = unit.code + "06" + d3 + "0000001";
 
+        this.sequenceService.peek({key:this.idtransaksi}).subscribe((sq:any)=>{
+          let idAi = JSON.stringify(response["0"]["idAi"]);
+          let id = JSON.stringify(Number(sq["value"]) + 1);
+          
+          if (idAi == id) {
+            this.sequenceService.use({key:this.idtransaksi}).subscribe((sq:any)=>{});
+            this.idtransaksi();
+          }
+
+          switch (id.length) {
+            case 1:
+              inc = "000000" + id;
+              break;
+            case 2:
+              inc = "00000" + id;
+              break;
+            case 3:
+              inc = "0000" + id;
+              break;
+            case 4:
+              inc = "000" + id;
+              break;
+            case 5:
+              inc = "00" + id;
+              break;
+            case 6:
+              inc = "0" + id;
+              break;
+            case 7:
+              inc = id;
+              break;
+            default:
+              break;
+          }
+
+          
+          this.idtransaksi = unit.code + "06" + d3 + inc;
+          this.formData.patchValue({ idTransaction:  this.idtransaksi, idAi: id });
+        })
+        
       }
-      switch (count.length) {
-        case 1:
-          inc = "000000" + count;
-          break;
-        case 2:
-          inc = "00000" + count;
-          break;
-        case 3:
-          inc = "0000" + count;
-          break;
-        case 4:
-          inc = "000" + count;
-          break;
-        case 5:
-          inc = "00" + count;
-          break;
-        case 6:
-          inc = "0" + count;
-          break;
-        case 7:
-          inc = count;
-          break;
-        default:
-          break;
-      }
+      
       // this.idtransaksi = "5502906200000054"
-      this.idtransaksi = unit.code + "06" + d3 + inc;
-      this.formData.patchValue({ idTransaction: this.idtransaksi, idAi: Number(response["0"]["idAi"]) + 1 });
+      // this.idtransaksi = unit.code + "06" + d3 + inc;
+      // this.formData.patchValue({ idTransaction: this.idtransaksi, idAi: Number(response["0"]["idAi"]) + 1 });
     });
 
   }
@@ -187,8 +222,8 @@ dat = null;
       admBank: new FormControl(""),
       maker: new FormControl(this.nikUser["_hash"], [Validators.required]),
       maker_encoded: new FormControl("base64"),
-      makerDate: new FormControl(this.datePipe.transform(Date.now(), 'MM/dd/yyyy'), Validators.required),
-      makerTime: new FormControl(this.datePipe.transform(Date.now(), 'h:mm:ss a'), Validators.required),
+      makerDate: new FormControl(this.date, Validators.required),
+      makerTime: new FormControl(this.time, Validators.required),
       jumlahTerima: new FormControl(totalHarga, Validators.required),
       unit: new FormControl(""),
       unit_encoded: new FormControl("base64"),
@@ -208,8 +243,24 @@ dat = null;
       namaPemasar: new FormControl(this.nikUser["name"]),
       'transaction-type': new FormControl("", Validators.required),
       'transaction-type_encoded': new FormControl("base64"),
+      kasirId: new FormControl(""),
+      coa: new FormControl("")
       
     });
+    let params = "?";
+    this.serverDateTimeService.task(params).subscribe(output=>{
+
+      if(output==false){
+        console.debug("Date gagal")
+      }
+        this.date = this.serverDateTimeService.getDateOnly(output);
+        this.time = this.serverDateTimeService.getTimeOnly(output);
+      this.formData.patchValue({makerDate:this.date, makerTime:this.time});
+    })
+
+
+
+    
 
     for (let isi of LM) {
       this.formData.addControl(isi.code, new FormControl(isi.Value, [Validators.required, Validators.minLength(9)]))
@@ -455,7 +506,9 @@ dat = null;
       LM[index].noSeri = data[LM[index].code]
       delete data[LM[index].code]
     }
-    // 
+    // idTransaction Sqeuencer
+
+    this.sequenceService.use({key:data.idTransaction}).toPromise();
     
     data.product = btoa(JSON.stringify({ PERHIASAN, LM, BERLIAN, GS, DINAR }));
     data.product_encoded = "base64";
@@ -555,19 +608,30 @@ dat = null;
     var bank = null;
     var jenisEDC = null;
     var jenisRTGS = null;
-    var coa = null;
+    
     var isBuyback = false;
     var dat = null;
-    // var nik = this.formData.get('kasirId').value;
+    
     const value = this.formData.get('kasirId').value;
-    var metodeBayarCode = this.formData.get('metodeBayar').value;
-    metodeBayarCode = atob(metodeBayarCode);
-    // metodeBayarCode = this.metodeBayar.code;
+    var metodeBayar = this.formData.get('metodeBayar').value;
+    metodeBayar = atob(metodeBayar);
+    console.debug(metodeBayar, "metodebayar");
+    if(metodeBayar == null || metodeBayar == ""){
+      this.toastr.error("Harap pilih Metode Bayar dulu");
+      return;
+    }
+    var metodeBayarObject = JSON.parse(metodeBayar);   
+    
+    var metodeBayarCode = metodeBayarObject["code"]; 
+    
+
+      
+    
     var unitCode = this.formData.get('unit').value;
     unitCode = atob(unitCode);
     var nikP = this.formData.get('nikPemasar').value;
-    // var unitCode = this.formData.get('unit.code').value;
-    var unita = this.sessionService.getUnit();
+    
+    
     if(this.coa != null)
     {
       this.coa.value;
@@ -575,136 +639,191 @@ dat = null;
     this.nikValid = false;
     // checkNIK();
     console.debug(value, "nikP");
-    console.debug(metodeBayarCode, "metode");
+    console.debug(metodeBayarCode, "metodeBayarCode");
     console.debug(unitCode, "unit");
-    console.debug(unita, "unita");
-    // this.mesinCheckNik(metodeBayar);
+    
+    this.mesinCheckNik(metodeBayarCode);
 
   }
 
-//   mesinCheckNik(metodeBayar)
-// {
-// 	if(metodeBayar != '1')
-// 	{
-// 		coa = $("#coa");
-// 		coa.val("");
-// 		// setKasir(null);
-// 		// return;
-// 	}
+  mesinCheckNik(metodeBayarCode)
+{
+  let data = this.formData.getRawValue();
+	if(metodeBayarCode != '01')
+	{
+		var coa = this.formData.get('coa').value;
+		coa.val("");
+		// setKasir(null);
+		// return;
+	}
 
-//   var userEmas = $('#userEmas');
-//   if(userEmas == null)
-//   {
-//     alert("Error. Gagal checking User Emas !!!");
-//     console.log("Gaada input dengan ID = userEmas");
-//     return;
-//   }
+  var userEmas = this.formData.get('kasirId').value;
+  if(userEmas == null || userEmas == "")
+   
+												 
+													
+		   
+   
 
-//   var tgDistro = $("#distro");
-//   if(tgDistro == null)
-//   {
-//     alert("Error. Gagal checking User Emas !!!");
-//     console.log("Gaada input hidden dengan ID = distro");
-//     return;
-//   }
+											   
+					  
+  {
+    this.toastr.error("Error. Kasir ID (Emas) Kosong !!!");
+    console.debug("Gaada input dengan ID = userEmas");
+    return;
+  }
 
-//   branchCode = tgDistro.val();
-//   user = userEmas.val();
+  var branch = this.sessionService.getUnit();    
+  var branchCode = branch["code"];
 
-//   if(user == "")
-//   {
-//     alert("Error. Harap input User ID Emas !!!");
-//     console.log("Input User ID Emas kosong.");
-//     return;
-//   }
+  if(branchCode == null || branchCode == "")
+  {
+    this.toastr.error("Error. Branch Code tidak ditemukan !!!");
+    console.debug("Gaada input hidden dengan ID = distro");
+    return;
+  }  
+    
 
-//   if(branchCode == "")
-//   {
-// 	alert("Error. Distro kosong !!!");
-//     console.log(" Tolong jangan diubah-ubah tag nya ya :). Atau yang ngoding bodoh XD.");
-//     return;
-//   }
+  // cuma branch code ini yang valid aja
+  if(branchCode == "55099" || branchCode == "55098" || branchCode == "55097")
+  {
+	// this.setKasir(null);
+																						 
+	return;
+  }
 
-//   // cuma branch code ini yang valid aja
-//   if(branchCode == "55099" || branchCode == "55098" || branchCode == "55097")
-//   {
-// 	setKasir(null);
-// 	return;
-//   }
-
-//   var url = "https://"+window.location.hostname+"/api/channel/get-kasir-on-emas.php?branchCode="+branchCode;
+										
+  console.debug(branchCode, "branchCode");
+  console.debug(userEmas, "userEmas");
+				   
+		   
+	  
+  
+  var resp = this.checkNikService.checkNik(branch).subscribe((response:any)=>{
+    if (response == false) {
+      this.toastr.error(this.checkNikService.message());
+      console.debug(response, "Gagal Cek NIK");
+      return;
+    }
+    data.checkNik =  JSON.stringify(response);
+    console.debug(data, "ISI Response Check NIK");
+    // this.transactionService.add(data).subscribe((response: any) => {
+    
+    //   // if (response != false) {
+    //   //   this.validModel = false;
+    //   //   this.toastr.success(this.transactionService.message(), "Transaction Success");
+    //   //   this.checkoutModal = false;
+    //   //   // remove isi cart
+    //   //   PERHIASAN.splice(0);
+    //   //   BERLIAN.splice(0);
+    //   //   LM.splice(0);
+    //   //   DINAR.splice(0);
+    //   //   GS.splice(0);
+    //   //   this.cartModal.emit(false);
+    //   //   this.ChangeContentArea('10003');
+    //   // } else {
+    //   //   this.toastr.error(this.transactionService.message(), "Transaction");
+    //   //   this.idTransaksi()
+    //   //   return;
+    //   // }
+    // })
+  })
+  
+  // var url = "https://"+window.location.hostname+"/api/channel/get-kasir-on-emas.php?branchCode="+branchCode;
 //   console.log(url);
 
-//   if(getKasirHandler != null)
-//   {
-// 	getKasirHandler.abort();
-// 	show(false, "loading");
-//   }
+  if(this.getKasirHandler != null)
+  {
+	this.getKasirHandler.abort();
+	this.toastr.show("loading");
+  }
 
-//   show(true, "loading");
-//   getKasirHandler = $.ajax({ url : url, timeout: 5000,
-// 	error: function(request, textStatus) {
-// 		let j = request.responseText;
-// 		console.debug(request)
-// 		show(false, "loading");
-// 		alert("Error. " + textStatus + ". Harap hubungi IT Support/Helpdesk.\n &nbsp" + j);
-// 		console.info();
-// 	},
-// 	success: function(data) {
+  this.toastr.show("loading");
+  this.getKasirHandler = ({ resp, timeout: 5000,
+	error: function(request, textStatus) {
+		let j = request.responseText;
+		console.debug(request)
+		this.toastr.show(false, "loading");
+		this.toastr.error("Error. " + textStatus + ". Harap hubungi IT Support/Helpdesk.\n &nbsp" + j);
+		console.info();
+	},
+	success: function(data) {
 
-// 		var d = JSON.parse(data.data);
-// 		dat = data;
+		var d = JSON.parse(data.data);
+		var dat = data;
 
-// 		if(data.responseCode != '00')
-// 		{
-// 			alert(data.responseDesc);
-// 			show(false, "loading");
-// 			return;
-// 		}
+		if(data.responseCode != '00')
+		{
+			this.toastr.success(data.responseDesc);
+			this.toastr.show(false, "loading");
+			return;
+		}
 
-// 		var tutup = false;
-// 		// console.debug(d);
-// 		for(let i = 0; i < d.data.length; i++)
-// 		{
-// 			var kasir = d.data[i];
-// 			// console.debug(kasir.userId);
-// 			if(kasir.userId == user)
-// 			{
-// 				if(kasir.status == 0)
-// 				{
-// 					tutup = true;
-// 					break;
-// 				}
+		var tutup = false;
+		// console.debug(d);
+		for(let i = 0; i < d.data.length; i++)
+		{
+			var kasir = d.data[i];
+			// console.debug(kasir.userId);
+			if(kasir.userId == userEmas)
+			{
+				if(kasir.status == 0)
+				{
+					tutup = true;
+					break;
+				}
 
-// 				if(select.value == '1')
-// 				{
-// 					if(kasir == null)
-// 					{
-// 						alert("Error. Harap hubungi IT Support/Helpdesk.");
-// 						return;
-// 					}
+				if(this.select.value == '1')
+				{
+					if(kasir == null)
+					{
+						alert("Error. Harap hubungi IT Support/Helpdesk.");
+						return;
+					}
 					
-// 					setKasir(kasir);
-// 				}
-// 				else
-// 				{
-// 					setKasir(null);
-// 				}
+					this.setKasir(kasir);
+				}
+				else
+				{
+					this.setKasir(null);
+				}
 
-// 				break;
-// 			}
-// 		}
+				break;
+			}
+		}
 
-// 		if(tutup)
-// 		{
-// 			alert("Kasir ditutup. Mohon buka kasir atau hubungi Pimpinan anda");
-// 		}
-// 		else if(!valid)
-// 		{
-// 			alert("USER ID tidak memiliki rekening pada branch ini");
-// 		}
-// 		show(false, "loading");
-//   }});
+		if(tutup)
+		{
+			alert("Kasir ditutup. Mohon buka kasir atau hubungi Pimpinan anda");
+		}
+		else if(!this.nikValid)
+		{
+			alert("USER ID tidak memiliki rekening pada branch ini");
+		}
+		this.toastr.show(false, "loading");
+  }});
 
-// }
+}
+
+setKasir(kasir)
+{
+	this.toastr.error("NIK valid !!");
+	this.nikValid = true;
+
+	if(kasir != null)
+	{
+		let coaKasir = kasir.norek;
+		console.debug(coaKasir);
+		this.formData.patchValue({"coa" : coaKasir});
+	}
+	// hitungKembalian();
+}
+
+changingNIK()
+{
+	this.nikValid = false;
+	this.formData.patchValue({"coa" : ""});
+
+	// hitungKembalian();
+}
 }

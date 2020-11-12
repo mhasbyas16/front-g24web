@@ -614,9 +614,9 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
 
     this.inisiasi.order_status = OrderStatus.TOLAK.code;
     this.inisiasi.update_date = this.date;
-    this.inisiasi.update_by = this.user.username;
+    this.inisiasi.update_by = this.user;
     this.inisiasi['tgl_approved'] = this.inisiasi.update_date;
-    this.inisiasi.approved_by = this.user.username;
+    this.inisiasi.approved_by = this.user;
     this.inisiasi._log = true
     let items = this.inisiasi.items;
     console.log(items);
@@ -690,9 +690,9 @@ export class DetailItemInisiasiApprovalEmasBatanganComponent implements OnInit {
 
     this.inisiasi.order_status = OrderStatus.APPROVAL.code;
     this.inisiasi.update_date = this.date;
-    this.inisiasi.update_by = this.user.username;
+    this.inisiasi.update_by = this.user;
     this.inisiasi['tgl_approved'] = this.date;
-    this.inisiasi.approved_by = this.user.username;
+    this.inisiasi.approved_by = this.user;
     let items = this.inisiasi.items;
     console.log(items);
 

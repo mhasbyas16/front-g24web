@@ -467,6 +467,7 @@ descSort_terima : any;
       this.spinner.Close();
       this.modalshow = false;
       let id : string = dataUpdateMutasi._id;
+      this.view_mutasi = [];
       console.debug(id);
       this.doSearch();
       this.doAccounting(id);

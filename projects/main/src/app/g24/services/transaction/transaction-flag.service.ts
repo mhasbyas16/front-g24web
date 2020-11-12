@@ -33,7 +33,7 @@ export class TransactionFlagService {
       for (let p of PERHIASAN) {
         no++;
         perhiasan[no] = btoa(
-          JSON.stringify({ _id: p.detail._id, flag: "jual" })
+          JSON.stringify({ _id: p.detail._id, flag: "sell" })
         );
         perhiasan[no + "_encoded"] = "base64";
       }
@@ -42,28 +42,28 @@ export class TransactionFlagService {
     if (LM.length != 0) {
       for (let Lm of LM) {
         no++;
-        lm[no] = btoa(JSON.stringify({ _id: Lm.detail._id, flag: "jual" }));
+        lm[no] = btoa(JSON.stringify({ _id: Lm.detail._id, flag: "sell" }));
         lm[no + "_encoded"] = "base64";
       }
     }
     if (GS.length != 0) {
       for (let Gs of GS) {
         no++;
-        gs[no] = btoa(JSON.stringify({ _id: Gs.detail._id, flag: "jual" }));
+        gs[no] = btoa(JSON.stringify({ _id: Gs.detail._id, flag: "sell" }));
         gs[no + "_encoded"] = "base64";
       }
     }
     if (BERLIAN.length != 0) {
       for (let b of BERLIAN) {
         no++;
-        berlian[no] = btoa(JSON.stringify({ _id: b.detail._id, flag: "jual" }));
+        berlian[no] = btoa(JSON.stringify({ _id: b.detail._id, flag: "sell" }));
         berlian[no + "_encoded"] = "base64";
       }
     }
     if (DINAR.length != 0) {
       for (let d of DINAR) {
         no++;
-        dinar[no] = btoa(JSON.stringify({ _id: d.detail._id, flag: "jual" }));
+        dinar[no] = btoa(JSON.stringify({ _id: d.detail._id, flag: "sell" }));
         dinar[no + "_encoded"] = "base64";
       }
     }

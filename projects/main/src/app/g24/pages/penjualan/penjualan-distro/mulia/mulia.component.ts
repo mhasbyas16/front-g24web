@@ -50,7 +50,7 @@ export class MuliaComponent implements OnInit {
   
   ////params
   vendorCategory = "product-category.code=c05";
-  category = "?_hash&product-category.code=c05";
+  category = "?_hash=1&product-category.code=c05";
 
   muliaCategory = "?product-category.code=c05";
 
@@ -157,8 +157,8 @@ export class MuliaComponent implements OnInit {
           }
           this.mulias = response;
           // count product
-          this.productService.count(this.params+"&"+urlFlag).subscribe((response: any) => {
-            this.qty = response.count;
+          // this.productService.count(this.params+"&"+urlFlag).subscribe((response: any) => {
+            this.qty = response["length"];
             // cari prm-jual product
             this.prmJualService.get(this.muliaCategory+"&"+urlVendor+"&"+this.flagApp+"&"+this.jenisBarang).subscribe((Jualresponse: any) => {
               let prmJual = Jualresponse.harga;
@@ -168,6 +168,7 @@ export class MuliaComponent implements OnInit {
                     this.hargaBaku = prmJual[index].harga_baku
                   }
               }
+              console.debug(this.qty,response.count,"qty")
               cariMulia.push({
                 "vendor" : this.mulias[0].vendor.name,
                 "denom" : this.mulias[0]['product-denom'].name,
@@ -189,7 +190,7 @@ export class MuliaComponent implements OnInit {
                  
               // });
             });
-        });
+        // });
       });
     }
       

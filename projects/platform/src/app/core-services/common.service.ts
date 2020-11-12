@@ -91,7 +91,7 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
-        if(error.status = "401")
+        if(error.status == "401")
         {
           this.sessionService.logout();
           this.sessionService.gotoSignIn();
@@ -147,7 +147,7 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();;
       }, error => {
-        if(error.status = "401")
+        if(error.status == "401")
         {
           this.sessionService.logout();
           this.sessionService.gotoSignIn();
@@ -203,7 +203,7 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();;
       }, error => {
-        if(error.status = "401")
+        if(error.status == "401")
         {
           this.sessionService.logout();
           this.sessionService.gotoSignIn();
@@ -253,7 +253,7 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
-        if(error.status = "401")
+        if(error.status == "401")
         {
           this.sessionService.logout();
           this.sessionService.gotoSignIn();
@@ -303,7 +303,7 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
-        if(error.status = "401")
+        if(error.status == "401")
         {
           this.sessionService.logout();
           this.sessionService.gotoSignIn();
@@ -355,7 +355,7 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
-        if(error.status = "401")
+        if(error.status == "401")
         {
           this.sessionService.logout();
           this.sessionService.gotoSignIn();
@@ -405,7 +405,7 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
-        if(error.status = "401")
+        if(error.status == "401")
         {
           this.sessionService.logout();
           this.sessionService.gotoSignIn();
@@ -455,7 +455,7 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
-        if(error.status = "401")
+        if(error.status == "401")
         {
           this.sessionService.logout();
           this.sessionService.gotoSignIn();
@@ -505,7 +505,7 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
-        if(error.status = "401")
+        if(error.status == "401")
         {
           this.sessionService.logout();
           this.sessionService.gotoSignIn();
@@ -555,7 +555,7 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
-        if(error.status = "401")
+        if(error.status == "401")
         {
           this.sessionService.logout();
           this.sessionService.gotoSignIn();
@@ -603,7 +603,7 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
-        if(error.status = "401")
+        if(error.status == "401")
         {
           this.sessionService.logout();
           this.sessionService.gotoSignIn();
@@ -654,7 +654,7 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
-        if(error.status = "401")
+        if(error.status == "401")
         {
           this.sessionService.logout();
           this.sessionService.gotoSignIn();
@@ -704,7 +704,7 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
-        if(error.status = "401")
+        if(error.status == "401")
         {
           this.sessionService.logout();
           this.sessionService.gotoSignIn();
@@ -754,7 +754,7 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
-        if(error.status = "401")
+        if(error.status == "401")
         {
           this.sessionService.logout();
           this.sessionService.gotoSignIn();
@@ -802,7 +802,7 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
-        if(error.status = "401")
+        if(error.status == "401")
         {
           this.sessionService.logout();
           this.sessionService.gotoSignIn();
@@ -853,7 +853,7 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
-        if(error.status = "401")
+        if(error.status == "401")
         {
           this.sessionService.logout();
           this.sessionService.gotoSignIn();
@@ -903,7 +903,7 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
-        if(error.status = "401")
+        if(error.status == "401")
         {
           this.sessionService.logout();
           this.sessionService.gotoSignIn();
@@ -953,7 +953,7 @@ export class CommonService {
         observer.complete();
         return (observer).unsubscribe();
       }, error => {
-        if(error.status = "401")
+        if(error.status == "401")
         {
           this.sessionService.logout();
           this.sessionService.gotoSignIn();

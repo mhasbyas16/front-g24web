@@ -115,6 +115,19 @@
                             </select>
                         </clr-select-container>
                     </div>
+                    <div class="clr-col-md-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Tipe Flag</label>
+                            <clr-select-container>
+                                <select name="flag" clrSelect [(ngModel)]="inquery.flag">
+                                    <option [ngValue]=""></option>
+                                    <ng-container *ngFor="let data of Flag">
+                                        <option [ngValue]="data">{{data.code}}</option>
+                                    </ng-container>
+                                </select>
+                            </clr-select-container>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="card-footer">
@@ -141,6 +154,7 @@
             <clr-dg-column>Berat</clr-dg-column>
             <clr-dg-column>Lokasi Distribusi</clr-dg-column>
             <clr-dg-column>Tipe Stock</clr-dg-column>
+            <clr-dg-column>Flag</clr-dg-column>
             <clr-dg-column>Unit</clr-dg-column>
 
             <clr-dg-row *clrDgItems="let data of outputdata">
@@ -157,6 +171,7 @@
                 <clr-dg-cell>{{data.berat ? data.berat : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data.location ? data.location : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data.tipe_stock}}</clr-dg-cell>
+                <clr-dg-cell>{{data.flag}}</clr-dg-cell>
                 <clr-dg-cell>{{data.unit.nama}}</clr-dg-cell>
             </clr-dg-row>
             <clr-dg-footer>

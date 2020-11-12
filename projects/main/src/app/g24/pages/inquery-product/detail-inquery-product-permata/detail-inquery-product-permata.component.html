@@ -10,7 +10,7 @@
                         <div class="clr-form-control">
                             <label class="clr-control-label">Id</label>
                             <clr-input-container>
-                                <input clrInput [(ngModel)]="inquery.nopo" name="nopo">
+                                <input clrInput [(ngModel)]="inquery.id" name="id">
                             </clr-input-container>
                         </div>
                     </div>
@@ -62,7 +62,7 @@
                     </div>
                     <div class="clr-col-6">
                         <div class="clr-form-control">
-                            <label class="clr-control-label">Warna</label>
+                            <label class="clr-control-label">Warna Emas</label>
                             <clr-select-container>
                                 <select clrSelect [(ngModel)]="inquery.warnas" name="warnas">
                                     <option [ngValue]=""></option>
@@ -79,7 +79,7 @@
                         <div class="clr-form-control">
                             <label class="clr-control-label">Jenis</label>
                             <clr-select-container>
-                                <select clrSelect [(ngModel)]="inquery.jeniss" name="jeniss">
+                                <select clrSelect [(ngModel)]="inquery.jenis" name="jenis">
                                     <option [ngValue]=""></option>
                                     <ng-container *ngFor="let data of jenis">
                                         <option [ngValue]="data">{{data.name}}</option>
@@ -129,6 +129,173 @@
                         </div>
                     </div>
                 </div>
+                <div class="clr-row">
+                    <div class="clr-col-md-12" style="margin-top: 20px;">
+                        <div class="clr=form-control">
+                            <label class="clr-control-label">Dimensi Batu</label>
+                            <clr-input-container>
+                                <input clrInput type="hidden" [(ngModel)]="inquery.dimensi_product" name="dimensi_product">
+                                <input type="number" style="margin-left: 5px;" clrInput min="0" max="1000" [(ngModel)]="dimension.x" name="x">
+                                <input type="number" style="margin-left: 5px;" clrInput min="0" max="1000" [(ngModel)]="dimension.y" name="y">
+                                <input type="number" style="margin-left: 5px;" clrInput min="0" max="1000" [(ngModel)]="dimension.z" name="z">
+                                <clr-control-helper style="color: red;">* Wajib di isi</clr-control-helper>
+                            </clr-input-container>
+                        </div>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-md-6" style="margin-top: 20px">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Product Stone</label>
+                            <clr-input-container>
+                                <input clrInput [(ngModel)]="inquery.product_stone" name="product_stone">
+                            </clr-input-container>
+                        </div>
+                    </div>
+                    <div class="clr-col-md-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Product Carat</label>
+                            <clr-input-container>
+                                <input type="number" min="0" clrInput [(ngModel)]="inquery.product_carat" name="product_carat">
+                            </clr-input-container>
+                        </div>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-md-6" style="margin-top: 20px;">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">HPP Batu</label>
+                            <clr-input-container>
+                                <input type="number" min="0" clrInput [(ngModel)]="inquery.hpp_batu" name="hpp_batu">
+                                <clr-control-helper style="color: deepskyblue;">Mohon Menggunakan titik (.) untuk input hpp batu</clr-control-helper>
+                            </clr-input-container>
+                        </div>
+                    </div>
+                    <div class="clr-col-md-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Hpp Inisiasi</label>
+                            <clr-input-container>
+                                <input type="number" min="0" clrInput [(ngModel)]="inquery.hpp_inisiasi" name="hpp_inisiasi">
+                                <clr-control-helper style="color: deepskyblue;">Mohon Menggunakan titik (.) untuk input hpp batu</clr-control-helper>
+                            </clr-input-container>
+                        </div>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-md-6" style="margin-top: 20px;">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Hpp Berlian</label>
+                            <clr-input-container>
+                                <input type="number" min="0" clrInput [(ngModel)]="inquery.hpp_berlian" name="hpp_berlian">
+                                <clr-control-helper style="color: deepskyblue;">Mohon menggunakan titik (.) untuk input hpp berlian</clr-control-helper>
+                            </clr-input-container>
+                        </div>
+                    </div>
+                    <div class="clr-col-md-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Hpp Berlian Inisasi</label>
+                            <clr-input-container>
+                                <input type="number" min="0" clrInput [(ngModel)]="inquery.hpp_berlian_inisiasi" name="hpp_berlian_inisiasi">
+                                <clr-control-helper style="color: deepskyblue;">Mohon menggunakan titik (.) untuk input hpp berlian inisiasi</clr-control-helper>
+                            </clr-input-container>
+                        </div>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-md-6" style="margin-top: 20px;">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Hpp Batu Inisiasi</label>
+                            <clr-input-container>
+                                <input type="number" min="0" clrInput [(ngModel)]="inquery.hpp_batu_inisiasi" name="hpp_batu_inisiasi">
+                                <clr-control-helper style="color: deepskyblue;">Mohon menggunakan titik (.) untuk input hpp batu inisiasi</clr-control-helper>
+                            </clr-input-container> 
+                        </div>
+                    </div>
+                    <div class="clr-col-md-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Product Stone Color</label>
+                            <clr-input-container>
+                                <input clrInput [(ngModel)]="inquery.product_stone_color" name="product_stone_color">
+                            </clr-input-container>
+                        </div>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-md-6" style="margin-top: 20px">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Product Diamond Color</label>
+                            <clr-select-container>
+                                <select clrSelect name="product_diamond_color" [(ngModel)]="inquery.product_diamond_color">
+                                    <option [ngValue]=""></option>
+                                    <ng-container *ngFor="let data of warnaberlian">
+                                        <option [ngValue]="data">{{data.name}}</option>
+                                    </ng-container>
+                                </select>
+                            </clr-select-container>
+                        </div>
+                    </div>
+                    <div class="clr-col-md-6" style="margin-top: 20px">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Product Cut</label>
+                            <clr-input-container>
+                                <input clrInput [(ngModel)]="inquery.product_cut" name="product_cut">
+                            </clr-input-container>
+                        </div>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-md-6" style="margin-top: 30px;">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Jumlah Butir</label>
+                            <clr-input-container>
+                                <input type="number" clrInput min="0" [(ngModel)]="inquery.jumlah_butir" name="jumlah_butir">
+                            </clr-input-container>
+                        </div>
+                    </div>
+                    <div class="clr-col-md-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Product Stone Carat</label>
+                            <clr-input-container>
+                                <input type="number" clrInput min="0" [(ngModel)]="inquery.product_stone_carat" name="product_stone_carat">
+                            </clr-input-container>
+                        </div>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-md-6" style="margin-top: 20px;">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Gram Tukar</label>
+                            <clr-input-container>
+                                <input type="number" clrInput min="0" [(ngModel)]="inquery.gram_tukar" name="gram_tukar">
+                                <clr-control-helper style="color: deepskyblue;">Mohon menggunakan titik (.) untuk input gram tukar</clr-control-helper>
+                            </clr-input-container>
+                        </div>
+                    </div>
+                    <div class="clr-col-md-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Total Berat</label>
+                            <clr-input-container>
+                                <input clrInput [(ngModel)]="inquery.total_berat" name="total_berat">
+                                <clr-control-helper style="color: deepskyblue;">Mohon menggunakan titik (.) untuk input total berat</clr-control-helper>
+                            </clr-input-container>
+                        </div>
+                    </div>
+                </div>
+                <div class="clr-row">
+                    <div class="clr-col-md-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Product Clarity</label>
+                            <clr-select-container>
+                                <select clrSelect name="product_clarity" [(ngModel)]="inquery.product_clarity">
+                                    <option [ngValue]=""></option>
+                                    <ng-container *ngFor="let data of klarity">
+                                        <option [ngValue]="data">{{data.name}}</option>
+                                    </ng-container>
+                                </select>
+                            </clr-select-container>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="card-footer">
                 <button class="btn btn-icon" [clrLoading]="LoadingSearch" (click)="Search()"><clr-icon shape="search"></clr-icon> Cari</button>
@@ -148,12 +315,25 @@
             <clr-dg-column>SKU</clr-dg-column>
             <clr-dg-column>Vendor</clr-dg-column>
             <clr-dg-column>Kadar</clr-dg-column>
-            <clr-dg-column>Warna</clr-dg-column>
+
+            <clr-dg-column>Product Stone</clr-dg-column>
+            <clr-dg-column>Product Stone Color</clr-dg-column>
+            <clr-dg-column>Product stone dimensi</clr-dg-column>
+            <clr-dg-column>Product Stone Carat</clr-dg-column>
+            <clr-dg-column>Product Cut</clr-dg-column>
+            <clr-dg-column>Product Clarity</clr-dg-column>
+            <clr-dg-column>Gram TUkar</clr-dg-column>
+            <clr-dg-column>Warna Emas</clr-dg-column>
+            <clr-dg-column>Warna Berlian</clr-dg-column>
             <clr-dg-column>Jenis</clr-dg-column>
-            <clr-dg-column>Hpp Batu</clr-dg-column>
+            <clr-dg-column>Hpp</clr-dg-column>
+            <clr-dg-column>Hpp Batu Inisiasi</clr-dg-column>
+
+            <clr-dg-column>Hpp Berlian Inisiasi</clr-dg-column>
             <clr-dg-column>Hpp Inisiasi</clr-dg-column>
             <clr-dg-column>Hpp Berlian</clr-dg-column>
             <clr-dg-column>Jumlah Butir</clr-dg-column>
+            <clr-dg-column>Total Berat</clr-dg-column>
             <clr-dg-column>Flag</clr-dg-column>
             <clr-dg-column>Lokasi Distribusi</clr-dg-column>
             <clr-dg-column>Tipe Stock</clr-dg-column>
@@ -167,12 +347,24 @@
                 <clr-dg-cell>{{data.sku ? data.sku : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data.vendor.name}}</clr-dg-cell>
                 <clr-dg-cell>{{data["product-purity"].code}}</clr-dg-cell>
-                <clr-dg-cell>{{data["product-gold-color"].name}}</clr-dg-cell>
+
+                <clr-dg-cell>{{data["product-stone"] ? data["product-stone"] : "-"}}</clr-dg-cell>
+                <clr-dg-cell>{{data["product-stone-color"] ? data["product-stone-color"] : "-"}}</clr-dg-cell>
+                <clr-dg-cell>{{data["product-stone-dimension"] ? data["product-stone-dimension"] : "-"}}</clr-dg-cell>
+                <clr-dg-cell>{{data["product-stone-carat"] ? data["product-stone-carat"] : "-"}}</clr-dg-cell>
+                <clr-dg-cell>{{data["product-cut"] ? data["product-cut"] : "-"}}</clr-dg-cell>
+                <clr-dg-cell>{{data["product-clartity"] ? data["product-clartity"] : "-"}}</clr-dg-cell>
+                <clr-dg-cell>{{data["gram_tukar"] ? data["gram_tukar"] : "-"}}</clr-dg-cell>
+                <clr-dg-cell>{{data["product-gold-color"] ? data["product-gold-color"].name : "-"}}</clr-dg-cell>
+                <clr-dg-cell>{{data["product-diamond-color"] ? data["product-diamond-color"] : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data["product-jenis"].name}}</clr-dg-cell>
-                <clr-dg-cell>{{data.hpp_batu}}</clr-dg-cell>
+                <clr-dg-cell>{{data.hpp}}</clr-dg-cell>
+                <clr-dg-cell>{{data.hpp_batu_inisiasi}}</clr-dg-cell>
+                <clr-dg-cell>{{data.hpp_berlian_inisiasi}}</clr-dg-cell>
                 <clr-dg-cell>{{data.hpp_inisiasi}}</clr-dg-cell>
                 <clr-dg-cell>{{data.hpp_berlian}}</clr-dg-cell>
                 <clr-dg-cell>{{data.jumlah_butir}}</clr-dg-cell>
+                <clr-dg-cell>{{data.total_berat}}</clr-dg-cell>
                 <clr-dg-cell>{{data.flag}}</clr-dg-cell>
                 <clr-dg-cell>{{data.location ? data.location : "-"}}</clr-dg-cell>
                 <clr-dg-cell>{{data.tipe_stock ? data.tipe_stock : "-"}}</clr-dg-cell>

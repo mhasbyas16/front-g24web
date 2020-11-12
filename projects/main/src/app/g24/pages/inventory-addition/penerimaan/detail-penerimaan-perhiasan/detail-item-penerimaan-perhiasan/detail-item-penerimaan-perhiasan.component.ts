@@ -696,9 +696,9 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
     
     this.inisiasi.order_status = OrderStatus.TOLAK.code;
     this.inisiasi.update_date = new Date().toISOString().split("T")[0];
-    this.inisiasi.update_by = this.user.username;
+    this.inisiasi.update_by = this.user;
     this.inisiasi['tgl_tolak'] = this.inisiasi.update_date;
-    this.inisiasi.tolak_by = this.user.username;
+    this.inisiasi.tolak_by = this.user;
     this.inisiasi._log = true
 
     let tempInisiasi = {}

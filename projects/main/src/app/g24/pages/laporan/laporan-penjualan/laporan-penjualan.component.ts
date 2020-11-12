@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 
 // services
 import { TransactionService } from '../../../services/transaction/transaction.service';
+import { SplitDateServiceService } from '../../../services/split-date-service.service';
 //Session
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 
@@ -46,6 +47,7 @@ export class LaporanPenjualanComponent implements OnInit {
     //session
     private sessionService: SessionService,
     private datePipe: DatePipe,
+    private splitDateServiceService:SplitDateServiceService
   ) { }
 
   ngOnInit(): void {
@@ -80,6 +82,9 @@ export class LaporanPenjualanComponent implements OnInit {
     this.loadingDg = true;
 
     let data = this.search.getRawValue(); 
+    
+    data.from = this.splitDateServiceService.split(data.from);
+    data.to = this.splitDateServiceService.split(data.to);
     let params = "";
 
     // Session
