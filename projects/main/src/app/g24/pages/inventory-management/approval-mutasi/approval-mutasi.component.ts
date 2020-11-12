@@ -37,6 +37,7 @@ listdt2 : any[] = [];       // data item dari mutasi nya
 data_view : any = {};
 
 mutasi_view : any[] = [];
+Flag : any = Object.values(FlagMutasi);
 
 input : any = {};
 add : any = {};
@@ -162,6 +163,10 @@ descSort_terima : any;
 
         case 'created_date':
           params += 'created_date='+StringHelper.StandardFormatDate('/',this.input[key],'MM/dd/yyyy')+"&";
+          break;
+
+        case "tipe" :
+          params += "flag="+this.input[key].code+"&";
           break;
 
         default:

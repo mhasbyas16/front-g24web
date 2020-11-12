@@ -65,6 +65,19 @@
                             </div>
                         </div>
                     </div>
+                    <div class="clr-col-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Tipe Flag</label>
+                            <clr-select-container>
+                                <select name="tipe" clrSelect [(ngModel)]="input.tipe">
+                                    <option [ngValue]=""></option>
+                                    <ng-container *ngFor="let data of Flag">
+                                        <option [ngValue]="data">{{data.code}}</option>
+                                    </ng-container>
+                                </select>
+                            </clr-select-container>
+                        </div>
+                    </div>
                 </div>
 
         <div class="card-footer">
