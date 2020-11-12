@@ -97,7 +97,10 @@ modal = false;
 claritys : any[] = [];        
 colors : any[] = [];
 series : any[] = [];          
-denoms : any[] = [];
+denomsSouvenir : any[] = [];
+denomsGift : any[] = [];
+denomsDinar : any[] = [];
+denomsEmas : any[] = [];
 input : any = {};   
 addinput : any = {};
 Flag = Object.values(FlagMutasi);
@@ -133,6 +136,7 @@ date_now : String;
 time : String;
 
 product_cut : any[] = [];
+Lock : Boolean = false;
 
 noItem : number = 0;
 innerDoc : any = {};
@@ -158,6 +162,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
   ngOnInit(): void {
 	
     let params = "?";
+    this.Lock = false;
 	 
 
 
@@ -197,7 +202,10 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
       this.LoadColor();
       this.LoadKadar();
       this.LoadJenis();
-      this.LoadDenom();
+      this.LoadDenomSouvenir();
+      this.LoadDenomGift();
+      this.LoadDenomDinar();
+      this.LoadDenomEmas();
       this.LoadKlarity();
       this.LoadSeries();
       this.LoadDiamondColor();
@@ -275,15 +283,48 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
       this.jeniss = data;
   }
 
-  async LoadDenom(){
-    //Product Denom
-    let data = await this.denomservice.list("?").toPromise();
+  async LoadDenomSouvenir(){
+    //Product Denom Souvuenir
+    let data = await this.denomservice.list("?product-category.name=Souvenir").toPromise();
     if(data==false){
       let msg = this.denomservice.message();
       this.toastr.error("Gagal load Product Denom "+msg,"Error");
       return;
     }
-      this.denoms = data;
+      this.denomsSouvenir = data;
+  }
+  
+  async LoadDenomGift(){
+    //Product Denom Gift
+    let data = await this.denomservice.list("?product-category.name=Gift").toPromise();
+    if(data==false){
+      let msg = this.denomservice.message();
+      this.toastr.error("Gagal load Product Denom "+msg,"Error");
+      return;
+    }
+      this.denomsGift = data;
+  }
+
+  async LoadDenomDinar(){
+    //Product Denom Dinar
+    let data = await this.denomservice.list("?product-category.name=Dinar").toPromise();
+    if(data==false){
+      let msg = this.denomservice.message();
+      this.toastr.error("Gagal load Product Denom "+msg,"Error");
+      return;
+    }
+      this.denomsDinar = data;
+  }
+
+  async LoadDenomEmas(){
+    //Product Denom Emas
+    let data = await this.denomservice.list("?product-category.name=Mulia").toPromise();
+    if(data==false){
+      let msg = this.denomservice.message();
+      this.toastr.error("Gagal load Product Denom "+msg,"Error");
+      return;
+    }
+      this.denomsEmas = data;
   }
 
   async LoadKlarity(){
@@ -373,6 +414,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
 
   onAdd(){    
     this.items = [];
+    this.Lock = false;
     this.itempick = 0;
     this.searchModel = {};
     this.addinput={};
@@ -388,7 +430,15 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     this.LoadCategory();
     this.searchModel = {};
     this.input = {};
-    this.listdt = [];
+    this.products = [];
+    this.items = [];
+    this.searchCode = {};
+    this.Lock = false;
+    this.addinput = {};
+    this.formInput = null;
+    this.itempick = 0;
+    this.berat = 0;
+    // this.listdt = [];
   }
 
   async validateInputNumerik(){
@@ -548,7 +598,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
 
       if(this.items[index]['berat'] == undefined)
       {
-        value = this.items[index]['product-denom'].value;
+        value = parseFloat(this.items[index]['product-denom'].value);
         console.log(value, "denom");
       }else {
         value = parseFloat(this.items[index]['berat']);
@@ -625,6 +675,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     }
 
     //MASIH MENGGUNAKAN API ADD, MICROSERVICES PROBLEM PARSE NUMBER
+
     this.mutasiservice.add(cfg).subscribe(output => {
       if(output!=false){
         this.spinner.Close();
@@ -663,6 +714,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
       this.modalshow=false;
       this.pdf.Makepdf(cetak);
       this.toastr.success("Data berhasil di mutasi","Berhasil");
+      this.berat = 0;
 
     });
 
@@ -708,7 +760,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
           break;
 
         case "color":
-          params += "product-diamond-color.name="+this.searchModel[key].name+"&";
+          params += "product-diamond-color="+this.searchModel[key].name.toUpperCase()+"&";
           break;
         
         case "berat":
@@ -723,8 +775,16 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
           params += "product-cut.code="+this.searchModel[key].code+"&";
           break;
 
+        case "product_stone":
+          params += "product-stone="+this.searchModel[key]+"&";
+          break;
+
+        case "product_stone_color":
+          params += "product-stone-color="+this.searchModel[key]+"&";
+          break;
+
         case "clarity":
-          params += "product-clarity.code="+this.searchModel[key].code+"&";
+          params += "product-clarity="+this.searchModel[key]+"&";
           break;        
         
         case "carat":
@@ -781,14 +841,38 @@ pickitem(){
 
 Addmutasi(){
   this.selected_items = [];
+  if(this.searchCode.code == "" || this.searchCode.code == null){
+    this.toastr.warning("Mohon isi kode branch dahulu","Peringatan");
+    return;
+  }else if(this.addinput.unit_tujuan == "" || this.addinput.unit_tujuan == null){
+    this.toastr.warning("Mohon cek nama unit tersebut dengan menekan ENTER","Peringatan");
+    return;
+  }else if(this.searchModel["product-category"]=="" || this.searchModel["product-category"]==null){
+    this.toastr.warning("Mohon pilih produk katergori dahulu","Peringatan");
+    return;
+  }else if(this.addinput.keterangan=="" || this.addinput.keterangan == null){
+    this.toastr.warning("Mohon isi keterangan dahulu","Peringatan");  
+    return;
+  }
+
   if(!this.selected.length){
     this.toastr.warning("Data produk belum dipilih","Peringatan");
   }
 
+  
   for(let r = 0; r < this.selected.length; r++){
-    if(this.items.indexOf(this.selected[r])=== -1){
-      this.items.push(this.selected[r]);
+    for(let i = 0; i < this.items.length; i++){
+      if(this.selected[r]._id == this.items[i]._id){
+        this.toastr.info("Data sudah dipilih","Informasi");
+        return;
+      }
     }
+    this.items.push(this.selected[r]);
+    this.Lock = true;
+    // if(this.selected.indexOf(this.items[r]) == -1){
+    //   this.items.push(this.selected[r]);
+    //   this.Lock = true;
+    // }
   }
 
 }
@@ -1015,6 +1099,62 @@ GetDisplayName(key : string) : string
     name = "Pengajuan Dari";
     break;
 
+    case "ongkos_pembuatan":
+      name = "Ongkos Pembuatan";
+      break;
+
+    case "product-carat":
+      name = "Product Carat";
+      break;
+
+    case "product-stone":
+      name = "Product Stone";
+      break;
+
+    case "hpp_batu":
+      name = "Hpp Batu";
+      break;
+
+    case "total_berat":
+      name = "Total Berat";
+      break;
+
+    case "product-stone-color":
+      name = "Product Stone Color";
+      break;
+
+    case "hpp_berlian":
+      name = "Hpp Berlian";
+      break;
+
+    case "product-stone-dimension":
+      name = "Product Stone Dimension";
+      break;
+
+    case "hpp_batu_inisiasi":
+      name = "Hpp Batu Inisiasi";
+      break;
+
+    case "jumlah_butir":
+      name = "Jumlah Butir";
+      break;
+
+    case "hpp_berlian_inisiasi":
+      name = "Hpp Berlian Inisiasi";
+      break;
+
+    case "product-stone-carat":
+      name = "Product Stone Carat";
+      break;
+
+    case "no_urut":
+      name = "No Urut";
+      break;
+
+    case "nomor_nota":
+      name = "Nomer Nota";
+      break;
+
       default:
         name += " - " + key;
 
@@ -1076,6 +1216,24 @@ GetDisplayName(key : string) : string
       case "status":
         return false;
         break;
+
+      case "create_by":
+        return false;
+        break;
+
+      case "create_date":
+        return false;
+        break;
+
+      case "create_time":
+        return false;
+        break;
+
+      case "isterima":
+        return false;
+        break;
+
+      
 
       default:
         return true;

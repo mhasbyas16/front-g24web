@@ -11,6 +11,8 @@ import { TanggalService } from '../../../lib/helper/tanggal.service';
 import { MutasiService } from '../../../services/stock/mutasi.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { ServerDateTimeService } from '../../../services/system/server-date-time.service';
+import { ProductBarcodeGenerator } from '../../../lib/helper/product-barcode-generator';
+import { SSL_OP_NO_TLSv1_2 } from 'constants';
 
 @Component({
   selector: 'app-cetak-mutasi',
@@ -118,7 +120,7 @@ addinput : any = {};
           columns : [
             {
               columns : [
-                {alignment : 'center', fontSize : 22, bold : true, text : "MUTASI"}
+                {alignment : 'center', fontSize : 22, bold : true, text : "KIRIM MUTASI"}
               ]
             }
           ]
@@ -160,6 +162,7 @@ addinput : any = {};
     {
         for (let produk of dataCetak.items) {
           this.noItem++;
+          if(produk.berat == undefined){
           this.innerDoc['content'].push([
             {
               style:'detail',
@@ -176,7 +179,7 @@ addinput : any = {};
 
                     {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
                     {alignment : 'center', width:'*',text:produk._id},
-                    {alignment : 'center', width:40,text:' '+produk.berat == undefined ? "-" : produk.berat},
+                    {alignment : 'center', width:60,text:' '+produk["product-denom"].value},
                     {alignment : 'center', width:'*',text:' '+produk.hpp == undefined ? "-" : produk.hpp},
                     {alignment : 'center', width:'*',text:' '+produk.flag == undefined ? "-" : produk.flag},
                     {alignment : 'center', width:'*',text:' Dalam Pengiriman '}
@@ -185,7 +188,48 @@ addinput : any = {};
               ]
             }
           ]);
-        }
+          }else if(produk["product-denom"]?.value == undefined){
+            this.innerDoc['content'].push([
+              {
+                style:'detail',
+                columns:[
+                  {
+                    width:"*",
+                    columns:[
+
+                      {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
+                      {alignment : 'center', width:'*',text:produk._id},
+                      {alignment : 'center', width:60,text:' '+produk.berat},
+                      {alignment : 'center', width:'*',text:' '+produk.hpp == undefined ? "-" : produk.hpp},
+                      {alignment : 'center', width:'*',text:' '+produk.flag == undefined ? "-" : produk.flag},
+                      {alignment : 'center', width:'*',text:' Dalam Pengiriman '}
+                    ]
+                  }
+                ]
+              }
+            ]);
+          }else{
+            this.innerDoc['content'].push([
+              {
+                style : 'detail',
+                columns : [
+                  {
+                    width:"*",
+                    columns:[
+
+                      {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
+                      {alignment : 'center', width:'*',text:produk._id},
+                      {alignment : 'center', width:60,text:' '+produk.berat},
+                      {alignment : 'center', width:'*',text:' '+produk.hpp == undefined ? "-" : produk.hpp},
+                      {alignment : 'center', width:'*',text:' '+produk.flag == undefined ? "-" : produk.flag},
+                      {alignment : 'center', width:'*',text:' Dalam Pengiriman '}
+                    ]
+                  }
+                ]
+              }
+            ]);
+          }
+      }
     }
 
 
@@ -193,7 +237,7 @@ addinput : any = {};
       this.innerDoc['content'].push([
         {
           style : 'detail',
-          lineHeight : 4,
+          lineHeight : 2,
           columns : 
           [
             {
@@ -215,17 +259,33 @@ addinput : any = {};
         this.innerDoc['content'].push([
           {
             style : 'detail',
-            lineHeight : 6,
+            // lineHeight : 6,
             columns : 
             [
               {
                 columns:
                 [
-                  {width:40, bold:true, text: "TOTAL"},
-                  {width:"*", text:""},
-                  {width:80, text:dataCetak.total_berat},
-                  {width:'*', text:dataCetak.total_hpp},
+                  {width:80, bold:true, text : "TOTAL BERAT"},
+                  {width:80, bold:true, text : dataCetak.total_berat},
+                  // {width:80, text:dataCetak.total_berat},
+                  // {width:'*', text:dataCetak.total_hpp},
                   {width:'*', text:""}
+                ]
+              }
+            ]
+          }
+        ]);
+
+        this.innerDoc['content'].push([
+          {
+            style : 'detail',
+            lineHeight : 2,
+            columns : [
+              {
+                columns : [
+                  {width : 80, bold:true, text : "TOTAL HPP"},
+                  {width : 80, bold:true, text : dataCetak.total_hpp},
+                  {width : '*', text : ""}
                 ]
               }
             ]
@@ -252,65 +312,67 @@ addinput : any = {};
         ]);
 
         this.innerDoc['content'].push([
-        {
-          style : 'detail',
-          columns : 
-          [
-            {
-              columns : 
-              [
-                {width:88, bold:true, text: "Keterangan"},
-                {width:15, text: " : "},
-                {width:500, text: dataCetak.keterangan}
-              ]
-            }
-          ]
-        }
-        ])
+          {
+            style : 'detail',
+            lineHeight : 2,
+            columns : 
+            [
+              {
+                columns : 
+                [
+                  {width:88, bold:true, text: "Keterangan"},
+                  {width:15, text: " : "},
+                  {width:500, text: dataCetak.keterangan}
+                ]
+              }
+            ]
+          }
+        ]);
 
-this.innerDoc['content'].push([
-{
-  style : 'detail',
-  lineHeight : 5,
-  columns : [
-    {
-      columns : [
-        {alignment : 'center', bold:true, text: "Mengetahui,"},
-        {width : 100, bold:true, text: "Penerima,"},
-      ]
-    }
-  ]
-}
-])
+        this.innerDoc['content'].push([
+          {
+            style : 'detail',
+            lineHeight : 2,
+            columns : [
+              {
+                columns : [
+                  {alignment : 'center', bold:true, text: "Mengetahui,"},
+                  {width : 100, bold:true, text: "Pengirim,"},
+                ]
+              }
+            ]
+          }
+        ]);
 
-this.innerDoc['content'].push([
-{
-  style : 'detail',
-  columns : [
-    {
-      columns : [
-        {alignment : 'center', text: dataCetak.unit_asal.nama},
-        {width : 100, text : ""}
+        this.innerDoc['content'].push([
+          {
+            style : 'detail',
+            lineHeight : 4,
+            columns : [
+              {
+                columns : [
+                  {alignment : 'center', text: "Kadep Stock"},
+                  {width : 100, text : this.session.getUser().name}
+                ]
+              }
+            ]
+          }
+        ]);
 
-      ]
-    }
-  ]
-}
-])
+        this.innerDoc['content'].push([
+          {
+            style : 'detail',
+            columns : [
+              {
+                columns : [
+                  {alignment : 'center', text: "00005"},
+                  {width : 100, text : this.session.getUser().unit.code}
+                ]
+              }
+            ]
+          }
+        ]);
 
-this.innerDoc['content'].push([
-{
-  style : 'detail',
-  columns : [
-    {
-      columns : [
-        {alignment : 'center', text: dataCetak.unit_asal.code},
-        {width : 100, text : ""}
-      ]
-    }
-  ]
-}
-])
 
 // this.innerDoc['content'].push([
 //   {

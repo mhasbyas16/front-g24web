@@ -9,8 +9,10 @@ import { TanggalService } from '../../../../lib/helper/tanggal.service';
 
 import { MutasiService } from '../../../../services/stock/mutasi.service';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
+import { UserService } from '../../../../services/user.service';
 import { ServerDateTimeService } from '../../../../services/system/server-date-time.service';
 import { ToastrService } from 'ngx-toastr';
+import { returnOrFallthrough } from '@clr/core/internal';
 
 @Component({
   selector: 'cetak-terima-mutasi',
@@ -21,6 +23,7 @@ export class CetakTerimaMutasiComponent implements OnInit {
 
   constructor(private mutasiservice : MutasiService,
               private session : SessionService,
+              private user : UserService,
               private toastr : ToastrService,
               private timeservice : ServerDateTimeService) { }
 
@@ -32,7 +35,6 @@ export class CetakTerimaMutasiComponent implements OnInit {
 
   MutasiTerima : any[] = [];
   itemsTerima : any[] = [];
-
 
   ngOnInit(): void {
   }
@@ -152,8 +154,11 @@ export class CetakTerimaMutasiComponent implements OnInit {
         }
       ];
 
-        for (let tul of dataCetak.items) {
+      if(dataCetak.items.length != 0)
+      {
+          for (let produk of dataCetak.items) {
             this.noItem++;
+            if(produk.berat == undefined){
             this.innerDoc['content'].push([
               {
                 style:'detail',
@@ -167,26 +172,68 @@ export class CetakTerimaMutasiComponent implements OnInit {
                       // {alignment : 'center', width:'*',text:' '+produk.hpp == undefined ? "-" : produk.hpp},
                       // {alignment : 'center', width:'*',text:' '+produk.flag == undefined ? "-" : produk.flag},
                       // {alignment : 'center', width:'*',text:' Dalam Pengiriman '}
-
+  
                       {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
-                      {alignment : 'center', width:'*',text:tul._id},
-                      {alignment : 'center', width:40,text:' '+tul.berat == undefined ? "-" : tul.berat},
-                      {alignment : 'center', width:'*',text:' '+tul.hpp == undefined ? "-" : tul.hpp},
-                      {alignment : 'center', width:'*',text:' '+tul.flag == undefined ? "-" : tul.flag},
-                      {alignment : 'center', width:'*',text:' Penerimaan '}
+                      {alignment : 'center', width:'*',text:produk._id},
+                      {alignment : 'center', width:60,text:' '+produk["product-denom"].value},
+                      {alignment : 'center', width:'*',text:' '+produk.hpp == undefined ? "-" : produk.hpp},
+                      {alignment : 'center', width:'*',text:' '+produk.flag == undefined ? "-" : produk.flag},
+                      {alignment : 'center', width:'*',text:' Dalam Pengiriman '}
                     ]
                   }
                 ]
               }
             ]);
+            }else if(produk["product-denom"]?.value == undefined){
+              this.innerDoc['content'].push([
+                {
+                  style:'detail',
+                  columns:[
+                    {
+                      width:"*",
+                      columns:[
+  
+                        {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
+                        {alignment : 'center', width:'*',text:produk._id},
+                        {alignment : 'center', width:60,text:' '+produk.berat},
+                        {alignment : 'center', width:'*',text:' '+produk.hpp == undefined ? "-" : produk.hpp},
+                        {alignment : 'center', width:'*',text:' '+produk.flag == undefined ? "-" : produk.flag},
+                        {alignment : 'center', width:'*',text:' Dalam Pengiriman '}
+                      ]
+                    }
+                  ]
+                }
+              ]);
+            }else{
+              this.innerDoc['content'].push([
+                {
+                  style : 'detail',
+                  columns : [
+                    {
+                      width:"*",
+                      columns:[
+  
+                        {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
+                        {alignment : 'center', width:'*',text:produk._id},
+                        {alignment : 'center', width:60,text:' '+produk.berat},
+                        {alignment : 'center', width:'*',text:' '+produk.hpp == undefined ? "-" : produk.hpp},
+                        {alignment : 'center', width:'*',text:' '+produk.flag == undefined ? "-" : produk.flag},
+                        {alignment : 'center', width:'*',text:' Dalam Pengiriman '}
+                      ]
+                    }
+                  ]
+                }
+              ]);
+            }
         }
+      }
 
 
       //SPACE KONTEN
       this.innerDoc['content'].push([
         {
           style : 'detail',
-          lineHeight : 4,
+          lineHeight : 2,
           columns : 
           [
             {
@@ -205,25 +252,39 @@ export class CetakTerimaMutasiComponent implements OnInit {
       ]);
 
 
-        this.innerDoc['content'].push([
-          {
-            style : 'detail',
-            lineHeight : 6,
-            columns : 
-            [
-              {
-                columns:
-                [
-                  {width:40, bold:true, text: "TOTAL"},
-                  {width:"*", text:""},
-                  {width:80, text:this.MutasiTerima[0].total_berat},
-                  {width:'*', text:this.MutasiTerima[0].total_hpp},
-                  {width:'*', text:""}
-                ]
-              }
-            ]
-          }
-        ]);
+      this.innerDoc['content'].push([
+        {
+          style : 'detail',
+          // lineHeight : 6,
+          columns : 
+          [
+            {
+              columns:
+              [
+                {width:80, bold:true, text : "TOTAL BERAT"},
+                {width:80, bold:true, text : this.MutasiTerima[0].total_berat},
+                {width:'*', text:""}
+              ]
+            }
+          ]
+        }
+      ]);
+
+      this.innerDoc['content'].push([
+        {
+          style : 'detail',
+          lineHeight : 2,
+          columns : [
+            {
+              columns : [
+                {width : 80, bold:true, text : "TOTAL HPP"},
+                {width : 80, bold:true, text : this.MutasiTerima[0].total_hpp},
+                {width : '*', text : ""}
+              ]
+            }
+          ]
+        }
+      ]);
 
         this.innerDoc['content'].push([
           {
@@ -245,65 +306,67 @@ export class CetakTerimaMutasiComponent implements OnInit {
         ]);
 
         this.innerDoc['content'].push([
-        {
-          style : 'detail',
-          columns : 
-          [
-            {
-              columns : 
-              [
-                {width:120, bold:true, text: "Keterangan"},
-                {width:15, text: " : "},
-                {width:500, text: this.MutasiTerima[0].keterangan}
-              ]
-            }
-          ]
-        }
-        ])
+          {
+            style : 'detail',
+            lineHeight : 2,
+            columns : 
+            [
+              {
+                columns : 
+                [
+                  {width:120, bold:true, text: "Keterangan"},
+                  {width:15, text: " : "},
+                  {width:500, text: this.MutasiTerima[0].keterangan}
+                ]
+              }
+            ]
+          }
+        ]);
 
-this.innerDoc['content'].push([
-{
-  style : 'detail',
-  lineHeight : 5,
-  columns : [
-    {
-      columns : [
-        {alignment : 'center', bold:true, text: "Mengetahui,"},
-        {width : 100, bold:true, text: "Penerima,"},
-      ]
-    }
-  ]
-}
-])
+        this.innerDoc['content'].push([
+          {
+            style : 'detail',
+            lineHeight : 5,
+            columns : [
+              {
+                columns : [
+                  {alignment : 'center', bold:true, text: "Mengetahui,"},
+                  {width : 100, bold:true, text: "Penerima,"},
+                ]
+              }
+            ]
+          }
+        ]);
 
-this.innerDoc['content'].push([
-{
-  style : 'detail',
-  columns : [
-    {
-      columns : [
-        {alignment : 'center', text: this.MutasiTerima[0].unit_asal.nama},
-        {width : 100, text : ""}
+        this.innerDoc['content'].push([
+          {
+            style : 'detail',
+            columns : [
+              {
+                columns : [
+                  // {alignment : 'center', text: this.MutasiTerima[0].unit_asal.nama},
+                  {alignment : 'center', text: "Kadep Stock"},
+                  {width : 100, text : this.session.getUser().name}
 
-      ]
-    }
-  ]
-}
-])
+                ]
+              }
+            ]
+          }
+        ]);
 
-this.innerDoc['content'].push([
-{
-  style : 'detail',
-  columns : [
-    {
-      columns : [
-        {alignment : 'center', text: this.MutasiTerima[0].unit_asal.code},
-        {width : 100, text : ""}
-      ]
-    }
-  ]
-}
-])
+        this.innerDoc['content'].push([
+          {
+            style : 'detail',
+            columns : [
+              {
+                columns : [
+                  {alignment : 'center', text: "00005"},
+                  {width : 100, text : this.session.getUser().unit.code}
+                ]
+              }
+            ]
+          }
+        ]);
 
 
 pdfMake.createPdf(this.innerDoc).open()

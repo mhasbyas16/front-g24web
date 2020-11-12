@@ -164,14 +164,14 @@ export class DetailInqueryProductPermataComponent implements OnInit {
     let y = this.dimension["y"];
     let z = this.dimension["z"];
 
-    if(this.dimension["x"]==undefined || this.dimension["y"]==undefined || this.dimension["z"]==undefined){
-      this.toastr.warning("Dimensi batu harap di isi","Peringatan");
-      this.LoadingSearch = ClrLoadingState.ERROR;
-      this.spinner.Close();
-      return;
-    }
+    // if(this.dimension["x"]!=="" || this.dimension["y"]!=="" || this.dimension["z"]!==""){
+    //   this.toastr.warning("Mohon isi dengan 0 jika salah satu dimensi batu kosong","Peringatan");
+    //   this.LoadingSearch = ClrLoadingState.ERROR;
+    //   this.spinner.Close();
+    //   return;
+    // }
 
-    this.inquery["dimensi_product"] = x + "x" + y + "x" + z;
+    // this.inquery["dimensi_product"] = x + "x" + y + "x" + z;
 
 
     if(this.sessionService.getUser().unit.code!="00005"){
@@ -254,9 +254,9 @@ export class DetailInqueryProductPermataComponent implements OnInit {
           params += "hpp_batu_inisiasi="+this.inquery[key]+"&hpp_batu_inisiasi_encoded=double&";
           break;
 
-        // case "product_stone_color" :
-        //   params += "product-stone-color="+this.inquery[key]+"&";
-        //   break;
+        case "product_stone_color" :
+          params += "product-stone-color="+this.inquery[key]+"&";
+          break;
 
         case "product_diamond_color" :
           params += "product-diamond-color="+this.inquery[key]+"&";
@@ -287,7 +287,8 @@ export class DetailInqueryProductPermataComponent implements OnInit {
           break;
 
         default :
-        params += key +="="+this.inquery[key]+"&";
+        // params += key +="="+this.inquery[key]+"&";
+        params += "";
         break;
         }
     }
