@@ -465,7 +465,7 @@
                                 <div class="clr-col-4">
                                     <clr-input-container class="margin-top-15">
                                         <label>Kasir ID (Emas)</label>
-                                        <input clrInput type="text" [value]="" formControlName="kasirId">
+                                        <input clrInput type="text" [value]="" formControlName="kasirId" (ngModelChange)="changingNIK()">
                                         <input clrInput type="text" formControlName="coa" id="coa">
                                     </clr-input-container>
                                 </div>
