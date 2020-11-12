@@ -218,7 +218,11 @@ export class CheckoutBuybackComponent implements OnInit {
           let id = JSON.stringify(Number(sq["value"]) + 1);
           
           if (idAi == JSON.stringify(id)) {
-            this.sequenceService.use({key:this.idtransaksiBB}).subscribe((sq:any)=>{});
+            this.sequenceService.use({key:this.idtransaksiBB}).toPromise();
+            this.idTransaksi();
+          }
+          if (sq["value"] == null) {
+            this.sequenceService.use({key:this.idtransaksiBB}).toPromise();
             this.idTransaksi();
           }
 

@@ -157,9 +157,14 @@ dat = null;
         this.sequenceService.peek({key:this.idtransaksi}).subscribe((sq:any)=>{
           let idAi = JSON.stringify(response["0"]["idAi"]);
           let id = JSON.stringify(Number(sq["value"]) + 1);
-          console.debug(idAi,)
+          console.debug(idAi,id)
           if (idAi == JSON.stringify(id)) {
-            this.sequenceService.use({key:this.idtransaksi}).subscribe((sq:any)=>{});
+            this.sequenceService.use({key:this.idtransaksi}).toPromise();
+            this.idtransaksi();
+          }
+
+          if (sq["value"] == null) {
+            this.sequenceService.use({key:this.idtransaksi}).toPromise();
             this.idtransaksi();
           }
 

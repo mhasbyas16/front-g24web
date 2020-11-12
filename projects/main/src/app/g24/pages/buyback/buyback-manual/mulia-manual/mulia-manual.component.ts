@@ -11,6 +11,8 @@ import { ProductCategoryService } from '../../../../services/product/product-cat
 import { BuybackAcceptParameterService } from '../../../../services/buyback/buyback-accept-parameter.service';
 import { BuybackTransactionService } from '../../../../services/buyback/buyback-transaction.service';
 import { DatePipe } from "@angular/common";
+import { TransactionBuybackPriceService } from '../../../../services/transaction/transaction-buyback-price.service';
+
 
 // prm
 import { PrmJualService } from '../../../../services/parameter/prm-jual.service';
@@ -43,6 +45,7 @@ export class MuliaManualComponent implements OnInit {
     private toastrService:ToastrService,
     private buybackTransactionService : BuybackTransactionService,
     private datePipe: DatePipe,
+    private transactionBuybackPriceService:TransactionBuybackPriceService
   ) { }
 
   ngOnInit(): void {
@@ -163,17 +166,22 @@ export class MuliaManualComponent implements OnInit {
           const urlVendor = "vendor.code="+vendorCode;
           const urlJenisbarang = "jenis_barang=Buyback"
 
-        this.prmJualService.get(this.muliaCategory+"&"+urlVendor+"&"+urlJenisbarang).subscribe((Jualresponse: any) => {
-          prmJual = Jualresponse.harga
-          for (let index = 0; index < prmJual.length; index++) {
-            if (prmJual[index]["product-denom"].code == denomCode) {
-              this.hargaBaku = prmJual[index].harga_baku
-            }
-          }
+        // this.prmJualService.get(this.muliaCategory+"&"+urlVendor+"&"+urlJenisbarang).subscribe((Jualresponse: any) => {
+        //   prmJual = Jualresponse.harga
+        //   for (let index = 0; index < prmJual.length; index++) {
+        //     if (prmJual[index]["product-denom"].code == denomCode) {
+        //       this.hargaBaku = prmJual[index].harga_baku
+        //     }
+        //   }
+
+        this.transactionBuybackPriceService.get("?_transactionType=b02&_ch=ch02&_vendorLM="+vendorCode+"&_denomLM="+denomValue+"&_manualBuyback=1").subscribe((response:any)=>{
+          const hasil = response;
           this.detail = {}
-          this.datamulias = [{vendor : vendorName, denom: denomName, harga : this.hargaBaku, denomCodes : denomCode, denomValues: denomValue}]
+          this.datamulias = [{vendor : vendorName, denom: denomName, harga : hasil.harga, denomCodes : denomCode, denomValues: denomValue}]
           this.loadingDg = false;
         })
+          
+        // })
       })
     })
       

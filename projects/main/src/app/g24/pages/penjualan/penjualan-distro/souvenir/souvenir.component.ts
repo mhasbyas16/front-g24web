@@ -53,8 +53,8 @@ export class SouvenirComponent implements OnInit {
   selected: any[] = [];
 
   //params
-  souvenirCategory = "product-category.code=c02";
-  category = "?_hash&product-category.code=c02";
+  souvenirCategory = "_or=product-category.code:c02:c04";
+  category = "?_hash&_or=product-category.code:c02:c04";
   params = null;
   channel = "channel.code=ch02";
   transactionType = "transaction-type.code=t01";
@@ -181,19 +181,20 @@ export class SouvenirComponent implements OnInit {
           console.debug(this.souvenirs[0].ongkos_pieces , "ongkos")
           // this.productService.count(this.params+'&'+this.flagBarang).subscribe((response: any) => {
             this.qty = response["length"];
-            this.prmJualService.get("?"+this.souvenirCategory+"&"+this.flagApp).subscribe((Jualresponse: any) => {
-              let prmJual = Jualresponse;
-              cariSouvenir.push({
-                "vendor" : this.souvenirs[0].vendor.name,
-                "denom" : this.souvenirs[0]['product-denom'].name,
-                "series" : this.souvenirs[0]['product-series'].name,
-                "qty" : this.qty,
-                "harga" : this.souvenirs[0].harga
+            cariSouvenir.push({
+              "vendor" : this.souvenirs[0].vendor.name,
+              "denom" : this.souvenirs[0]['product-denom'].name,
+              "series" : this.souvenirs[0]['product-series'].name,
+              "qty" : this.qty,
+              "harga" : this.souvenirs[0].harga
 
-              });
-              this.datasouvenirs = cariSouvenir;
-              this.loadingDg = false;
             });
+            this.datasouvenirs = cariSouvenir;
+            this.loadingDg = false;
+            // this.prmJualService.get("?"+this.souvenirCategory+"&"+this.flagApp).subscribe((Jualresponse: any) => {
+            //   let prmJual = Jualresponse;
+              
+            // });
           // });
       });
     }
