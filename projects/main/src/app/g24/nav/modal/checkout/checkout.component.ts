@@ -674,8 +674,8 @@ dat = null;
 				   
 		   
 	  
-
-  var resp = this.checkNikService.checkNik('?branchCode='+branchCode).subscribe((response:any)=>{
+  
+  var resp = this.checkNikService.checkNik(branch).subscribe((response:any)=>{
     if (response == false) {
       this.toastr.error(this.checkNikService.message());
       console.debug(response, "Gagal Cek NIK");
@@ -683,26 +683,26 @@ dat = null;
     }
     data.checkNik =  JSON.stringify(response);
     console.debug(data, "ISI Response Check NIK");
-    this.transactionService.add(data).subscribe((response: any) => {
+    // this.transactionService.add(data).subscribe((response: any) => {
     
-      // if (response != false) {
-      //   this.validModel = false;
-      //   this.toastr.success(this.transactionService.message(), "Transaction Success");
-      //   this.checkoutModal = false;
-      //   // remove isi cart
-      //   PERHIASAN.splice(0);
-      //   BERLIAN.splice(0);
-      //   LM.splice(0);
-      //   DINAR.splice(0);
-      //   GS.splice(0);
-      //   this.cartModal.emit(false);
-      //   this.ChangeContentArea('10003');
-      // } else {
-      //   this.toastr.error(this.transactionService.message(), "Transaction");
-      //   this.idTransaksi()
-      //   return;
-      // }
-    })
+    //   // if (response != false) {
+    //   //   this.validModel = false;
+    //   //   this.toastr.success(this.transactionService.message(), "Transaction Success");
+    //   //   this.checkoutModal = false;
+    //   //   // remove isi cart
+    //   //   PERHIASAN.splice(0);
+    //   //   BERLIAN.splice(0);
+    //   //   LM.splice(0);
+    //   //   DINAR.splice(0);
+    //   //   GS.splice(0);
+    //   //   this.cartModal.emit(false);
+    //   //   this.ChangeContentArea('10003');
+    //   // } else {
+    //   //   this.toastr.error(this.transactionService.message(), "Transaction");
+    //   //   this.idTransaksi()
+    //   //   return;
+    //   // }
+    // })
   })
   
   // var url = "https://"+window.location.hostname+"/api/channel/get-kasir-on-emas.php?branchCode="+branchCode;
