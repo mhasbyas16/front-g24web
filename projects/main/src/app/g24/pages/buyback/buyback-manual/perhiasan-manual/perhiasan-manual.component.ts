@@ -221,7 +221,7 @@ export class PerhiasanManualComponent implements OnInit {
       return
     }
 
-    let paramsBB = "?_transactionType=b03&_ch=ch02&_productCat=c00&_unit="+this.unitDistro.code;
+    let paramsBB = "?_transactionType=b01&_ch=ch02&_productCat=c00&_unit="+this.unitDistro.code;
         paramsBB = paramsBB + "&_vendor="+vendorCode+"&_productJenis="+jenisCode+"&_productGoldColor="+warnaCode+"&_productPurity="+kadarCode;
         paramsBB = paramsBB + "&_kondisi="+val.input_kondisi_perhiasan+"&_berat="+val.input_beratPerhiasan+"&_manualBuyback=perhiasan";
                       

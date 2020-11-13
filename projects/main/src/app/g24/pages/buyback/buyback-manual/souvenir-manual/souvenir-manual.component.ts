@@ -153,7 +153,7 @@ export class SouvenirManualComponent implements OnInit {
   
     this.hargaBaku = 0
 
-    let prm ="?_transactionType=b01&_ch=ch02&_vendor="+data.input_vendor_souvenir+"&_denom="+data.input_denom_souvenir+"&_series="+data.input_series_souvenir+"&_manualBuyback=souvenir"
+    let prm ="?_transactionType=b03&_ch=ch02&_vendor="+data.input_vendor_souvenir+"&_denom="+data.input_denom_souvenir+"&_series="+data.input_series_souvenir+"&_manualBuyback=souvenir"
     this.transactionBuybackPriceService.get(prm).subscribe((response:any)=>{
       const hasil = response;
       this.dataSouvenir =[hasil];
