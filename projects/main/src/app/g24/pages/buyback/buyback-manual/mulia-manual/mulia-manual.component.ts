@@ -174,7 +174,7 @@ export class MuliaManualComponent implements OnInit {
         //     }
         //   }
 
-        this.transactionBuybackPriceService.get("?_transactionType=b02&_ch=ch02&_vendorLM="+vendorCode+"&_denomLM="+denomValue+"&_manualBuyback=1").subscribe((response:any)=>{
+        this.transactionBuybackPriceService.get("?_transactionType=b02&_ch=ch02&_vendorLM="+vendorCode+"&_denomLM="+denomValue+"&_manualBuyback=lm").subscribe((response:any)=>{
           const hasil = response;
           this.detail = {}
           this.datamulias = [{vendor : vendorName, denom: denomName, harga : hasil.harga, denomCodes : denomCode, denomValues: denomValue}]

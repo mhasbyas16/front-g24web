@@ -12,6 +12,8 @@ import { ProductCategoryService } from '../../../../services/product/product-cat
 import { BuybackAcceptParameterService } from '../../../../services/buyback/buyback-accept-parameter.service';
 import { BuybackTransactionService } from '../../../../services/buyback/buyback-transaction.service';
 import { DatePipe } from "@angular/common";
+import { TransactionBuybackPriceService } from '../../../../services/transaction/transaction-buyback-price.service';
+
 
 // prm
 import { PrmJualService } from '../../../../services/parameter/prm-jual.service';
@@ -44,6 +46,7 @@ export class SouvenirManualComponent implements OnInit {
     private toastrService:ToastrService,
     private buybackTransactionService : BuybackTransactionService,
     private datePipe: DatePipe,
+    private transactionBuybackPriceService:TransactionBuybackPriceService
   ) { }
 
   ngOnInit(): void {
@@ -150,27 +153,42 @@ export class SouvenirManualComponent implements OnInit {
   
     this.hargaBaku = 0
 
-    this.vendorService.get("?code="+data.input_vendor_souvenir).subscribe((response: any) => {
-      vendorCode = response.code;
-      vendorName = response.name;
-      this.denomService.get("?code="+data.input_denom_souvenir).subscribe((response: any) => {
-        denomCode = response.code
-        denomName = response.name
-        denomValue = response.value
-        this.seriesService.get("?code="+data.input_series_souvenir).subscribe((response: any) => {
-          seriesCode = response.code
-          seriesName = response.name
-          this.prmJualService.get(this.souvenirCategory+"&flag=approved").subscribe((Jualresponse: any) => {
-            prmJual = Jualresponse.harga_buyback
-            let harga_buyback = Number(denomValue) * Number(prmJual)
-            console.debug(harga_buyback, "harga_buyback")
-            this.detail = {}
-            this.dataSouvenir = [{vendor : vendorName, vendorCode : vendorCode, denom: denomName, harga : harga_buyback, denomCodes : denomCode, seriesName: seriesName, denomValues: denomValue, seriesCode: seriesCode}]
-            this.loadingDg = false;
-          })
-        })
-      })
+    let prm ="?_transactionType=b01&_ch=ch02&_vendor="+data.input_vendor_souvenir+"&_denom="+data.input_denom_souvenir+"&_series="+data.input_series_souvenir+"&_manualBuyback=souvenir"
+    this.transactionBuybackPriceService.get(prm).subscribe((response:any)=>{
+      const hasil = response;
+      this.dataSouvenir =[hasil];
+      this.loadingDg = false;
     })
+
+    // this.vendorService.get("?code="+data.input_vendor_souvenir).subscribe((response: any) => {
+    //   vendorCode = response.code;
+    //   vendorName = response.name;
+    //   this.denomService.get("?code="+data.input_denom_souvenir).subscribe((response: any) => {
+    //     denomCode = response.code
+    //     denomName = response.name
+    //     denomValue = response.value
+    //     this.seriesService.get("?code="+data.input_series_souvenir).subscribe((response: any) => {
+    //       seriesCode = response.code
+    //       seriesName = response.name
+    //       this.prmJualService.get(this.souvenirCategory+"&flag=approved").subscribe((Jualresponse: any) => {
+    //         prmJual = Jualresponse.harga_buyback
+    //         let harga_buyback = Number(denomValue) * Number(prmJual)
+    //         console.debug(harga_buyback, "harga_buyback")
+    //         this.detail = {}
+    //         this.dataSouvenir = [{
+    //           vendor : vendorName,
+    //           vendorCode : vendorCode, 
+    //           denom: denomName, 
+    //           harga : harga_buyback,
+    //           denomCodes : denomCode, 
+    //           seriesName: seriesName, 
+    //           denomValues: denomValue, 
+    //           seriesCode: seriesCode}]
+    //         this.loadingDg = false;
+    //       })
+    //     })
+    //   })
+    // })
   }
 
 
