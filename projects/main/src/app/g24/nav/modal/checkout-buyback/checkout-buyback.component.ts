@@ -20,6 +20,8 @@ import { UserService } from 'projects/platform/src/app/services/security/user.se
 import { ContentPage } from '../../../lib/helper/content-page';
 import { SequenceService } from '../../../services/system/sequence.service';
 import { ServerDateTimeService } from '../../../services/system/server-date-time.service';
+import { BankService } from '../../../services/transaction/bank.service';
+
 // import { promises } from 'fs';
 
 @Component({
@@ -54,6 +56,7 @@ export class CheckoutBuybackComponent implements OnInit {
   checkoutModal: boolean;
   validModel:boolean= false;
   transactionMethod:any;
+  bankForm:boolean = false;
 
 
   //session
@@ -64,6 +67,7 @@ export class CheckoutBuybackComponent implements OnInit {
   incId = 0
   date:any;
   time:any;
+  bank:any;
 
   constructor(
     private sessionService: SessionService,
@@ -77,14 +81,16 @@ export class CheckoutBuybackComponent implements OnInit {
     private transactionService : TransactionService,
     private transactionTypeService: TransactionTypeService,
     private sequenceService:SequenceService,
-    private serverDateTimeService:ServerDateTimeService
+    private serverDateTimeService:ServerDateTimeService,
+    private bankService: BankService,
+
   ) { }
 
   ngOnInit(): void {
 
     this.nikUser = this.sessionService.getUser();
     this.nikUser = {"_hash":btoa(JSON.stringify(this.nikUser)),"nik":this.nikUser["username"],"name":this.nikUser["name"],"username":this.nikUser["username"]} ;
-  
+    
   }
 
   openModal(totalHarga: any){
@@ -99,9 +105,11 @@ export class CheckoutBuybackComponent implements OnInit {
       idSequencer: new FormControl(""),
       metodeBayar: new FormControl ("", Validators.required),
       metodeBayar_encoded: new FormControl("base64"),
+      bankAsal:new FormControl(""),
+      bankTujuan:new FormControl(""),
       makerDate: new FormControl("", Validators.required),
       makerTime: new FormControl("", Validators.required),
-      nominalTransaksi: new FormControl (""),
+      nominalTransaksi: new FormControl ("", Validators.pattern(/^-?(0|[1-9]\d*)?$/)),
       kembali: new FormControl (""),
       unit: new FormControl(""),
       unit_encoded: new FormControl("base64"),
@@ -131,6 +139,7 @@ export class CheckoutBuybackComponent implements OnInit {
     this.idTransaksi();
     this.getTransactionMethod(this.totalBelanja);
     this.getUnit();
+    this.getBank();
 
    }
 
@@ -178,6 +187,23 @@ export class CheckoutBuybackComponent implements OnInit {
       });
     })
     
+  }
+
+  bankValid(val){
+    let cod = JSON.parse(atob(val));
+    this.bankForm = false;
+    if (cod["code"] != "01") {
+      this.bankForm = true;
+    }
+    console.debug(cod["code"],this.bankForm);
+  }
+
+  getBank() {
+    this.bankService.list("?_hash=1").subscribe((response: any) => {
+      if (response != false) {
+        this.bank = response;
+      }
+    });
   }
 
   idTransaksi(){
@@ -263,7 +289,7 @@ export class CheckoutBuybackComponent implements OnInit {
     });
   }
 
-  bankValid(val){}
+  
 
   diterimaUang(total){
     total = total.replace(/,/g, '')

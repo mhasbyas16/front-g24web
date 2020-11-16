@@ -34,6 +34,7 @@ export class MuliaManualComponent implements OnInit {
   cartList = LM;
   detail: {};
   sumHarga: number;
+  firstmaxGrDay:any;
 
   constructor(
     private vendorService: VendorService,
@@ -131,6 +132,7 @@ export class MuliaManualComponent implements OnInit {
           }
         }
         this.maxGrDay = paramMaxGr - grTransaction
+        this.firstmaxGrDay = paramMaxGr - grTransaction
       })
     })
   }
@@ -212,7 +214,7 @@ export class MuliaManualComponent implements OnInit {
                 "hpp_inisiasi" : harga,
                 "unit" : unit,
                 "vendor" : vendorDet,
-                "tipe_stock" : "stock",
+                "tipe_stock" : "buyback",
                 "location" : "pusat",
                 "sku" : "1234",
                 "product-denom" : denomDet,

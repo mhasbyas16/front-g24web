@@ -43,7 +43,7 @@ export class PerhiasanBycodeComponent implements OnInit {
     
   }
   
-  hitungHargaBB(kondisi: any , code : any, kadar : any, berat: any, hargaBaku:any){
+  hitungHargaBB(kondisi: any , _id : any, kadar : any, berat: any, hargaBaku:any){
     this.loadingDg = true
     this.hargaBB = 0
     this.perhiasanBuybackPriceService.get("?kondisi="+kondisi+"&kadar="+kadar+"&berat="+berat+"&hargaBuyback="+hargaBaku+"").subscribe((response:any)=>{
@@ -53,7 +53,7 @@ export class PerhiasanBycodeComponent implements OnInit {
       this.hargaBB = response["hargaBB"];
 
       for (let index = 0; index < this.isiPerhiasan.data.length; index++) {
-        if (this.isiPerhiasan.data[index]["code"] == code) {
+        if (this.isiPerhiasan.data[index]["detail"]["_id"] == _id) {
           this.isiPerhiasan.data[index]['hargaBB'] =  this.hargaBB
         }
        }
