@@ -49,7 +49,7 @@
                         </ng-container>
                         <ng-template #defaultPlus>
                             <span style="float: right;">
-                                <ng-container *ngIf="cekHitungHarga(d.hargaBB) == 0 || cekItemArray(d.detail.code) == true; else plus">
+                                <ng-container *ngIf="cekHitungHarga(d.hargaBB) == 0 || cekItemArray(d.detail._id) == true; else plus">
                                     <button type="button" class="btn btn-icon btn-sm  disabled" aria-label="home" >
                                         <clr-icon shape="minus"></clr-icon>
                                     </button>                
