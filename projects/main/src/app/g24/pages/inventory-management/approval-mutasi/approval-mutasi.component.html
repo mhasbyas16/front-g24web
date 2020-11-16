@@ -72,7 +72,7 @@
                                 <select name="tipe" clrSelect [(ngModel)]="input.tipe">
                                     <option [ngValue]=""></option>
                                     <ng-container *ngFor="let data of Flag">
-                                        <option [ngValue]="data">{{data.code}}</option>
+                                        <option [ngValue]="data">{{data.name}}</option>
                                     </ng-container>
                                 </select>
                             </clr-select-container>

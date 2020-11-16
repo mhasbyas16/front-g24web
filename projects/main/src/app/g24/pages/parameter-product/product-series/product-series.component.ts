@@ -35,6 +35,7 @@ listseries : any[] = [];
 delete : any[] = [];
 uptodate : any[] = [];
 
+inputUpdate : any = {};
 
 modaltambah : boolean = false;
 modalupdate : boolean = false;
@@ -174,11 +175,21 @@ modalupdate : boolean = false;
   		console.log(this.uptodate[i]._id);
   		let data = {
   			_id 	: this.uptodate[i]._id,
-  			name 	: this.dataupdate["name"],
-  			note	: this.dataupdate["ket"]
+  			name 	: this.inputUpdate["name_series"],
+  			note	: this.inputUpdate["ket_series"]
   		}
 
-  		console.log(data);
+		  console.log(data);
+		  
+		//   if(!this.inputUpdate.ket_series){
+		// 	  this.toastr.warning("Note belum di isi","Peringatan");
+		// 	  this.spinner.Close();
+		// 	  return;
+		//   }else if(!this.inputUpdate.name_series){
+		// 	this.toastr.warning("Name series belum di isi","Peringatan");
+		// 	this.spinner.Close();
+		// 	return;
+		//   }
 
   		let upd = DataTypeUtil.Encode(data);
   		this.seriesservice.update(upd).subscribe(data=>{

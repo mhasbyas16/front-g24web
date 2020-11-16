@@ -156,7 +156,7 @@
     			<div class="clr-form-control">
     				<clr-input-container>
 				    <label>Nama Purity</label>
-				    <input clrInput [(ngModel)]="dataupdate.name" name="name" value="{{dataupdate.name}}" required />
+				    <input clrInput [(ngModel)]="inputUpdate.name_series" name="name_series" value="{{dataupdate.name}}" required />
 				    <clr-control-error>Wajib di isi</clr-control-error>
 				  </clr-input-container>
     			</div>
@@ -167,7 +167,7 @@
     			<div class="clr-form-control">
     				<clr-textarea-container>
 					    <label>Note</label>
-					    <textarea clrTextarea [(ngModel)]="dataupdate.ket" name="ket" required>{{dataupdate.note}}</textarea>
+					    <textarea clrTextarea [(ngModel)]="inputUpdate.ket_series" name="ket_series" required>{{dataupdate.note}}</textarea>
 					    <clr-control-error>Wajib di isi</clr-control-error>
 					 </clr-textarea-container>
     			</div>

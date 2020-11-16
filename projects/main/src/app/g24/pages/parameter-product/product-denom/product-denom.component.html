@@ -211,7 +211,7 @@
     			<div class="clr-form-control">
     				<clr-input-container>
     					<label>Id</label>
-    					<input clrInput [(ngModel)]="dataupdate.id" name="id" value="{{dataupdate._id}}" style="width: 400px" readonly>
+    					<input clrInput [(ngModel)]="inputUpdate.id" name="id" value="{{data_view?._id}}" style="width: 400px" readonly>
     				</clr-input-container>
     			</div>
     		</div>
@@ -221,7 +221,7 @@
     			<div class="clr-form-control">
     				<clr-input-container>
 				    <label>Kode</label>
-				    <input clrInput [(ngModel)]="dataupdate.code" name="code" value="{{dataupdate.code}}" readonly />
+				    <input clrInput [(ngModel)]="inputUpdate.code" name="code" value="{{data_view?.code}}" readonly />
 				    <clr-control-error>Wajib di isi</clr-control-error>
 				  </clr-input-container>
     			</div>
@@ -230,7 +230,7 @@
     			<div class="clr-form-control">
     				<clr-input-container>
 				    <label>Name</label>
-				    <input clrInput [(ngModel)]="dataupdate.name" name="name" value="{{dataupdate.name}}" required />
+				    <input clrInput [(ngModel)]="inputUpdate.name" name="name" value="{{data_view?.name}}" required />
 				    <clr-control-error>Wajib di isi</clr-control-error>
 				  </clr-input-container>
     			</div>
@@ -242,7 +242,7 @@
 				<div class="clr-form-control">
 					<clr-input-container>
 						<label>Value</label>
-						<input type="number" clrInput [(ngModel)]="dataupdate.value" name="value" value="{{dataupdate.value}}" required/>
+						<input type="number" clrInput [(ngModel)]="inputUpdate.value" name="value" value="{{data_view?.value}}" required/>
 						<clr-control-helper>Harap isi. Dan jangan lupa menggunakan titik (.)</clr-control-helper>
 						<clr-control-error>Wajib di isi. Dan jangan lupa menggunakan titik (.)</clr-control-error>
 					</clr-input-container>

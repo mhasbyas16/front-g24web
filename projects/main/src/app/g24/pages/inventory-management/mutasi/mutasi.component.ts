@@ -31,6 +31,7 @@ import { StringHelper } from '../../../lib/helper/string-helper';
 
 //SORTING CLARITY LIB
 import {ClrDatagridSortOrder} from '@clr/angular';
+import { HargaTerbilangService } from '../../../lib/helper/harga-terbilang.service';
 
 @Component({
   selector: 'app-mutasi',
@@ -146,6 +147,8 @@ date : String = "";
 descSort : any; 
 descSort_terima : any;
 
+Tesdata : any = [];
+
 constructor(private UnitService : UnitService, private sessionservice : SessionService, 
   private mutasiservice : MutasiService, private productservice : ProductService,
   private warnaservice : ProductGoldColorService, 
@@ -155,7 +158,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
   private productkategoryservice : ProductCategoryService,
   private klarityservice : ProductClarityService, private datetimeservice : ServerDateTimeService,
   private seriesservice : ProductSeriesService, private toastr : ToastrService,
-  private vendorservice : VendorService
+  private vendorservice : VendorService,
   ) { }
 
 
@@ -163,6 +166,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
 	
     let params = "?";
     this.Lock = false;
+    
 	 
 
 
@@ -406,10 +410,8 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     }
     this.toastr.success("Data ditemukan "+data.length,"Sukses");
     this.listdt = data;
+    console.log(this.listdt[this.listdt.length - 1]._id,"Id terakhir data");
     this.spinner.Close();
-
-
-
   }
 
   onAdd(){    
@@ -438,6 +440,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     this.formInput = null;
     this.itempick = 0;
     this.berat = 0;
+    this.jml_hpp = 0;
     // this.listdt = [];
   }
 
@@ -561,10 +564,23 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
   async Add(){
 
     console.log(this.date_now);
-    let tujuan = this.addinput['unit_tujuan'];
-
     this.spinner.SetSpinnerText("Mohon Tunggu...");
     this.spinner.Open();
+
+    for(let i = 0; i < this.items.length; i++){
+      let cekFlagItems = this.items[i].flag;
+      let id = this.items[i]._id;
+      console.log("Id Product = ",id);
+      let cekproductFlag = await this.productservice.list("?_id="+id+"&flag="+cekFlagItems+"&").toPromise();
+      if(cekproductFlag[i]?.flag == "transit"){
+        this.toastr.info("Items product yang dipilih, sudah tidak bertipe stock","Informasi");
+        this.spinner.Close();
+        return;
+      }
+    }
+
+    let tujuan = this.addinput['unit_tujuan'];
+
 	  let ktr = this.addinput['keterangan'];
     let vdr = this.addinput['vndr'];
 
@@ -592,19 +608,53 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     }
 
 
-    //UPDATE PRODUK
     let value = 0;
     for(let index = 0; index < this.items.length; index++){
 
-      if(this.items[index]['berat'] == undefined)
-      {
-        value = parseFloat(this.items[index]['product-denom'].value);
-        console.log(value, "denom");
-      }else {
+      // if(this.items[index]['berat'] == undefined)
+      // {
+      //   value = parseFloat(this.items[index]['product-denom'].value);
+      //   console.log(value, "denom");
+      // }else if(this.items[index]['product-denom']?.value == undefined){
+      //   value = parseFloat(this.items[index]['berat']);
+      //   console.log(value, "berat ( di isi jika product denom tidak ada )");
+      // }else{
+      //   value = parseFloat(this.items[index]['product-denom'].value);
+      //   console.log(value, 'denom');
+      // }
+      // this.berat = this.berat + value;
+
+      if(this.searchModel["product-category"].name == "Perhiasan"){
+
         value = parseFloat(this.items[index]['berat']);
-        console.log(value, 'berat');
+        console.log("Berat perhiasan = ",value);
+
+      }else if(this.searchModel["product-category"].name == "Souvenir"){
+        
+        value = parseFloat(this.items[index]["product-denom"].value);
+        console.log("Denom dari Souvenir ",value);
+      
+      }else if(this.searchModel["product-category"].name == "Gift"){
+      
+        value = parseFloat(this.items[index]["product-denom"].value);
+        console.log("Denom dari Dinar ",value);
+      
+      }else if(this.searchModel["product-category"].name == "Emas Batangan"){
+      
+        value = parseFloat(this.items[index]["product-denom"].value);
+        console.log("Denom Emas Batangan ",value);
+      
+      }else if(this.searchModel["product-category"].name == "Permata"){
+      
+        value = parseFloat(this.items[index]["total_berat"]);
+        console.log("Total berat dari Permata ",value);
+      
+      }else if(this.searchModel["product-category"].name == "Dinar"){
+      
+        value = parseFloat(this.items[index]["product-denom"].value);
+        console.log("Denom Dinar ",value);
       }
-      this.berat = this.berat + value;
+      this.berat = Math.round((this.berat + value) * 100) / 100;
     }
       // this.berat = this.berat + value;
 
@@ -614,14 +664,21 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
 
     //JUMLAH HPP
     for(let p = 0; p < this.items.length; p++){
+      if(this.searchModel["product-category"].name == "Permata"){
+        this.jml_hpp = this.jml_hpp + this.items[p].hpp + this.items[p].hpp_berlian + this.items[p].hpp_batu + this.items[p].ongkos_pembuatan;
+        console.log("Jumlah HPP Permata" ,this.jml_hpp);
+      }else{
       this.jml_hpp = this.jml_hpp + this.items[p].hpp;
       console.log(this.jml_hpp,"Jumlah HPP");
+      }
     }
+    console.log("Jumlah HPP ",this.jml_hpp);
 
     let cetak = {
       created_by : this.sessionservice.getUser().username,
       created_date : this.date_now,
       unit_tujuan : tujuan,
+      "product-category" : this.searchModel["product-category"],
       unit_asal : this.sessionservice.getUser().unit,
       total_hpp : this.jml_hpp.toString(),
       total_berat : this.berat.toString(),
@@ -700,6 +757,8 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
         this.productservice.update(encode).subscribe(data=>{
           if(data==false){
             if(this.productservice.message()!=""){
+              let msg = this.productservice.message();
+              this.toastr.error("Error product "+msg,"Error");
               this.spinner.Close();
               return;
             }
@@ -707,15 +766,15 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
         })
       }
       this.doSearch();
-      // let id : string = output._id;
-      // this.doAccounting(id);
 
       this.spinner.Close();
       this.modalshow=false;
       this.pdf.Makepdf(cetak);
       this.toastr.success("Data berhasil di mutasi","Berhasil");
-      this.berat = 0;
+      this.reset();
 
+      //PROSES LOADING CETAK MUTASI
+      this.toastr.info("Mohon tunggu, sedang memproses cetak mutasi","Informasi");
     });
 
 
@@ -734,6 +793,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
       this.spinner.Close();
       return;
     }
+    
 
     // this.products = [];
 

@@ -69,9 +69,9 @@
             Nama Kategori
         </clr-dg-column>
 
-        <clr-dg-row *clrDgItems="let data of listkategori" [clrDgItem]="data">
-            <clr-dg-cell>{{data.code}}</clr-dg-cell>
-            <clr-dg-cell>{{data.name}}</clr-dg-cell>
+        <clr-dg-row *clrDgItems="let dataKategori of listkategori" [clrDgItem]="dataKategori">
+            <clr-dg-cell>{{dataKategori.code}}</clr-dg-cell>
+            <clr-dg-cell>{{dataKategori.name}}</clr-dg-cell>
         </clr-dg-row>
 
         <clr-dg-footer>
@@ -122,7 +122,7 @@
     			<div class="clr-form-control">
     				<clr-input-container>
     					<label>Id</label>
-    					<input clrInput [(ngModel)]="dataupdate.id" name="id" value="{{dataupdate._id}}" style="width: 400px" readonly>
+    					<input clrInput [(ngModel)]="updateInput.id_kat" name="id_kat" value="{{dataupdate._id}}" style="width: 400px" readonly>
     				</clr-input-container>
     			</div>
     		</div>
@@ -132,7 +132,7 @@
     			<div class="clr-form-control">
     				<clr-input-container>
 				    <label>Kode</label>
-				    <input clrInput [(ngModel)]="dataupdate.code" name="code" value="{{dataupdate.code}}" readonly />
+				    <input clrInput [(ngModel)]="updateInput.code_kat" name="code_kat" value="{{dataupdate.code}}" readonly />
 				  </clr-input-container>
     			</div>
     		</div>
@@ -140,7 +140,7 @@
     			<div class="clr-form-control">
     				<clr-input-container>
 				    <label>Nama Kategori</label>
-				    <input clrInput [(ngModel)]="dataupdate.name" name="name" value="{{dataupdate.name}}" required />
+				    <input clrInput [(ngModel)]="updateInput.name_kat" name="name_kat" value="{{dataupdate.name}}" required />
 				    <clr-control-error>Wajib di isi</clr-control-error>
 				  </clr-input-container>
     			</div>

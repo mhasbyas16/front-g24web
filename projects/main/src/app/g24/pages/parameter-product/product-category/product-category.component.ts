@@ -36,6 +36,8 @@ datakategori : any[] = [];
 data_view : any = {};
 dataupdate : any = {};
 
+updateInput : any = {};
+
 delete : any[] = [];
 uptodate : any[] = [];
 
@@ -148,7 +150,7 @@ jumlah : number = 0;
   		console.log(this.uptodate[i]._id);
   		let data = {
   			_id 	: this.uptodate[i]._id,
-  			name 	: this.dataupdate["name"]
+  			name 	: this.updateInput.name_kat
   		}
 
   		console.log(data);

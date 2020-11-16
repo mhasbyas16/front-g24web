@@ -524,6 +524,9 @@ static key = EMenuID.TERIMA_MUTASI;
       this.data_mutasi = [];
       this.doAccounting(id);
       this.doSearch();
+
+      //PROSES LOADING CETAK TERIMA MUTASI
+      this.toastr.info("Mohon tunggu, sedang memproses cetak mutasi","Informasi");
       
 
 

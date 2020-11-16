@@ -49,6 +49,7 @@ uptodate : any[] = [];
 addkategori : any[] = [];
 dataupdatekategori : any[] = [];
 
+inputUpdate : any = {};
 
 modaltambah : boolean = false;
 modalupdate : boolean = false;
@@ -291,7 +292,7 @@ modalview : boolean = false;
   		console.log(this.uptodate[i]._id);
   		let data = {
   			_id 	: this.uptodate[i]._id,
-			name 	: this.dataupdate["name"],
+			name 	: this.inputUpdate["name_jenis"],
 			"product-category" : []  
   		}
 

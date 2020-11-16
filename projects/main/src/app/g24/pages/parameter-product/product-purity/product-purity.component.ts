@@ -40,6 +40,8 @@ uptodate : any[] = [];
 modaltambah : boolean = false;
 modalupdate : boolean = false;
 
+inputUpdate : any = {};
+
 
 
   constructor(private purityservice : ProductPurityService, private toastr : ToastrService) { }
@@ -187,8 +189,8 @@ modalupdate : boolean = false;
   		console.log(this.uptodate[i]._id);
   		let data = {
   			_id 	: this.uptodate[i]._id,
-  			name 	: this.dataupdate["name"],
-  			code 	: "k"+this.dataupdate["name"]
+  			name 	: this.inputUpdate["name_purity"],
+  			code 	: "k"+this.inputUpdate["name_purity"]
   		}
 
   		console.log(data);

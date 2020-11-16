@@ -49,7 +49,7 @@ data_view : any = {};
 dataupdate : any = {};
 dataupdatekategori : any[] = [];
 
-
+inputUpdate : any = {};
 
 select_kategori : any = {};
 select_kategori_add : any = {};
@@ -291,41 +291,18 @@ modalview : boolean = false;
 	}
 	this.select_kategori_upd = {};
 	let params = "?";
-	this.dataupdate = {};
 	this.dataupdatekategori = [];
   	this.modalupdate = true;
   	this.uptodate = [];
 	this.uptodate.push(this.data_view);
 
   	for(let i = 0; i < this.uptodate.length; i++){
-		  this.dataupdate = this.uptodate[i];
+		  this.inputUpdate = this.uptodate[i];
 		  this.dataupdatekategori = this.uptodate[i]["product-category"];
   	}
   }
 
   Update(){
-
-	// let params = "?";
-	// //LIST PRODUCT
-	// this.productservice.list(params).subscribe(data=>{
-	// 	if(data==false){
-	// 		if(this.productservice.message()!=""){
-	// 			return;
-	// 		}
-	// 	}
-	// 	this.idproduct = data;
-	// })
-
-	// //LIST PARAM_JUAL
-	// this.prmjualservice.list(params).subscribe(data=>{
-	// 	if(data==false){
-	// 		if(this.prmjualservice.message()!=""){
-	// 			return;
-	// 		}
-	// 	}
-	// 	this.idprmjual = data;
-	// })
-
 
 	this.spinner.SetSpinnerText("Mohon Tunggu...");
 	this.spinner.Open();
@@ -334,14 +311,11 @@ modalview : boolean = false;
   		console.log(this.uptodate[i]._id);
   		let data = {
 			_id 	: this.uptodate[i]._id,
-			name 	: this.dataupdate["name"],
-			value 	: this.dataupdate["value"],
+			name 	: this.inputUpdate["name"],
+			value 	: this.inputUpdate["value"],
 			"product-category" : []  
   		}
 
-		//   if(this.uptodate[i]._id==this.idproduct[i]["product-denom"]._id){
-		// 	  this.toastr.info("Data sama","Informasi");
-		//   }
 		  console.log(data);
 		if(this.dataupdatekategori.length <= 0){
 			this.spinner.Close();

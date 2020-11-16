@@ -30,6 +30,8 @@ input : any = {};
 data_view : any = {};
 dataupdate : any = {};
 
+inputUpdate : any = {};
+
 dataclarity : any[] = [];
 listclarity : any[] = [];
 delete : any[] = [];
@@ -180,7 +182,7 @@ listdata : any[] = [];
   		console.log(this.uptodate[i]._id);
   		let data = {
   			_id 	: this.uptodate[i]._id,
-  			name 	: this.dataupdate["name"]
+  			name 	: this.inputUpdate["name"]
   		}
 
   		console.log(data);

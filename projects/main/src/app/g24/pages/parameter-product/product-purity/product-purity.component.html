@@ -124,7 +124,7 @@
     			<div class="clr-form-control">
     				<clr-input-container>
 				    <label>Kode</label>
-				    <input clrInput [(ngModel)]="dataupdate.code" name="code" value="{{dataupdate.code}}" readonly />
+				    <input clrInput [(ngModel)]="inputUpdate.code_purity" name="code_purity" value="{{dataupdate.code}}" readonly />
 				  </clr-input-container>
     			</div>
     		</div>
@@ -132,7 +132,7 @@
     			<div class="clr-form-control">
     				<clr-input-container>
 				    <label>Nama Purity</label>
-				    <input clrInput [(ngModel)]="dataupdate.name" name="name" maxlength="3" value="{{dataupdate.name}}" required />
+				    <input clrInput [(ngModel)]="inputUpdate.name_purity" name="name_purity" maxlength="3" value="{{dataupdate.name}}" required />
 					<clr-control-helper><clr-icon shape="info-circle"></clr-icon> Harap isi dengan angka</clr-control-helper>
 				    <clr-control-error>Wajib di isi. Dan input harus 3 digit angka</clr-control-error>
 				  </clr-input-container>

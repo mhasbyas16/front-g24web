@@ -32,6 +32,7 @@ listgold : any[] = [];
 delete : any[] = [];
 uptodate : any[] = [];
 
+inputupdate : any = {};
 
 modaltambah : boolean = false;
 modalupdate : boolean = false;
@@ -155,8 +156,7 @@ modalupdate : boolean = false;
   		console.log(this.uptodate[i]._id);
   		let data = {
   			_id 	: this.uptodate[i]._id,
-  			name 	: this.dataupdate["name"],
-  			code 	: this.dataupdate["code"]
+  			name 	: this.inputupdate["name_gold"],
   		}
 
   		console.log(data);

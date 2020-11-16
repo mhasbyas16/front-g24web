@@ -49,6 +49,8 @@ modalupdate : boolean = false;
 
 modalview : boolean = false;
 
+inputUpdate : any = {};
+
 datavendor : any[] = [];
 listvendor : any[] = [];
 
@@ -264,13 +266,23 @@ listvendor : any[] = [];
   Update(){
     this.spinner.SetSpinnerText("Mohon Tunggu...");
     this.spinner.Open();
+
+    if(this.dataupdate.name == ""){
+      this.toastr.warning("Name belum di isi","Peringatan");
+      this.spinner.Close();
+      return;
+    }else if(!this.inputUpdate.name_vendor){
+      this.toastr.warning("Name belum di isi","Peringatan");
+      this.spinner.Close();
+      return;
+    }
+
     for(let i = 0; i < this.uptodate.length; i++){
 
   		console.log(this.uptodate[i]._id);
   		let data = {
 			_id 	: this.uptodate[i]._id,
-			name 	: this.dataupdate["name"],
-			code 	: this.dataupdate["code"],
+			name 	: this.inputUpdate["name_vendor"],
 			"product-category" : []  
   		}
 

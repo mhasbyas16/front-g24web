@@ -36,6 +36,8 @@ listdiamond : any[] = [];
 delete : any[] = [];
 uptodate : any[] = [];
 
+inputUpdate : any = {};
+
 
 modaltambah : boolean = false;
 modalupdate : boolean = false;
@@ -150,7 +152,7 @@ modalupdate : boolean = false;
   		console.log(this.uptodate[i]._id);
   		let data = {
   			_id 	: this.uptodate[i]._id,
-  			name 	: this.dataupdate["name"]
+  			name 	: this.inputUpdate.name_diamond
   		}
 
   		console.log(data);

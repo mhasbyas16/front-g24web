@@ -33,16 +33,20 @@ export class CetakTerimaMutasiComponent implements OnInit {
   datamutasi : any = {};
   noItem : number = 0;
 
+
   MutasiTerima : any[] = [];
   itemsTerima : any[] = [];
 
   ngOnInit(): void {
   }
 
+  DelimiterComma(x){
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
   async Makepdf(dataCetak)
     {
       this.noItem = 0;
-      // console.log("Id Terima mutasi "+dataCetak._id, "Unit TUjuan "+dataCetak.unit_tujuan.code);
 
       let data = await this.mutasiservice.list("?_id="+dataCetak._id).toPromise();
       if(data==false){
@@ -116,7 +120,7 @@ export class CetakTerimaMutasiComponent implements OnInit {
           columns : [
             {
               columns : [
-                {alignment : 'center', fontSize : 22, bold : true, text : "TERIMA MUTASI"}
+                {alignment : 'center', fontSize : 22, bold : true, text : "TERIMA MUTASI "+ this.MutasiTerima[0]["product-category"].name.toUpperCase()}
               ]
             }
           ]
@@ -128,37 +132,93 @@ export class CetakTerimaMutasiComponent implements OnInit {
           columns : [
             {
               columns : [
-                {alignment : 'center', fontSize : 12, text : "Tanggal : "+this.date, lineHeight : 5}
-              ]
-            }
-          ]
-        },
-
-        //CONTENT DATA
-
-        {
-          style : 'detail',
-          columns : [
-            {
-              layout: 'lightHorizontalLines',
-              columns : [
-                {alignment : 'center', lineHeight : 4, bold : true, text : "No",width : 40},
-                {alignment : 'center', lineHeight : 4, bold : true, text : "_Id Product",width : '*'},
-                {alignment : 'center', lineHeight : 4, bold : true, text : "Berat",width : 40},
-                {alignment : 'center', lineHeight : 4, bold : true, text : "HPP",width : '*'},
-                {alignment : 'center', lineHeight : 4, bold : true, text : "Flag",width : '*'},
-                {alignment : 'center', lineHeight : 4, bold : true, text : "Status",width : '*'},
+                {alignment : 'center', fontSize : 12, text : "ID Mutasi " +dataCetak._id + " / Tanggal : "+this.date, lineHeight : 5}
               ]
             }
           ]
         }
       ];
 
-      if(dataCetak.items.length != 0)
-      {
-          for (let produk of dataCetak.items) {
-            this.noItem++;
-            if(produk.berat == undefined){
+        //CONTENT DATA
+        //COLUMN
+        if(this.MutasiTerima[0]["product-category"].name == "Permata"){
+          this.innerDoc['content'].push([
+            {
+              style : 'detail',
+              columns : [
+                {
+                  layout: 'lightHorizontalLines',
+                  columns : [
+                    {alignment : 'center', lineHeight : 2, bold : true, text : "No",width : 40},
+                    {alignment : 'center', lineHeight : 2, bold : true, text : "_Id Product",width : 180},
+                    {alignment : 'center', lineHeight : 2, bold : true, text : "Berat",width : 60},
+                    {alignment : 'center', lineHeight : 2, bold : true, text : "HPP Emas",width : 60},
+                    {alignment : 'center', lineHeight : 2, bold : true, text : "HPP Berlian",width : 100},
+                    {alignment : 'center', lineHeight : 2, bold : true, text : "HPP Batu",width : 100},
+                    {alignment : 'center', lineHeight : 2, bold : true, text : "Ongkos Pembuatan",width : 120},
+                    {alignment : 'center', lineHeight : 2, bold : true, text : "Flag",width : 80},
+                    {alignment : 'center', lineHeight : 2, bold : true, text : "Status",width : 60},
+                  ]
+                }
+              ]
+            }
+          ]);
+        }else{
+          this.innerDoc['content'].push([
+            {
+              style : 'detail',
+              columns : [
+                {
+                  layout: 'lightHorizontalLines',
+                  columns : [
+                    {alignment : 'center', lineHeight : 2, bold : true, text : "No",width : 40},
+                    {alignment : 'center', lineHeight : 2, bold : true, text : "_Id Product",width : '*'},
+                    {alignment : 'center', lineHeight : 2, bold : true, text : "Berat",width : 40},
+                    {alignment : 'center', lineHeight : 2, bold : true, text : "HPP",width : '*'},
+                    {alignment : 'center', lineHeight : 2, bold : true, text : "Flag",width : '*'},
+                    {alignment : 'center', lineHeight : 2, bold : true, text : "Status",width : '*'},
+                  ]
+                }
+              ]
+            }
+          ]);
+        }
+
+
+
+
+      //ROW DATA    
+    if(dataCetak.items.length != 0)
+    {
+        for (let produk of dataCetak.items) {
+          this.noItem++;
+          if(produk["product-category"].name == "Perhiasan"){
+          this.innerDoc['content'].push([
+            {
+              style:'detail',
+              columns:[
+                {
+                  width:"*",
+                  columns:[
+                    // {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
+                    // {alignment : 'center', width:'*',text:produk._id},
+                    // {alignment : 'center', width:40,text:' '+produk.berat == undefined ? "-" : produk.berat},
+                    // {alignment : 'center', width:'*',text:' '+produk.hpp == undefined ? "-" : produk.hpp},
+                    // {alignment : 'center', width:'*',text:' '+produk.flag == undefined ? "-" : produk.flag},
+                    // {alignment : 'center', width:'*',text:' Dalam Pengiriman '}
+
+                    {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
+                    {alignment : 'center', width:'*',text:produk._id},
+                    {alignment : 'center', width:60,text:' '+ produk.berat},
+                    {alignment : 'center', width:'*',text:' '+produk.hpp == undefined ? "-" : this.DelimiterComma(produk.hpp)},
+                    {alignment : 'center', width:'*',text:' '+produk.flag == undefined ? "-" : produk.flag},
+                    {alignment : 'center', width:'*',text:' Dalam Pengiriman '}
+                  ]
+                }
+              ]
+            }
+          ]);
+          }else if(produk["product-category"].name == "Souvenir"){
             this.innerDoc['content'].push([
               {
                 style:'detail',
@@ -166,17 +226,11 @@ export class CetakTerimaMutasiComponent implements OnInit {
                   {
                     width:"*",
                     columns:[
-                      // {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
-                      // {alignment : 'center', width:'*',text:produk._id},
-                      // {alignment : 'center', width:40,text:' '+produk.berat == undefined ? "-" : produk.berat},
-                      // {alignment : 'center', width:'*',text:' '+produk.hpp == undefined ? "-" : produk.hpp},
-                      // {alignment : 'center', width:'*',text:' '+produk.flag == undefined ? "-" : produk.flag},
-                      // {alignment : 'center', width:'*',text:' Dalam Pengiriman '}
-  
+
                       {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
                       {alignment : 'center', width:'*',text:produk._id},
                       {alignment : 'center', width:60,text:' '+produk["product-denom"].value},
-                      {alignment : 'center', width:'*',text:' '+produk.hpp == undefined ? "-" : produk.hpp},
+                      {alignment : 'center', width:'*',text:' '+produk.hpp == undefined ? "-" : this.DelimiterComma(produk.hpp)},
                       {alignment : 'center', width:'*',text:' '+produk.flag == undefined ? "-" : produk.flag},
                       {alignment : 'center', width:'*',text:' Dalam Pengiriman '}
                     ]
@@ -184,49 +238,92 @@ export class CetakTerimaMutasiComponent implements OnInit {
                 ]
               }
             ]);
-            }else if(produk["product-denom"]?.value == undefined){
-              this.innerDoc['content'].push([
-                {
-                  style:'detail',
-                  columns:[
-                    {
-                      width:"*",
-                      columns:[
-  
-                        {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
-                        {alignment : 'center', width:'*',text:produk._id},
-                        {alignment : 'center', width:60,text:' '+produk.berat},
-                        {alignment : 'center', width:'*',text:' '+produk.hpp == undefined ? "-" : produk.hpp},
-                        {alignment : 'center', width:'*',text:' '+produk.flag == undefined ? "-" : produk.flag},
-                        {alignment : 'center', width:'*',text:' Dalam Pengiriman '}
-                      ]
-                    }
-                  ]
-                }
-              ]);
-            }else{
-              this.innerDoc['content'].push([
-                {
-                  style : 'detail',
-                  columns : [
-                    {
-                      width:"*",
-                      columns:[
-  
-                        {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
-                        {alignment : 'center', width:'*',text:produk._id},
-                        {alignment : 'center', width:60,text:' '+produk.berat},
-                        {alignment : 'center', width:'*',text:' '+produk.hpp == undefined ? "-" : produk.hpp},
-                        {alignment : 'center', width:'*',text:' '+produk.flag == undefined ? "-" : produk.flag},
-                        {alignment : 'center', width:'*',text:' Dalam Pengiriman '}
-                      ]
-                    }
-                  ]
-                }
-              ]);
-            }
-        }
+          }else if(produk["product-category"].name == "Gift"){
+            this.innerDoc['content'].push([
+              {
+                style : 'detail',
+                columns : [
+                  {
+                    width:"*",
+                    columns:[
+
+                      {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
+                      {alignment : 'center', width:'*',text:produk._id},
+                      {alignment : 'center', width:60,text:' '+produk["product-denom"].value},
+                      {alignment : 'center', width:'*',text:' '+produk.hpp == undefined ? "-" : this.DelimiterComma(produk.hpp)},
+                      {alignment : 'center', width:'*',text:' '+produk.flag == undefined ? "-" : produk.flag},
+                      {alignment : 'center', width:'*',text:' Dalam Pengiriman '}
+                    ]
+                  }
+                ]
+              }
+            ]);
+          }else if(produk["product-category"].name == "Emas Batangan"){
+            this.innerDoc['content'].push([
+              {
+                style : 'detail',
+                columns : [
+                  {
+                    width:"*",
+                    columns:[
+
+                      {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
+                      {alignment : 'center', width:'*',text:produk._id},
+                      {alignment : 'center', width:60,text:' '+produk["product-denom"].value},
+                      {alignment : 'center', width:'*',text:' '+produk.hpp == undefined ? "-" : this.DelimiterComma(produk.hpp)},
+                      {alignment : 'center', width:'*',text:' '+produk.flag == undefined ? "-" : produk.flag},
+                      {alignment : 'center', width:'*',text:' Dalam Pengiriman '}
+                    ]
+                  }
+                ]
+              }
+            ]);
+          }else if(produk["product-category"].name == "Permata"){
+            this.innerDoc['content'].push([
+              {
+                style : 'detail',
+                columns : [
+                  {
+                    width:"*",
+                    columns:[
+
+                      {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
+                      {alignment : 'center', width:180,text:produk._id},
+                      {alignment : 'center', width:60,text:' '+produk["total_berat"]},
+                      {alignment : 'center', width:60,text:' '+produk.hpp == undefined ? "-" : this.DelimiterComma(produk.hpp)},
+                      {alignment : 'center', width:100,text:' '+produk.hpp_berlian == undefined ? "-" : this.DelimiterComma(produk.hpp_berlian)},
+                      {alignment : 'center', width:100,text:' '+produk.hpp_batu == undefined ? "-" : this.DelimiterComma(produk.hpp_batu)},
+                      {alignment : 'center', width:100,text:' '+produk.ongkos_pembuatan == undefined ? "-" : this.DelimiterComma(produk.ongkos_pembuatan)},
+                      {alignment : 'center', width:100,text:' '+produk.flag == undefined ? "-" : produk.flag},
+                      {alignment : 'center', width:60,text:' Dalam Pengiriman '}
+                    ]
+                  }
+                ]
+              }
+            ]);
+          }else if(produk["product-category"].name == "Dinar"){
+            this.innerDoc['content'].push([
+              {
+                style : 'detail',
+                columns : [
+                  {
+                    width:"*",
+                    columns:[
+
+                      {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
+                      {alignment : 'center', width:'*',text:produk._id},
+                      {alignment : 'center', width:60,text:' '+produk["product-denom"].value},
+                      {alignment : 'center', width:'*',text:' '+produk.hpp == undefined ? "-" : this.DelimiterComma(produk.hpp)},
+                      {alignment : 'center', width:'*',text:' '+produk.flag == undefined ? "-" : produk.flag},
+                      {alignment : 'center', width:'*',text:' Dalam Pengiriman '}
+                    ]
+                  }
+                ]
+              }
+            ]);
+          }
       }
+    }
 
 
       //SPACE KONTEN
@@ -262,7 +359,7 @@ export class CetakTerimaMutasiComponent implements OnInit {
               columns:
               [
                 {width:80, bold:true, text : "TOTAL BERAT"},
-                {width:80, bold:true, text : this.MutasiTerima[0].total_berat},
+                {width:80, bold:true, text : this.MutasiTerima[0].total_berat + " Gram"},
                 {width:'*', text:""}
               ]
             }
@@ -278,7 +375,7 @@ export class CetakTerimaMutasiComponent implements OnInit {
             {
               columns : [
                 {width : 80, bold:true, text : "TOTAL HPP"},
-                {width : 80, bold:true, text : this.MutasiTerima[0].total_hpp},
+                {width : 80, bold:true, text : this.DelimiterComma(this.MutasiTerima[0].total_hpp)},
                 {width : '*', text : ""}
               ]
             }

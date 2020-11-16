@@ -10,7 +10,7 @@ import { PrmLookupService } from '../../../services/location/prm-lookup.service'
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { UnitService } from '../../../services/system/unit.service';
 import { VendorService } from '../../../services/vendor.service';
-import { TipeStock } from '../../../lib/enum/flag-product';
+import { TipeStock, FlagProduct } from '../../../lib/enum/flag-product';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
 
@@ -47,8 +47,13 @@ export class DetailInqueryProductPermataComponent implements OnInit {
   warnaberlian : any = [];
   showUnit : Boolean = false;
 
+  x : number = 0;
+  y : number = 0;
+  z : number = 0;
+
   outputdata : any[] = [];
   Tipe = Object.values(TipeStock);
+  Flag = Object.values(FlagProduct);
   LoadingSearch : ClrLoadingState = ClrLoadingState.DEFAULT;
   ErrorPage : Boolean = false;
   LoadingPage : ClrLoadingState = ClrLoadingState.DEFAULT;
@@ -154,15 +159,39 @@ export class DetailInqueryProductPermataComponent implements OnInit {
     }
   }
 
+  dimensiX(){
+    this.x;
+    this.x = this.inquery.x;
+    if(!this.inquery.x){
+      this.x = 0;
+    }
+  }
+
+  dimensiY(){
+    this.y;
+    this.y = this.inquery.y;
+    if(!this.inquery.y){
+      this.y = 0;
+    }
+  }
+
+  dimensiZ(){
+    this.z;
+    this.z = this.inquery.z;
+    if(!this.inquery.z){
+      this.z = 0;
+    }
+  }
+
   async Search(){
     this.spinner.SetSpinnerText("Mohon Tunggu...");
     this.spinner.Open();
     this.LoadingSearch = ClrLoadingState.LOADING;
     let params = "?product-category.code=c03&";
 
-    let x = this.dimension["x"];
-    let y = this.dimension["y"];
-    let z = this.dimension["z"];
+    this.x = this.inquery["x"];
+    this.y = this.inquery["y"];
+    this.z = this.inquery["z"];
 
     // if(this.dimension["x"]!=="" || this.dimension["y"]!=="" || this.dimension["z"]!==""){
     //   this.toastr.warning("Mohon isi dengan 0 jika salah satu dimensi batu kosong","Peringatan");
@@ -176,6 +205,14 @@ export class DetailInqueryProductPermataComponent implements OnInit {
 
     if(this.sessionService.getUser().unit.code!="00005"){
       params += "unit.code="+this.sessionService.getUser().unit.code+"&";
+    }
+
+    if(this.inquery.x == undefined || this.inquery.y == undefined || this.inquery.z == undefined){
+      // params += "product-stone-dimension="+x+"x"+y+"x"+z+"&";
+    }else if(this.inquery.x != "" || this.inquery.y != "" || this.inquery.z != ""){
+      params += "product-stone-dimension="+this.x+"x"+this.y+"x"+this.z+"&";
+    }else if(this.inquery.x == "0" && this.inquery.y == "0" && this.inquery.z == "0"){
+      params += "product-stone-dimension=0x0x0";
     }
     
     for(let key in this.inquery){
@@ -219,15 +256,15 @@ export class DetailInqueryProductPermataComponent implements OnInit {
           break;
 
         case "tipe_stock" :
-          params += "tipe_stock="+this.inquery[key]+"&";
+          params += "tipe_stock="+this.inquery[key].code+"&";
           break;
 
         case "product_stone" : 
           params += "product-stone="+this.inquery[key]+"&";
           break;
 
-        case "dimensi_product" : 
-          params += "product-stone-dimension="+this.inquery[key];
+        case "product_stone_dimension" : 
+          params += "product-stone-dimension="+this.inquery[key]+"&";
           break;
 
         case "product_carat" :
@@ -270,9 +307,9 @@ export class DetailInqueryProductPermataComponent implements OnInit {
           params += "jumlah_butir="+this.inquery[key]+"&";
           break;
 
-        case "product_stone_carat" :
-          params += "product-stone-carat="+this.inquery[key]+"&";
-          break;
+        // case "product_stone_carat" :
+        //   params += "product-stone-carat="+this.inquery[key]+"&";
+        //   break;
 
         case "gram_tukar" :
           params += "gram_tukar="+this.inquery[key]+"&gram_tukar_encoded=double&";
@@ -286,10 +323,14 @@ export class DetailInqueryProductPermataComponent implements OnInit {
           params += "product-clarity="+this.inquery[key].code.toUpperCase()+"&";
           break;
 
-        default :
+        case "flag" : 
+          params += "flag="+this.inquery[key].code+"&";
+          break;
+
+        // default :
         // params += key +="="+this.inquery[key]+"&";
-        params += "";
-        break;
+        // params += "";
+        // break;
         }
     }
     let data = await this.productservice.list(params).toPromise();
@@ -311,6 +352,9 @@ export class DetailInqueryProductPermataComponent implements OnInit {
   Reset(){
     this.inquery = {};
     this.dimension = {};
+    this.x = 0;
+    this.y = 0;
+    this.z = 0;
   }
 
   Refresh(){
