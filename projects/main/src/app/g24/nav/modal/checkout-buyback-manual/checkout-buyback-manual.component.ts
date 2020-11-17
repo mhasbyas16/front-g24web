@@ -20,6 +20,8 @@ import { UserService } from 'projects/platform/src/app/services/security/user.se
 import { ContentPage } from '../../../lib/helper/content-page';
 import { SequenceService } from '../../../services/system/sequence.service';
 import { ServerDateTimeService } from '../../../services/system/server-date-time.service';
+import { BankService } from '../../../services/transaction/bank.service';
+
 
 
 @Component({
@@ -39,6 +41,7 @@ export class CheckoutBuybackManualComponent implements OnInit {
   perhiasan = PERHIASAN;
   emasBatangan = LM;
   souvenir = GS;
+  bankForm:boolean= false;
   // berlian = BERLIAN;
   // dinar = DINAR;
 
@@ -63,6 +66,7 @@ export class CheckoutBuybackManualComponent implements OnInit {
   incId = 0
   date:any;
   time:any;
+  bank:any;
 
   constructor(
     private sessionService: SessionService,
@@ -76,7 +80,8 @@ export class CheckoutBuybackManualComponent implements OnInit {
     private transactionService : TransactionService,
     private transactionTypeService: TransactionTypeService,
     private sequenceService:SequenceService,
-    private serverDateTimeService:ServerDateTimeService
+    private serverDateTimeService:ServerDateTimeService,
+    private bankService: BankService,
   ) { }
 
   ngOnInit(): void {
@@ -98,9 +103,11 @@ export class CheckoutBuybackManualComponent implements OnInit {
       metodeBayar_encoded: new FormControl("base64"),
       makerDate: new FormControl("", Validators.required),
       makerTime: new FormControl("", Validators.required),
-      nominalTransaksi: new FormControl (""),
+      nominalTransaksi: new FormControl ("",[ Validators.required,Validators.pattern(/^-?(0|[1-9]\d*)?$/)]),
       kembali: new FormControl (""),
       unit: new FormControl(""),
+      bankAsal:new FormControl(""),
+      bankTujuan:new FormControl(""),
       unit_encoded: new FormControl("base64"),
       maker: new FormControl(this.nikUser["_hash"], [Validators.required]),
       maker_encoded: new FormControl("base64"),
@@ -132,9 +139,27 @@ export class CheckoutBuybackManualComponent implements OnInit {
     this.getTransactionMethod(this.totalBelanja);
     this.getUnit();
     this.getTransactionType();
+    this.getBank();
 
     console.debug(this.formData , "thisformdata")
 
+  }
+
+  getBank() {
+    this.bankService.list("?_hash=1").subscribe((response: any) => {
+      if (response != false) {
+        this.bank = response;
+      }
+    });
+  }
+
+  bankValid(val){
+    let cod = JSON.parse(atob(val));
+    this.bankForm = false;
+    if (cod["code"] != "01") {
+      this.bankForm = true;
+    }
+    console.debug(cod["code"],this.bankForm);
   }
   
   getTransactionType() {
@@ -220,12 +245,13 @@ export class CheckoutBuybackManualComponent implements OnInit {
         count = JSON.stringify(1);
         this.idtransaksiBB = unit.code+"09"+d3+"0000001";
         this.formData.patchValue({idSequencer: this.idtransaksiBB });
-        this.sequenceService.use({key:this.idtransaksiBB}).subscribe((sq:any)=>{
-          let id = sq["value"];
-          console.debug(id);
-          console.debug(this.idtransaksiBB,"id")
-          this.formData.patchValue({idTransactionBB: this.idtransaksiBB, idAi: id });
-        })
+        this.formData.patchValue({idTransactionBB: this.idtransaksiBB, idAi: "1" });
+        // this.sequenceService.use({key:this.idtransaksiBB}).subscribe((sq:any)=>{
+        //   let id = sq["value"];
+        //   console.debug(id);
+        //   console.debug(this.idtransaksiBB,"id")
+        //   this.formData.patchValue({idTransactionBB: this.idtransaksiBB, idAi: id });
+        // })
       }else{
         this.idtransaksiBB = unit.code+"09"+d3+"0000001";
         this.formData.patchValue({idSequencer: this.idtransaksiBB });
@@ -279,8 +305,6 @@ export class CheckoutBuybackManualComponent implements OnInit {
     });
   }
 
-  bankValid(val){}
-
   diterimaUang(total){
     total = total.replace(/,/g, '')
     this.diterima = total;
@@ -330,8 +354,8 @@ export class CheckoutBuybackManualComponent implements OnInit {
     }
     
     data.product_encoded = "base64";
-    let nomT = data["nominalTransaksi"]
-    data["nominalTransaksi"] = nomT.replace(/,/g, '')
+    // let nomT = data["nominalTransaksi"]
+    // data["nominalTransaksi"] = nomT.replace(/,/g, '')
     data["flag"] = "submitted"
     delete data["cif"];
     delete data["namaPemasar"];

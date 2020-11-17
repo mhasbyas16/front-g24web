@@ -109,7 +109,7 @@ export class CheckoutBuybackComponent implements OnInit {
       bankTujuan:new FormControl(""),
       makerDate: new FormControl("", Validators.required),
       makerTime: new FormControl("", Validators.required),
-      nominalTransaksi: new FormControl ("", Validators.pattern(/^-?(0|[1-9]\d*)?$/)),
+      nominalTransaksi: new FormControl ("",[ Validators.required,Validators.pattern(/^-?(0|[1-9]\d*)?$/)]),
       kembali: new FormControl (""),
       unit: new FormControl(""),
       unit_encoded: new FormControl("base64"),
@@ -228,12 +228,13 @@ export class CheckoutBuybackComponent implements OnInit {
         count = JSON.stringify(1);
         this.idtransaksiBB = unit.code+"09"+d3+"0000001";
         this.formData.patchValue({idSequencer: this.idtransaksiBB });
-        this.sequenceService.use({key:this.idtransaksiBB}).subscribe((sq:any)=>{
-          let id = sq["value"];
-          console.debug(id);
-          console.debug(this.idtransaksiBB,"id")
-          this.formData.patchValue({idTransactionBB: this.idtransaksiBB, idAi: id });
-        })
+        this.formData.patchValue({idTransactionBB: this.idtransaksiBB, idAi: "1" });
+        // this.sequenceService.use({key:this.idtransaksiBB}).subscribe((sq:any)=>{
+        //   let id = sq["value"];
+        //   console.debug(id);
+        //   console.debug(this.idtransaksiBB,"id")
+          
+        // })
       }else{
         // count = JSON.stringify(Number(response["0"]["idAi"]) + 1);
 
@@ -333,8 +334,8 @@ export class CheckoutBuybackComponent implements OnInit {
 
     data.product = btoa(JSON.stringify({ PERHIASAN, LM, BERLIAN, GS, DINAR }));
     data.product_encoded = "base64";
-    let nomT = data["nominalTransaksi"]
-    data["nominalTransaksi"] = nomT.replace(/,/g, '')
+    // let nomT = data["nominalTransaksi"]
+    // data["nominalTransaksi"] = nomT.replace(/,/g, '')
     delete data["cif"];
     delete data["namaPemasar"];
     delete data["nik"];
@@ -346,7 +347,6 @@ export class CheckoutBuybackComponent implements OnInit {
     //     console.debug("product flag update failed", this.transactionFlagBuybackService.batchUpdate(btoa(JSON.stringify(this.sessionService.getUnit()))));
     //   } 
     // })
-    console.debug(this.berlian, "pantek")
     if (this.perhiasan != null) {
       let dataPerhiasan = this.transactionFlagBuybackService.batchUpdateTransaction(this.perhiasan, "perhiasan",btoa(JSON.stringify(this.sessionService.getUnit())))
     } 

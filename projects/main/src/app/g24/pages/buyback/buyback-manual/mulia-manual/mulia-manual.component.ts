@@ -158,6 +158,15 @@ export class MuliaManualComponent implements OnInit {
   
     this.hargaBaku = 0
 
+    if (data.input_vendor_mulia == "pilih") {
+      this.loadingDg = false;
+      return this.toastrService.error("Silahkan Pilih vendor");
+    }
+    if (data.input_denom_mulia == "pilih") {
+      this.loadingDg = false;
+      return this.toastrService.error("Silahkan Pilih denom");
+    }
+
     this.vendorService.get("?code="+data.input_vendor_mulia).subscribe((response: any) => {
       vendorCode = response.code;
       vendorName = response.name;

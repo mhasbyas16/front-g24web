@@ -126,9 +126,11 @@ export class PerhiasanComponent implements OnInit {
       if (vendor != 'all') {
         this.params = this.params+"&"+urlVendor;
       }
-      if (jenis != 'all'){
-        this.params = this.params+"&"+urlJenis;
+      if (jenis == 'all'){
+        this.loadingDg = false;
+        return this.toastrService.error("Pilih Jenis Barang");
       }
+      this.params = this.params+"&"+urlJenis;
       if (berat != null) {
         this.params = this.params+"&"+urlBerat;
       }

@@ -314,7 +314,7 @@
                             </ng-container>
                             <clr-input-container>
                                 <label>Nominal Transaksi</label>
-                                <input clrInput type="text" formControlName="nominalTransaksi" (keyup)="diterimaUang($event.target.value)">
+                                <input clrInput type="number" step="100" min="0" onkeypress="return event.charCode != 45" formControlName="nominalTransaksi" (keyup)="diterimaUang($event.target.value)">
                                 <clr-control-error>Must Number Field</clr-control-error>
                             </clr-input-container>
                             <clr-input-container>

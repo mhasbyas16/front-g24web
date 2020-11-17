@@ -143,12 +143,13 @@ dat = null;
         count = JSON.stringify(1);
         this.idtransaksi = unit.code + "06" + d3 + "0000001";
         this.formData.patchValue({ idSequencer: this.idtransaksi});
-        this.sequenceService.use({key:this.idtransaksi}).subscribe((sq:any)=>{
-          let id = sq["value"];
-          console.debug(id);
-          this.formData.patchValue({ idTransaction: id, idAi: id });
-          console.debug(this.idtransaksi,"ID")
-        })
+        this.formData.patchValue({ idTransaction:  this.idtransaksi, idAi: "1" });
+        // this.sequenceService.use({key:this.idtransaksi}).subscribe((sq:any)=>{
+        //   let id = sq["value"];
+        //   console.debug(id);
+        //   t
+        //   console.debug(this.idtransaksi,"ID")
+        // })
       }else{
     
         this.idtransaksi = unit.code + "06" + d3 + "0000001";
@@ -238,7 +239,7 @@ dat = null;
       jumlahTerima: new FormControl(totalHarga, Validators.required),
       unit: new FormControl(""),
       unit_encoded: new FormControl("base64"),
-      nominalTransaksi: new FormControl(""),
+      nominalTransaksi: new FormControl("",[ Validators.required,Validators.pattern(/^-?(0|[1-9]\d*)?$/)]),
       kembali: new FormControl(""),
       nik: new FormControl(this.nikUser["username"]),
       nikPemasar: new FormControl(this.nikUser["_hash"], Validators.required),
@@ -528,8 +529,8 @@ dat = null;
     data.product = btoa(JSON.stringify({ PERHIASAN, LM, BERLIAN, GS, DINAR }));
     data.product_encoded = "base64";
     data.currency_encoded = "base64";
-    let nomT = data["nominalTransaksi"]
-    data["nominalTransaksi"] = nomT.replace(/,/g, '');
+    // let nomT = data["nominalTransaksi"]
+    // data["nominalTransaksi"] = nomT.replace(/,/g, '');
     delete data["cif"];
     delete data["namaPemasar"];
     delete data["nik"];

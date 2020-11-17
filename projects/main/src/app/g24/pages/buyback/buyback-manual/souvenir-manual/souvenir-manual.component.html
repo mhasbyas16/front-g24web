@@ -127,9 +127,16 @@
                                                 </clr-input-container>
                                             </div>
                                             <div class="clr-col">
-                                                <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.vendor, d.vendorCode, d.denom, d.harga, d.denomCodes, d.denomValues, d.seriesName, d.seriesCode)">
-                                                    <clr-icon shape="plus"></clr-icon>
-                                                </button> 
+                                                <ng-container *ngIf="d.harga == 0 || d.harga == '0' ">
+                                                    <button type="button" class="btn btn-icon btn-sm btn-danger disabled" aria-label="home" >
+                                                        <clr-icon shape="minus"></clr-icon>
+                                                    </button>
+                                                </ng-container>
+                                                <ng-container *ngIf="d.harga != 0 || d.harga != '0' ">
+                                                    <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.vendor, d.vendorCode, d.denom, d.harga, d.denomCodes, d.denomValues, d.seriesName, d.seriesCode)">
+                                                        <clr-icon shape="plus"></clr-icon>
+                                                    </button>
+                                                </ng-container>                                                  
                                             </div>
                                         </div>
                                     </clr-dg-cell>
