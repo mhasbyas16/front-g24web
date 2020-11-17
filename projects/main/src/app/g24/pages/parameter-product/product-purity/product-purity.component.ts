@@ -71,7 +71,7 @@ inputUpdate : any = {};
 				break;
 
 				case "name":
-					params += "name="+this.search[key]+"&name_encoded=int&";
+					params += "name="+this.search[key]+"&";
 				break;
   				
   				default:
@@ -148,11 +148,13 @@ inputUpdate : any = {};
   		this.toastr.success("Data berhasil ditambah","Sukses");
   		this.listpurity = [];
   		this.loadData();
-  		this.modaltambah = false;
+		this.modaltambah = false;
+		this.SearchData();  
   	})
   }
 
   Ubah(){
+	this.inputUpdate.name_purity = this.data_view?.name;
 	if(!this.data_view){
 		this.toastr.warning("Data belum dipilih","Peringatan");
 		return;
@@ -172,15 +174,20 @@ inputUpdate : any = {};
 	this.spinner.SetSpinnerText("Mohon Tunggu...");
 	this.spinner.Open();
 	let validate = /^[0-9]+$/;
-	if(!this.dataupdate["name"]){
+	if(this.data_view?.name == ""){
 		this.spinner.Close();
-		this.toastr.warning("Nama Purity belum diisi","Peringatan");
+		this.toastr.warning("Nama Purity kosong","Peringatan");
 		return;
-	}else if(!this.dataupdate["name"].match(validate)){
+	}else if(this.inputUpdate.name_purity == ""){
+		this.spinner.Close();
+		this.toastr.warning("Nama purity belum diisi","Peringatan");
+		return;
+	}
+	else if(!this.inputUpdate.name_purity.match(validate)){
 		this.spinner.Close();
 		this.toastr.info("Harap input dengan angka","Informasi");
 		return;
-	}else if(this.dataupdate["name"].length < 3){
+	}else if(this.inputUpdate.name_purity.length < 3){
 		this.spinner.Close();
 		this.toastr.info("Info harus 3 digit angka","Informasi");
 		return;
@@ -208,7 +215,8 @@ inputUpdate : any = {};
   			this.toastr.success("Data berhasil diubah","Sukses");
   			this.listpurity = [];
   			this.loadData();
-  			this.modalupdate = false;
+			this.modalupdate = false;
+			this.SearchData();  
   		})
   	}
   }
@@ -241,7 +249,8 @@ inputUpdate : any = {};
 			this.spinner.Close();
   			this.toastr.success("Data berhasil dihapus","Sukses");
   			this.listpurity = [];
-  			this.loadData();
+			this.loadData();
+			this.SearchData();  
   		})
   	}
   }

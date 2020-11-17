@@ -140,7 +140,8 @@
     			<div class="clr-form-control">
     				<clr-input-container>
 				    <label>Nama Kategori</label>
-				    <input clrInput [(ngModel)]="updateInput.name_kat" name="name_kat" value="{{dataupdate.name}}"/>
+					<input clrInput [(ngModel)]="updateInput.name_kat" name="name_kat" value="{{dataupdate.name}}" required/>
+					<clr-control-error>Wajib diisi *</clr-control-error>
 				  </clr-input-container>
     			</div>
     		</div>

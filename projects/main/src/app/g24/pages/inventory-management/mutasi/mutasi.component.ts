@@ -26,12 +26,10 @@ import { TipeStock } from '../../../lib/enum/flag-product';
 import { FlagProduct } from '../../../lib/enum/flag-product';
 import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
 import { CetakMutasiComponent } from '../../../../g24/cetakan/stock/cetak-mutasi/cetak-mutasi.component';
-// import { CetakMutasiComponent } from '../../../../g24/pages/inventory-management/mutasi/cetak-mutasi/cetak-mutasi.component';
 import { StringHelper } from '../../../lib/helper/string-helper';
 
 //SORTING CLARITY LIB
 import {ClrDatagridSortOrder} from '@clr/angular';
-import { HargaTerbilangService } from '../../../lib/helper/harga-terbilang.service';
 
 @Component({
   selector: 'app-mutasi',
@@ -44,9 +42,9 @@ export class MutasiComponent implements OnInit {
 static key = EMenuID.MUTASI;
 
 
-@ViewChild('kategori') kategori : ElementRef;
-
-@ViewChild('Perhiasan', {static:false}) perhiasanInput : TemplateRef<any>;
+  //ELEMENT HTML [ NG TEMPLATE ] UNTUK MEMUNCULKAN ATTRIBUT KATEGORI YANG DIPILIH PADA SAAT MEMILIH PRODUK KATEGORI
+  @ViewChild('kategori') kategori : ElementRef;
+  @ViewChild('Perhiasan', {static:false}) perhiasanInput : TemplateRef<any>;
   @ViewChild('Emas_Batangan', {static:false}) emasbatanganInput : TemplateRef<any>;
   @ViewChild('Berlian', {static: false}) berlianInput : TemplateRef<any>;
   @ViewChild('Adiratna', {static: false}) adiratnaInput : TemplateRef<any>;
@@ -54,16 +52,25 @@ static key = EMenuID.MUTASI;
   @ViewChild('Gift', {static: false}) giftInput : TemplateRef<any>;
   @ViewChild('Dinar', {static: false}) dinarInput : TemplateRef<any>;
 
+  //ELEMENT HTML LOADING SPINNER UNTUK LOAD DATA
   @ViewChild('spinner',{static:false}) spinner : LoadingSpinnerComponent;
 
+  //ELEMENT HTML EXPORT PDF UNTUK CETAK KIRIM MUTASI
   @ViewChild('exportPDF',{static:false}) pdf : CetakMutasiComponent;
 
 
+  //UNTUK MEMILIH DATA PRODUK PADA SAAT INGIN MENAMBAHKAN MUTASI 
   selected : any[] = [];
+
+  //UNTUK MEMILIH DATA PRODUK YANG SUDAH DITAMBAHKAN PADA MODAL TAMBAH MUTASI
+  //FUNGSI UNTUK MENGHAPUS PRODUK YANG DIPILIH SEBELUMNYA
   selected_items : any[] = [];
+
+  //UNTUK MEMILIH DATA MUTASI YANG TELAH DIMUTASIKAN
+  //FUNGSINYA UNTUK MELIHAT DATA MUTASI YANG DIPIILIH
   data_view : any = {};
 
-  //SEARCHCODE
+  //VARIABEL UNTUK MENGECEK UNIT TUJUAN YANG DIINPUT PADA SAAT MENG
   searchCode : any = {};
 
   unittuju : any[] = [];

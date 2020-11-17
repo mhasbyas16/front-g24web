@@ -156,10 +156,12 @@ listdata : any[] = [];
 			this.listclarity = [];
 			this.loadData();
 			this.modaltambah = false;
+			this.SearchData();
 		})
   }
 
   Ubah(){
+	this.inputUpdate.name = this.data_view?.name;
 	if(!this.data_view){
 		this.toastr.warning("Data belum dipilih","Peringatan");
 		return;
@@ -178,6 +180,15 @@ listdata : any[] = [];
   Update(){
 	this.spinner.SetSpinnerText("Mohon Tunggu...");
 	this.spinner.Open();
+	if(this.data_view?.name == ""){
+		this.toastr.warning("Data name clarity kosong","Peringatan");
+		this.spinner.Close();
+		return;
+	}else if(this.inputUpdate.name == ""){
+		this.toastr.warning("Nama clarity belum diisi","Peringatan");
+		this.spinner.Close();
+		return;
+	}
   	for(let i = 0; i < this.uptodate.length; i++){
   		console.log(this.uptodate[i]._id);
   		let data = {
@@ -200,7 +211,8 @@ listdata : any[] = [];
   			this.toastr.success("Data berhasil diubah","Sukses");
   			this.listclarity = [];
   			this.loadData();
-  			this.modalupdate = false;
+			this.modalupdate = false;
+			this.SearchData();  
   		})
   	}
   }
@@ -233,7 +245,8 @@ listdata : any[] = [];
 		this.spinner.Close();
         this.toastr.success("Data berhasil dihapus","Sukses");
         this.listclarity = [];
-        this.loadData();
+		this.loadData();
+		this.SearchData();
       })
     }
   }

@@ -99,23 +99,16 @@ modalview : boolean = false;
 			  }
 		  }
 		  this.data_kategori = data;
-		//   this.exampleData = data;
 		  for(let i =0; i < data.length; i++){
 			  this.datamultiple.push({id:data[i]._id,text:data[i].name});
 
 			}
 			this.exampleData = this.datamultiple;
 			console.log("Tes",this.exampleData);
-		//   console.log(this.exampleData);
 		  this.option = {multiple: true}
 	  })
 	  let num = AlphaNumeric.Encode(this.datadenom.length);
 	  console.log(num);
-	//   let str = num.substring(0,1);
-	//   if(this.datadenom.length > 15){
-	// 	  let it = str + 1;
-	// 	  console.log(it);
-	//   }
   }
 
   SearchData(){
@@ -156,19 +149,35 @@ modalview : boolean = false;
 		  return;
 		}
 
-		this.productdenom.list(params+"product-category.name_regex=1&product-category.name="+this.search["kategori"]).subscribe(data=>{
-			if(data==false){
-				if(this.productdenom.message()!=""){
-					this.spinner.Close();
-					this.toastr.info("Data tidak ditemukan","Informasi");
-					this.listdenom = [];
-					return;
+		if(!this.search.code){
+			this.productdenom.list(params+"product-category.name_regex=1&product-category.name="+this.search["kategori"]).subscribe(data=>{
+				if(data==false){
+					if(this.productdenom.message()!=""){
+						this.spinner.Close();
+						this.toastr.info("Data tidak ditemukan","Informasi");
+						this.listdenom = [];
+						return;
+					}
 				}
-			}
-			this.spinner.Close();
-			this.toastr.success("Data ditemukan "+data.length,"Sukses");
-			this.listdenom = data;
-		})
+				this.spinner.Close();
+				this.toastr.success("Data ditemukan "+data.length,"Sukses");
+				this.listdenom = data;
+			})
+		}else{
+			this.productdenom.list(params+"product-category.name_regex=1&product-category.name="+this.search["kategori"]+"&code="+this.search.code).subscribe(data=>{
+				if(data==false){
+					if(this.productdenom.message()!=""){
+						this.spinner.Close();
+						this.toastr.info("Data tidak ditemukan","Informasi");
+						this.listdenom = [];
+						return;
+					}
+				}
+				this.spinner.Close();
+				this.toastr.success("Data ditemukan "+data.length,"Sukses");
+				this.listdenom = data;
+			})
+		}
   }
 
   Tambah(){
@@ -276,12 +285,17 @@ modalview : boolean = false;
 		  this.spinner.Close();
   		this.listdenom = [];
   		this.loadData();
-  		this.modaltambah = false;
+		this.modaltambah = false;
+		this.SearchData();  
   	})
   }
 
 
   Ubah(){
+
+	this.inputUpdate.name_denom = this.data_view?.name;
+	this.inputUpdate.value_denom = this.data_view?.value;
+
 	if(!this.data_view){
 		this.toastr.warning("Data belum dipilih","Peringatan");
 		return;
@@ -307,6 +321,17 @@ modalview : boolean = false;
 
 	this.spinner.SetSpinnerText("Mohon Tunggu...");
 	this.spinner.Open();
+
+	if(this.data_view?.name == "" || this.data_view?.value == ""){
+		this.toastr.warning("Data nama denom atau value denom kosong","Peringatan");
+		this.spinner.Close();
+		return;
+	}else if(this.inputUpdate.name_denom == "" || this.inputUpdate.value_denom == ""){
+		this.toastr.warning("Data nama denom atau value denom belum di isi","Peringatan");
+		this.spinner.Close();
+		return;
+	}
+
   	for(let i = 0; i < this.uptodate.length; i++){
 
   		console.log(this.uptodate[i]._id);
@@ -340,7 +365,8 @@ modalview : boolean = false;
 			  this.spinner.Close();
   			this.listdenom = [];
   			this.loadData();
-  			this.modalupdate = false;
+			this.modalupdate = false;
+			this.SearchData();  
 		})
 		
 		  

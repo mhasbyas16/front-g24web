@@ -7,9 +7,9 @@
             	<div class="clr-row">
             		<div class="clr-col-6">
             			<div class="clr-form-control">
-                            <label class="clr-control-label">Jenis Produk</label>
+                            <label class="clr-control-label">Nama Vendor</label>
                             <clr-input-container>
-                                <input [(ngModel)]="search.kategori" clrInput name="kategori">
+                                <input [(ngModel)]="search.name" clrInput name="name">
                             </clr-input-container>
             				<!--div class="clr-control-container">
             				<select [(ngModel)]="search.kategori" clrSelect name="kategori">
@@ -211,7 +211,7 @@
     			<div class="clr-form-control">
     				<clr-input-container>
 				    <label>Name</label>
-				    <input clrInput [(ngModel)]="inputUpdate.name_vendor" name="name_cendor" value="{{dataupdate.name}}" required />
+				    <input clrInput [(ngModel)]="inputUpdate.name_vendor" name="name_vendor" value="{{dataupdate.name}}" required />
 				    <clr-control-error>Wajib di isi</clr-control-error>
 				  </clr-input-container>
     			</div>

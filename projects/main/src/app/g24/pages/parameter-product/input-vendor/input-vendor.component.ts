@@ -146,6 +146,8 @@ listvendor : any[] = [];
   }
 
   Ubah(){
+    this.inputUpdate.name_vendor = this.data_view?.name;
+
     if(!this.data_view){
       this.toastr.warning("Data belum dipilih","Peringatan");
       return;
@@ -267,11 +269,11 @@ listvendor : any[] = [];
     this.spinner.SetSpinnerText("Mohon Tunggu...");
     this.spinner.Open();
 
-    if(this.dataupdate.name == ""){
+    if(this.data_view?.name == ""){
       this.toastr.warning("Name belum di isi","Peringatan");
       this.spinner.Close();
       return;
-    }else if(!this.inputUpdate.name_vendor){
+    }else if(this.inputUpdate.name_vendor == ""){
       this.toastr.warning("Name belum di isi","Peringatan");
       this.spinner.Close();
       return;
@@ -304,7 +306,8 @@ listvendor : any[] = [];
   				}
         }
         this.spinner.Close();
-  			this.toastr.success("Data berhasil diubah","Sukses");
+        this.toastr.success("Data berhasil diubah","Sukses");
+        this.SearchData();
   			this.listvendor = [];
   			this.loadData();
   			this.modalupdate = false;

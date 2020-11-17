@@ -127,6 +127,7 @@ jumlah : number = 0;
   }
 
   Ubah(){
+	this.updateInput.name_kat = this.data_view.name;
 	if(!this.data_view){
 		this.toastr.warning("Data belum dipilih","Peringatan");
 		return;
@@ -146,6 +147,15 @@ jumlah : number = 0;
   Update(){
 	this.spinner.SetSpinnerText("Mohon tunggu...");
 	this.spinner.Open();
+	if(this.data_view?.name == ""){
+		this.toastr.warning("Data name kategori kosong","Peringatan");
+		this.spinner.Close();
+		return;
+	}else if(this.updateInput.name_kat == ""){
+		this.toastr.warning("Nama kategori belum diisi","Peringatan");
+		this.spinner.Close();
+		return;
+	}
   	for(let i = 0; i < this.uptodate.length; i++){
   		console.log(this.uptodate[i]._id);
   		let data = {
@@ -154,6 +164,12 @@ jumlah : number = 0;
   		}
 
   		console.log(data);
+
+		if(!this.updateInput.name_kat){
+			this.toastr.info("Data tidak ada perubahan, Silahkan ubah data yang benar","Inforamsi");
+			this.spinner.Close();
+			return;
+		}
 
   		let upd = DataTypeUtil.Encode(data);
   		this.kategoriservice.update(upd).subscribe(data=>{
@@ -168,7 +184,8 @@ jumlah : number = 0;
   			this.toastr.success("Data berhasil diubah","Sukses");
   			this.listkategori = [];
   			this.loadData();
-  			this.modalupdate = false;
+			this.modalupdate = false;
+			this.SearchData();  
   		})
   	}
   }
@@ -199,7 +216,8 @@ jumlah : number = 0;
 			  this.spinner.Close();
   			this.toastr.success("Data berhasil dihapus","Sukses");
   			this.listkategori = [];
-  			this.loadData();
+			this.loadData();
+			this.SearchData();  
   		})
   	}
   }
@@ -242,6 +260,7 @@ jumlah : number = 0;
 					this.toastr.success("Data berhasil ditambah","Sukses");
 					this.listkategori = [];
 					this.loadData();
+					this.SearchData();
 					this.modaltambah = false;
 			    })
 	

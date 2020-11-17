@@ -125,11 +125,13 @@ modalupdate : boolean = false;
   		this.toastr.success("Data berhasil ditambah","Sukses");
   		this.listdiamond = [];
   		this.loadData();
-  		this.modaltambah = false;
+		this.modaltambah = false;
+		this.SearchData();
   	})
   }
 
   Ubah(){
+	this.inputUpdate.name_diamond = this.data_view?.name;
 	if(!this.data_view){
 		this.toastr.warning("Data belum dipilih","Peringatan");
 		return;
@@ -148,6 +150,15 @@ modalupdate : boolean = false;
   Update(){
 	this.spinner.SetSpinnerText("Mohon Tunggu...");
 	this.spinner.Open();
+	if(this.data_view?.name == ""){
+		this.toastr.warning("Data name diamond color kosong","Peringatan");
+		this.spinner.Close();
+		return;
+	}else if(this.inputUpdate.name_diamond == ""){
+		this.toastr.warning("Data name diamond color belum diisi","Peringatan");
+		this.spinner.Close();
+		return;
+	}
   	for(let i = 0; i < this.uptodate.length; i++){
   		console.log(this.uptodate[i]._id);
   		let data = {
@@ -170,7 +181,8 @@ modalupdate : boolean = false;
   			this.toastr.success("Data berhasil diubah","Sukses");
   			this.listdiamond = [];
   			this.loadData();
-  			this.modalupdate = false;
+			this.modalupdate = false;
+			this.SearchData();
   		})
   	}
   }
@@ -203,7 +215,8 @@ modalupdate : boolean = false;
 			this.spinner.Close();
   			this.toastr.success("Data berhasil dihapus","Sukses");
   			this.listdiamond = [];
-  			this.loadData();
+			this.loadData();
+			this.SearchData();
   		})
   	}
   }

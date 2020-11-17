@@ -28,7 +28,9 @@ export class TokoPenyediaComponent implements OnInit {
 
   idToko : any[] = [];
 
-  data_view : any[] = [];
+  inputUpdate : any = {};
+
+  data_view : any = {};
   data_delete : any[] = [];
   data_update : any[] = [];
   showSearch : any[] = [];
@@ -122,6 +124,7 @@ export class TokoPenyediaComponent implements OnInit {
       }
       this.spinnner.Close();
       this.toastr.success("Data berhasil disimpan","Sukses");
+      this.SearchData();
       this.modaltambah = false;
     })
   }
@@ -130,6 +133,9 @@ export class TokoPenyediaComponent implements OnInit {
   }
 
   Ubah(){
+    this.inputUpdate.name_upd = this.data_view?.name;
+    this.inputUpdate.ket_upd = this.data_view?.keterangan;
+
     if(!this.data_view){
       this.toastr.warning("Data belum dipilih","Peringatan");
       return;
@@ -138,6 +144,7 @@ export class TokoPenyediaComponent implements OnInit {
 		  return;
 	  }
     this.modalupdate = true;
+    this.data_update = [];
     this.data_update.push(this.data_view);
     for(let i = 0; i < this.data_update.length; i++){
       this.update = this.data_update[i];
@@ -147,8 +154,12 @@ export class TokoPenyediaComponent implements OnInit {
   Update(){
     this.spinnner.SetSpinnerText("Mohon Tunggu...");
     this.spinnner.Open();
-    if(!this.update["name_upd"]||!this.update["ket_upd"]){
-      this.toastr.warning("Name atau keterangan belum di isi","Peringatan");
+    if(this.inputUpdate.name_upd == "" || this.inputUpdate.ket_upd == ""){
+      this.toastr.warning("Nama toko atau keterangan belum di isi","Peringatan");
+      this.spinnner.Close();
+      return;
+    }else if(this.data_view?.name == "" || this.data_view?.keterangan == ""){
+      this.toastr.warning("Nama toko atau keterangan kosong","Peringatan");
       this.spinnner.Close();
       return;
     }
@@ -157,8 +168,8 @@ export class TokoPenyediaComponent implements OnInit {
 
       let update2 = {
         _id : this.data_update[i]._id,
-        name : this.update["name_upd"],
-        keterangan : this.update["ket_upd"]
+        name : this.inputUpdate.name_upd,
+        keterangan : this.inputUpdate.ket_upd
       }
 
       let dt = DataTypeUtil.Encode(update2);
@@ -175,6 +186,7 @@ export class TokoPenyediaComponent implements OnInit {
         this.modalupdate = false;
         this.showSearch = [];
         this.loadData();
+        this.SearchData();
       })
     }
   }
@@ -209,6 +221,7 @@ export class TokoPenyediaComponent implements OnInit {
         this.spinnner.Close();
         this.loadData();
         this.showSearch = [];
+        this.SearchData();
       })
     }
 

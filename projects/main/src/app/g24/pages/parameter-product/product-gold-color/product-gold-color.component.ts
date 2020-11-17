@@ -10,6 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 //SERVICE
 import { ProductGoldColorService } from '../../../services/product/product-gold-color.service';
 import { AlphaNumeric } from '../../../lib/helper/alpha-numeric';
+import { returnOrFallthrough } from '@clr/core/internal';
 
 @Component({
   selector: 'app-product-gold-color',
@@ -129,11 +130,13 @@ modalupdate : boolean = false;
 		  this.spinner.Close();
   		this.listgold = [];
   		this.loadData();
-  		this.modaltambah = false;
+		this.modaltambah = false;
+		this.SearchData();  
   	})
   }
 
   Ubah(){
+	this.inputupdate.name_gold = this.data_view?.name;
 	if(!this.data_view){
 		this.toastr.warning("Data belum dipilih","Peringatan");
 		return;
@@ -152,6 +155,15 @@ modalupdate : boolean = false;
   Update(){
 	this.spinner.SetSpinnerText("Mohon Tunggu...");
 	this.spinner.Open();
+	if(this.data_view?.name == ""){
+		this.toastr.warning("Data nama gold color kosong","Peringata");
+		this.spinner.Close();
+		return;
+	}else if(this.inputupdate.name_gold == ""){
+		this.toastr.warning("Data nama gold color belum diisi","Peringatan");
+		this.spinner.Close();
+		return;
+	}
   	for(let i = 0; i < this.uptodate.length; i++){
   		console.log(this.uptodate[i]._id);
   		let data = {
@@ -174,7 +186,8 @@ modalupdate : boolean = false;
   			this.toastr.success("Data berhasil diubah","Sukses");
   			this.listgold = [];
   			this.loadData();
-  			this.modalupdate = false;
+			this.modalupdate = false;
+			this.SearchData();
   		})
   	}
   }
@@ -204,10 +217,11 @@ modalupdate : boolean = false;
   					return;
   				}
   			}
-			  this.toastr.success("Data berhasil dihapus","Sukses");
-			  this.spinner.Close();
+			this.toastr.success("Data berhasil dihapus","Sukses");
+			this.spinner.Close();
   			this.listgold = [];
-  			this.loadData();
+			this.loadData();
+			this.SearchData();
   		})
   	}
   }

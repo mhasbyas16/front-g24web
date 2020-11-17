@@ -41,6 +41,9 @@
         </clr-dg-action-bar>
         
 
+		<clr-dg-column>
+			Id Toko
+		</clr-dg-column>
         <clr-dg-column>
             Name
         </clr-dg-column>
@@ -49,6 +52,7 @@
         </clr-dg-column>
 
         <clr-dg-row *clrDgItems="let data of showSearch" [clrDgItem]="data">
+			<clr-dg-cell>{{data.id_toko}}</clr-dg-cell>
             <clr-dg-cell>{{data.name}}</clr-dg-cell>
             <clr-dg-cell>{{data.keterangan}}</clr-dg-cell>
         </clr-dg-row>
@@ -121,7 +125,7 @@
     			<div class="clr-form-control">
     				<clr-input-container>
 				    <label>Name</label>
-				    <input [(ngModel)]="update.name_upd" clrInput name="name_upd" value="{{update.name}}" required />
+				    <input [(ngModel)]="inputUpdate.name_upd" clrInput name="name_upd" value="{{update.name}}" required />
 				    <clr-control-error>Wajib di isi</clr-control-error>
 				  </clr-input-container>
     			</div>
@@ -132,7 +136,7 @@
     			<div class="clr-form-control">
 						<clr-textarea-container>
 					    <label>Keterangan</label>
-					    <textarea [(ngModel)]="update.ket_upd" clrTextarea name="ket_upd" value="{{update.keterangan}}" required></textarea>
+					    <textarea [(ngModel)]="inputUpdate.ket_upd" clrTextarea name="ket_upd" value="{{update.keterangan}}" required></textarea>
 						<clr-control-error>Wajib di isi</clr-control-error>
 						</clr-textarea-container>
     			</div>

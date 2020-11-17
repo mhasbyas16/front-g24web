@@ -87,7 +87,6 @@ modalview : boolean = false;
 	  this.spinner.SetSpinnerText("Mohon Tunggu...");
 	  this.spinner.Open();
 	  let params = "?";
-	if(!this.search["kategori"]){
   	for(let key in this.search){
   		if(this.search[key]==""||this.search[key]==null)continue;
   			switch (key) {
@@ -95,9 +94,9 @@ modalview : boolean = false;
   					params += "code="+this.search.code.toUpperCase()+"&";
 				break;
 
-				// case "kategori":
-				// 	params += "product-category.code="+this.search[key].code+"&";
-				// break;
+				case "name":
+					params += "name="+this.search[key]+"&";
+				break;
   				
   				default:
   					params += key+="="+this.search[key]+"&";
@@ -121,29 +120,6 @@ modalview : boolean = false;
 			console.log(this.detailkategori["product-category"]);
 			}
 		  })
-
-		  return;
-		}
-
-		this.jenisservice.list(params+"product-category.name_regex=1&product-category.name="+this.search["kategori"]).subscribe(data=>{
-			if(data==false){
-				if(this.jenisservice.message()!=""){
-					this.spinner.Close();
-					this.toastr.info("Data tidak ditemukan","Informasi");
-					this.listjenis = [];
-					return;
-				}
-			}
-			this.listjenis = data;
-			this.toastr.success("Data ditemukan "+data.length,"Sukses");
-			this.spinner.Close();
-			for(let i =0; i < this.listjenis.length; i++){
-			this.detailkategori = this.listjenis[i];
-			console.log(this.detailkategori["product-category"]);
-			}
-		})
-
-
 
   }
 
@@ -255,11 +231,13 @@ modalview : boolean = false;
   		this.toastr.success("Data berhasil ditambah","Sukses");
   		this.listjenis = [];
   		this.loadData();
-  		this.modaltambah = false;
+		this.modaltambah = false;
+		this.SearchData();
   	})
   }
 
   Ubah(){
+	this.inputUpdate.name_jenis = this.data_view?.name;
 	if(!this.data_view){
 		this.toastr.warning("Data belum dipilih","Peringatan");
 		return;
@@ -288,6 +266,15 @@ modalview : boolean = false;
   Update(){
 	this.spinner.SetSpinnerText("Mohon Tunggu...");
 	this.spinner.Open();
+	if(this.data_view?.name == ""){
+		this.toastr.warning("Data nama jenis kosong","Peringatan");
+		this.spinner.Close();
+		return;
+	}else if(this.inputUpdate.name_jenis == ""){
+		this.toastr.warning("Data nama jenis belum diisi","Peringatan");
+		this.spinner.Close();
+		return;
+	}
   	for(let i = 0; i < this.uptodate.length; i++){
   		console.log(this.uptodate[i]._id);
   		let data = {
@@ -319,7 +306,8 @@ modalview : boolean = false;
   			this.toastr.success("Data berhasil diubah","Sukses");
   			this.listjenis = [];
   			this.loadData();
-  			this.modalupdate = false;
+			this.modalupdate = false;
+			this.SearchData();  
   		})
   	}
   }
@@ -343,7 +331,8 @@ modalview : boolean = false;
 			this.spinner.Close();
   			this.toastr.success("Data berhasil dihapus","Sukses");
   			this.listjenis = [];
-  			this.loadData();
+			this.loadData();
+			this.SearchData();  
   		})
   	}
   }
