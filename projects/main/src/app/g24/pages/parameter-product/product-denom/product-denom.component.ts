@@ -183,6 +183,7 @@ modalview : boolean = false;
   Tambah(){
 	  this.modaltambah = true;
 	  this.input = {};
+	  this.addkategori = [];
   	let params = "?";
   	this.productkategori.list(params).subscribe(data=>{
   		if(data==false){
@@ -219,6 +220,14 @@ modalview : boolean = false;
   }
 
   TambahKategoriUpdate(){
+	if(!this.select_kategori_upd){
+		this.toastr.error("Produk kategori belum dipilih","Gagal");
+		return;
+	  }else if(Object.keys(this.select_kategori_upd).length==0){
+		this.toastr.error("Produk kategori belum dipilih","Gagal");
+		return;
+	  }
+
 	for(let i = 0; i < this.dataupdatekategori.length; i++){
 		if(this.dataupdatekategori[i].code==this.select_kategori_upd.code){
 			this.toastr.info("Produk kategori sama","Informasi");
@@ -326,7 +335,7 @@ modalview : boolean = false;
 		this.toastr.warning("Data nama denom atau value denom kosong","Peringatan");
 		this.spinner.Close();
 		return;
-	}else if(this.inputUpdate.name_denom == "" || this.inputUpdate.value_denom == ""){
+	}else if(this.inputUpdate.name_denom == "" || !this.inputUpdate.value_denom){
 		this.toastr.warning("Data nama denom atau value denom belum di isi","Peringatan");
 		this.spinner.Close();
 		return;

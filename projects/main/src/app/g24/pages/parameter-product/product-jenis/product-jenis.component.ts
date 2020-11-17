@@ -140,10 +140,13 @@ modalview : boolean = false;
   }
 
   TambahKategori(){
-	  if(!this.select_kategori){
-		  this.toastr.error("Produk kategori belum dipilih","Gagal");
-		  return;
-	  }
+	if(!this.select_kategori){
+		this.toastr.error("Produk kategori belum dipilih","Gagal");
+		return;
+	}else if(Object.keys(this.select_kategori).length==0){
+		this.toastr.error("Produk kategori belum dipilih","Gagal");
+		return;
+	}
 	  for(let i = 0; i < this.addkategori.length; i++){
 		  if(this.addkategori[i].code==this.select_kategori.code){
 			  this.toastr.info("Data produk kategori sama","Informasi");
@@ -154,6 +157,13 @@ modalview : boolean = false;
   }
 
   TambahKategoriUpdate(){
+	if(!this.select_kategori_upd){
+		this.toastr.error("Produk kategori belum dipilih","Gagal");
+		return;
+	}else if(Object.keys(this.select_kategori_upd).length==0){
+		this.toastr.error("Produk kategori belum dipilih","Gagal");
+		return;
+	}
 	  for(let i = 0; i < this.dataupdatekategori.length; i++){
 		  if(this.dataupdatekategori[i].code==this.select_kategori_upd.code){
 			  this.toastr.info("Data produk kategori sama","Informasi");
