@@ -128,7 +128,8 @@ export class TransactionFlagBuybackService {
       default:
         break;
     }
-
+    
+    console.debug(data,"data");
     
     for (let isiData of data) {
       idTransaction = isiData.idTransaction
@@ -145,6 +146,15 @@ export class TransactionFlagBuybackService {
               this.productService.update(updateP).subscribe((response:any)=>{
                 console.debug(response);
               })
+              console.debug(getProduct.product,"producta");
+              let _idTrans = isiData.idTransaction
+              let updateData = {_id: _idTrans, product:btoa(JSON.stringify(getProduct.product)), product_encoded: "base64" }
+              console.debug(updateData,"produsafascta");
+              this.transactionService.update(updateData).subscribe((response:any)=>{
+                if (response == false) {
+                  return console.debug("update transaksi gagal")
+                }
+               })
             }
           }
         }
@@ -172,7 +182,14 @@ export class TransactionFlagBuybackService {
                   this.productService.update(updateLM).subscribe((response:any)=>{
                     console.debug(response);
                   })
-              }               
+              }
+              let _idTrans = isiData.idTransaction
+              let updateData = {_id: _idTrans, product:btoa(JSON.stringify(getProduct.product)), product_encoded: "base64" }
+              this.transactionService.update(updateData).subscribe((response:any)=>{
+                if (response == false) {
+                  return console.debug("update transaksi gagal")
+                }
+               })               
             }
           }
         }
@@ -186,6 +203,13 @@ export class TransactionFlagBuybackService {
               this.productService.update(updateB).subscribe((response:any)=>{
                 console.debug(response);
               })
+              let _idTrans = isiData.idTransaction
+              let updateData = {_id: _idTrans, product:btoa(JSON.stringify(getProduct.product)), product_encoded: "base64" }
+              this.transactionService.update(updateData).subscribe((response:any)=>{
+                if (response == false) {
+                  return console.debug("update transaksi gagal")
+                }
+               })
             }
           }
         }
@@ -199,6 +223,13 @@ export class TransactionFlagBuybackService {
               this.productService.update(updateGS).subscribe((response:any)=>{
                 console.debug(response);
               })
+              let _idTrans = isiData.idTransaction
+              let updateData = {_id: _idTrans, product:btoa(JSON.stringify(getProduct.product)), product_encoded: "base64" }
+              this.transactionService.update(updateData).subscribe((response:any)=>{
+                if (response == false) {
+                  return console.debug("update transaksi gagal")
+                }
+               })
             }
           }
         }
@@ -212,15 +243,23 @@ export class TransactionFlagBuybackService {
               this.productService.update(updateGS).subscribe((response:any)=>{
                 console.debug(response);
               })
+              let _idTrans = isiData.idTransaction
+              let updateData = {_id: _idTrans, product:btoa(JSON.stringify(getProduct.product)), product_encoded: "base64" }
+              this.transactionService.update(updateData).subscribe((response:any)=>{
+                if (response == false) {
+                  return console.debug("update transaksi gagal")
+                }
+               })
             }
           }
         }
 
-        let updateData = {_id: idTransaction, product:btoa(JSON.stringify(getProduct.product)), product_encoded: "base64", tipe_stock: "buyback" }
-        console.debug(updateData, "weawdasdas")
-          this.transactionService.update(updateData).subscribe((response:any)=>{
-         return;
-       })
+        // let updateData = {_id: idTransaction, product:btoa(JSON.stringify(getProduct.product)), product_encoded: "base64", tipe_stock: "buyback" }
+        // console.debug(updateData,"adsaasda");
+      //   console.debug(updateData, "weawdasdas")
+      //     this.transactionService.update(updateData).subscribe((response:any)=>{
+      //    return;
+      //  })
       })
     } 
   }

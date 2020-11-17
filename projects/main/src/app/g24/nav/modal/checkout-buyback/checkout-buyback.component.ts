@@ -347,19 +347,19 @@ export class CheckoutBuybackComponent implements OnInit {
     //     console.debug("product flag update failed", this.transactionFlagBuybackService.batchUpdate(btoa(JSON.stringify(this.sessionService.getUnit()))));
     //   } 
     // })
-    if (this.perhiasan != null) {
+    if (this.perhiasan.length != 0) {
       let dataPerhiasan = this.transactionFlagBuybackService.batchUpdateTransaction(this.perhiasan, "perhiasan",btoa(JSON.stringify(this.sessionService.getUnit())))
     } 
-    if(this.emasBatangan != null) {
+    if(this.emasBatangan.length != 0 ) {
       let dataLM = this.transactionFlagBuybackService.batchUpdateTransaction(this.emasBatangan, "lm", btoa(JSON.stringify(this.sessionService.getUnit())))
     }
-    if(this.berlian != null) {
+    if(this.berlian.length != 0) {
       let dataBerlian = this.transactionFlagBuybackService.batchUpdateTransaction(this.berlian, "berlian", btoa(JSON.stringify(this.sessionService.getUnit())))
     }
-    if(this.souvenir != null) {
+    if(this.souvenir.length != 0) {
       let dataSouvenir = this.transactionFlagBuybackService.batchUpdateTransaction(this.souvenir, "souvenir", btoa(JSON.stringify(this.sessionService.getUnit())))
     }
-    if(this.dinar != null) {
+    if(this.dinar.length != 0) {
       let dataSouvenir = this.transactionFlagBuybackService.batchUpdateTransaction(this.dinar, "dinar", btoa(JSON.stringify(this.sessionService.getUnit())))
     }
 

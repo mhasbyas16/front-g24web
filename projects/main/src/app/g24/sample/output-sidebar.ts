@@ -32,6 +32,7 @@ export const management = [
   // SECURITY
   { _id: "0005", type: "menu", name: "Security", icons: "yang bagus", color: "warna-warni", componentId: "S10003", parentId: "", module: "rl" },
   { _id: "0005", type: "sub-menu", name: "Role", icons: "yang bagus", color: "warna-warni", componentId: "10002", parentId: "S10003", module: "rl", menu: { _id: "0005" } },
+  { _id: "0005", type: "sub-menu", name: "User", icons: "yang bagus", color: "warna-warni", componentId: "10011", parentId: "S10003", module: "rl", menu: { _id: "0005" } },
   // PARAMETER
   { _id: "0006", type: "menu", name: "Paremeter Gallery", icons: "dashboard", color: "warna-warni", componentId: "S20000", parentId: "", module: "pr" },
   { _id: "0006", type: "sub-menu", name: "Paremeter", icons: "", color: "warna-warni", componentId: "20001", parentId: "S20000", module: "pr", menu: { _id: "0006" } },

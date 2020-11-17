@@ -64,11 +64,12 @@ export class PerhiasanBycodeComponent implements OnInit {
         
     // })
 
-    // if (kondisi == 1) {
-    //   this.tampilKondisi = "Baik"
-    // }else if(kondisi == 2){
-    //   this.tampilKondisi = "Rusak"
-    // }else{
+    if (kondisi == 1) {
+      this.tampilKondisi = "Baik"
+    }else if(kondisi == 2){
+      this.tampilKondisi = "Rusak"
+    }
+    // else{
     //   this.hargaBB = 0
     // }
     // this.hargaBB = this.pricingService.buybackPricePerhiasan(kondisi, kadar, berat,this.hargaDasarBuyback )
