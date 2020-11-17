@@ -230,7 +230,7 @@
     			<div class="clr-form-control">
     				<clr-input-container>
 				    <label>Name</label>
-				    <input clrInput [(ngModel)]="inputUpdate.name" name="name" value="{{data_view?.name}}" required />
+				    <input clrInput [(ngModel)]="inputUpdate.name_denom" name="name_denom" value="{{dataupdate.name}}" required />
 				    <clr-control-error>Wajib di isi</clr-control-error>
 				  </clr-input-container>
     			</div>
@@ -242,7 +242,7 @@
 				<div class="clr-form-control">
 					<clr-input-container>
 						<label>Value</label>
-						<input type="number" clrInput [(ngModel)]="inputUpdate.value" name="value" value="{{data_view?.value}}" required/>
+						<input type="number" clrInput [(ngModel)]="inputUpdate.value_denom" name="value_denom" value="{{dataupdate.value}}" required/>
 						<clr-control-helper>Harap isi. Dan jangan lupa menggunakan titik (.)</clr-control-helper>
 						<clr-control-error>Wajib di isi. Dan jangan lupa menggunakan titik (.)</clr-control-error>
 					</clr-input-container>

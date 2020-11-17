@@ -297,7 +297,8 @@ modalview : boolean = false;
 	this.uptodate.push(this.data_view);
 
   	for(let i = 0; i < this.uptodate.length; i++){
-		  this.inputUpdate = this.uptodate[i];
+		//   this.inputUpdate = this.uptodate[i];
+		  this.dataupdate = this.uptodate[i];
 		  this.dataupdatekategori = this.uptodate[i]["product-category"];
   	}
   }
@@ -311,8 +312,8 @@ modalview : boolean = false;
   		console.log(this.uptodate[i]._id);
   		let data = {
 			_id 	: this.uptodate[i]._id,
-			name 	: this.inputUpdate["name"],
-			value 	: this.inputUpdate["value"],
+			name 	: this.inputUpdate.name_denom,
+			value 	: this.inputUpdate.value_denom,
 			"product-category" : []  
   		}
 
