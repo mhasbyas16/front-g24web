@@ -265,6 +265,7 @@ modalview : boolean = false;
   		code : code,
   		name : name,
 		value : value,
+		value_encoded : "double",
 		"product-category" : []  
 	  }
 	  for(let i = 0; i < this.addkategori.length; i++){
@@ -348,6 +349,7 @@ modalview : boolean = false;
 			_id 	: this.uptodate[i]._id,
 			name 	: this.inputUpdate.name_denom,
 			value 	: this.inputUpdate.value_denom,
+			value_encoded : "double",
 			"product-category" : []  
   		}
 
