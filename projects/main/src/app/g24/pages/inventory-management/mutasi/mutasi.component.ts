@@ -831,7 +831,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
           break;
         
         case "berat":
-          params += "berat="+this.searchModel[key]+"&berat_encoded=int&";
+          params += "berat="+this.searchModel[key]+"&berat_encoded=double&";
           break;
 
         case "kadar":

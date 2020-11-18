@@ -41,6 +41,8 @@ updateInput : any = {};
 delete : any[] = [];
 uptodate : any[] = [];
 
+modalkonfirm : boolean = false;
+
 listkategori : any[] = [];
 
 
@@ -127,7 +129,7 @@ jumlah : number = 0;
   }
 
   Ubah(){
-	this.updateInput.name_kat = this.data_view.name;
+	this.updateInput.name_kat = this.data_view?.name;
 	if(!this.data_view){
 		this.toastr.warning("Data belum dipilih","Peringatan");
 		return;
@@ -218,6 +220,7 @@ jumlah : number = 0;
   			this.listkategori = [];
 			this.loadData();
 			this.SearchData();  
+			this.modalkonfirm = false;
   		})
   	}
   }

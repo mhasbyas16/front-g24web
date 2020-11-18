@@ -40,6 +40,8 @@ inputUpdate : any = {};
 modaltambah : boolean = false;
 modalupdate : boolean = false;
 
+modalkonfirm : boolean = false;
+
 
 
   constructor(private seriesservice : ProductSeriesService, private toastr : ToastrService) { }
@@ -241,6 +243,7 @@ modalupdate : boolean = false;
   			this.listseries = [];
 			this.loadData();
 			this.SearchData();
+			this.modalkonfirm = false;
   		})
   	}
   }

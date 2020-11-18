@@ -115,18 +115,21 @@ modalview : boolean = false;
 	  let params = "?";
 	  this.spinner.SetSpinnerText("Mohon Tunggu...");
 	  this.spinner.Open();
-	  if(!this.search["kategori"]){
   		for(let key in this.search){
   		if(this.search[key]==""||this.search[key]==null)continue;
   			switch (key) {
-  				// case "kategori":
-  				// 	params += "product-category.code="+this.search[key].code+"&";
-				// break;
-				
 				case "code":
 					params += "code="+this.search[key]+"&";
 			  	break;
-  				
+
+				case "name":
+					params += "name="+this.search[key]+"&";
+				break;
+
+				case "kategori":
+					params += "product-category.name_regex=1&product-category.name="+this.search[key]+"&";
+				break;
+				
   				default:
   					params += key+="="+this.search[key]+"&";
   				break;
@@ -145,39 +148,6 @@ modalview : boolean = false;
 			  this.toastr.success("Data ditemukan "+data.length,"Sukses");
 			  this.spinner.Close();
 		  })
-
-		  return;
-		}
-
-		if(!this.search.code){
-			this.productdenom.list(params+"product-category.name_regex=1&product-category.name="+this.search["kategori"]).subscribe(data=>{
-				if(data==false){
-					if(this.productdenom.message()!=""){
-						this.spinner.Close();
-						this.toastr.info("Data tidak ditemukan","Informasi");
-						this.listdenom = [];
-						return;
-					}
-				}
-				this.spinner.Close();
-				this.toastr.success("Data ditemukan "+data.length,"Sukses");
-				this.listdenom = data;
-			})
-		}else{
-			this.productdenom.list(params+"product-category.name_regex=1&product-category.name="+this.search["kategori"]+"&code="+this.search.code).subscribe(data=>{
-				if(data==false){
-					if(this.productdenom.message()!=""){
-						this.spinner.Close();
-						this.toastr.info("Data tidak ditemukan","Informasi");
-						this.listdenom = [];
-						return;
-					}
-				}
-				this.spinner.Close();
-				this.toastr.success("Data ditemukan "+data.length,"Sukses");
-				this.listdenom = data;
-			})
-		}
   }
 
   Tambah(){

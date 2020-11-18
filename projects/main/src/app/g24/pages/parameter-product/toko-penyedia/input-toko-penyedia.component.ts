@@ -37,6 +37,8 @@ export class TokoPenyediaComponent implements OnInit {
   modaltambah : boolean = false;
   modalupdate : boolean = false;
 
+  modalkonfirm : boolean = false;
+
   constructor(private tokopenyedia : TokoPenyediaService, private toastr : ToastrService) { }
   @ViewChild('spinner',{static:false}) spinnner : LoadingSpinnerComponent;
 
@@ -222,6 +224,7 @@ export class TokoPenyediaComponent implements OnInit {
         this.loadData();
         this.showSearch = [];
         this.SearchData();
+        this.modalkonfirm = false;
       })
     }
 

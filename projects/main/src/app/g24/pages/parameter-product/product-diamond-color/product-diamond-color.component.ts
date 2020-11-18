@@ -38,6 +38,7 @@ uptodate : any[] = [];
 
 inputUpdate : any = {};
 
+modalkonfirm : boolean = false;
 
 modaltambah : boolean = false;
 modalupdate : boolean = false;
@@ -217,6 +218,7 @@ modalupdate : boolean = false;
   			this.listdiamond = [];
 			this.loadData();
 			this.SearchData();
+			this.modalkonfirm = false;
   		})
   	}
   }

@@ -38,7 +38,7 @@ inputupdate : any = {};
 modaltambah : boolean = false;
 modalupdate : boolean = false;
 
-
+modalkonfirm : boolean = false;
 
   constructor(private goldservice : ProductGoldColorService, private toastr : ToastrService) { }
   @ViewChild('spinner',{static:false}) spinner : LoadingSpinnerComponent;
@@ -222,6 +222,7 @@ modalupdate : boolean = false;
   			this.listgold = [];
 			this.loadData();
 			this.SearchData();
+			this.modalkonfirm = false;
   		})
   	}
   }

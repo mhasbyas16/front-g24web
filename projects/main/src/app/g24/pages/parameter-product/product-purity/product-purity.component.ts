@@ -40,6 +40,8 @@ uptodate : any[] = [];
 modaltambah : boolean = false;
 modalupdate : boolean = false;
 
+modalkonfirm : boolean = false;
+
 inputUpdate : any = {};
 
 
@@ -192,6 +194,15 @@ inputUpdate : any = {};
 		this.toastr.info("Info harus 3 digit angka","Informasi");
 		return;
 	}
+
+	for(let i = 0; i < this.datapurity.length; i++){
+		if(this.datapurity[i].name==this.inputUpdate.name_purity){
+			this.toastr.warning("Data kode atau nama purity sudah ada","Peringatan");
+			this.spinner.Close();
+			return;
+		}
+	}
+
   	for(let i = 0; i < this.uptodate.length; i++){
   		console.log(this.uptodate[i]._id);
   		let data = {
@@ -251,6 +262,7 @@ inputUpdate : any = {};
   			this.listpurity = [];
 			this.loadData();
 			this.SearchData();  
+			this.modalkonfirm = false;
   		})
   	}
   }

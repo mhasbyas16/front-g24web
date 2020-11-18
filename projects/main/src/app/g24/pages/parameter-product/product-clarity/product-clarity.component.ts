@@ -14,6 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 
 //SERVICE
 import { ProductClarityService } from '../../../services/product/product-clarity.service';
+import { flatten } from '@angular/compiler';
 
 @Component({
   selector: 'app-product-clarity',
@@ -37,6 +38,7 @@ listclarity : any[] = [];
 delete : any[] = [];
 uptodate : any[] = [];
 
+modalkonfirm : boolean = false;
 
 modaltambah : boolean = false;
 modalupdate : boolean = false;
@@ -247,6 +249,7 @@ listdata : any[] = [];
         this.listclarity = [];
 		this.loadData();
 		this.SearchData();
+		this.modalkonfirm = false;
       })
     }
   }
