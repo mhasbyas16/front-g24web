@@ -354,6 +354,7 @@ export class CheckoutBuybackManualComponent implements OnInit {
     }
     
     data.product_encoded = "base64";
+    data._log = true;
     // let nomT = data["nominalTransaksi"]
     // data["nominalTransaksi"] = nomT.replace(/,/g, '')
     data["flag"] = "submitted"

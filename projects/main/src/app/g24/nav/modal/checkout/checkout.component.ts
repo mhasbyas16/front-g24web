@@ -529,6 +529,7 @@ dat = null;
     data.product = btoa(JSON.stringify({ PERHIASAN, LM, BERLIAN, GS, DINAR }));
     data.product_encoded = "base64";
     data.currency_encoded = "base64";
+    data._log = true;
     // let nomT = data["nominalTransaksi"]
     // data["nominalTransaksi"] = nomT.replace(/,/g, '');
     delete data["cif"];
