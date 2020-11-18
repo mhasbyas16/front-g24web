@@ -104,27 +104,26 @@ inputUpdate : any = {};
   Simpan(){
 	this.spinner.SetSpinnerText("Mohon Tunggu...");
 	this.spinner.Open();
-  	let code = this.input["code"];
-	let name = this.input["name"];
+	let name = this.input.name;
 	let validate = /^[0-9]+$/;
-	let str = "k"+code;
+	let str = "k"+name;
 	let str2 : number = 0;
-	str2 = code;
+	str2 = name;
   	let data = {
   		code : str,
   		name : str2,
   		category : "product-purity"
 	  }
 	  
-	  if(!code){
+	  if(!name){
 	  this.spinner.Close();
 	  this.toastr.warning("Kode belum di isi","Peringatan");
 		  return;
-	  }else if(!code.match(validate)){
+	  }else if(!name.match(validate)){
 		  this.spinner.Close();
 		  this.toastr.info("Harap input dengan angka","Informasi");
 		  return;
-	  }else if(code.length < 3){
+	  }else if(name.length < 3){
 		  this.spinner.Close();
 		  this.toastr.info("Input harus 3 digit","Informasi");
 		  return;
