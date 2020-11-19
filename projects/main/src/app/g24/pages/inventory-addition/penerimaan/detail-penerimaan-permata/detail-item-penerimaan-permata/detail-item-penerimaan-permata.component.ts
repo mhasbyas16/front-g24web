@@ -645,6 +645,8 @@ export class DetailItemPenerimaanPermataComponent implements OnInit {
       'ongkos_pembuatan_encoded' : "double",
       'total_berat' : this.inisiasi.berat,
       'total_berat_encoded' : "double",
+
+      'tgl_terima' : this.date
     }
     
     DataTypeUtil.Encode(product);

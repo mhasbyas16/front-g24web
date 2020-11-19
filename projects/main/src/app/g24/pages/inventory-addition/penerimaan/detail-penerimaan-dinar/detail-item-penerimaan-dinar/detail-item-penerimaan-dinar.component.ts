@@ -207,7 +207,8 @@ export class DetailItemPenerimaanDinarComponent implements OnInit {
       berat : 0.00, ongkos_pieces : 0.0, unit : null,
       tipe_stock : "stock", vendor : null, flag : "stock", location : "",
       no_po : "", no_item_po : 0, no_index_products : 0,
-      hpp_inisiasi : 0, hpp : 0, isTerima : false
+      hpp_inisiasi : 0, hpp : 0, isTerima : false,
+      tgl_terima : ""
 
     }
   }
@@ -336,6 +337,7 @@ export class DetailItemPenerimaanDinarComponent implements OnInit {
         def.hpp_inisiasi = Number(item.total_harga) / item.pieces;
         def.hpp = def.hpp_inisiasi;
         def.unit = this.unit;
+        def.tgl_terima = this.date;
 
         products.push(def);
       }
