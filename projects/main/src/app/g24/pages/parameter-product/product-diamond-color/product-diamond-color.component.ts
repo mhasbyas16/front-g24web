@@ -67,7 +67,7 @@ modalupdate : boolean = false;
   		if(this.search[key]==""||this.search[key]==null)continue;
   			switch (key) {
   				case "code":
-  					params += "code="+this.search[key]+"&code_encoded=int&";
+  					params += "code="+this.search[key]+"&";
 				break;
   				
   				default:

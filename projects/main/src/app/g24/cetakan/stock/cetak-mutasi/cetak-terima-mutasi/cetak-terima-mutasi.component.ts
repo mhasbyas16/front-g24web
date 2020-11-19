@@ -359,7 +359,7 @@ export class CetakTerimaMutasiComponent implements OnInit {
               columns:
               [
                 {width:80, bold:true, text : "TOTAL BERAT"},
-                {width:80, bold:true, text : this.MutasiTerima[0].total_berat + " Gram"},
+                {width:600, bold:true, text : this.MutasiTerima[0].total_berat + " Gram"},
                 {width:'*', text:""}
               ]
             }
@@ -375,7 +375,7 @@ export class CetakTerimaMutasiComponent implements OnInit {
             {
               columns : [
                 {width : 80, bold:true, text : "TOTAL HPP"},
-                {width : 80, bold:true, text : this.DelimiterComma(this.MutasiTerima[0].total_hpp)},
+                {width : 600, bold:true, text : this.DelimiterComma(this.MutasiTerima[0].total_hpp)},
                 {width : '*', text : ""}
               ]
             }

@@ -355,7 +355,7 @@ addinput : any = {};
                 columns:
                 [
                   {width:80, bold:true, text : "TOTAL BERAT"},
-                  {width:200, bold:true, text : dataCetak.total_berat + " Gram"},
+                  {width:600, bold:true, text : dataCetak.total_berat + " Gram"},
                   // {width:80, text:dataCetak.total_berat},
                   // {width:'*', text:dataCetak.total_hpp},
                   {width:'*', text:""}
@@ -373,7 +373,7 @@ addinput : any = {};
               {
                 columns : [
                   {width : 80, bold:true, text : "TOTAL HPP"},
-                  {width : 200, bold:true, text : this.DelimiterComma(dataCetak.total_hpp)},
+                  {width : 600, bold:true, text : this.DelimiterComma(dataCetak.total_hpp)},
                   {width : '*', text : ""}
                 ]
               }
