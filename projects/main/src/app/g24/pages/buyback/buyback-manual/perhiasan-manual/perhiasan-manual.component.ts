@@ -177,6 +177,15 @@ export class PerhiasanManualComponent implements OnInit {
     let prmJual : any;
     let unit = this.sessionService.getUnit();
     let unitTransaksiPembelian : any
+
+    if (val.input_namaNasabahPembelian == "" || val.input_namaNasabahPembelian == undefined) {
+      this.loadingDg = false
+      return this.toastrService.error("Input Nama Nasabah Terlebih Dahulu");
+    }
+    if (val.input_alamatTransaksiPembelian == "" || val.input_alamatTransaksiPembelian == undefined) {
+      this.loadingDg = false
+      return this.toastrService.error("Input Nama Alamat Terlebih Dahulu");
+    }
     
 
     console.debug( tanggalTransaksiPembelian, "tanggalTransaksiPembelian")

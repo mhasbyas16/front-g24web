@@ -41,7 +41,7 @@
                                         <div class="clr-col-6">
                                             <clr-date-container>
                                                 <label>Tanggal Transaksi Pembelian</label>
-                                                <input clrDate type="date" [(ngModel)]="searchModel.tanggalTransaksiPembelian" name="input_tanggalTransaksiPembelian">
+                                                <input clrDate type="date" required [(ngModel)]="searchModel.tanggalTransaksiPembelian" name="input_tanggalTransaksiPembelian">
                                             </clr-date-container>
                                         </div>
                                     </div>
@@ -49,13 +49,13 @@
                                         <div class="clr-col-6">
                                             <clr-input-container>
                                                 <label>Nama Nasabah Pembelian</label>
-                                                <input type="text" clrInput [(ngModel)]="searchModel.namaNasabahPembelian" name="input_namaNasabahPembelian">
+                                                <input type="text" required clrInput [(ngModel)]="searchModel.namaNasabahPembelian" name="input_namaNasabahPembelian">
                                             </clr-input-container>
                                         </div>
                                         <div class="clr-col-6">
                                             <clr-input-container>
                                                 <label>Alamat Nasabah Pembelian</label>
-                                                <input type="text" clrInput [(ngModel)]="searchModel.alamatTransaksiPembelian" name="input_alamatTransaksiPembelian">
+                                                <input type="text" required clrInput [(ngModel)]="searchModel.alamatTransaksiPembelian" name="input_alamatTransaksiPembelian">
                                             </clr-input-container>
                                         </div>
                                     </div>
