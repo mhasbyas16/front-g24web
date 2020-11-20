@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { Subscription } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { AutoLogoutService } from '../../lib/common/auto-logout.service';
 import { ContentPage } from '../../lib/helper/content-page';
 import { ServerDateTimeService } from '../../services/system/server-date-time.service';
@@ -40,6 +41,7 @@ export class HeaderComponent implements OnInit {
     this.role = this.session.getRole()?.display_name;
     this.session.setServerConfig();
     this.loadDate();
+    this.checkDebugging();
   }
 
   showBranchMappingScreen()
@@ -87,6 +89,30 @@ export class HeaderComponent implements OnInit {
     }
 
     return this.session.getUnit().nama;
+  }
+
+  checkDebugging()
+  {
+    console.log(this.session.getDebugging(), "tes", environment)
+    if(environment.production)
+    {
+      console.log("tes");
+      if(this.session.getDebugging == null || this.session.getDebugging() != "1")
+      {
+        console.log("tes")
+        window['debug'] = this.session.setDebugging;
+        console.log("log shutting down");
+        console.log = this.t;
+        console.debug = this.t;
+        console.error = this.t;
+        console.info = this.t;
+      }
+    }
+  }
+
+  t()
+  {
+
   }
 
 }

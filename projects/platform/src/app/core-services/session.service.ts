@@ -220,4 +220,19 @@ export class SessionService {
     }
   }
 
+  public setDebugging(debug : string)
+  {
+    sessionStorage.setItem("d", this.encrypt(debug));
+  }
+
+  public getDebugging() : string
+  {
+    return this.decrypt(sessionStorage.getItem("d"));
+  }
+
+  public containsDebugging()
+  {
+    return sessionStorage.getItem("d");
+  }
+
 }
