@@ -1,1 +1,46 @@
-<p>detail-audit-log works!</p>
+<div class="clr-row">
+    <div class="clr-col-5">
+        <table class="table table-compact table-noborder remove-margin" >
+            <thead>
+                <tr>
+                    <th class="left"><h3 class="remove-margin"><b>Field Name</b></h3></th>
+                    <th class="left"><h3 class="remove-margin"><b>Current Data</b></h3></th>
+                    <th class="left"><h3 class="remove-margin"><b>New Data</b></h3></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="left">_id</td>
+                    <td class="left">{{current_detail['_id']}}</td>
+                    <td class="left">{{new_detail['_id']}}</td>
+                </tr>
+                <tr>
+                    <td class="left">__version</td>
+                    <td class="left">{{current_detail['__version']}}</td>
+                    <td class="left">{{new_detail['__version']}}</td>
+                </tr>
+                <ng-container *ngFor="let field of getSortedField(new_detail)">
+                    <tr *ngIf="field != '_id' || field != '__version'">
+                        <td class="left">
+                            {{getNameFromLookupByFieldName(field)}}
+                        </td>
+                        <td class="left">
+                            <pre *ngIf="isObjectOrSymbol(current_detail[field])">{{getValue(current_detail[field])}}</pre>
+                            <span *ngIf="!isObjectOrSymbol(current_detail[field])">{{getValue(current_detail[field])}}</span>
+                        </td>
+                        <td class="left">
+                            <pre *ngIf="isObjectOrSymbol(new_detail[field])">{{getValue(new_detail[field])}}</pre>
+                            <span *ngIf="!isObjectOrSymbol(new_detail[field])">{{getValue(new_detail[field])}}</span>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+            <tfoot>
+                <tr>
+                    
+                </tr>
+            </tfoot>                 
+        </table>
+    </div>
+
+</div>

@@ -54,8 +54,8 @@
                 <div class="clr-row">
                     <div class="clr-col-4">
                         <clr-input-container>
-                            <label class="clr-control-label">ID Log</label>
-                            <input required clrInput #_id formControlName="_id" placeholder="1234567890abcdef" />
+                            <label class="clr-control-label">Collection / Table</label>
+                            <input required clrInput #collection formControlName="collection" placeholder="log" />
                         </clr-input-container>
                     </div>
                 </div>
@@ -104,7 +104,7 @@
         <div class="card-header">
                 List Log
         </div>
-        <clr-datagrid [clrDgLoading]="loading" [(clrDgSingleSelected)]="selected">
+        <clr-datagrid [clrDgLoading]="loading" [(clrDgSingleSelected)]="selected" [clrDgRowSelection]="true">
             <clr-dg-action-bar>
                 <div class="btn-group">
                     <!-- <button type="button" class="btn btn-sm btn-secondary" (click)="onApprove()" *ngIf="Selected?.order_status == OrderStatus.SUBMIT.code && Selected?.order_status != null"><clr-icon shape="pencil"></clr-icon>Approve</button> -->
@@ -129,13 +129,16 @@
             <clr-dg-column [clrDgField]="'no_po'">
                 ID
             </clr-dg-column>
-            <clr-dg-column>
+            <clr-dg-column [clrDgField]="'date'">
                 Tanggal Eksekusi
             </clr-dg-column>
             <clr-dg-column [clrDgField]="'operation'">
                 Operation
             </clr-dg-column>
-            <clr-dg-column>
+            <clr-dg-column [clrDgField]="'collection'">
+                Collection/Table
+            </clr-dg-column>
+            <clr-dg-column [clrDgField]="'url'">
                 URL
             </clr-dg-column>
 
@@ -144,8 +147,20 @@
                 <!-- <clr-dg-cell>{{GetDisplayValue(data['product-category'])}}</clr-dg-cell> -->
                 <clr-dg-cell>{{data?.date}}</clr-dg-cell>
                 <clr-dg-cell>{{data?.operation}}</clr-dg-cell>
+                <clr-dg-cell>{{data?.collection}}</clr-dg-cell>
                 <clr-dg-cell>{{data?.url}}</clr-dg-cell>
             </clr-dg-row>
+
+            <clr-dg-detail *clrIfDetail="let detail">
+                <clr-dg-detail-header>
+                    <b>DETAILS</b>
+                </clr-dg-detail-header>
+
+                <clr-dg-detail-body>
+                    <detail-audit-log [current-detail]="detail?.current_data" [new-detail]="detail?.new_data">
+                    </detail-audit-log>
+                </clr-dg-detail-body>
+            </clr-dg-detail>
 
             <clr-dg-footer>
                 <div>
@@ -161,10 +176,6 @@
     </div>
 </div>
 
-<detail-audit-log #detail_screen>
-
-</detail-audit-log>
-
 <clr-modal #modalMsg [(clrModalOpen)]="modalOpen" [clrModalStaticBackdrop]="false">
     <h3 class="modal-title">{{errorTitle}}</h3>
     <div class="modal-body">
@@ -172,4 +183,4 @@
         <p *ngIf="errorType == ErrorType.WARN" style="color: yellow">{{errorMessage}}</p>
         <p *ngIf="errorType == ErrorType.NORMAL">{{errorMessage}}</p>
     </div>
-    </clr-modal>
+</clr-modal>
