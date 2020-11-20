@@ -100,7 +100,7 @@ export class HeaderComponent implements OnInit {
       if(this.session.getDebugging == null || this.session.getDebugging() != "1")
       {
         console.log("tes")
-        window['debug'] = this.session.setDebugging;
+        window['debug'] = this.session.setDebugging.bind(this.session);
         console.log("log shutting down");
         console.log = this.t;
         console.debug = this.t;
