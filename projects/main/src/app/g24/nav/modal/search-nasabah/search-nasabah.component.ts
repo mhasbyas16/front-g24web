@@ -84,9 +84,11 @@ export class SearchNasabahComponent implements OnInit {
     if (Icif != "") {
       params =params+"&cif_regex=1&cif="+Icif;
     }  
-    if (Iname != "") {
-      params =params+"&name_regex=1&name="+Iname;
+    if (Iname == "") {
+      this.loadDg = false;
+      return this.toastrService.error("Isi Nama Nasabah");
     } 
+    params =params+"&name_regex=1&name="+Iname;
     if (Icif != "" && Iname != ""){
       params =params+"&name_regex=1&name="+Iname+"&cif_regex=1&cif="+Icif;
     }
