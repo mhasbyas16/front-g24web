@@ -13,6 +13,7 @@ import { SplitDateServiceService } from '../../../services/split-date-service.se
 //Session
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 import { ContentPage } from '../../../lib/helper/content-page';
+import { BuybackManualService } from '../../../services/keuangan/jurnal/buyback-manual/buyback-manual.service';
 
 @Component({
   selector: 'app-laporan-buyback-manual',
@@ -55,7 +56,8 @@ export class LaporanBuybackManualComponent implements OnInit {
     //session
     private sessionService: SessionService,
     private datePipe: DatePipe,
-    private splitDateServiceService:SplitDateServiceService
+    private splitDateServiceService:SplitDateServiceService,
+    private jurnalBuybackManual:BuybackManualService
 
   ) { }
 
@@ -257,6 +259,13 @@ export class LaporanBuybackManualComponent implements OnInit {
         this.productService.batchAdd(data).subscribe((response:any)=>{
         })
       })
+      if (response != false) {
+      this.jurnalBuybackManual.jurnal(data._id).subscribe((response:any)=>{
+        if(response == true){
+          this.toastrService.success("Jurnal Buyback Manual berhasil.");
+        }
+      })
+    }
     })  
     this.toastrService.success("Approve data Success");
     this.filterTransaction('id');
