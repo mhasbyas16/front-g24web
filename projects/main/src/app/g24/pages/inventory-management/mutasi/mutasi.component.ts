@@ -243,7 +243,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     }    
     let datakategori = data;
     for(let i = 0; i < datakategori.length; i++){
-      if(datakategori[i].name=="Berlian"){
+      if(datakategori[i].name=="Berlian" || datakategori[i].name=="Dinar"){
         this.product_kategori = datakategori;
         this.product_kategori.splice(i,1);
       }

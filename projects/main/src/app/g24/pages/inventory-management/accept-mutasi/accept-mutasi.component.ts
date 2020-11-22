@@ -93,7 +93,7 @@ static key = EMenuID.TERIMA_MUTASI;
 	  		let tgl = this.timezone.split("T");
       		this.date_now = tgl[0];
       		this.time = tgl[1].split("Z")[0];
-	  		console.log(this.time);
+	  		console.log(this.date_now,"TANGGAL TERIMA MUTASI HARI INI");
   		}
   	})
 	  

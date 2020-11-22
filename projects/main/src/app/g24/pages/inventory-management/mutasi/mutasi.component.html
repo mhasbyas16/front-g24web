@@ -181,7 +181,22 @@
                         </div>
                     </div>
                 </div>
-			</div>
+            </div>
+            <div class="clr-row">
+                <div class="clr-col-6">
+                    <div class="clr-form-control">
+                    <label class="clr-control-label">Tipe Stock</label>
+                    <div class="clr-control-container">
+                        <select [(ngModel)]="searchModel.tipe_stock" #tipe_stock clrSelect [disabled]="Lock" name="tipe_stock">
+                            <option [ngValue]=""></option>
+                            <ng-container *ngFor="let tipe of Tipe">
+                                <option [ngValue]="tipe">{{tipe.code}}</option>
+                            </ng-container>
+                        </select>
+                    </div>
+                    </div>
+                </div>
+            </div>
 			<div class="clr-row">
 				<div class="clr-col-6">
 					<div class="clr-form-control">
@@ -260,7 +275,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="clr-row" style="margin: 25px;">
+                    <!-- <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <label class="clr-control-label" style="padding-left: 10px">Tipe Stock</label>
                             <div class="clr-control-container">
@@ -272,7 +287,7 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
         
                     <div class="clr-row">
                         <div class="clr-col-12">
@@ -399,7 +414,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="clr-row" style="margin: 25px;">
+                    <!-- <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <label class="clr-control-label" style="padding-left: 10px">Tipe Stock</label>
                             <div class="clr-control-container">
@@ -411,7 +426,7 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
         
                     <div class="clr-row">
                         <div class="clr-col-12">
@@ -461,7 +476,7 @@
                             </clr-select-container>
                         </div>
                     </div>
-                    <div class="clr-row" style="margin: 25px;">
+                    <!-- <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <label class="clr-control-label" style="padding-left: 10px">Tipe Stock</label>
                             <div class="clr-control-container">
@@ -473,7 +488,7 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
         
                     <div class="clr-row">
                         <div class="clr-col-12">
@@ -524,7 +539,7 @@
                             </clr-select-container>
                         </div>
                     </div>
-                    <div class="clr-row" style="margin: 25px;">
+                    <!-- <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <label class="clr-control-label" style="padding-left: 10px">Tipe Stock</label>
                             <div class="clr-control-container">
@@ -536,7 +551,7 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
         
                     <div class="clr-row">
                         <div class="clr-col-12">
@@ -563,7 +578,7 @@
                 </div>
                 <div class="card-body">
                     <div class="clr-row" style="margin: 25px;">
-                        <div class="clr-col-6">
+                        <!-- <div class="clr-col-6">
                             <label class="clr-control-label" style="padding-left: 10px">Tipe Stock</label>
                             <div class="clr-control-container">
                                 <select [(ngModel)]="searchModel.tipe_stock" #tipe_stock clrSelect name="tipe_stock">
@@ -573,7 +588,7 @@
                                     </ng-container>
                                 </select>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="clr-col-6">
                             <clr-select-container class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Denom</label>
@@ -623,7 +638,8 @@
                                 </select>
                             </clr-select-container>
                         </div> -->
-                        <div class="clr-col-6">
+
+                        <!-- <div class="clr-col-6">
                             <label class="clr-control-label" style="padding-left: 10px">Tipe Stock</label>
                             <div class="clr-control-container">
                                 <select [(ngModel)]="searchModel.tipe_stock" #tipe_stock clrSelect name="tipe_stock">
@@ -633,7 +649,8 @@
                                     </ng-container>
                                 </select>
                             </div>
-                        </div>
+                        </div> -->
+
                         <div class="clr-col-6">
                             <clr-select-container class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Denom</label>
@@ -790,7 +807,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="clr-col-6">
+                        <!-- <div class="clr-col-6">
                             <label class="clr-control-label" style="padding-left: 10px">Tipe Stock</label>
                             <div class="clr-control-container">
                                 <select [(ngModel)]="searchModel.tipe_stock" #tipe_stock clrSelect name="tipe_stock">
@@ -800,7 +817,7 @@
                                     </ng-container>
                                 </select>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
         
                     <div class="clr-row">
