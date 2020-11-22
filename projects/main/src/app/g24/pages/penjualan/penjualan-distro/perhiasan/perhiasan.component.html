@@ -60,14 +60,15 @@
     <clr-dg-column>Kadar</clr-dg-column>
     <clr-dg-column>Warna</clr-dg-column>
     <clr-dg-column>Harga</clr-dg-column>
+    <clr-dg-column>Tipe Stock</clr-dg-column>
     <clr-dg-column class="right"></clr-dg-column>
 
     <clr-dg-row *clrDgItems="let d of dataperhiasans">
-        <ng-container *ngIf="d.id == null || d.id == ''; else dId">
+        <ng-container *ngIf="d.no_urut == null || d.no_urut == ''; else dId">
             <clr-dg-cell><span class="label label-danger" style="float: right;" >Not Set</span></clr-dg-cell>
         </ng-container>
         <ng-template #dId>
-            <clr-dg-cell>{{d.id}}</clr-dg-cell>
+            <clr-dg-cell>{{d.no_urut}}</clr-dg-cell>
         </ng-template>
         <ng-container *ngIf="d.code == null || d.code == ''; else dCode">
             <clr-dg-cell><span class="label label-danger" style="float: right;" >Not Set</span></clr-dg-cell>
@@ -89,6 +90,7 @@
                 </span>
             </ng-template>
         </clr-dg-cell>
+        <clr-dg-cell>{{d.tipe_stock}}</clr-dg-cell>
         <clr-dg-cell>
             <ng-container *ngIf="d.kondisi == 'Rusak'; else plusDefault">
                 <span class="label label-danger" >Rusak</span>

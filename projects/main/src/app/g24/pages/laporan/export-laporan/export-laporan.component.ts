@@ -52,13 +52,28 @@ export class ExportLaporanComponent implements OnInit {
 
   thisContent(data){
     
+    let bulan;
+    let hari;
+    let tahun;
+    let bulanTerbilang;
+    let tgl;
+    let tglSplit;
     // tanggal
-    let tgl =data.makerDate;
-    let tglSplit = tgl.split("/");
-    let bulan = Number(tglSplit["0"]);
-    let hari = tglSplit["1"];
-    let tahun = tglSplit["2"];
-    let bulanTerbilang = this.tanggalService.bulanGenerate(bulan);
+    tgl =data.makerDate;
+    tglSplit = tgl.split("/");
+    bulan = Number(tglSplit["0"]);
+    hari = tglSplit["1"];
+    tahun = tglSplit["2"];
+    bulanTerbilang = this.tanggalService.bulanGenerate(bulan);
+
+    if (tglSplit.length <= 1) {
+    tgl =data.makerDate;
+    tglSplit = tgl.split("-");
+    bulan = Number(tglSplit["1"]);
+    hari = tglSplit["2"];
+    tahun = tglSplit["0"];
+    bulanTerbilang = this.tanggalService.bulanGenerate(bulan);
+    }
    // let hariTerbilang = this.tanggalService.hariGenerate(Number(hari));
     // Barcode
     const JsBarcode = require('jsbarcode');

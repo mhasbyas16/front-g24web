@@ -71,16 +71,14 @@
                                     <clr-dg-column>NO IDENTITAS</clr-dg-column>
                                     <clr-dg-column>NAMA IBU KANDUNG</clr-dg-column>
                                     <clr-dg-column>JENIS KELAMIN</clr-dg-column>
-                                    <clr-dg-column>PEKERJAAN</clr-dg-column>
                                 
                                     <clr-dg-row *ngFor="let client of listClient" [clrDgItem]="client">
                                         <clr-dg-cell>{{client.cif}}</clr-dg-cell>
                                         <clr-dg-cell>{{client.name}}</clr-dg-cell>
                                         <clr-dg-cell>{{client.tglLahir}}</clr-dg-cell>
-                                        <clr-dg-cell>{{client.tipeID.name}} - {{client.noID}}</clr-dg-cell>
+                                        <clr-dg-cell>{{client.noID}}</clr-dg-cell>
                                         <clr-dg-cell>{{client.namaIbuKandung}}</clr-dg-cell>
                                         <clr-dg-cell>{{client.jenisKelamin}}</clr-dg-cell>
-                                        <clr-dg-cell>{{client.pekerjaan.name}}</clr-dg-cell>
                                     </clr-dg-row>
                                 
                                     <clr-dg-footer></clr-dg-footer>
