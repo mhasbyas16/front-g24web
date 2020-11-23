@@ -26,6 +26,8 @@ import { DatePipe } from '@angular/common';
 import { ContentPage } from '../../../lib/helper/content-page';
 import { CheckNikService } from '../../../services/app-emas/check-nik.service';
 
+
+
 @Component({
   selector: 'app-checkout',
   templateUrl: './checkout.component.html',
@@ -88,7 +90,6 @@ export class CheckoutComponent implements OnInit {
   valid: boolean = false;
 
   nikValid : boolean = false;
-  getKasirHandler = null;
 jual = null;
 branchCode = "";
 select = null;
@@ -118,7 +119,7 @@ dat = null;
     private toastr: ToastrService,
     private sessionService: SessionService,
     private datePipe: DatePipe,
-    private serverDateTimeService:ServerDateTimeService
+    private serverDateTimeService:ServerDateTimeService,
   ) { }
 
   ngOnInit(): void {
@@ -141,21 +142,30 @@ dat = null;
       if (response["length"] == 0) {
         count = JSON.stringify(1);
         this.idtransaksi = unit.code + "06" + d3 + "0000001";
-        this.sequenceService.use({key:this.idtransaksi}).subscribe((sq:any)=>{
-          let id = sq["value"];
-          console.debug(id);
-          this.formData.patchValue({ idTransaction: id, idAi: id });
-        })
+        this.formData.patchValue({ idSequencer: this.idtransaksi});
+        this.formData.patchValue({ idTransaction:  this.idtransaksi, idAi: "1" });
+        // this.sequenceService.use({key:this.idtransaksi}).subscribe((sq:any)=>{
+        //   let id = sq["value"];
+        //   console.debug(id);
+        //   t
+        //   console.debug(this.idtransaksi,"ID")
+        // })
       }else{
     
         this.idtransaksi = unit.code + "06" + d3 + "0000001";
+        this.formData.patchValue({ idSequencer: this.idtransaksi});
 
         this.sequenceService.peek({key:this.idtransaksi}).subscribe((sq:any)=>{
           let idAi = JSON.stringify(response["0"]["idAi"]);
           let id = JSON.stringify(Number(sq["value"]) + 1);
-          
-          if (idAi == id) {
-            this.sequenceService.use({key:this.idtransaksi}).subscribe((sq:any)=>{});
+          console.debug(idAi,id)
+          if (idAi == JSON.stringify(id)) {
+            this.sequenceService.use({key:this.idtransaksi}).toPromise();
+            this.idtransaksi();
+          }
+
+          if (sq["value"] == null) {
+            this.sequenceService.use({key:this.idtransaksi}).toPromise();
             this.idtransaksi();
           }
 
@@ -187,6 +197,7 @@ dat = null;
 
           
           this.idtransaksi = unit.code + "06" + d3 + inc;
+          console.debug(this.idtransaksi,"ID")
           this.formData.patchValue({ idTransaction:  this.idtransaksi, idAi: id });
         })
         
@@ -207,6 +218,7 @@ dat = null;
 
     this.formData = new FormGroup({
       idTransaction: new FormControl(""),
+      idSequencer: new FormControl(""),
       idTransaction_validation: new FormControl("unique:idTransaction"),
       cif: new FormControl("", [Validators.required, Validators.pattern(/^[0-9]*$/)]),
       name: new FormControl("", [Validators.required]),
@@ -227,7 +239,7 @@ dat = null;
       jumlahTerima: new FormControl(totalHarga, Validators.required),
       unit: new FormControl(""),
       unit_encoded: new FormControl("base64"),
-      nominalTransaksi: new FormControl(""),
+      nominalTransaksi: new FormControl("",[ Validators.required,Validators.pattern(/^-?(0|[1-9]\d*)?$/)]),
       kembali: new FormControl(""),
       nik: new FormControl(this.nikUser["username"]),
       nikPemasar: new FormControl(this.nikUser["_hash"], Validators.required),
@@ -243,7 +255,7 @@ dat = null;
       namaPemasar: new FormControl(this.nikUser["name"]),
       'transaction-type': new FormControl("", Validators.required),
       'transaction-type_encoded': new FormControl("base64"),
-      kasirId: new FormControl(""),
+      kasirId: new FormControl("", Validators.required),
       coa: new FormControl("")
       
     });
@@ -495,6 +507,10 @@ dat = null;
       this.toastr.error("Nilai Tidak Cukup", "Transaction");
       return;
     }
+    // if (!this.nikValid) {
+    //   this.toastr.error("Kasir ID (Emas) tidak Valid", "Transaction");
+    //   return;
+    // }
     console.debug(this.gs, "wew")
     this.validModel = true;
   }
@@ -508,16 +524,18 @@ dat = null;
     }
     // idTransaction Sqeuencer
 
-    this.sequenceService.use({key:data.idTransaction}).toPromise();
+    this.sequenceService.use({key:data.idSequencer}).toPromise();
     
     data.product = btoa(JSON.stringify({ PERHIASAN, LM, BERLIAN, GS, DINAR }));
     data.product_encoded = "base64";
     data.currency_encoded = "base64";
-    let nomT = data["nominalTransaksi"]
-    data["nominalTransaksi"] = nomT.replace(/,/g, '');
+    data._log = true;
+    // let nomT = data["nominalTransaksi"]
+    // data["nominalTransaksi"] = nomT.replace(/,/g, '');
     delete data["cif"];
     delete data["namaPemasar"];
     delete data["nik"];
+    delete data["idSequencer"];
     // new
     //per product
     // data["hjual"] = nomT.replace(/,/g, '');
@@ -649,24 +667,17 @@ dat = null;
   mesinCheckNik(metodeBayarCode)
 {
   let data = this.formData.getRawValue();
-	if(metodeBayarCode != '01')
-	{
-		var coa = this.formData.get('coa').value;
-		coa.val("");
-		// setKasir(null);
-		// return;
-	}
+	// if(metodeBayarCode != '01')
+	// {
+	// 	// var coa = this.formData.get('coa').value;
+  //   // this.formData.patchValue({"coa" : ""});
+  //   // this.transactionEdcType;
+	// 	// this.setKasir(null);
+	// 	// return;
+	// }
 
   var userEmas = this.formData.get('kasirId').value;
-  if(userEmas == null || userEmas == "")
-   
-												 
-													
-		   
-   
-
-											   
-					  
+  if(userEmas == null || userEmas == "")   			  
   {
     this.toastr.error("Error. Kasir ID (Emas) Kosong !!!");
     console.debug("Gaada input dengan ID = userEmas");
@@ -691,97 +702,52 @@ dat = null;
 																						 
 	return;
   }
-
 										
   console.debug(branchCode, "branchCode");
-  console.debug(userEmas, "userEmas");
-				   
+  console.debug(userEmas, "userEmas");			   
 		   
 	  
-  
   var resp = this.checkNikService.checkNik(branch).subscribe((response:any)=>{
+    var tutup = false;
+    
+
     if (response == false) {
       this.toastr.error(this.checkNikService.message());
       console.debug(response, "Gagal Cek NIK");
       return;
     }
-    data.checkNik =  JSON.stringify(response);
+    data.checkNik =  JSON.parse(response);
     console.debug(data, "ISI Response Check NIK");
-    // this.transactionService.add(data).subscribe((response: any) => {
+    console.debug(resp, "ISI Resp");
+    console.debug(response, "ISI Response");
+    console.debug(data.checkNik.data, "ISI data.checkNIK.data");
+
     
-    //   // if (response != false) {
-    //   //   this.validModel = false;
-    //   //   this.toastr.success(this.transactionService.message(), "Transaction Success");
-    //   //   this.checkoutModal = false;
-    //   //   // remove isi cart
-    //   //   PERHIASAN.splice(0);
-    //   //   BERLIAN.splice(0);
-    //   //   LM.splice(0);
-    //   //   DINAR.splice(0);
-    //   //   GS.splice(0);
-    //   //   this.cartModal.emit(false);
-    //   //   this.ChangeContentArea('10003');
-    //   // } else {
-    //   //   this.toastr.error(this.transactionService.message(), "Transaction");
-    //   //   this.idTransaksi()
-    //   //   return;
-    //   // }
-    // })
-  })
-  
-  // var url = "https://"+window.location.hostname+"/api/channel/get-kasir-on-emas.php?branchCode="+branchCode;
-//   console.log(url);
-
-  if(this.getKasirHandler != null)
-  {
-	this.getKasirHandler.abort();
-	this.toastr.show("loading");
-  }
-
-  this.toastr.show("loading");
-  this.getKasirHandler = ({ resp, timeout: 5000,
-	error: function(request, textStatus) {
-		let j = request.responseText;
-		console.debug(request)
-		this.toastr.show(false, "loading");
-		this.toastr.error("Error. " + textStatus + ". Harap hubungi IT Support/Helpdesk.\n &nbsp" + j);
-		console.info();
-	},
-	success: function(data) {
-
-		var d = JSON.parse(data.data);
-		var dat = data;
-
-		if(data.responseCode != '00')
-		{
-			this.toastr.success(data.responseDesc);
-			this.toastr.show(false, "loading");
-			return;
-		}
-
-		var tutup = false;
 		// console.debug(d);
-		for(let i = 0; i < d.data.length; i++)
+		for(let i = 0; i < data.checkNik.data.length; i++)
 		{
-			var kasir = d.data[i];
-			// console.debug(kasir.userId);
+      var kasir = data.checkNik.data[i];
+      console.debug(kasir, "kasir");
+			console.debug(kasir.userId, "kasir.userId");
 			if(kasir.userId == userEmas)
 			{
+        console.debug("kondisi 1");
 				if(kasir.status == 0)
 				{
 					tutup = true;
 					break;
 				}
 
-				if(this.select.value == '1')
+				if(metodeBayarCode == '01')
 				{
 					if(kasir == null)
 					{
-						alert("Error. Harap hubungi IT Support/Helpdesk.");
+						this.toastr.error("Error. Harap hubungi IT Support/Helpdesk.");
 						return;
 					}
 					
-					this.setKasir(kasir);
+          this.setKasir(kasir);
+          console.debug("kondisi 2");
 				}
 				else
 				{
@@ -794,26 +760,27 @@ dat = null;
 
 		if(tutup)
 		{
-			alert("Kasir ditutup. Mohon buka kasir atau hubungi Pimpinan anda");
+			this.toastr.error("Kasir ditutup. Mohon buka kasir atau hubungi Pimpinan anda");
 		}
 		else if(!this.nikValid)
 		{
-			alert("USER ID tidak memiliki rekening pada branch ini");
+			this.toastr.error("USER ID tidak memiliki rekening pada branch ini");
 		}
-		this.toastr.show(false, "loading");
-  }});
+		// this.toastr.show( "loading");
+    
+  })  
 
 }
 
 setKasir(kasir)
 {
-	this.toastr.error("NIK valid !!");
+	this.toastr.success("NIK valid !!");
 	this.nikValid = true;
 
 	if(kasir != null)
 	{
 		let coaKasir = kasir.norek;
-		console.debug(coaKasir);
+		console.debug(coaKasir, "coaKasir");
 		this.formData.patchValue({"coa" : coaKasir});
 	}
 	// hitungKembalian();
@@ -822,8 +789,11 @@ setKasir(kasir)
 changingNIK()
 {
 	this.nikValid = false;
-	this.formData.patchValue({"coa" : ""});
+  this.formData.patchValue({"coa" : ""});
+  console.debug("changingNIK");
 
 	// hitungKembalian();
 }
+
+
 }

@@ -1,6 +1,9 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import * as CryptoJS from 'crypto-js';
+import { ToastrService } from 'ngx-toastr';
 import { AutoLogoutService } from 'projects/main/src/app/g24/lib/common/auto-logout.service';
+import { environment } from 'projects/main/src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -22,8 +25,35 @@ export class SessionService {
 
   constructor
   (
+    private http: HttpClient,
+    private toastr : ToastrService,
     private logoutService : AutoLogoutService
   ) {
+  }
+
+  
+  async setServerConfig() {
+    let protocol = window.location.protocol;
+    let name = window.location.hostname;
+    let port = window.location.port;
+    port = port == "" || port == "0" ? "" : port;
+    let filePath = "/assets/config/server-config.json";
+    let url = protocol + "//" + name + ":" + port + filePath;
+    let file = null;
+    try {
+      file = await this.http.get(url).toPromise();
+    } catch(err) {
+      this.toastr.error("Failed to get server configuration. Please REFRESH page!!!", null, {disableTimeOut: true, tapToDismiss: true});
+      return;
+    }
+
+    if(!environment.production) console.debug(file);
+
+    this.server = file['backend-url'];
+
+    if(!environment.production) console.debug(this.server);
+
+    return file;
   }
 
   setIp(params: any) {
@@ -188,6 +218,21 @@ export class SessionService {
         'Accept': 'application/json'
       };
     }
+  }
+
+  public setDebugging(debug : string)
+  {
+    sessionStorage.setItem("d", this.encrypt(debug));
+  }
+
+  public getDebugging() : string
+  {
+    return this.decrypt(sessionStorage.getItem("d"));
+  }
+
+  public containsDebugging()
+  {
+    return sessionStorage.getItem("d");
   }
 
 }

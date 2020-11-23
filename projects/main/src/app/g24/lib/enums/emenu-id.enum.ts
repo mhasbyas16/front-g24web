@@ -121,6 +121,7 @@ export enum EMenuID {
     LAPORAN             = '10003',
     LAPORAN_BUYBACK     = '10009',
     LAPORAN_BUYBACK_MANUAL = '10010',
+    USER = '10011',
     //korporasi
     KORPORASI           = '13001',
     LIST_KORPORASI = '13002',

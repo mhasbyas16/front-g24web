@@ -360,11 +360,11 @@ export class DetailPenerimaanEmasComponent extends BasePersistentFields implemen
     if((bayar_end != "" && bayar_end != null) && (bayar_start != "" && bayar_start != null))
     {
       bayar_end = StringHelper.StandardFormatDate("/", bayar_end, "MM/dd/yyyy");
-      bayar_p += "&_between=tgl_bayar&_start="+bayar_start+"&_end="+bayar_end;
+      bayar_p += "&_between=tgl_approved&_start="+bayar_start+"&_end="+bayar_end;
     }
     else if((bayar_start != "" && bayar_start != null))
     {
-      bayar_p += "&tgl_bayar="+bayar_start;
+      bayar_p += "&tgl_approved="+bayar_start;
     }
 
     let order_status = this.searchFG.get("order_status").value;

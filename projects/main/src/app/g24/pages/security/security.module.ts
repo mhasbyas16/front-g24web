@@ -7,9 +7,10 @@ import { ToastrModule } from 'ngx-toastr';
 import {SecurityRoutingModule } from './security-routing.module';
 // component
 import { RolePageComponent } from './role-page/role-page.component';
+import { UserComponent } from './user/user.component';
 
 @NgModule({
-  declarations: [ RolePageComponent ],
+  declarations: [ RolePageComponent, UserComponent ],
   imports: [
     CommonModule,
     FormsModule,

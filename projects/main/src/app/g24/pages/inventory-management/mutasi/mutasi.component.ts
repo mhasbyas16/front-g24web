@@ -26,7 +26,6 @@ import { TipeStock } from '../../../lib/enum/flag-product';
 import { FlagProduct } from '../../../lib/enum/flag-product';
 import { LoadingSpinnerComponent } from '../../../../g24/nav/modal/loading-spinner/loading-spinner.component';
 import { CetakMutasiComponent } from '../../../../g24/cetakan/stock/cetak-mutasi/cetak-mutasi.component';
-// import { CetakMutasiComponent } from '../../../../g24/pages/inventory-management/mutasi/cetak-mutasi/cetak-mutasi.component';
 import { StringHelper } from '../../../lib/helper/string-helper';
 
 //SORTING CLARITY LIB
@@ -43,9 +42,9 @@ export class MutasiComponent implements OnInit {
 static key = EMenuID.MUTASI;
 
 
-@ViewChild('kategori') kategori : ElementRef;
-
-@ViewChild('Perhiasan', {static:false}) perhiasanInput : TemplateRef<any>;
+  //ELEMENT HTML [ NG TEMPLATE ] UNTUK MEMUNCULKAN ATTRIBUT KATEGORI YANG DIPILIH PADA SAAT MEMILIH PRODUK KATEGORI
+  @ViewChild('kategori') kategori : ElementRef;
+  @ViewChild('Perhiasan', {static:false}) perhiasanInput : TemplateRef<any>;
   @ViewChild('Emas_Batangan', {static:false}) emasbatanganInput : TemplateRef<any>;
   @ViewChild('Berlian', {static: false}) berlianInput : TemplateRef<any>;
   @ViewChild('Adiratna', {static: false}) adiratnaInput : TemplateRef<any>;
@@ -53,16 +52,25 @@ static key = EMenuID.MUTASI;
   @ViewChild('Gift', {static: false}) giftInput : TemplateRef<any>;
   @ViewChild('Dinar', {static: false}) dinarInput : TemplateRef<any>;
 
+  //ELEMENT HTML LOADING SPINNER UNTUK LOAD DATA
   @ViewChild('spinner',{static:false}) spinner : LoadingSpinnerComponent;
 
+  //ELEMENT HTML EXPORT PDF UNTUK CETAK KIRIM MUTASI
   @ViewChild('exportPDF',{static:false}) pdf : CetakMutasiComponent;
 
 
+  //UNTUK MEMILIH DATA PRODUK PADA SAAT INGIN MENAMBAHKAN MUTASI 
   selected : any[] = [];
+
+  //UNTUK MEMILIH DATA PRODUK YANG SUDAH DITAMBAHKAN PADA MODAL TAMBAH MUTASI
+  //FUNGSI UNTUK MENGHAPUS PRODUK YANG DIPILIH SEBELUMNYA
   selected_items : any[] = [];
+
+  //UNTUK MEMILIH DATA MUTASI YANG TELAH DIMUTASIKAN
+  //FUNGSINYA UNTUK MELIHAT DATA MUTASI YANG DIPIILIH
   data_view : any = {};
 
-  //SEARCHCODE
+  //VARIABEL UNTUK MENGECEK UNIT TUJUAN YANG DIINPUT PADA SAAT MENG
   searchCode : any = {};
 
   unittuju : any[] = [];
@@ -97,7 +105,10 @@ modal = false;
 claritys : any[] = [];        
 colors : any[] = [];
 series : any[] = [];          
-denoms : any[] = [];
+denomsSouvenir : any[] = [];
+denomsGift : any[] = [];
+denomsDinar : any[] = [];
+denomsEmas : any[] = [];
 input : any = {};   
 addinput : any = {};
 Flag = Object.values(FlagMutasi);
@@ -133,6 +144,7 @@ date_now : String;
 time : String;
 
 product_cut : any[] = [];
+Lock : Boolean = false;
 
 noItem : number = 0;
 innerDoc : any = {};
@@ -141,6 +153,8 @@ date : String = "";
 //VARIABEL SORT 
 descSort : any; 
 descSort_terima : any;
+
+Tesdata : any = [];
 
 constructor(private UnitService : UnitService, private sessionservice : SessionService, 
   private mutasiservice : MutasiService, private productservice : ProductService,
@@ -151,13 +165,15 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
   private productkategoryservice : ProductCategoryService,
   private klarityservice : ProductClarityService, private datetimeservice : ServerDateTimeService,
   private seriesservice : ProductSeriesService, private toastr : ToastrService,
-  private vendorservice : VendorService
+  private vendorservice : VendorService,
   ) { }
 
 
   ngOnInit(): void {
 	
     let params = "?";
+    this.Lock = false;
+    
 	 
 
 
@@ -197,7 +213,10 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
       this.LoadColor();
       this.LoadKadar();
       this.LoadJenis();
-      this.LoadDenom();
+      this.LoadDenomSouvenir();
+      this.LoadDenomGift();
+      this.LoadDenomDinar();
+      this.LoadDenomEmas();
       this.LoadKlarity();
       this.LoadSeries();
       this.LoadDiamondColor();
@@ -224,7 +243,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     }    
     let datakategori = data;
     for(let i = 0; i < datakategori.length; i++){
-      if(datakategori[i].name=="Berlian"){
+      if(datakategori[i].name=="Berlian" || datakategori[i].name=="Dinar"){
         this.product_kategori = datakategori;
         this.product_kategori.splice(i,1);
       }
@@ -275,15 +294,48 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
       this.jeniss = data;
   }
 
-  async LoadDenom(){
-    //Product Denom
-    let data = await this.denomservice.list("?").toPromise();
+  async LoadDenomSouvenir(){
+    //Product Denom Souvuenir
+    let data = await this.denomservice.list("?product-category.name=Souvenir").toPromise();
     if(data==false){
       let msg = this.denomservice.message();
       this.toastr.error("Gagal load Product Denom "+msg,"Error");
       return;
     }
-      this.denoms = data;
+      this.denomsSouvenir = data;
+  }
+  
+  async LoadDenomGift(){
+    //Product Denom Gift
+    let data = await this.denomservice.list("?product-category.name=Gift").toPromise();
+    if(data==false){
+      let msg = this.denomservice.message();
+      this.toastr.error("Gagal load Product Denom "+msg,"Error");
+      return;
+    }
+      this.denomsGift = data;
+  }
+
+  async LoadDenomDinar(){
+    //Product Denom Dinar
+    let data = await this.denomservice.list("?product-category.name=Dinar").toPromise();
+    if(data==false){
+      let msg = this.denomservice.message();
+      this.toastr.error("Gagal load Product Denom "+msg,"Error");
+      return;
+    }
+      this.denomsDinar = data;
+  }
+
+  async LoadDenomEmas(){
+    //Product Denom Emas
+    let data = await this.denomservice.list("?product-category.name=Mulia").toPromise();
+    if(data==false){
+      let msg = this.denomservice.message();
+      this.toastr.error("Gagal load Product Denom "+msg,"Error");
+      return;
+    }
+      this.denomsEmas = data;
   }
 
   async LoadKlarity(){
@@ -365,14 +417,13 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     }
     this.toastr.success("Data ditemukan "+data.length,"Sukses");
     this.listdt = data;
+    console.log(this.listdt[this.listdt.length - 1]._id,"Id terakhir data");
     this.spinner.Close();
-
-
-
   }
 
   onAdd(){    
     this.items = [];
+    this.Lock = false;
     this.itempick = 0;
     this.searchModel = {};
     this.addinput={};
@@ -388,7 +439,16 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     this.LoadCategory();
     this.searchModel = {};
     this.input = {};
-    this.listdt = [];
+    this.products = [];
+    this.items = [];
+    this.searchCode = {};
+    this.Lock = false;
+    this.addinput = {};
+    this.formInput = null;
+    this.itempick = 0;
+    this.berat = 0;
+    this.jml_hpp = 0;
+    // this.listdt = [];
   }
 
   async validateInputNumerik(){
@@ -511,10 +571,23 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
   async Add(){
 
     console.log(this.date_now);
-    let tujuan = this.addinput['unit_tujuan'];
-
     this.spinner.SetSpinnerText("Mohon Tunggu...");
     this.spinner.Open();
+
+    for(let i = 0; i < this.items.length; i++){
+      let cekFlagItems = this.items[i].flag;
+      let id = this.items[i]._id;
+      console.log("Id Product = ",id);
+      let cekproductFlag = await this.productservice.list("?_id="+id+"&flag="+cekFlagItems+"&").toPromise();
+      if(cekproductFlag[i]?.flag == "transit"){
+        this.toastr.info("Items product yang dipilih, sudah tidak bertipe stock","Informasi");
+        this.spinner.Close();
+        return;
+      }
+    }
+
+    let tujuan = this.addinput['unit_tujuan'];
+
 	  let ktr = this.addinput['keterangan'];
     let vdr = this.addinput['vndr'];
 
@@ -542,19 +615,53 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     }
 
 
-    //UPDATE PRODUK
     let value = 0;
     for(let index = 0; index < this.items.length; index++){
 
-      if(this.items[index]['berat'] == undefined)
-      {
-        value = this.items[index]['product-denom'].value;
-        console.log(value, "denom");
-      }else {
+      // if(this.items[index]['berat'] == undefined)
+      // {
+      //   value = parseFloat(this.items[index]['product-denom'].value);
+      //   console.log(value, "denom");
+      // }else if(this.items[index]['product-denom']?.value == undefined){
+      //   value = parseFloat(this.items[index]['berat']);
+      //   console.log(value, "berat ( di isi jika product denom tidak ada )");
+      // }else{
+      //   value = parseFloat(this.items[index]['product-denom'].value);
+      //   console.log(value, 'denom');
+      // }
+      // this.berat = this.berat + value;
+
+      if(this.searchModel["product-category"].name == "Perhiasan"){
+
         value = parseFloat(this.items[index]['berat']);
-        console.log(value, 'berat');
+        console.log("Berat perhiasan = ",value);
+
+      }else if(this.searchModel["product-category"].name == "Souvenir"){
+        
+        value = parseFloat(this.items[index]["product-denom"].value);
+        console.log("Denom dari Souvenir ",value);
+      
+      }else if(this.searchModel["product-category"].name == "Gift"){
+      
+        value = parseFloat(this.items[index]["product-denom"].value);
+        console.log("Denom dari Dinar ",value);
+      
+      }else if(this.searchModel["product-category"].name == "Emas Batangan"){
+      
+        value = parseFloat(this.items[index]["product-denom"].value);
+        console.log("Denom Emas Batangan ",value);
+      
+      }else if(this.searchModel["product-category"].name == "Permata"){
+      
+        value = parseFloat(this.items[index]["total_berat"]);
+        console.log("Total berat dari Permata ",value);
+      
+      }else if(this.searchModel["product-category"].name == "Dinar"){
+      
+        value = parseFloat(this.items[index]["product-denom"].value);
+        console.log("Denom Dinar ",value);
       }
-      this.berat = this.berat + value;
+      this.berat = Math.round((this.berat + value) * 100) / 100;
     }
       // this.berat = this.berat + value;
 
@@ -564,14 +671,21 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
 
     //JUMLAH HPP
     for(let p = 0; p < this.items.length; p++){
+      if(this.searchModel["product-category"].name == "Permata"){
+        this.jml_hpp = this.jml_hpp + this.items[p].hpp + this.items[p].hpp_berlian + this.items[p].hpp_batu + this.items[p].ongkos_pembuatan;
+        console.log("Jumlah HPP Permata" ,this.jml_hpp);
+      }else{
       this.jml_hpp = this.jml_hpp + this.items[p].hpp;
       console.log(this.jml_hpp,"Jumlah HPP");
+      }
     }
+    console.log("Jumlah HPP ",this.jml_hpp);
 
     let cetak = {
       created_by : this.sessionservice.getUser().username,
       created_date : this.date_now,
       unit_tujuan : tujuan,
+      "product-category" : this.searchModel["product-category"],
       unit_asal : this.sessionservice.getUser().unit,
       total_hpp : this.jml_hpp.toString(),
       total_berat : this.berat.toString(),
@@ -625,6 +739,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     }
 
     //MASIH MENGGUNAKAN API ADD, MICROSERVICES PROBLEM PARSE NUMBER
+
     this.mutasiservice.add(cfg).subscribe(output => {
       if(output!=false){
         this.spinner.Close();
@@ -649,6 +764,8 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
         this.productservice.update(encode).subscribe(data=>{
           if(data==false){
             if(this.productservice.message()!=""){
+              let msg = this.productservice.message();
+              this.toastr.error("Error product "+msg,"Error");
               this.spinner.Close();
               return;
             }
@@ -656,14 +773,15 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
         })
       }
       this.doSearch();
-      // let id : string = output._id;
-      // this.doAccounting(id);
 
       this.spinner.Close();
       this.modalshow=false;
       this.pdf.Makepdf(cetak);
       this.toastr.success("Data berhasil di mutasi","Berhasil");
+      this.reset();
 
+      //PROSES LOADING CETAK MUTASI
+      this.toastr.info("Mohon tunggu, sedang memproses cetak mutasi","Informasi");
     });
 
 
@@ -682,6 +800,7 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
       this.spinner.Close();
       return;
     }
+    
 
     // this.products = [];
 
@@ -708,11 +827,11 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
           break;
 
         case "color":
-          params += "product-diamond-color.name="+this.searchModel[key].name+"&";
+          params += "product-diamond-color="+this.searchModel[key].name.toUpperCase()+"&";
           break;
         
         case "berat":
-          params += "berat="+this.searchModel[key]+"&berat_encoded=int&";
+          params += "berat="+this.searchModel[key]+"&berat_encoded=double&";
           break;
 
         case "kadar":
@@ -723,8 +842,16 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
           params += "product-cut.code="+this.searchModel[key].code+"&";
           break;
 
+        case "product_stone":
+          params += "product-stone="+this.searchModel[key]+"&";
+          break;
+
+        case "product_stone_color":
+          params += "product-stone-color="+this.searchModel[key]+"&";
+          break;
+
         case "clarity":
-          params += "product-clarity.code="+this.searchModel[key].code+"&";
+          params += "product-clarity="+this.searchModel[key]+"&";
           break;        
         
         case "carat":
@@ -781,14 +908,38 @@ pickitem(){
 
 Addmutasi(){
   this.selected_items = [];
+  if(this.searchCode.code == "" || this.searchCode.code == null){
+    this.toastr.warning("Mohon isi kode branch dahulu","Peringatan");
+    return;
+  }else if(this.addinput.unit_tujuan == "" || this.addinput.unit_tujuan == null){
+    this.toastr.warning("Mohon cek nama unit tersebut dengan menekan ENTER","Peringatan");
+    return;
+  }else if(this.searchModel["product-category"]=="" || this.searchModel["product-category"]==null){
+    this.toastr.warning("Mohon pilih produk katergori dahulu","Peringatan");
+    return;
+  }else if(this.addinput.keterangan=="" || this.addinput.keterangan == null){
+    this.toastr.warning("Mohon isi keterangan dahulu","Peringatan");  
+    return;
+  }
+
   if(!this.selected.length){
     this.toastr.warning("Data produk belum dipilih","Peringatan");
   }
 
+  
   for(let r = 0; r < this.selected.length; r++){
-    if(this.items.indexOf(this.selected[r])=== -1){
-      this.items.push(this.selected[r]);
+    for(let i = 0; i < this.items.length; i++){
+      if(this.selected[r]._id == this.items[i]._id){
+        this.toastr.info("Data sudah dipilih","Informasi");
+        return;
+      }
     }
+    this.items.push(this.selected[r]);
+    this.Lock = true;
+    // if(this.selected.indexOf(this.items[r]) == -1){
+    //   this.items.push(this.selected[r]);
+    //   this.Lock = true;
+    // }
   }
 
 }
@@ -1015,6 +1166,62 @@ GetDisplayName(key : string) : string
     name = "Pengajuan Dari";
     break;
 
+    case "ongkos_pembuatan":
+      name = "Ongkos Pembuatan";
+      break;
+
+    case "product-carat":
+      name = "Product Carat";
+      break;
+
+    case "product-stone":
+      name = "Product Stone";
+      break;
+
+    case "hpp_batu":
+      name = "Hpp Batu";
+      break;
+
+    case "total_berat":
+      name = "Total Berat";
+      break;
+
+    case "product-stone-color":
+      name = "Product Stone Color";
+      break;
+
+    case "hpp_berlian":
+      name = "Hpp Berlian";
+      break;
+
+    case "product-stone-dimension":
+      name = "Product Stone Dimension";
+      break;
+
+    case "hpp_batu_inisiasi":
+      name = "Hpp Batu Inisiasi";
+      break;
+
+    case "jumlah_butir":
+      name = "Jumlah Butir";
+      break;
+
+    case "hpp_berlian_inisiasi":
+      name = "Hpp Berlian Inisiasi";
+      break;
+
+    case "product-stone-carat":
+      name = "Product Stone Carat";
+      break;
+
+    case "no_urut":
+      name = "No Urut";
+      break;
+
+    case "nomor_nota":
+      name = "Nomer Nota";
+      break;
+
       default:
         name += " - " + key;
 
@@ -1076,6 +1283,24 @@ GetDisplayName(key : string) : string
       case "status":
         return false;
         break;
+
+      case "create_by":
+        return false;
+        break;
+
+      case "create_date":
+        return false;
+        break;
+
+      case "create_time":
+        return false;
+        break;
+
+      case "isterima":
+        return false;
+        break;
+
+      
 
       default:
         return true;

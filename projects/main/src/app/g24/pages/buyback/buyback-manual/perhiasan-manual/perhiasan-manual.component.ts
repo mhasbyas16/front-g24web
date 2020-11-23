@@ -14,6 +14,8 @@ import { PrmJualService } from '../../../../services/parameter/prm-jual.service'
 import { LM, GS, PERHIASAN } from '../../../../sample/cart-buyback-manual-lm';
 import { ToastrService } from 'ngx-toastr';
 import { SessionService } from 'projects/platform/src/app/core-services/session.service';
+import { TransactionBuybackPriceService } from '../../../../services/transaction/transaction-buyback-price.service';
+
 
 @Component({
   selector: 'app-perhiasan-manual',
@@ -35,6 +37,7 @@ export class PerhiasanManualComponent implements OnInit {
     private prmJualService : PrmJualService,
     private productCategoryService : ProductCategoryService,
     private sessionService : SessionService,
+    private transactionBuybackPriceService:TransactionBuybackPriceService
   ) { }
 
   ngOnInit(): void {
@@ -174,6 +177,15 @@ export class PerhiasanManualComponent implements OnInit {
     let prmJual : any;
     let unit = this.sessionService.getUnit();
     let unitTransaksiPembelian : any
+
+    if (val.input_namaNasabahPembelian == "" || val.input_namaNasabahPembelian == undefined) {
+      this.loadingDg = false
+      return this.toastrService.error("Input Nama Nasabah Terlebih Dahulu");
+    }
+    if (val.input_alamatTransaksiPembelian == "" || val.input_alamatTransaksiPembelian == undefined) {
+      this.loadingDg = false
+      return this.toastrService.error("Input Nama Alamat Terlebih Dahulu");
+    }
     
 
     console.debug( tanggalTransaksiPembelian, "tanggalTransaksiPembelian")
@@ -218,71 +230,90 @@ export class PerhiasanManualComponent implements OnInit {
       return
     }
 
-    this.productCategoryService.get("?code=c00").subscribe((response: any) => {
-      productCategory = response
-      this.unitService.get("?code="+this.unitDistro.code).subscribe((response: any) => {
-        unitTransaksiPembelian = response
-        this.unitService.get("?code="+this.unitDistro.code).subscribe((response: any) => {
-          unitName = response.nama;
-          unitDet = response
-          this.vendorService.get("?code="+vendorCode).subscribe((response: any) => {
-            vendorName = response.name;
-            vendorDet = response
-            this.productJenisService.get("?code="+jenisCode).subscribe((response: any) => {
-              jenisName = response.name;
-              jenisDet = response
-              this.productGoldColorService.get("?code="+warnaCode).subscribe((response: any) => {
-                warnaName = response.name;
-                warnaDet = response
-                this.productPurityService.get("?code="+kadarCode).subscribe((response: any) => {
-                  kadarName = response.name;
-                  kadarDet = response
-                  this.productPurityService.get("?code="+kadarCode).subscribe((response: any) => {
-                    kadarName = response.name;
-                    kadarDet = response
-                    this.prmJualService.get("?"+this.productCategory+"&flag=approved").subscribe((BBresponse: any) => {
-                      this.hargaDasarBuyback = BBresponse.harga_buyback
-                      // this.hargaBB = this.pricingService.buybackPricePerhiasan(val.input_kondisi_perhiasan, kadarName, val.input_beratPerhiasan,this.hargaDasarBuyback )
-                      this.hargaBB = this.pricingService.buybackPricePerhiasan(val.input_kondisi_perhiasan, Number(kadarName), val.input_beratPerhiasan ,Number(this.hargaDasarBuyback) )
+    let paramsBB = "?_transactionType=b04&_ch=ch02&_productCat=c00&_unit="+this.unitDistro.code;
+        paramsBB = paramsBB + "&_vendor="+vendorCode+"&_productJenis="+jenisCode+"&_productGoldColor="+warnaCode+"&_productPurity="+kadarCode;
+        paramsBB = paramsBB + "&_kondisi="+val.input_kondisi_perhiasan+"&_berat="+val.input_beratPerhiasan+"&_manualBuyback=perhiasan";
                       
-                      this.dataperhiasans = [{
-                                      unitCode: unitCode, 
-                                      unitName : unitName, 
-                                      unitDet : unitDet,
-                                      vendorName : vendorName, 
-                                      vendorCode: vendorCode, 
-                                      vendorDet : vendorDet,
-                                      jenisCode : jenisCode, 
-                                      jenisName : jenisName,
-                                      jenisDet : jenisDet,
-                                      warnaCode : warnaCode,
-                                      warnaName : warnaName,
-                                      warnaDet : warnaDet,
-                                      kadarCode : kadarCode,
-                                      kadarName : kadarName,
-                                      kadarDet : kadarDet,
-                                      berat : val.input_beratPerhiasan,
-                                      kondisi : val.input_kondisi_perhiasan,
-                                      namaNasabahTransaksi : val.input_namaNasabahPembelian, 
-                                      alamatTransaksiPembelian : val.input_alamatTransaksiPembelian,
-                                      tanggalTransaksiPembelian : val.input_tanggalTransaksiPembelian,
-                                      unitTransaksiPembelian : unitTransaksiPembelian,
-                                      hargaBB : this.hargaBB,
-                                      productCategory : productCategory
-                                    }]
-                      console.debug(val, "value")
-                      console.debug(this.dataperhiasans, "data")
-                      console.debug(this.totalCart, "data")
-                      this.loadingDg = false
-                    })
-                  })
-                })
-              })
-            })
-          })
+        this.transactionBuybackPriceService.get(paramsBB).subscribe((response:any)=>{
+          let data = {};
+          data = response;
+            data["namaNasabahTransaksi"] = val.input_namaNasabahPembelian;
+            data["tanggalTransaksiPembelian"] = val.input_tanggalTransaksiPembelian;
+            data["alamatTransaksiPembelian"] = val.input_alamatTransaksiPembelian;
+
+          this.dataperhiasans = [data];
+          console.debug(val, "value")
+          console.debug(this.dataperhiasans, "data")
+          console.debug(this.totalCart, "data")
+          this.loadingDg = false
         })
-      })
-    })
+                        // this.dataperhiasans = [{
+                        //   unitCode: unitCode, 
+                        //   unitName : unitName, 
+                        //   unitDet : unitDet,
+                        //   vendorName : vendorName, 
+                        //   vendorCode: vendorCode, 
+                        //   vendorDet : vendorDet,
+                        //   jenisCode : jenisCode, 
+                        //   jenisName : jenisName,
+                        //   jenisDet : jenisDet,
+                        //   warnaCode : warnaCode,
+                        //   warnaName : warnaName,
+                        //   warnaDet : warnaDet,
+                        //   kadarCode : kadarCode,
+                        //   kadarName : kadarName,
+                        //   kadarDet : kadarDet,
+                        //   berat : val.input_beratPerhiasan,
+                        //   kondisi : val.input_kondisi_perhiasan,
+                        //   namaNasabahTransaksi : val.input_namaNasabahPembelian, 
+                        //   alamatTransaksiPembelian : val.input_alamatTransaksiPembelian,
+                        //   tanggalTransaksiPembelian : val.input_tanggalTransaksiPembelian,
+                        //   unitTransaksiPembelian : unitTransaksiPembelian,
+                        //   hargaBB : hargaResponse["hargaBB"],
+                        //   productCategory : productCategory
+                        // }]
+                        
+                      
+
+                  
+
+    // this.productCategoryService.get("?code=c00").subscribe((response: any) => {
+    //   productCategory = response
+    //   this.unitService.get("?code="+this.unitDistro.code).subscribe((response: any) => {
+    //     unitTransaksiPembelian = response
+    //     this.unitService.get("?code="+this.unitDistro.code).subscribe((response: any) => {
+    //       unitName = response.nama;
+    //       unitDet = response
+    //       this.vendorService.get("?code="+vendorCode).subscribe((response: any) => {
+    //         vendorName = response.name;
+    //         vendorDet = response
+    //         this.productJenisService.get("?code="+jenisCode).subscribe((response: any) => {
+    //           jenisName = response.name;
+    //           jenisDet = response
+    //           this.productGoldColorService.get("?code="+warnaCode).subscribe((response: any) => {
+    //             warnaName = response.name;
+    //             warnaDet = response
+    //             this.productPurityService.get("?code="+kadarCode).subscribe((response: any) => {
+    //               kadarName = response.name;
+    //               kadarDet = response
+    //               this.productPurityService.get("?code="+kadarCode).subscribe((response: any) => {
+    //                 kadarName = response.name;
+    //                 kadarDet = response
+    //                 // this.prmJualService.get("?"+this.productCategory+"&flag=approved").subscribe((BBresponse: any) => {
+    //                   // this.hargaDasarBuyback = BBresponse.harga_buyback
+    //                   // this.hargaBB = this.pricingService.buybackPricePerhiasan(val.input_kondisi_perhiasan, kadarName, val.input_beratPerhiasan,this.hargaDasarBuyback )
+    //                   // this.hargaBB = this.pricingService.buybackPricePerhiasan(val.input_kondisi_perhiasan, Number(kadarName), val.input_beratPerhiasan ,Number(this.hargaDasarBuyback) )
+                      
+                      
+    //                 // })
+    //               })
+    //             })
+    //           })
+    //         })
+    //       })
+    //     })
+    //   })
+    // })
     
 
     

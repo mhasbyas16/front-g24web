@@ -2,12 +2,14 @@ import { Component, OnInit, Attribute, EventEmitter, Output } from '@angular/cor
 import { FormGroup, FormControl, Validators, FormControlName } from '@angular/forms';
 import { CifGeneratorService } from '../../../lib/helper/cif-generator.service';
 import { ToastrService } from 'ngx-toastr';
+import { DatePipe } from "@angular/common";
 
 // services
 import { ProvinceService } from '../../../services/client/province.service';
 import { DistrictService } from '../../../services/client/district.service';
 import { RegencyService } from '../../../services/client/regency.service';
 import { VillageService } from '../../../services/client/village.service';
+import { SplitDateServiceService } from '../../../services/split-date-service.service';
 // client
 import { ClientService } from '../../../services/client/client.service';
 import { ClientIdTypeService } from '../../../services/client/client-id-type.service';
@@ -26,7 +28,8 @@ import { ClientIncomeService } from '../../../services/client/client-income.serv
 @Component({
   selector: 'app-add-nasabah',
   templateUrl: './add-nasabah.component.html',
-  styleUrls: ['./add-nasabah.component.scss']
+  styleUrls: ['./add-nasabah.component.scss'],
+  providers: [DatePipe]
 })
 export class AddNasabahComponent implements OnInit {
   @Output() clientData:any = new EventEmitter;
@@ -93,6 +96,8 @@ export class AddNasabahComponent implements OnInit {
     private clientBusinessType :ClientBusinessTypeService,
     private clientLegalType :ClientLegalTypeService,
     private clientIncomeService: ClientIncomeService,
+    private splitDateServiceService:SplitDateServiceService,
+    private datePipe:DatePipe,
 
     //ng
     private toastr: ToastrService
@@ -168,6 +173,7 @@ export class AddNasabahComponent implements OnInit {
       kecamatan_encoded: new FormControl("base64"),
       kelurahan: new FormControl("", Validators.required),
       kelurahan_encoded: new FormControl("base64"),
+      reg_date: new FormControl(this.datePipe.transform(Date.now(),"yyyy-MM-dd")),
     });
 
     this.person = new FormGroup({
@@ -185,6 +191,7 @@ export class AddNasabahComponent implements OnInit {
       tglLahir: new FormControl("", Validators.required),
       masaBerlakuID: new FormControl(""),
       tglBerlakuIDSampai: new FormControl("00/00/00"),
+      reg_date: new FormControl(this.datePipe.transform(Date.now(),"yyyy-MM-dd")),
 
       // detail data nasabah
       jenisKelamin : new FormControl("", Validators.required),
@@ -272,7 +279,7 @@ export class AddNasabahComponent implements OnInit {
 
       // informasi cepat data nasabah badan usaha
       name: this.badanUsaha.get("namaBU").value,
-      tglBerdiri: this.badanUsaha.get("tglBerdiri").value,
+      tglBerdiri:this.splitDateServiceService.split(this.badanUsaha.get("tglBerdiri").value),
       kodeUnitKerja: this.badanUsaha.get("kodeUnitKerja").value,
       namaUnitKerja: this.badanUsaha.get("namaUnitKerja").value,
 
@@ -292,12 +299,12 @@ export class AddNasabahComponent implements OnInit {
       noNPWP: this.badanUsaha.get("noNPWP").value,
       namaPJ1: this.badanUsaha.get("namaPJ1").value,
       namaPJ2: this.badanUsaha.get("namaPJ2").value,
-      tglBerlaku: this.badanUsaha.get("tglBerlaku").value,
+      tglBerlaku: this.splitDateServiceService.split(this.badanUsaha.get("tglBerlaku").value),
       jenisBadanHukum: this.badanUsaha.get("jenisBadanHukum").value,
       jenisBadanHukum_encoded: this.badanUsaha.get("jenisBadanHukum_encoded").value,
       noAkte: this.badanUsaha.get("noAkte").value,
       noAkte_validation: this.badanUsaha.get("noAkte_validation").value,
-      tglPerubahanAkte: this.badanUsaha.get("tglPerubahanAkte").value,
+      tglPerubahanAkte: this.splitDateServiceService.split(this.badanUsaha.get("tglPerubahanAkte").value),
       telp: this.badanUsaha.get("telp").value,
       hpPJ1: this.badanUsaha.get("hpPJ1").value,
       hpPJ1_validation: this.badanUsaha.get("hpPJ1_validation").value,
@@ -319,7 +326,9 @@ export class AddNasabahComponent implements OnInit {
         kelurahan: JSON.parse(atob(this.badanUsaha.get("kelurahan").value)),
         //kelurahan_encoded: new FormControl("base64"),
       })),
-      alamatSaatIni_encoded:"base64" 
+      alamatSaatIni_encoded:"base64",
+      reg_date:this.badanUsaha.get("reg_date").value,
+      _log:true 
     }
 
     this.mainClient.add(data).subscribe((response:any)=>{
@@ -400,13 +409,13 @@ export class AddNasabahComponent implements OnInit {
       pendapatan: this.person.get("pendapatan").value,
       pendapatan_encoded: this.person.get("pendapatan_encoded").value,
       pendidikan: this.person.get("pendidikan").value,
-      statusPerkawinan: this.person.get("statusPerkawinan").value,
-      statusPerkawinan_encoded: this.person.get("statusPerkawinan_encoded").value,
+      statusPernikahan: this.person.get("statusPerkawinan").value,
+      statusPernikahan_encoded: this.person.get("statusPerkawinan_encoded").value,
       sumberDana: this.person.get("sumberDana").value,
       sumberDana_encoded: this.person.get("sumberDana_encoded").value,
       tempatLahir: this.person.get("tempatLahir").value,
-      tglBerlakuIDSampai: this.person.get("tglBerlakuIDSampai").value,
-      tglLahir: this.person.get("tglLahir").value,
+      tglBerlakuIDSampai: this.splitDateServiceService.split(this.person.get("tglBerlakuIDSampai").value),
+      tglLahir: this.splitDateServiceService.split(this.person.get("tglLahir").value),
       tglLahirPasangan: this.person.get("tglLahirPasangan").value,
       tipeClient: this.person.get("tipeClient").value,
       tipeClient_encoded: this.person.get("tipeClient_encoded").value,
@@ -414,6 +423,8 @@ export class AddNasabahComponent implements OnInit {
       tipeID_encoded: this.person.get("tipeID_encoded").value,
       tipeKependudukan: this.person.get("tipeKependudukan").value,
       tipeKependudukan_encoded: this.person.get("tipeKependudukan_encoded").value,
+      reg_date:this.person.get("reg_date").value,
+      _log:true
     };
     console.debug("submitted data", data);
 

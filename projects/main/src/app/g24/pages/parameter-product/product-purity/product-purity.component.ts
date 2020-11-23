@@ -40,6 +40,10 @@ uptodate : any[] = [];
 modaltambah : boolean = false;
 modalupdate : boolean = false;
 
+modalkonfirm : boolean = false;
+
+inputUpdate : any = {};
+
 
 
   constructor(private purityservice : ProductPurityService, private toastr : ToastrService) { }
@@ -69,7 +73,7 @@ modalupdate : boolean = false;
 				break;
 
 				case "name":
-					params += "name="+this.search[key]+"&name_encoded=int&";
+					params += "name="+this.search[key]+"&";
 				break;
   				
   				default:
@@ -100,27 +104,26 @@ modalupdate : boolean = false;
   Simpan(){
 	this.spinner.SetSpinnerText("Mohon Tunggu...");
 	this.spinner.Open();
-  	let code = this.input["code"];
-	let name = this.input["name"];
+	let name = this.input.name;
 	let validate = /^[0-9]+$/;
-	let str = "k"+code;
+	let str = "k"+name;
 	let str2 : number = 0;
-	str2 = code;
+	str2 = name;
   	let data = {
   		code : str,
   		name : str2,
   		category : "product-purity"
 	  }
 	  
-	  if(!code){
+	  if(!name){
 	  this.spinner.Close();
 	  this.toastr.warning("Kode belum di isi","Peringatan");
 		  return;
-	  }else if(!code.match(validate)){
+	  }else if(!name.match(validate)){
 		  this.spinner.Close();
 		  this.toastr.info("Harap input dengan angka","Informasi");
 		  return;
-	  }else if(code.length < 3){
+	  }else if(name.length < 3){
 		  this.spinner.Close();
 		  this.toastr.info("Input harus 3 digit","Informasi");
 		  return;
@@ -146,11 +149,13 @@ modalupdate : boolean = false;
   		this.toastr.success("Data berhasil ditambah","Sukses");
   		this.listpurity = [];
   		this.loadData();
-  		this.modaltambah = false;
+		this.modaltambah = false;
+		this.SearchData();  
   	})
   }
 
   Ubah(){
+	this.inputUpdate.name_purity = this.data_view?.name;
 	if(!this.data_view){
 		this.toastr.warning("Data belum dipilih","Peringatan");
 		return;
@@ -170,25 +175,39 @@ modalupdate : boolean = false;
 	this.spinner.SetSpinnerText("Mohon Tunggu...");
 	this.spinner.Open();
 	let validate = /^[0-9]+$/;
-	if(!this.dataupdate["name"]){
+	if(this.data_view?.name == ""){
 		this.spinner.Close();
-		this.toastr.warning("Nama Purity belum diisi","Peringatan");
+		this.toastr.warning("Nama Purity kosong","Peringatan");
 		return;
-	}else if(!this.dataupdate["name"].match(validate)){
+	}else if(this.inputUpdate.name_purity == ""){
+		this.spinner.Close();
+		this.toastr.warning("Nama purity belum diisi","Peringatan");
+		return;
+	}
+	else if(!this.inputUpdate.name_purity.match(validate)){
 		this.spinner.Close();
 		this.toastr.info("Harap input dengan angka","Informasi");
 		return;
-	}else if(this.dataupdate["name"].length < 3){
+	}else if(this.inputUpdate.name_purity.length < 3){
 		this.spinner.Close();
 		this.toastr.info("Info harus 3 digit angka","Informasi");
 		return;
 	}
+
+	for(let i = 0; i < this.datapurity.length; i++){
+		if(this.datapurity[i].name==this.inputUpdate.name_purity){
+			this.toastr.warning("Data kode atau nama purity sudah ada","Peringatan");
+			this.spinner.Close();
+			return;
+		}
+	}
+
   	for(let i = 0; i < this.uptodate.length; i++){
   		console.log(this.uptodate[i]._id);
   		let data = {
   			_id 	: this.uptodate[i]._id,
-  			name 	: this.dataupdate["name"],
-  			code 	: "k"+this.dataupdate["name"]
+  			name 	: this.inputUpdate["name_purity"],
+  			code 	: "k"+this.inputUpdate["name_purity"]
   		}
 
   		console.log(data);
@@ -206,7 +225,8 @@ modalupdate : boolean = false;
   			this.toastr.success("Data berhasil diubah","Sukses");
   			this.listpurity = [];
   			this.loadData();
-  			this.modalupdate = false;
+			this.modalupdate = false;
+			this.SearchData();  
   		})
   	}
   }
@@ -239,7 +259,9 @@ modalupdate : boolean = false;
 			this.spinner.Close();
   			this.toastr.success("Data berhasil dihapus","Sukses");
   			this.listpurity = [];
-  			this.loadData();
+			this.loadData();
+			this.SearchData();  
+			this.modalkonfirm = false;
   		})
   	}
   }

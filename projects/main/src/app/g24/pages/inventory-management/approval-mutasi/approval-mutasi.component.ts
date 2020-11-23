@@ -37,6 +37,7 @@ listdt2 : any[] = [];       // data item dari mutasi nya
 data_view : any = {};
 
 mutasi_view : any[] = [];
+Flag : any = Object.values(FlagMutasi);
 
 input : any = {};
 add : any = {};
@@ -162,6 +163,10 @@ descSort_terima : any;
 
         case 'created_date':
           params += 'created_date='+StringHelper.StandardFormatDate('/',this.input[key],'MM/dd/yyyy')+"&";
+          break;
+
+        case "tipe" :
+          params += "flag="+this.input[key].code+"&";
           break;
 
         default:
@@ -371,6 +376,46 @@ descSort_terima : any;
     name = "Margin Batu";
     break;
 
+    case 'kondisi':
+    name = "Kondisi";
+    break;
+
+    case 'ongkos':
+    name = "Ongkos";
+    break;
+
+    case 'price':
+    name = "Price";
+    break;
+
+    case 'nomor_nota':
+    name = "Nomer Nota";
+    break;
+
+    case 'no_urut':
+    name = "No Urut";
+    break;
+
+    case 'location':
+    name = "Lokasi";
+    break;
+
+    case 'baku_tukar':
+    name = "Baku Tukar";
+    break;
+
+    case 'no_po':
+    name = "No PO";
+    break;
+
+    case 'hargabaku':
+    name = "Harga Baku";
+    break;
+
+    case 'margin':
+    name = "Margin";
+    break;
+
       default:
         name += " - " + key;
 
@@ -428,6 +473,16 @@ descSort_terima : any;
       case "isterima":
         return false;
         break;
+
+      case 'no_item_po':
+        return false;
+        break;
+
+      case 'no_index_products':
+        return false;
+        break;
+
+      
 
       default:
         return true;

@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Router } from '@angular/router'
 import { ToastrService } from 'ngx-toastr';
+import { ContentPage } from '../helper/content-page';
 
 @Injectable({
   providedIn: 'root'
@@ -77,6 +78,7 @@ export class AutoLogoutService {
       this.toastr.error("Tidak ada aktifitas lebih dari " + this.MINUTES_UNITL_AUTO_LOGOUT * 60 + " detik", "Auto-Logout!", { closeButton : true, disableTimeOut : true});
       sessionStorage.clear();
       this.router.navigate(['/auth/sign-in']);
+      ContentPage.ChangeContent("", true);
     }
   }
 

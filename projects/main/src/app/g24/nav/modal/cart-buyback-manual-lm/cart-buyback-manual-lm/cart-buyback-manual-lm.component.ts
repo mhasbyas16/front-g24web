@@ -15,6 +15,7 @@ export class CartBuybackManualLmComponent implements OnInit {
   @Input() hargaTotalSouvenir : any = 0
   @Input() hargaTotalPerhiasan : any = 0
   @Input() maxGrDay : any ;
+  @Input() firstmaxGrDay : any ;
   @Output() clearEmasBatangan:any = new EventEmitter();
   @Output() clearSouvenir:any = new EventEmitter();
   @Output() clearPerhiasan:any = new EventEmitter();
@@ -26,7 +27,6 @@ export class CartBuybackManualLmComponent implements OnInit {
   ngOnInit(): void {
     this.onCartLength()
     
-    
   }
   cartLogam = LM;
   cartSouvenir = GS;
@@ -34,7 +34,6 @@ export class CartBuybackManualLmComponent implements OnInit {
   
   cartModal : any
   hargaTotal  = 0
-
   kamu : any
 
   modalView(isi: any){
@@ -57,6 +56,8 @@ export class CartBuybackManualLmComponent implements OnInit {
     this.cartPerhiasan.splice(0);
     this.hargaTotalPerhiasan = null
     this.clearPerhiasan.emit({length:0,harga:0});
+    this.cartTotalBerat.emit(this.firstmaxGrDay);
+    console.debug(this.firstmaxGrDay,"GR DAY")
   }
   
   removeItemEmasBatangan(key: any, harga:any, denom: any ){

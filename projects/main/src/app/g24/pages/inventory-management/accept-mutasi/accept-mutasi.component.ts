@@ -93,7 +93,7 @@ static key = EMenuID.TERIMA_MUTASI;
 	  		let tgl = this.timezone.split("T");
       		this.date_now = tgl[0];
       		this.time = tgl[1].split("Z")[0];
-	  		console.log(this.time);
+	  		console.log(this.date_now,"TANGGAL TERIMA MUTASI HARI INI");
   		}
   	})
 	  
@@ -524,6 +524,9 @@ static key = EMenuID.TERIMA_MUTASI;
       this.data_mutasi = [];
       this.doAccounting(id);
       this.doSearch();
+
+      //PROSES LOADING CETAK TERIMA MUTASI
+      this.toastr.info("Mohon tunggu, sedang memproses cetak mutasi","Informasi");
       
 
 

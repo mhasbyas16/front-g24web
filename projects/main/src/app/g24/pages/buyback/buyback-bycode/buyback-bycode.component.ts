@@ -131,10 +131,10 @@ export class BuybackBycodeComponent implements OnInit {
       this.totalDetail = 1
 
       let tgl =this.detailTransaction.makerDate;
-      let tglSplit = tgl.split("/");
-      let bulan = Number(tglSplit["0"]);
-      let hari = tglSplit["1"];
-      let tahun = tglSplit["2"];
+      let tglSplit = tgl.split("-");
+      let bulan = Number(tglSplit["1"]);
+      let hari = tglSplit["2"];
+      let tahun = tglSplit["0"];
       let bulanTerbilang = this.tanggalService.bulanGenerate(bulan);
       this.tanggalTerbilang = hari+" "+bulanTerbilang+" "+tahun
     

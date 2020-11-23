@@ -49,7 +49,7 @@ data_view : any = {};
 dataupdate : any = {};
 dataupdatekategori : any[] = [];
 
-
+inputUpdate : any = {};
 
 select_kategori : any = {};
 select_kategori_add : any = {};
@@ -99,41 +99,37 @@ modalview : boolean = false;
 			  }
 		  }
 		  this.data_kategori = data;
-		//   this.exampleData = data;
 		  for(let i =0; i < data.length; i++){
 			  this.datamultiple.push({id:data[i]._id,text:data[i].name});
 
 			}
 			this.exampleData = this.datamultiple;
 			console.log("Tes",this.exampleData);
-		//   console.log(this.exampleData);
 		  this.option = {multiple: true}
 	  })
 	  let num = AlphaNumeric.Encode(this.datadenom.length);
 	  console.log(num);
-	//   let str = num.substring(0,1);
-	//   if(this.datadenom.length > 15){
-	// 	  let it = str + 1;
-	// 	  console.log(it);
-	//   }
   }
 
   SearchData(){
 	  let params = "?";
 	  this.spinner.SetSpinnerText("Mohon Tunggu...");
 	  this.spinner.Open();
-	  if(!this.search["kategori"]){
   		for(let key in this.search){
   		if(this.search[key]==""||this.search[key]==null)continue;
   			switch (key) {
-  				// case "kategori":
-  				// 	params += "product-category.code="+this.search[key].code+"&";
-				// break;
-				
 				case "code":
 					params += "code="+this.search[key]+"&";
 			  	break;
-  				
+
+				case "name":
+					params += "name="+this.search[key]+"&";
+				break;
+
+				case "kategori":
+					params += "product-category.name_regex=1&product-category.name="+this.search[key]+"&";
+				break;
+				
   				default:
   					params += key+="="+this.search[key]+"&";
   				break;
@@ -152,28 +148,12 @@ modalview : boolean = false;
 			  this.toastr.success("Data ditemukan "+data.length,"Sukses");
 			  this.spinner.Close();
 		  })
-
-		  return;
-		}
-
-		this.productdenom.list(params+"product-category.name_regex=1&product-category.name="+this.search["kategori"]).subscribe(data=>{
-			if(data==false){
-				if(this.productdenom.message()!=""){
-					this.spinner.Close();
-					this.toastr.info("Data tidak ditemukan","Informasi");
-					this.listdenom = [];
-					return;
-				}
-			}
-			this.spinner.Close();
-			this.toastr.success("Data ditemukan "+data.length,"Sukses");
-			this.listdenom = data;
-		})
   }
 
   Tambah(){
 	  this.modaltambah = true;
 	  this.input = {};
+	  this.addkategori = [];
   	let params = "?";
   	this.productkategori.list(params).subscribe(data=>{
   		if(data==false){
@@ -210,6 +190,14 @@ modalview : boolean = false;
   }
 
   TambahKategoriUpdate(){
+	if(!this.select_kategori_upd){
+		this.toastr.error("Produk kategori belum dipilih","Gagal");
+		return;
+	  }else if(Object.keys(this.select_kategori_upd).length==0){
+		this.toastr.error("Produk kategori belum dipilih","Gagal");
+		return;
+	  }
+
 	for(let i = 0; i < this.dataupdatekategori.length; i++){
 		if(this.dataupdatekategori[i].code==this.select_kategori_upd.code){
 			this.toastr.info("Produk kategori sama","Informasi");
@@ -247,6 +235,7 @@ modalview : boolean = false;
   		code : code,
   		name : name,
 		value : value,
+		value_encoded : "double",
 		"product-category" : []  
 	  }
 	  for(let i = 0; i < this.addkategori.length; i++){
@@ -276,12 +265,17 @@ modalview : boolean = false;
 		  this.spinner.Close();
   		this.listdenom = [];
   		this.loadData();
-  		this.modaltambah = false;
+		this.modaltambah = false;
+		this.SearchData();  
   	})
   }
 
 
   Ubah(){
+
+	this.inputUpdate.name_denom = this.data_view?.name;
+	this.inputUpdate.value_denom = this.data_view?.value;
+
 	if(!this.data_view){
 		this.toastr.warning("Data belum dipilih","Peringatan");
 		return;
@@ -291,13 +285,13 @@ modalview : boolean = false;
 	}
 	this.select_kategori_upd = {};
 	let params = "?";
-	this.dataupdate = {};
 	this.dataupdatekategori = [];
   	this.modalupdate = true;
   	this.uptodate = [];
 	this.uptodate.push(this.data_view);
 
   	for(let i = 0; i < this.uptodate.length; i++){
+		//   this.inputUpdate = this.uptodate[i];
 		  this.dataupdate = this.uptodate[i];
 		  this.dataupdatekategori = this.uptodate[i]["product-category"];
   	}
@@ -305,43 +299,30 @@ modalview : boolean = false;
 
   Update(){
 
-	// let params = "?";
-	// //LIST PRODUCT
-	// this.productservice.list(params).subscribe(data=>{
-	// 	if(data==false){
-	// 		if(this.productservice.message()!=""){
-	// 			return;
-	// 		}
-	// 	}
-	// 	this.idproduct = data;
-	// })
-
-	// //LIST PARAM_JUAL
-	// this.prmjualservice.list(params).subscribe(data=>{
-	// 	if(data==false){
-	// 		if(this.prmjualservice.message()!=""){
-	// 			return;
-	// 		}
-	// 	}
-	// 	this.idprmjual = data;
-	// })
-
-
 	this.spinner.SetSpinnerText("Mohon Tunggu...");
 	this.spinner.Open();
+
+	if(this.data_view?.name == "" || this.data_view?.value == ""){
+		this.toastr.warning("Data nama denom atau value denom kosong","Peringatan");
+		this.spinner.Close();
+		return;
+	}else if(this.inputUpdate.name_denom == "" || !this.inputUpdate.value_denom){
+		this.toastr.warning("Data nama denom atau value denom belum di isi","Peringatan");
+		this.spinner.Close();
+		return;
+	}
+
   	for(let i = 0; i < this.uptodate.length; i++){
 
   		console.log(this.uptodate[i]._id);
   		let data = {
 			_id 	: this.uptodate[i]._id,
-			name 	: this.dataupdate["name"],
-			value 	: this.dataupdate["value"],
+			name 	: this.inputUpdate.name_denom,
+			value 	: this.inputUpdate.value_denom,
+			value_encoded : "double",
 			"product-category" : []  
   		}
 
-		//   if(this.uptodate[i]._id==this.idproduct[i]["product-denom"]._id){
-		// 	  this.toastr.info("Data sama","Informasi");
-		//   }
 		  console.log(data);
 		if(this.dataupdatekategori.length <= 0){
 			this.spinner.Close();
@@ -365,7 +346,8 @@ modalview : boolean = false;
 			  this.spinner.Close();
   			this.listdenom = [];
   			this.loadData();
-  			this.modalupdate = false;
+			this.modalupdate = false;
+			this.SearchData();  
 		})
 		
 		  

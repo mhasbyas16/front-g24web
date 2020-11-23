@@ -32,6 +32,7 @@ export const management = [
   // SECURITY
   { _id: "0005", type: "menu", name: "Security", icons: "yang bagus", color: "warna-warni", componentId: "S10003", parentId: "", module: "rl" },
   { _id: "0005", type: "sub-menu", name: "Role", icons: "yang bagus", color: "warna-warni", componentId: "10002", parentId: "S10003", module: "rl", menu: { _id: "0005" } },
+  { _id: "0005", type: "sub-menu", name: "User", icons: "yang bagus", color: "warna-warni", componentId: "10011", parentId: "S10003", module: "rl", menu: { _id: "0005" } },
   // PARAMETER
   { _id: "0006", type: "menu", name: "Paremeter Gallery", icons: "dashboard", color: "warna-warni", componentId: "S20000", parentId: "", module: "pr" },
   { _id: "0006", type: "sub-menu", name: "Paremeter", icons: "", color: "warna-warni", componentId: "20001", parentId: "S20000", module: "pr", menu: { _id: "0006" } },
@@ -86,9 +87,9 @@ export const kasir = [
   { _id: "1001", type: "sub-menu", name: "Terima Manual Perhiasan", icons: "yang bagus", color: "warna-warni", componentId: "11006", parentId: "S10011", module: "bb", menu: { _id: "0001 " } },
   { _id: "1001", type: "sub-menu", name: "Terima Manual Souvenir", icons: "yang bagus", color: "warna-warni", componentId: "11005", parentId: "S10011", module: "bb", menu: { _id: "0001 " } },
   // TRANSAKSI-MOKER
-  { _id: "0006", type: "menu", name: "Transaksi", icons: "nvme", color: "warna-warni", componentId: "S31000", parentId: "", module: "tm" },
-  { _id: "0006", type: "sub-menu", name: "Kirim Moker", icons: "", color: "warna-warni", componentId: "31001", parentId: "S31000", module: "tm", menu: { _id: "0008" } },
-  { _id: "0006", type: "sub-menu", name: "Terima Moker", icons: "", color: "warna-warni", componentId: "31003", parentId: "S31000", module: "tm", menu: { _id: "0008" } },
+  // { _id: "0006", type: "menu", name: "Transaksi", icons: "nvme", color: "warna-warni", componentId: "S31000", parentId: "", module: "tm" },
+  // { _id: "0006", type: "sub-menu", name: "Kirim Moker", icons: "", color: "warna-warni", componentId: "31001", parentId: "S31000", module: "tm", menu: { _id: "0008" } },
+  // { _id: "0006", type: "sub-menu", name: "Terima Moker", icons: "", color: "warna-warni", componentId: "31003", parentId: "S31000", module: "tm", menu: { _id: "0008" } },
 
   //INQUERY PRODUCT
   { _id: "0011", type: "menu", name: "Inquery", icons: "data-cluster", color: "warna-warni", componentId: "IP101", parentId: "", module: "ip" },
@@ -111,9 +112,9 @@ export const managerDistro = [
   { _id: "0011", type: "menu", name: "Inquery", icons: "data-cluster", color: "warna-warni", componentId: "IP101", parentId: "", module: "ip" },
   { _id: "0011", type: "sub-menu", name: "Inquery Product", icons: "yang bagus", color: "warna-warni", componentId: "99101", parentId: "IP101", module: "ip", menu: { _id: "0011" } },
   // TRANSAKSI-MOKER
-  { _id: "0006", type: "menu", name: "Transaksi", icons: "nvme", color: "warna-warni", componentId: "S31000", parentId: "", module: "tm" },
-  { _id: "0006", type: "sub-menu", name: "Approval Kirim Modal", icons: "", color: "warna-warni", componentId: "31002", parentId: "S31000", module: "tm", menu: { _id: "0008" } },
-  { _id: "0006", type: "sub-menu", name: "Approval Terima Moker", icons: "", color: "warna-warni", componentId: "31004", parentId: "S31000", module: "tm", menu: { _id: "0008" } },
+  // { _id: "0006", type: "menu", name: "Transaksi", icons: "nvme", color: "warna-warni", componentId: "S31000", parentId: "", module: "tm" },
+  // { _id: "0006", type: "sub-menu", name: "Approval Kirim Modal", icons: "", color: "warna-warni", componentId: "31002", parentId: "S31000", module: "tm", menu: { _id: "0008" } },
+  // { _id: "0006", type: "sub-menu", name: "Approval Terima Moker", icons: "", color: "warna-warni", componentId: "31004", parentId: "S31000", module: "tm", menu: { _id: "0008" } },
 
 
 ];
@@ -130,10 +131,10 @@ export const keuangan = [
   { _id: "0006", type: "menu", name: "Parameter Gallery", icons: "dashboard", color: "warna-warni", componentId: "S20000", parentId: "", module: "pr" },
   { _id: "0006", type: "sub-menu", name: "Parameter Global", icons: "", color: "warna-warni", componentId: "20002", parentId: "S20000", module: "pr", menu: { _id: "0006" } },
   { _id: "0006", type: "sub-menu", name: "Parameter Harga", icons: "", color: "warna-warni", componentId: "20001", parentId: "S20000", module: "pr", menu: { _id: "0006" } },
-  // TRANSAKSI-MOKER
-  { _id: "0006", type: "menu", name: "Transaksi", icons: "nvme", color: "warna-warni", componentId: "S31000", parentId: "", module: "tm" },
-  { _id: "0006", type: "sub-menu", name: "Kirim Moker", icons: "", color: "warna-warni", componentId: "31001", parentId: "S31000", module: "tm", menu: { _id: "0008" } },
-  { _id: "0006", type: "sub-menu", name: "Terima Moker", icons: "", color: "warna-warni", componentId: "31003", parentId: "S31000", module: "tm", menu: { _id: "0008" } },
+  // // TRANSAKSI-MOKER
+  // { _id: "0006", type: "menu", name: "Transaksi", icons: "nvme", color: "warna-warni", componentId: "S31000", parentId: "", module: "tm" },
+  // { _id: "0006", type: "sub-menu", name: "Kirim Moker", icons: "", color: "warna-warni", componentId: "31001", parentId: "S31000", module: "tm", menu: { _id: "0008" } },
+  // { _id: "0006", type: "sub-menu", name: "Terima Moker", icons: "", color: "warna-warni", componentId: "31003", parentId: "S31000", module: "tm", menu: { _id: "0008" } },
 ];
 
 export const stock = [

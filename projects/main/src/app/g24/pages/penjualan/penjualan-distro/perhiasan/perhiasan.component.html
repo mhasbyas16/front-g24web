@@ -60,14 +60,17 @@
     <clr-dg-column>Kadar</clr-dg-column>
     <clr-dg-column>Warna</clr-dg-column>
     <clr-dg-column>Harga</clr-dg-column>
+    <clr-dg-column>Diskon</clr-dg-column>
+    <clr-dg-column>Harga Diskon</clr-dg-column>
+    <clr-dg-column>Tipe Stock</clr-dg-column>
     <clr-dg-column class="right"></clr-dg-column>
 
     <clr-dg-row *clrDgItems="let d of dataperhiasans">
-        <ng-container *ngIf="d.id == null || d.id == ''; else dId">
+        <ng-container *ngIf="d.no_urut == null || d.no_urut == ''; else dId">
             <clr-dg-cell><span class="label label-danger" style="float: right;" >Not Set</span></clr-dg-cell>
         </ng-container>
         <ng-template #dId>
-            <clr-dg-cell>{{d.id}}</clr-dg-cell>
+            <clr-dg-cell>{{d.no_urut}}</clr-dg-cell>
         </ng-template>
         <ng-container *ngIf="d.code == null || d.code == ''; else dCode">
             <clr-dg-cell><span class="label label-danger" style="float: right;" >Not Set</span></clr-dg-cell>
@@ -85,10 +88,29 @@
                 <span class="label label-danger" style="float: right;" >Rusak</span>
             </ng-container>
             <ng-template #plusDef>
+                <span style="float: right;">Rp. {{d.hargaAwal|number}}
+                </span>
+            </ng-template>
+        </clr-dg-cell>
+        <clr-dg-cell>
+            <ng-container *ngIf="d.kondisi == 'Rusak'; else plusDef2">
+                <span class="label label-danger" style="float: right;" >Rusak</span>
+            </ng-container>
+            <ng-template #plusDef2>
+                <span style="float: right;">Rp. {{d.diskon|number}}
+                </span>
+            </ng-template>
+        </clr-dg-cell>
+        <clr-dg-cell>
+            <ng-container *ngIf="d.kondisi == 'Rusak'; else plusDef3">
+                <span class="label label-danger" style="float: right;" >Rusak</span>
+            </ng-container>
+            <ng-template #plusDef3>
                 <span style="float: right;">Rp. {{d.hargaJual|number}}
                 </span>
             </ng-template>
         </clr-dg-cell>
+        <clr-dg-cell>{{d.tipe_stock}}</clr-dg-cell>
         <clr-dg-cell>
             <ng-container *ngIf="d.kondisi == 'Rusak'; else plusDefault">
                 <span class="label label-danger" >Rusak</span>
@@ -101,7 +123,7 @@
                         </button>                
                     </ng-container>
                     <ng-template #plus>
-                        <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.code,d.vendor.name,d['product-jenis'].name,d['product-gold-color'].name, d.berat, d['product-purity'].name, d.hargaJual, d._hash)">
+                        <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.code,d.vendor.name,d['product-jenis'].name,d['product-gold-color'].name, d.berat, d['product-purity'].name, d.hargaJual, d._hash, d.hargaAwal, d.diskon)">
                             <clr-icon shape="plus"></clr-icon>
                         </button>  
                     </ng-template>

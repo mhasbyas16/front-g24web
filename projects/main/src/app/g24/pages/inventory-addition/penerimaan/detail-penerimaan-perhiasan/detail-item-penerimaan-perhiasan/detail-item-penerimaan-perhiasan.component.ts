@@ -237,7 +237,8 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
       berat : 0.00, baku_tukar : 0.0, gram_tukar : 0, ongkos : 0.0, unit : null,
       tipe_stock : "stock", vendor : null, flag : "stock", location : "",
       no_po : "", no_item_po : 0, no_index_products : 0, isTerima : false,
-      hpp_inisiasi : 0, hpp : 0
+      hpp_inisiasi : 0, hpp : 0,
+      tgl_terima : ""
 
     }
   }
@@ -398,6 +399,7 @@ export class DetailItemPenerimaanPerhiasanComponent implements OnInit {
         def.no_item_po = i;
         def.no_index_products = p;
         def.unit = this.unit;
+        def.tgl_terima = this.date;
 
         products.push(def);
       }

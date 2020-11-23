@@ -35,9 +35,12 @@ listseries : any[] = [];
 delete : any[] = [];
 uptodate : any[] = [];
 
+inputUpdate : any = {};
 
 modaltambah : boolean = false;
 modalupdate : boolean = false;
+
+modalkonfirm : boolean = false;
 
 
 
@@ -147,11 +150,15 @@ modalupdate : boolean = false;
   		this.toastr.success("Data berhasil ditambah","Sukses");
   		this.listseries = [];
   		this.loadData();
-  		this.modaltambah = false;
+		this.modaltambah = false;
+		this.SearchData();  
   	})
   }
 
   Ubah(){
+	this.inputUpdate.name_series = this.data_view?.name;
+	this.inputUpdate.ket_series = this.data_view?.note;
+
 	if(!this.data_view){
 		this.toastr.warning("Data belum dipilih","Peringatan");
 		return;
@@ -170,15 +177,22 @@ modalupdate : boolean = false;
   Update(){
 	this.spinner.SetSpinnerText("Mohon Tunggu...");
 	this.spinner.Open();
+	if(this.data_view?.name == "" || this.data_view?.note == ""){
+		this.toastr.warning("Data nama series atau note kosong","Peringatan");
+		this.spinner.Close();
+		return;
+	}else if(this.inputUpdate.name_series == "" || this.inputUpdate.ket_series == ""){
+		this.toastr.warning("Nama series atau note belum diisi","Peringatan");
+		this.spinner.Close();
+		return;
+	}
   	for(let i = 0; i < this.uptodate.length; i++){
   		console.log(this.uptodate[i]._id);
   		let data = {
   			_id 	: this.uptodate[i]._id,
-  			name 	: this.dataupdate["name"],
-  			note	: this.dataupdate["ket"]
+  			name 	: this.inputUpdate["name_series"],
+  			note	: this.inputUpdate["ket_series"]
   		}
-
-  		console.log(data);
 
   		let upd = DataTypeUtil.Encode(data);
   		this.seriesservice.update(upd).subscribe(data=>{
@@ -193,7 +207,8 @@ modalupdate : boolean = false;
   			this.toastr.success("Data berhasil diubah","Sukses");
   			this.listseries = [];
   			this.loadData();
-  			this.modalupdate = false;
+			this.modalupdate = false;
+			this.SearchData();
   		})
   	}
   }
@@ -226,7 +241,9 @@ modalupdate : boolean = false;
 			this.spinner.Close();
   			this.toastr.success("Data berhasil dihapus","Sukses");
   			this.listseries = [];
-  			this.loadData();
+			this.loadData();
+			this.SearchData();
+			this.modalkonfirm = false;
   		})
   	}
   }

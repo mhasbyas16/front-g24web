@@ -49,6 +49,8 @@ modalupdate : boolean = false;
 
 modalview : boolean = false;
 
+inputUpdate : any = {};
+
 datavendor : any[] = [];
 listvendor : any[] = [];
 
@@ -144,6 +146,8 @@ listvendor : any[] = [];
   }
 
   Ubah(){
+    this.inputUpdate.name_vendor = this.data_view?.name;
+
     if(!this.data_view){
       this.toastr.warning("Data belum dipilih","Peringatan");
       return;
@@ -182,6 +186,9 @@ listvendor : any[] = [];
     if(!this.select_kategori){
       this.toastr.error("Produk kategori belum dipilih","Gagal");
       return;
+    }else if(Object.keys(this.select_kategori).length==0){
+      this.toastr.error("Produk kategori belum dipilih","Gagal");
+      return;
     }
     for(let i = 0; i < this.addkategori.length; i++){
 		  if(this.addkategori[i].code==this.select_kategori.code){
@@ -193,6 +200,13 @@ listvendor : any[] = [];
   }
 
   TambahKategoriUpdate(){
+    if(!this.select_kategori_upd){
+      this.toastr.error("Produk kategori belum dipilih","Gagal");
+      return;
+    }else if(Object.keys(this.select_kategori_upd).length==0){
+      this.toastr.error("Produk kategori belum dipilih","Gagal");
+      return;
+    }
     for(let i = 0; i < this.dataupdatekategori.length; i++){
       if(this.dataupdatekategori[i].code==this.select_kategori_upd.code){
         this.toastr.info("Produk kategori sama","Informasi");
@@ -264,13 +278,23 @@ listvendor : any[] = [];
   Update(){
     this.spinner.SetSpinnerText("Mohon Tunggu...");
     this.spinner.Open();
+
+    if(this.data_view?.name == ""){
+      this.toastr.warning("Name belum di isi","Peringatan");
+      this.spinner.Close();
+      return;
+    }else if(this.inputUpdate.name_vendor == ""){
+      this.toastr.warning("Name belum di isi","Peringatan");
+      this.spinner.Close();
+      return;
+    }
+
     for(let i = 0; i < this.uptodate.length; i++){
 
   		console.log(this.uptodate[i]._id);
   		let data = {
 			_id 	: this.uptodate[i]._id,
-			name 	: this.dataupdate["name"],
-			code 	: this.dataupdate["code"],
+			name 	: this.inputUpdate["name_vendor"],
 			"product-category" : []  
   		}
 
@@ -292,7 +316,8 @@ listvendor : any[] = [];
   				}
         }
         this.spinner.Close();
-  			this.toastr.success("Data berhasil diubah","Sukses");
+        this.toastr.success("Data berhasil diubah","Sukses");
+        this.SearchData();
   			this.listvendor = [];
   			this.loadData();
   			this.modalupdate = false;

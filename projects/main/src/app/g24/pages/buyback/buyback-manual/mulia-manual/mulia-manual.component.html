@@ -15,6 +15,7 @@
                                 <app-cart-buyback-manual-lm
                                 [totalCart]="totalCart"
                                 [maxGrDay] = "maxGrDay"
+                                [firstmaxGrDay]= "firstmaxGrDay"
                                 (clearEmasBatangan)="clearEmasBatangan($event)"
                                 [hargaTotalEmasBatangan]="hargaTotalEmasBatangan"
                                 (cartTotalBerat)="refreshTotalBerat($event)"
@@ -112,13 +113,20 @@
                                         <div class="clr-row" style="text-align: center;">
                                             <div class="clr-col">
                                                 <clr-input-container style="margin-top: 0; margin-left: 10%; margin-right: 10%;" >
-                                                        <input clrInput type="text" style=" width: 50%;" name="jumlah" [(ngModel)]="jumlahLM">
+                                                        <input clrInput type="number" min="0" step="1" onkeypress="return event.charCode != 45" style=" width: 100%;" name="jumlah" [(ngModel)]="jumlahLM">
                                                 </clr-input-container>
                                             </div>
                                             <div class="clr-col">
-                                                <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.vendor, d.denom, d.harga, d.denomCodes, d.denomValues)">
-                                                    <clr-icon shape="plus"></clr-icon>
-                                                </button> 
+                                                <ng-container *ngIf="d.harga == 0 || d.harga == '0' ">
+                                                    <button type="button" class="btn btn-icon btn-sm btn-danger disabled" aria-label="home" >
+                                                        <clr-icon shape="minus"></clr-icon>
+                                                    </button>
+                                                </ng-container>
+                                                <ng-container *ngIf="d.harga != 0 || d.harga != '0' ">
+                                                    <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.vendor, d.denom, d.harga, d.denomCodes, d.denomValues)">
+                                                        <clr-icon shape="plus"></clr-icon>
+                                                    </button>
+                                                </ng-container>                                                  
                                             </div>
                                         </div>
                                     </clr-dg-cell>

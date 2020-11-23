@@ -345,6 +345,7 @@
                                             <input type="hidden" formControlName="jenisPerusahaan_encoded">
                                             <input type="hidden" formControlName="jenisBadanHukum_encoded">
                                             <input type="hidden" formControlName="bidangUsaha_encoded">
+                                            <input type="hidden" formControlName="reg_date">
 
 
                                         </div>                                                              
@@ -408,7 +409,7 @@
                                                     <div class="clr-col-6">
                                                         <clr-input-container>
                                                             <label>No. ID</label>
-                                                            <input clrInput type="text" formControlName="noID">
+                                                            <input clrInput type="text" formControlName="noID" maxlength="15">
                                                             <clr-control-helper>*</clr-control-helper>
                                                             <clr-control-error *clrIfError="'maxlength'; error as err">Must be at least {{ err.requiredLength }} characters</clr-control-error>
                                                             <clr-control-error *clrIfError="'pattern'; error as err">It must '{{ err.requiredPattern }}'</clr-control-error>
@@ -576,7 +577,7 @@
                                                     <div class="clr-col-6">
                                                         <clr-input-container>
                                                             <label>No. NPWP</label>
-                                                            <input clrInput type="text" formControlName="noNPWP">
+                                                            <input clrInput type="text" formControlName="noNPWP" maxlength="17">
                                                             <clr-control-error *clrIfError="'maxlength'; error as err">Must be at least {{ err.requiredLength }} characters</clr-control-error>
                                                             <clr-control-error *clrIfError="'pattern'; error as err">It must '{{ err.requiredPattern }}'</clr-control-error>
                                                         </clr-input-container>
@@ -871,6 +872,7 @@
                                                 <input type="hidden" formControlName="sumberDana_encoded">
                                                 <input type="hidden" formControlName="pekerjaan_encoded">
                                                 <input type="hidden" formControlName="pendapatan_encoded">
+                                                <input type="hidden" formControlName="reg_date">
                                             </div>                                                              
                                         </div>
                                     </div>

@@ -7,9 +7,9 @@
             	<div class="clr-row">
             		<div class="clr-col-6">
             			<div class="clr-form-control">
-                            <label class="clr-control-label">Jenis Produk</label>
+                            <label class="clr-control-label">Nama Vendor</label>
                             <clr-input-container>
-                                <input [(ngModel)]="search.kategori" clrInput name="kategori">
+                                <input [(ngModel)]="search.name" clrInput name="name">
                             </clr-input-container>
             				<!--div class="clr-control-container">
             				<select [(ngModel)]="search.kategori" clrSelect name="kategori">
@@ -185,7 +185,7 @@
 
 <!--MODAL UPDATE DATA-->
 <clr-modal [(clrModalOpen)]="modalupdate">
-    <h3 class="modal-title">Update Venodr</h3>
+    <h3 class="modal-title">Update Vendor</h3>
     <div class="modal-body">
     	<div class="clr-row">
     		<div class="clr-col-6">
@@ -202,7 +202,7 @@
     			<div class="clr-form-control">
     				<clr-input-container>
 				    <label>Kode</label>
-				    <input clrInput [(ngModel)]="dataupdate.code" name="code" value="{{dataupdate.code}}" readonly />
+				    <input clrInput [(ngModel)]="inputUpdate.code_vendor" name="code_vendor" value="{{dataupdate.code}}" readonly />
 				    <clr-control-error>Wajib di isi</clr-control-error>
 				  </clr-input-container>
     			</div>
@@ -211,7 +211,7 @@
     			<div class="clr-form-control">
     				<clr-input-container>
 				    <label>Name</label>
-				    <input clrInput [(ngModel)]="dataupdate.name" name="name" value="{{dataupdate.name}}" required />
+				    <input clrInput [(ngModel)]="inputUpdate.name_vendor" name="name_vendor" value="{{dataupdate.name}}" required />
 				    <clr-control-error>Wajib di isi</clr-control-error>
 				  </clr-input-container>
     			</div>

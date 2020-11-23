@@ -48,7 +48,7 @@
             <div class="btn-group">
                 <button type="button" class="btn btn-sm btn-secondary" (click)="Tambah()" ><clr-icon shape="plus"></clr-icon>Tambah</button>
                 <button type="button" class="btn btn-sm btn-secondary" (click)="Ubah()" ><clr-icon shape="sync"></clr-icon>Ubah</button>
-                <button type="button" class="btn btn-sm btn-secondary" (click)="Hapus()" ><clr-icon shape="trash"></clr-icon>Hapus</button>
+                <button type="button" class="btn btn-sm btn-secondary" *ngIf="data_view?.name" (click)="modalkonfirm = true" ><clr-icon shape="trash"></clr-icon>Hapus</button>
             </div>
         </clr-dg-action-bar>
         
@@ -89,8 +89,8 @@
     		<div class="clr-col-6">
     			<div class="clr-form-control">
     				<clr-input-container>
-				    <label>Kode</label>
-				    <input clrInput [(ngModel)]="input.code" name="code" minlength="3" maxlength="3" required />
+				    <label>Nama Purity</label>
+				    <input clrInput [(ngModel)]="input.name" name="name" minlength="3" maxlength="3" required />
 					<clr-control-helper><clr-icon shape="info-circle"></clr-icon> Harap isi dengan angka</clr-control-helper>
 					<clr-control-error>Wajib di isi. Dan input harus 3 digit angka</clr-control-error>
 				  </clr-input-container>
@@ -124,7 +124,7 @@
     			<div class="clr-form-control">
     				<clr-input-container>
 				    <label>Kode</label>
-				    <input clrInput [(ngModel)]="dataupdate.code" name="code" value="{{dataupdate.code}}" readonly />
+				    <input clrInput [(ngModel)]="inputUpdate.code_purity" name="code_purity" value="{{dataupdate.code}}" readonly />
 				  </clr-input-container>
     			</div>
     		</div>
@@ -132,7 +132,7 @@
     			<div class="clr-form-control">
     				<clr-input-container>
 				    <label>Nama Purity</label>
-				    <input clrInput [(ngModel)]="dataupdate.name" name="name" maxlength="3" value="{{dataupdate.name}}" required />
+				    <input clrInput [(ngModel)]="inputUpdate.name_purity" name="name_purity" maxlength="3" value="{{dataupdate.name}}" required />
 					<clr-control-helper><clr-icon shape="info-circle"></clr-icon> Harap isi dengan angka</clr-control-helper>
 				    <clr-control-error>Wajib di isi. Dan input harus 3 digit angka</clr-control-error>
 				  </clr-input-container>
@@ -144,6 +144,18 @@
         <button type="button" class="btn btn-outline" (click)="modalupdate = false">Cancel</button>
         <button type="button" class="btn btn-primary" (click)="Update()">Update</button>
     </div>
+</clr-modal>
+
+<!-- KONFIRM MODAL UNTUK HAPUS -->
+<clr-modal [(clrModalOpen)]="modalkonfirm" [clrModalSize]="'sm'">
+	<h3 class="modal-title">Konfimasi Hapus Data</h3>
+	<div class="modal-body">
+		Apakah anda yakin ingin menghapus Produk Purity {{data_view?.name}} ?
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-sm btn-primary" (click)="Hapus()">Iya</button>
+		<button type="button" class="btn btn-sm btn-danger" (click)="modalkonfirm = false">Tidak</button>
+	</div>
 </clr-modal>
 
 <loading-spinner #spinner></loading-spinner>

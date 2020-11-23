@@ -35,13 +35,6 @@ export class AuditLogComponent implements OnInit {
 
   }
 
-
-
-
-
-
-  
-  
   
   @ViewChild('detail_screen') modalItemTerima : DetailAuditLogComponent;
   btoa = btoa;
@@ -94,7 +87,8 @@ export class AuditLogComponent implements OnInit {
       create_date_end : new FormControl(""),
       custom : new FormControl(""),
       user : new FormControl(""),
-      query : new FormControl("")
+      query : new FormControl(""),
+      collection : new FormControl("")
     });
     this.searchFG = fg
 
@@ -239,6 +233,7 @@ export class AuditLogComponent implements OnInit {
 
   date : string = "";
   async ngOnInit(): Promise<void> {
+    this.lookup.loadByCode("log-field-name");
     this.lookup.loadByCode("order-status");
     await this.lookup.loadByCode("order-status");
     this.user = this.session.getUser();
@@ -287,6 +282,12 @@ export class AuditLogComponent implements OnInit {
     let query_p : string = this.searchFG.get("query").value;
     query_p = query_p == null ? "" : "&" + query_p;
 
+    let coll_p : string = this.searchFG.get("collection").value;
+    coll_p = coll_p == null ? "" : "&collection=" + coll_p;
+
+    // let id_row_p : string = this.searchFG.get("id_row").value;
+    // id_row_p = id_row_p == null ? "" : "&"
+
     let create_start = this.searchFG.get("create_date_start").value;
     create_start = StringHelper.StandardFormatDate("/", create_start, "MM/dd/yyyy");
     console.log(create_start)
@@ -322,7 +323,7 @@ export class AuditLogComponent implements OnInit {
       id_p = "&user=" + this.searchFG.get('user').value;
     }
 
-    let params = "?" + create_p + user_p + id_p + "&" + query_p;
+    let params = "?" + create_p + user_p + id_p + "&" + query_p + coll_p;
     // params += "&unit="+ this.unit.code;
     
     this.loading = true;

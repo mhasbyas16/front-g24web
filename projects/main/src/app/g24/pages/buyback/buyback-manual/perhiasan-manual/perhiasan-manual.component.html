@@ -41,7 +41,7 @@
                                         <div class="clr-col-6">
                                             <clr-date-container>
                                                 <label>Tanggal Transaksi Pembelian</label>
-                                                <input clrDate type="date" [(ngModel)]="searchModel.tanggalTransaksiPembelian" name="input_tanggalTransaksiPembelian">
+                                                <input clrDate type="date" required [(ngModel)]="searchModel.tanggalTransaksiPembelian" name="input_tanggalTransaksiPembelian">
                                             </clr-date-container>
                                         </div>
                                     </div>
@@ -49,13 +49,13 @@
                                         <div class="clr-col-6">
                                             <clr-input-container>
                                                 <label>Nama Nasabah Pembelian</label>
-                                                <input type="text" clrInput [(ngModel)]="searchModel.namaNasabahPembelian" name="input_namaNasabahPembelian">
+                                                <input type="text" required clrInput [(ngModel)]="searchModel.namaNasabahPembelian" name="input_namaNasabahPembelian">
                                             </clr-input-container>
                                         </div>
                                         <div class="clr-col-6">
                                             <clr-input-container>
                                                 <label>Alamat Nasabah Pembelian</label>
-                                                <input type="text" clrInput [(ngModel)]="searchModel.alamatTransaksiPembelian" name="input_alamatTransaksiPembelian">
+                                                <input type="text" required clrInput [(ngModel)]="searchModel.alamatTransaksiPembelian" name="input_alamatTransaksiPembelian">
                                             </clr-input-container>
                                         </div>
                                     </div>
@@ -111,7 +111,7 @@
                                         <div class="clr-col-6">
                                             <clr-input-container>
                                                 <label>Berat Perhiasan</label>
-                                                <input type="number" clrInput [(ngModel)]="searchModel.beratPerhiasan" name="input_beratPerhiasan">
+                                                <input type="number" min="0" step="0.01" onkeypress="return event.charCode != 45" clrInput [(ngModel)]="searchModel.beratPerhiasan" name="input_beratPerhiasan">
                                             </clr-input-container>
                                         </div>
                                         <div class="clr-col-6">
@@ -175,7 +175,7 @@
                                         </clr-dg-cell>
                                         <clr-dg-cell>Rp. {{d.hargaBB | number}}</clr-dg-cell>
                                         <clr-dg-cell>
-                                            <ng-container *ngIf="cartList.length == 0; else disabled">
+                                            <ng-container *ngIf="cartList.length == 0 || d.hargaBB != 0 || d.hargaBB != '0' ; else disabled">
                                                 <button type="button" class="btn btn-icon btn-sm btn-success" (click)="addToCart(dataperhiasans)" aria-label="home" >
                                                     <clr-icon shape="plus"></clr-icon>
                                                 </button> 

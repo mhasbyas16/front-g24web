@@ -19,16 +19,8 @@
             			<div class="clr-form-control">
 							<label class="clr-control-label">Jenis Produk</label>
 							<clr-input-container>
-                                <input [(ngModel)]="search.kategori" clrInput name="kategori">
+                                <input [(ngModel)]="search.name" clrInput name="name">
                             </clr-input-container>
-            				<!--div class="clr-control-container">
-            				<select [(ngModel)]="search.kategori" #kategori clrSelect name="kategori">
-            					<option [ngValue]=""></option>
-            					<ng-container *ngFor="let data of datakategori">
-            						<option [ngValue]="data">{{data.name}}</option>
-            					</ng-container>
-            				</select>
-            				</div-->
             			</div>
             		</div>
             	</div>
@@ -219,7 +211,7 @@
     			<div class="clr-form-control">
     				<clr-input-container>
 				    <label>Nama Jenis</label>
-				    <input clrInput [(ngModel)]="dataupdate.name" name="name" value="{{dataupdate.name}}" required />
+				    <input clrInput [(ngModel)]="inputUpdate.name_jenis" name="name_jenis" value="{{dataupdate.name}}" required />
 				    <clr-control-error>Wajib di isi</clr-control-error>
 				  </clr-input-container>
     			</div>

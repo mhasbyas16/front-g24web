@@ -11,6 +11,8 @@ import { ProductCategoryService } from '../../../../services/product/product-cat
 import { BuybackAcceptParameterService } from '../../../../services/buyback/buyback-accept-parameter.service';
 import { BuybackTransactionService } from '../../../../services/buyback/buyback-transaction.service';
 import { DatePipe } from "@angular/common";
+import { TransactionBuybackPriceService } from '../../../../services/transaction/transaction-buyback-price.service';
+
 
 // prm
 import { PrmJualService } from '../../../../services/parameter/prm-jual.service';
@@ -32,6 +34,7 @@ export class MuliaManualComponent implements OnInit {
   cartList = LM;
   detail: {};
   sumHarga: number;
+  firstmaxGrDay:any;
 
   constructor(
     private vendorService: VendorService,
@@ -43,6 +46,7 @@ export class MuliaManualComponent implements OnInit {
     private toastrService:ToastrService,
     private buybackTransactionService : BuybackTransactionService,
     private datePipe: DatePipe,
+    private transactionBuybackPriceService:TransactionBuybackPriceService
   ) { }
 
   ngOnInit(): void {
@@ -128,6 +132,7 @@ export class MuliaManualComponent implements OnInit {
           }
         }
         this.maxGrDay = paramMaxGr - grTransaction
+        this.firstmaxGrDay = paramMaxGr - grTransaction
       })
     })
   }
@@ -153,6 +158,15 @@ export class MuliaManualComponent implements OnInit {
   
     this.hargaBaku = 0
 
+    if (data.input_vendor_mulia == "pilih") {
+      this.loadingDg = false;
+      return this.toastrService.error("Silahkan Pilih vendor");
+    }
+    if (data.input_denom_mulia == "pilih") {
+      this.loadingDg = false;
+      return this.toastrService.error("Silahkan Pilih denom");
+    }
+
     this.vendorService.get("?code="+data.input_vendor_mulia).subscribe((response: any) => {
       vendorCode = response.code;
       vendorName = response.name;
@@ -163,17 +177,22 @@ export class MuliaManualComponent implements OnInit {
           const urlVendor = "vendor.code="+vendorCode;
           const urlJenisbarang = "jenis_barang=Buyback"
 
-        this.prmJualService.get(this.muliaCategory+"&"+urlVendor+"&"+urlJenisbarang).subscribe((Jualresponse: any) => {
-          prmJual = Jualresponse.harga
-          for (let index = 0; index < prmJual.length; index++) {
-            if (prmJual[index]["product-denom"].code == denomCode) {
-              this.hargaBaku = prmJual[index].harga_baku
-            }
-          }
+        // this.prmJualService.get(this.muliaCategory+"&"+urlVendor+"&"+urlJenisbarang).subscribe((Jualresponse: any) => {
+        //   prmJual = Jualresponse.harga
+        //   for (let index = 0; index < prmJual.length; index++) {
+        //     if (prmJual[index]["product-denom"].code == denomCode) {
+        //       this.hargaBaku = prmJual[index].harga_baku
+        //     }
+        //   }
+
+        this.transactionBuybackPriceService.get("?_transactionType=b02&_ch=ch02&_vendorLM="+vendorCode+"&_denomLM="+denomValue+"&_manualBuyback=lm").subscribe((response:any)=>{
+          const hasil = response;
           this.detail = {}
-          this.datamulias = [{vendor : vendorName, denom: denomName, harga : this.hargaBaku, denomCodes : denomCode, denomValues: denomValue}]
+          this.datamulias = [{vendor : vendorName, denom: denomName, harga : hasil.harga, denomCodes : denomCode, denomValues: denomValue}]
           this.loadingDg = false;
         })
+          
+        // })
       })
     })
       
@@ -204,7 +223,7 @@ export class MuliaManualComponent implements OnInit {
                 "hpp_inisiasi" : harga,
                 "unit" : unit,
                 "vendor" : vendorDet,
-                "tipe_stock" : "stock",
+                "tipe_stock" : "buyback",
                 "location" : "pusat",
                 "sku" : "1234",
                 "product-denom" : denomDet,

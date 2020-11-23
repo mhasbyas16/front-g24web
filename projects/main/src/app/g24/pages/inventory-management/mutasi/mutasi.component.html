@@ -141,14 +141,14 @@
                 </div-->
                 <div class="clr-col-6">
                     <div class="clr-form-control">
-                        <label>Kode Unit Tujuan</label>
-                        <input [(ngModel)]="searchCode.code" name="code" clrInput required (keyup)="validateInputNumerik()" (keydown.enter)="oncekUnitCode()">
-                        <clr-control-helper>Harap tekan enter. Untuk cek nama unit</clr-control-helper>
+                        <label class="clr-control-label">Kode Unit Tujuan</label>
+                        <input [(ngModel)]="searchCode.code" name="code" [disabled]="Lock" clrInput required (keyup)="validateInputNumerik()" (keydown.enter)="oncekUnitCode()">
+                        <clr-control-helper style="color: deepskyblue;">Harap tekan enter. Untuk cek nama unit</clr-control-helper>
                     </div>
                 </div>
                 <div class="clr-col-6">
                     <div class="clr-form-control">
-                        <label>Nama Unit</label>
+                        <label class="clr-control-label">Nama Unit</label>
                         <label>{{addinput?.unit_tujuan?.nama}}</label>
                         <input type="text" clrInput [(ngModel)]="addinput.unit_tujuan" #unit_tujuan name="unit_tujuan" value="{{addinput?.unit_tujuan?.nama}}" hidden>
                     </div>
@@ -157,48 +157,62 @@
 			<div class="clr-row">
 				<div class="clr-col-6">
 				<div class="clr-form-control">
-                        <label>Product Kategori</label>
-                        <select [(ngModel)]="searchModel['product-category']" clrSelect name="kategori" (change)="onChange()">
+                        <label class="clr-control-label">Product Kategori</label>
+                        <select [(ngModel)]="searchModel['product-category']" [disabled]="Lock" clrSelect name="kategori" (change)="onChange()">
                             <option value=""></option>
                             <ng-container *ngFor="let prd of product_kategori">
                                 <option [ngValue]="prd">{{prd.name}}</option>
                             </ng-container>
                         </select>
-                        <clr-control-helper>Wajib dipilih</clr-control-helper>
+                        <clr-control-helper style="color: red;">* Wajib dipilih</clr-control-helper>
                     </div>
                 </div>
                 <div class="clr-col-6">
                     <div class="clr-form-control">
-                        <label>Vendor</label>
+                        <label class="clr-control-label">Vendor</label>
                         <div class="clr-control-container">
-                            <select [(ngModel)]="searchModel.vndr" #vndr clrSelect name="vndr" (change)="vendorReset()" required>
+                            <select [(ngModel)]="searchModel.vndr" [disabled]="Lock" #vndr clrSelect name="vndr" (change)="vendorReset()" required>
                             <option value=""></option>
                             <ng-container *ngFor="let vdr of vendor">
                                 <option [ngValue]="vdr">{{vdr.name}}</option>
                             </ng-container>
                         </select>
-                        <clr-control-helper>Wajib dipilih</clr-control-helper>
+                        <clr-control-helper style="color: red;">* Wajib dipilih</clr-control-helper>
                         </div>
                     </div>
                 </div>
-			</div>
+            </div>
+            <div class="clr-row">
+                <div class="clr-col-6">
+                    <div class="clr-form-control">
+                    <label class="clr-control-label">Tipe Stock</label>
+                    <div class="clr-control-container">
+                        <select [(ngModel)]="searchModel.tipe_stock" #tipe_stock clrSelect [disabled]="Lock" name="tipe_stock">
+                            <option [ngValue]=""></option>
+                            <ng-container *ngFor="let tipe of Tipe">
+                                <option [ngValue]="tipe">{{tipe.code}}</option>
+                            </ng-container>
+                        </select>
+                    </div>
+                    </div>
+                </div>
+            </div>
 			<div class="clr-row">
 				<div class="clr-col-6">
 					<div class="clr-form-control">
-						<clr-textarea-container>
-							<label>Keterangan</label>
-                            <textarea clrTextarea [(ngModel)]="addinput.keterangan" name="keterangan" required></textarea>
-                            <clr-control-error>Keterangan harap di isi</clr-control-error>
-					   </clr-textarea-container>
+							<label class="clr-control-label">Keterangan</label>
+                            <textarea clrTextarea [(ngModel)]="addinput.keterangan" [disabled]="Lock" name="keterangan" required></textarea>
+                            <clr-control-helper style="color: red;">* Wajib diisi</clr-control-helper>
 					</div>
 				</div>
 			</div>
 			<div class="clr-row">
 				<div class="clr-col-6">
 					<div class="clr-form-control">
-                        <label>Pilih Item Cepat</label>
-						<input type="number" [(ngModel)]="itempick" class="clr-input" name="pilih">
-						<button type="button" class="btn btn-sm btn-secondary" (click)="pickitem()">ceklis item</button>
+                        <label class="clr-control-label">Pilih Product berdasarkan inputan nomer dibawah ini</label>
+                        <input type="number" min="0" max="{{products.length}}" [(ngModel)]="itempick" class="clr-input" name="pilih">
+                        <clr-control-helper style="color: deepskyblue;">Optional</clr-control-helper>
+						<button type="button" class="btn btn-sm btn-secondary" (click)="pickitem()" style="margin-bottom: 12px; margin-top: 12px;"><clr-icon shape="check"></clr-icon> ceklis item</button>
 					</div>
 				</div>	
 			</div>
@@ -261,7 +275,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="clr-row" style="margin: 25px;">
+                    <!-- <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <label class="clr-control-label" style="padding-left: 10px">Tipe Stock</label>
                             <div class="clr-control-container">
@@ -273,7 +287,7 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
         
                     <div class="clr-row">
                         <div class="clr-col-12">
@@ -366,7 +380,7 @@
                         <div class="clr-col-6">
                             <div class="clr-form-control">
                                 <clr-select-container class="clr-form-control">
-                                    <label class="clr-control-label" style="padding-left: 10px">Warna Diamond</label>
+                                    <label class="clr-control-label" style="padding-left: 10px">Warna Berlian</label>
                                     <select [(ngModel)]="searchModel.color" #color clrSelect name="color">
                                         <option [ngValue]="null"></option>
                                         <ng-container *ngFor="let color of colors">
@@ -385,7 +399,7 @@
                                     <select [(ngModel)]="searchModel.clarity" #clarity clrSelect name="clarity">
                                         <option [ngValue]="null"></option>
                                         <ng-container *ngFor="let clarity of claritys">
-                                            <option [ngValue]="clarity">{{clarity.name}}</option>
+                                            <option [ngValue]="clarity">{{clarity.code | uppercase}}</option>
                                         </ng-container>
                                     </select>
                                 </clr-select-container>
@@ -400,7 +414,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="clr-row" style="margin: 25px;">
+                    <!-- <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <label class="clr-control-label" style="padding-left: 10px">Tipe Stock</label>
                             <div class="clr-control-container">
@@ -412,7 +426,7 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
         
                     <div class="clr-row">
                         <div class="clr-col-12">
@@ -455,14 +469,14 @@
                                 <label class="clr-control-label" style="padding-left: 10px">Denom</label>
                                 <select [(ngModel)]="searchModel.denom" #denom clrSelect name="denom">
                                     <option [ngValue]="null"></option>
-                                    <ng-container *ngFor="let denom of denoms">
+                                    <ng-container *ngFor="let denom of denomsSouvenir">
                                         <option [ngValue]="denom">{{denom.name}}</option>
                                     </ng-container>
                                 </select>
                             </clr-select-container>
                         </div>
                     </div>
-                    <div class="clr-row" style="margin: 25px;">
+                    <!-- <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <label class="clr-control-label" style="padding-left: 10px">Tipe Stock</label>
                             <div class="clr-control-container">
@@ -474,7 +488,7 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
         
                     <div class="clr-row">
                         <div class="clr-col-12">
@@ -518,14 +532,14 @@
                                 <label class="clr-control-label" style="padding-left: 10px">Denom</label>
                                 <select [(ngModel)]="searchModel.denom" #denom clrSelect name="denom">
                                     <option [ngValue]="null"></option>
-                                    <ng-container *ngFor="let denom of denoms">
+                                    <ng-container *ngFor="let denom of denomsGift">
                                         <option [ngValue]="denom">{{denom.name}}</option>
                                     </ng-container>
                                 </select>
                             </clr-select-container>
                         </div>
                     </div>
-                    <div class="clr-row" style="margin: 25px;">
+                    <!-- <div class="clr-row" style="margin: 25px;">
                         <div class="clr-col-6">
                             <label class="clr-control-label" style="padding-left: 10px">Tipe Stock</label>
                             <div class="clr-control-container">
@@ -537,7 +551,7 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
         
                     <div class="clr-row">
                         <div class="clr-col-12">
@@ -564,31 +578,7 @@
                 </div>
                 <div class="card-body">
                     <div class="clr-row" style="margin: 25px;">
-                        <div class="clr-col-6">
-                            <clr-select-container class="clr-form-control">
-                                <label class="clr-control-label" style="padding-left: 10px">Seri</label>
-                                <select [(ngModel)]="searchModel.seri" #seri clrSelect name="seri">
-                                    <option [ngValue]="null"></option>
-                                    <ng-container *ngFor="let seri of series">
-                                        <option [ngValue]="seri">{{seri.name}}</option>
-                                    </ng-container>
-                                </select>
-                            </clr-select-container>
-                        </div>
-                        <div class="clr-col-6">
-                            <clr-select-container class="clr-form-control">
-                                <label class="clr-control-label" style="padding-left: 10px">Denom</label>
-                                <select [(ngModel)]="searchModel.denom" #denom clrSelect name="denom">
-                                    <option [ngValue]="null"></option>
-                                    <ng-container *ngFor="let denom of denoms">
-                                        <option [ngValue]="denom">{{denom.name}}</option>
-                                    </ng-container>
-                                </select>
-                            </clr-select-container>
-                        </div>
-                    </div>
-                    <div class="clr-row" style="margin: 25px;">
-                        <div class="clr-col-6">
+                        <!-- <div class="clr-col-6">
                             <label class="clr-control-label" style="padding-left: 10px">Tipe Stock</label>
                             <div class="clr-control-container">
                                 <select [(ngModel)]="searchModel.tipe_stock" #tipe_stock clrSelect name="tipe_stock">
@@ -598,6 +588,17 @@
                                     </ng-container>
                                 </select>
                             </div>
+                        </div> -->
+                        <div class="clr-col-6">
+                            <clr-select-container class="clr-form-control">
+                                <label class="clr-control-label" style="padding-left: 10px">Denom</label>
+                                <select [(ngModel)]="searchModel.denom" #denom clrSelect name="denom">
+                                    <option [ngValue]="null"></option>
+                                    <ng-container *ngFor="let denom of denomsEmas">
+                                        <option [ngValue]="denom">{{denom.name}}</option>
+                                    </ng-container>
+                                </select>
+                            </clr-select-container>
                         </div>
                     </div>
         
@@ -626,7 +627,7 @@
                 </div>
                 <div class="card-body">
                     <div class="clr-row" style="margin: 25px;">
-                        <div class="clr-col-6">
+                        <!-- <div class="clr-col-6">
                             <clr-select-container class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Seri</label>
                                 <select [(ngModel)]="searchModel.seri" #seri clrSelect name="seri">
@@ -636,21 +637,9 @@
                                     </ng-container>
                                 </select>
                             </clr-select-container>
-                        </div>
-                        <div class="clr-col-6">
-                            <clr-select-container class="clr-form-control">
-                                <label class="clr-control-label" style="padding-left: 10px">Denom</label>
-                                <select [(ngModel)]="searchModel.denom" #denom clrSelect name="denom">
-                                    <option [ngValue]="null"></option>
-                                    <ng-container *ngFor="let denom of denoms">
-                                        <option [ngValue]="denom">{{denom.name}}</option>
-                                    </ng-container>
-                                </select>
-                            </clr-select-container>
-                        </div>
-                    </div>
-                    <div class="clr-row" style="margin: 25px;">
-                        <div class="clr-col-6">
+                        </div> -->
+
+                        <!-- <div class="clr-col-6">
                             <label class="clr-control-label" style="padding-left: 10px">Tipe Stock</label>
                             <div class="clr-control-container">
                                 <select [(ngModel)]="searchModel.tipe_stock" #tipe_stock clrSelect name="tipe_stock">
@@ -660,6 +649,18 @@
                                     </ng-container>
                                 </select>
                             </div>
+                        </div> -->
+
+                        <div class="clr-col-6">
+                            <clr-select-container class="clr-form-control">
+                                <label class="clr-control-label" style="padding-left: 10px">Denom</label>
+                                <select [(ngModel)]="searchModel.denom" #denom clrSelect name="denom">
+                                    <option [ngValue]="null"></option>
+                                    <ng-container *ngFor="let denom of denomsDinar">
+                                        <option [ngValue]="denom">{{denom.name}}</option>
+                                    </ng-container>
+                                </select>
+                            </clr-select-container>
                         </div>
                     </div>
         
@@ -732,15 +733,30 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="clr-row" style="margin: 25px;">
+
+                    <div class="clr-row" style="margin: 25px">
                         <div class="clr-col-6">
                             <div class="clr-form-control">
+                                <label class="clr-control-label">Jenis Batu</label>
+                                <clr-input-container>
+                                    <input clrInput [(ngModel)]="searchModel.product_stone" name="product_stone" value="{{searchModel.product_stone | uppercase}}">
+                                </clr-input-container>
+                            </div>
+                        </div>
+                        <div class="clr-col-6">
+                            <div class="clr-form-control">
+                                <label class="clr-control-label">Warna Batu</label>
+                                <clr-input-container>
+                                    <input clrInput [(ngModel)]="searchModel.product_stone_color" name="product_stone_color" value="{{searchModel.product_stone_color | uppercase}}">
+                                </clr-input-container>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="clr-row" style="margin: 25px;">
+                        <!-- <div class="clr-col-6">
+                            <div class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Cut</label>
-                                <!-- <div class="clr-control-container">
-                                    <input [(ngModel)]="searchModel.cut" class="clr-input" type="text" name="cut" placeholder="00.51" />
-                                    <span class="clr-subtext">Harap gunakan titik (.)</span>
-                                </div> -->
                                 <clr-select-container>
                                     <select name="cut" clrSelect [(ngModel)]="searchModel.cut">
                                         <option [ngValue]=""></option>
@@ -750,11 +766,11 @@
                                     </select>
                                 </clr-select-container>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="clr-col-6">
                             <div class="clr-form-control">
                                 <clr-select-container class="clr-form-control">
-                                    <label class="clr-control-label" style="padding-left: 10px">Warna Diamond</label>
+                                    <label class="clr-control-label" style="padding-left: 10px">Warna Berlian</label>
                                     <select [(ngModel)]="searchModel.color" #color clrSelect name="color">
                                         <option [ngValue]="null"></option>
                                         <ng-container *ngFor="let color of colors">
@@ -764,20 +780,24 @@
                                 </clr-select-container>
                             </div>
                         </div>
+                        <div class="clr-col-6">
+                            <!-- <clr-select-container class="clr-form-control">
+                                <label class="clr-control-label" style="padding-left: 10px">Clarity Berlian</label>
+                                <select [(ngModel)]="searchModel.clarity" #clarity clrSelect name="clarity">
+                                    <option [ngValue]="null"></option>
+                                    <ng-container *ngFor="let clarity of claritys">
+                                        <option [ngValue]="clarity">{{clarity.code | uppercase}}</option>
+                                    </ng-container>
+                                </select>
+                            </clr-select-container> -->
+                            <clr-control-container>
+                                <label class="clr-control-label" style="padding-left: 10px">Clarity Berlian</label>
+                                <input [(ngModel)]="searchModel.clarity" clrInput #clarity name="clarity" value="{{searchModel.clarity | uppercase}}">
+                            </clr-control-container>
+                    </div>
                     </div>
         
                     <div class="clr-row" style="margin: 25px;">
-                        <div class="clr-col-6">
-                                <clr-select-container class="clr-form-control">
-                                    <label class="clr-control-label" style="padding-left: 10px">Clarity</label>
-                                    <select [(ngModel)]="searchModel.clarity" #clarity clrSelect name="clarity">
-                                        <option [ngValue]="null"></option>
-                                        <ng-container *ngFor="let clarity of claritys">
-                                            <option [ngValue]="clarity">{{clarity.name}}</option>
-                                        </ng-container>
-                                    </select>
-                                </clr-select-container>
-                        </div>
                         <div class="clr-col-6">
                             <div class="clr-form-control">
                                 <label class="clr-control-label" style="padding-left: 10px">Carat</label>
@@ -787,10 +807,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="clr-row" style="margin: 25px;">
-                        <div class="clr-col-6">
+                        <!-- <div class="clr-col-6">
                             <label class="clr-control-label" style="padding-left: 10px">Tipe Stock</label>
                             <div class="clr-control-container">
                                 <select [(ngModel)]="searchModel.tipe_stock" #tipe_stock clrSelect name="tipe_stock">
@@ -800,7 +817,7 @@
                                     </ng-container>
                                 </select>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
         
                     <div class="clr-row">
@@ -824,8 +841,9 @@
         <clr-datagrid [(clrDgSelected)]="selected">
             <clr-dg-action-bar>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-secondary" (click)="searchProduct()"><clr-icon shape="search"></clr-icon>Cari Produk</button>
-                    <button type="button" class="btn btn-sm btn-secondary" (click)="Addmutasi()"><clr-icon shape="plus"></clr-icon>Tambah Produk</button>
+                    <button type="button" class="btn btn-sm btn-secondary" (click)="searchProduct()"><clr-icon shape="search"></clr-icon> Cari Produk</button>
+                    <button type="button" class="btn btn-sm btn-secondary" (click)="Addmutasi()"><clr-icon shape="plus"></clr-icon> Tambah Produk</button>
+                    <button type="button" class="btn btn-sm btn-secondary" (click)="reset()"><clr-icon shape="refresh"></clr-icon> Reset</button>
                     <!-- <button type="button" class="btn btn-sm btn-secondary" (click)="refresh()"><clr-icon shape="refresh"></clr-icon> Reset</button> -->
                 </div>
                 </clr-dg-action-bar>

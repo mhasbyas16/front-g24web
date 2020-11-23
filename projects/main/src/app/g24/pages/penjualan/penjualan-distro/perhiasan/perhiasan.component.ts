@@ -114,7 +114,7 @@ export class PerhiasanComponent implements OnInit {
       const urlVendor = "vendor.code="+vendor;
       const urlJenis = "product-jenis.code="+jenis;
       const urlBerat = "berat="+berat;
-      const urlid = "id="+id;
+      const urlid = "no_urut="+id;
 
       let filteredperhiasan = [];
       this.params = this.category;
@@ -126,9 +126,11 @@ export class PerhiasanComponent implements OnInit {
       if (vendor != 'all') {
         this.params = this.params+"&"+urlVendor;
       }
-      if (jenis != 'all'){
-        this.params = this.params+"&"+urlJenis;
+      if (jenis == 'all'){
+        this.loadingDg = false;
+        return this.toastrService.error("Pilih Jenis Barang");
       }
+      this.params = this.params+"&"+urlJenis;
       if (berat != null) {
         this.params = this.params+"&"+urlBerat;
       }
@@ -194,7 +196,7 @@ export class PerhiasanComponent implements OnInit {
     }
 
     addCart(code: any,vendor: any, jenis: any, 
-      warna: any, berat: any, kadar: any, harga: any, _hash:any){
+      warna: any, berat: any, kadar: any, harga: any, _hash:any, hargaAwal: any, diskon:any){
         this.perhiasan.emit(null);
         this.data.emit(null);
       this.cartList.push({
@@ -205,6 +207,8 @@ export class PerhiasanComponent implements OnInit {
         'berat' : berat,
         'kadar': kadar, 
         'harga': harga,
+        'hargaAwal':hargaAwal,
+        'diskon':diskon,
         'detail': JSON.parse(atob(_hash)),
         'qty': 1});
         console.debug(this.cartList,"ISI HASH CART")

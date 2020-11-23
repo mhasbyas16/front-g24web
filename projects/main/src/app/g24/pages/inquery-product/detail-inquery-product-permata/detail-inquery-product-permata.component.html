@@ -132,13 +132,12 @@
                 <div class="clr-row">
                     <div class="clr-col-md-12" style="margin-top: 20px;">
                         <div class="clr=form-control">
-                            <label class="clr-control-label">Dimensi Batu</label>
+                            <label class="clr-control-label">Dimensi Batu {{x+"x"+y+"x"+z}}</label>
                             <clr-input-container>
-                                <input clrInput type="hidden" [(ngModel)]="inquery.dimensi_product" name="dimensi_product">
-                                <input type="number" style="margin-left: 5px;" clrInput min="0" max="1000" [(ngModel)]="dimension.x" name="x">
-                                <input type="number" style="margin-left: 5px;" clrInput min="0" max="1000" [(ngModel)]="dimension.y" name="y">
-                                <input type="number" style="margin-left: 5px;" clrInput min="0" max="1000" [(ngModel)]="dimension.z" name="z">
-                                <clr-control-helper style="color: red;">* Wajib di isi</clr-control-helper>
+                                <input clrInput type="hidden" [(ngModel)]="inquery.product_stone_dimension" name="product_stone_dimension" value="{{dimension.x +'x'+dimension.y +'x'+ dimension.z}}">
+                                <input type="number" style="margin-left: 5px;" min="0" clrInput [(ngModel)]="inquery.x" name="x" (keyup)="dimensiX()" (click)="dimensiX()">
+                                <input type="number" style="margin-left: 5px;" min="0" clrInput [(ngModel)]="inquery.y" name="y" (keyup)="dimensiY()" (click)="dimensiY()">
+                                <input type="number" style="margin-left: 5px;" min="0" clrInput [(ngModel)]="inquery.z" name="z" (keyup)="dimensiZ()" (click)="dimensiZ()">
                             </clr-input-container>
                         </div>
                     </div>
@@ -290,6 +289,19 @@
                                     <option [ngValue]=""></option>
                                     <ng-container *ngFor="let data of klarity">
                                         <option [ngValue]="data">{{data.name}}</option>
+                                    </ng-container>
+                                </select>
+                            </clr-select-container>
+                        </div>
+                    </div>
+                    <div class="clr-col-md-6">
+                        <div class="clr-form-control">
+                            <label class="clr-control-label">Tipe Flag</label>
+                            <clr-select-container>
+                                <select name="flag" clrSelect [(ngModel)]="inquery.flag">
+                                    <option [ngValue]=""></option>
+                                    <ng-container *ngFor="let data of Flag">
+                                        <option [ngValue]="data">{{data.code}}</option>
                                     </ng-container>
                                 </select>
                             </clr-select-container>

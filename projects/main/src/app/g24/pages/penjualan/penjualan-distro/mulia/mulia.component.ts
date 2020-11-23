@@ -15,7 +15,8 @@ import { PricingService }  from '../../../../services/pricing.service';
 
 import { LM } from '../../../../sample/cart';
 import { CountCartService } from '../../../../services/count-cart.service';
-
+//Session
+import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 
 @Component({
   selector: 'app-mulia',
@@ -60,6 +61,7 @@ export class MuliaComponent implements OnInit {
   flagApp = "flag=approved";
   jenisBarang = "jenis_barang=Jual";
   params = null;
+  Flags:any;
 
   constructor(
   //app
@@ -79,6 +81,7 @@ export class MuliaComponent implements OnInit {
   
   //pricing 
   private pricingService: PricingService,
+  private sessionService:SessionService
   
 
 
@@ -120,9 +123,11 @@ export class MuliaComponent implements OnInit {
   
   onCariMulia(data){
     this.loadingDg = true;
+    this.Flags = "";
     let vendor = data.input_vendor_mulia;
     let denom = data.input_denom_mulia;
     let flag = data.input_flag_mulia;
+    this.Flags = data.input_flag_mulia
     // let jumlah = data.input_jumlah ;
     let cariMulia : any[] = [];
     this.hargaBaku = 0
@@ -131,9 +136,14 @@ export class MuliaComponent implements OnInit {
     const urlVendor = "vendor.code="+vendor;
     const urlDenom = "product-denom.code="+denom;
     const urlFlag = "flag="+flag;
+     
     // const urlQty = "_rows="+jumlah;
 
     this.params = this.category;
+    // Session
+    const getUnit = this.sessionService.getUnit();
+    this.params = this.params+"&unit.code="+getUnit["code"];
+    
     if (vendor == "pilih" || denom == "pilih" || flag == "pilih") {
       this.toastrService.error("Pilih Vendor , Denom dan Flag Barang Terlebih Dahulu");
       this.loadingDg = false;
@@ -222,7 +232,7 @@ export class MuliaComponent implements OnInit {
       let codeLM = this.cartList.map(el => el.code);
       let cekItem : any;
       
-      this.productService.list(params+'&_transactionType=t01&_ch=ch02').subscribe((response: any) => {
+      this.productService.list(params+'&_transactionType=t01&_ch=ch02&flag='+this.Flags).subscribe((response: any) => {
         lm = response
         let udahDiCart = 0;
         console.debug(lm, 'awal')

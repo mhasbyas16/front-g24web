@@ -15,6 +15,8 @@ import { PricingService }  from '../../../../services/pricing.service';
 
 import { DINAR } from '../../../../sample/cart';
 import { CountCartService } from '../../../../services/count-cart.service';
+//Session
+import { SessionService } from 'projects/platform/src/app/core-services/session.service';
 
 @Component({
   selector: 'app-dinar',
@@ -79,6 +81,8 @@ export class DinarComponent implements OnInit {
     
     //pricing 
     private pricingService: PricingService,
+    private sessionService:SessionService
+
 
   ) { }
   //model
@@ -127,7 +131,12 @@ export class DinarComponent implements OnInit {
 
     const urlDenom = "product-denom.code="+denom;
     const urlVendor = "vendor.code="+vendor;
+    
+
     this.params = this.category;
+    // Session
+    const getUnit = this.sessionService.getUnit();
+    this.params = this.params+"&unit.code="+getUnit["code"];
     this.params = this.params+"&"+urlDenom+"&"+urlVendor
     if (denom == "pilih") {
       this.toastrService.error("Pilih Denom Terlebih Dahulu");

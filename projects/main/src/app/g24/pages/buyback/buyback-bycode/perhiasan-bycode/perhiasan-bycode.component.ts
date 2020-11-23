@@ -43,7 +43,7 @@ export class PerhiasanBycodeComponent implements OnInit {
     
   }
   
-  hitungHargaBB(kondisi: any , code : any, kadar : any, berat: any, hargaBaku:any){
+  hitungHargaBB(kondisi: any , _id : any, kadar : any, berat: any, hargaBaku:any){
     this.loadingDg = true
     this.hargaBB = 0
     this.perhiasanBuybackPriceService.get("?kondisi="+kondisi+"&kadar="+kadar+"&berat="+berat+"&hargaBuyback="+hargaBaku+"").subscribe((response:any)=>{
@@ -53,7 +53,7 @@ export class PerhiasanBycodeComponent implements OnInit {
       this.hargaBB = response["hargaBB"];
 
       for (let index = 0; index < this.isiPerhiasan.data.length; index++) {
-        if (this.isiPerhiasan.data[index]["code"] == code) {
+        if (this.isiPerhiasan.data[index]["detail"]["_id"] == _id) {
           this.isiPerhiasan.data[index]['hargaBB'] =  this.hargaBB
         }
        }
@@ -64,11 +64,12 @@ export class PerhiasanBycodeComponent implements OnInit {
         
     // })
 
-    // if (kondisi == 1) {
-    //   this.tampilKondisi = "Baik"
-    // }else if(kondisi == 2){
-    //   this.tampilKondisi = "Rusak"
-    // }else{
+    if (kondisi == 1) {
+      this.tampilKondisi = "Baik"
+    }else if(kondisi == 2){
+      this.tampilKondisi = "Rusak"
+    }
+    // else{
     //   this.hargaBB = 0
     // }
     // this.hargaBB = this.pricingService.buybackPricePerhiasan(kondisi, kadar, berat,this.hargaDasarBuyback )
@@ -107,7 +108,7 @@ export class PerhiasanBycodeComponent implements OnInit {
 
   cekItemArray(data: any){
     // const code = this.cartList.map(el => el.code);
-    const code = this.cartList.map(el => el.code);
+    const code = this.cartList.map(el => el.detail._id);
     const ARR = code.includes(data);
     return ARR;
   }

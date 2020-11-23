@@ -199,21 +199,21 @@
                                 </div>                           
                                     
                             </div> 
-                            <table class="table table-compact table-noborder"> 
+                            <table class="table table-noborder"> 
                                 <thead>
                                     <tr>
                                         <th class="left"><b>No Rekening</b></th>
                                         <th class="left"><b>Keterangan</b></th>
-                                        <th class="center"><b>Debit</b></th>
-                                        <th class="center"><b>Kredit</b></th>
+                                        <th class="right"><b>Debit</b></th>
+                                        <th class="right"><b>Kredit</b></th>
                                     </tr>
                                 </thead>                               
                                 <tbody>
                                     <tr *ngFor="let data of content.detail">
                                         <td class="left">{{data.noRek}}</td>
                                         <td class="left">{{data.name}}</td>
-                                        <td class="center">{{data.amountD | number}}</td>
-                                        <td class="center">{{data.amountK | number}}</td>
+                                        <td class="right">{{data.amountD | number}}</td>
+                                        <td class="right">{{data.amountK | number}}</td>
                                     </tr>
                                 </tbody>
                                 <!-- <tfoot>
