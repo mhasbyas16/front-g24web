@@ -53,8 +53,8 @@ export class SouvenirComponent implements OnInit {
   selected: any[] = [];
 
   //params
-  souvenirCategory = "_or=product-category.code:c02:c04";
-  category = "?_hash&_or=product-category.code:c02:c04";
+  souvenirCategory = "_or=product-category.code:c02,c04";
+  category = "?_hash&_or=product-category.code:c02,c04";
   params = null;
   channel = "channel.code=ch02";
   transactionType = "transaction-type.code=t01";
