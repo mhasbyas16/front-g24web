@@ -45,6 +45,7 @@ export class CheckoutBuybackComponent implements OnInit {
   souvenir = GS;
   berlian = BERLIAN;
   dinar = DINAR;
+  processData:boolean = false;
 
   //cart list
   jumlahPerhiasan:any;
@@ -335,6 +336,7 @@ export class CheckoutBuybackComponent implements OnInit {
   }
 
   storeTransaction(){
+    this.processData = true;
     let data = this.formData.getRawValue();
     data["kembali"] = this.kembali
     data["idAi"] =  this.incId
@@ -378,6 +380,7 @@ export class CheckoutBuybackComponent implements OnInit {
 
     this.transactionTypeService.get("?code=b01").subscribe((response:any)=>{
       if (response == false) {
+        this.processData = false;
         console.debug("Transaction type not found");
         return
       }
@@ -397,9 +400,11 @@ export class CheckoutBuybackComponent implements OnInit {
           GS.splice(0);
           this.cartModal.emit(false);
           this.ChangeContentArea('10009');
+          this.processData= false;
         } else {
           this.toastr.error(this.buybackService.message(), "Transaction");
-          this.idTransaksi()
+          this.idTransaksi();
+          this.processData = false;
           return;
         }
       })

@@ -43,6 +43,7 @@ export class CheckoutBuybackManualComponent implements OnInit {
   emasBatangan = LM;
   souvenir = GS;
   bankForm:boolean= false;
+  processData:boolean = false;
   // berlian = BERLIAN;
   // dinar = DINAR;
 
@@ -348,6 +349,7 @@ export class CheckoutBuybackManualComponent implements OnInit {
   }
   
   storeTransaction(){
+    this.processData = true;
     let data = this.formData.getRawValue();
     data["kembali"] = this.kembali
     data["idAi"] =  this.incId
@@ -405,9 +407,11 @@ export class CheckoutBuybackManualComponent implements OnInit {
         GS.splice(0);
         this.cartModal.emit(false);
         this.ChangeContentArea('10010');
+        this.processData= false;
       } else {
         this.toastr.error(this.buybackService.message(), "Transaction");
-        this.idTransaksi()
+        this.idTransaksi();
+        this.processData = false;
         return;
       }
     })

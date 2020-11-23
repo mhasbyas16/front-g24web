@@ -283,7 +283,18 @@
         </div>
         <div class="modal-footer">
             <button class="btn btn-danger-outline" (click)="validModel = false" >Cancel</button>
-            <button type="button" class="btn btn-primary" (click)="storeTransaction()">Process</button>
+            <div *ngIf="processData; else dd">
+                <clr-spinner clrInline>
+                  In Process
+                </clr-spinner>
+                <span>
+                  In Process
+                </span>
+            </div>
+            <ng-template #dd>
+                <button type="button" class="btn btn-primary" (click)="storeTransaction()">Process</button>
+            </ng-template>
+            
         </div>
     </clr-modal>
 </ng-container>
