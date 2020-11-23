@@ -83,7 +83,7 @@ export const kasir = [
   //buyback
   { _id: "1001", type: "menu", name: "Buyback", icons: "coin-bag", color: "warna-warni", componentId: "S10011", parentId: "", module: "bb" },
   { _id: "1001", type: "sub-menu", name: "Terima Buyback", icons: "yang bagus", color: "warna-warni", componentId: "11001", parentId: "S10011", module: "bb", menu: { _id: "0001 " } },
-  { _id: "1001", type: "sub-menu", name: "Terima LM Non-Pegadaian", icons: "yang bagus", color: "warna-warni", componentId: "11003", parentId: "S10011", module: "bb", menu: { _id: "0001 " } },
+  // { _id: "1001", type: "sub-menu", name: "Terima LM Non-Pegadaian", icons: "yang bagus", color: "warna-warni", componentId: "11003", parentId: "S10011", module: "bb", menu: { _id: "0001 " } },
   { _id: "1001", type: "sub-menu", name: "Terima Manual Perhiasan", icons: "yang bagus", color: "warna-warni", componentId: "11006", parentId: "S10011", module: "bb", menu: { _id: "0001 " } },
   { _id: "1001", type: "sub-menu", name: "Terima Manual Souvenir", icons: "yang bagus", color: "warna-warni", componentId: "11005", parentId: "S10011", module: "bb", menu: { _id: "0001 " } },
   // TRANSAKSI-MOKER
