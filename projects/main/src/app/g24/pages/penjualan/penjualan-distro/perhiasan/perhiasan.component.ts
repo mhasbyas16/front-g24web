@@ -113,7 +113,7 @@ export class PerhiasanComponent implements OnInit {
 
       const urlVendor = "vendor.code="+vendor;
       const urlJenis = "product-jenis.code="+jenis;
-      const urlBerat = "berat="+berat;
+      const urlBerat = "berat_encoded=double&berat="+berat;
       const urlid = "no_urut="+id;
 
       let filteredperhiasan = [];
