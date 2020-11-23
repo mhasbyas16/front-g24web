@@ -48,6 +48,7 @@ export class CheckoutComponent implements OnInit {
   edc3: boolean = false;
   installmentCont: boolean = false;
   periodeIns: boolean = false;
+  processData: boolean = false;
   // cart
   administrasi: string = "";
   perhiasan = PERHIASAN;
@@ -516,6 +517,7 @@ dat = null;
   }
 
   storeTransaction() {
+    this.processData= true;
     let data = this.formData.getRawValue();
 
     for (let index = 0; index < LM.length; index++) {
@@ -561,6 +563,7 @@ dat = null;
 
     this.currencyService.get('?code=360').subscribe((response:any)=>{
       if (response == false) {
+        this.processData= false;
         console.debug("gagal get currency");
         return;
       }
@@ -578,9 +581,11 @@ dat = null;
           LM.splice(0);
           DINAR.splice(0);
           GS.splice(0);
+          this.processData = false;
           this.cartModal.emit(false);
           this.ChangeContentArea('10003');
         } else {
+          this.processData = false;
           this.toastr.error(this.transactionService.message(), "Transaction");
           this.idTransaksi()
           return;
