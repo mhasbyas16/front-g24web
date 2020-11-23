@@ -44,6 +44,7 @@ export class CheckoutBuybackManualComponent implements OnInit {
   souvenir = GS;
   bankForm:boolean= false;
   processData:boolean = false;
+  checkNikData:boolean = false;
   // berlian = BERLIAN;
   // dinar = DINAR;
 
@@ -423,6 +424,7 @@ export class CheckoutBuybackManualComponent implements OnInit {
   }
 
   cek(){
+    this.checkNikData = true;
     var valid = false;
     var jual = null;
     var branchCode = "";
@@ -440,6 +442,7 @@ export class CheckoutBuybackManualComponent implements OnInit {
     console.debug(metodeBayar, "metodebayar");
     if(metodeBayar == null || metodeBayar == ""){
       this.toastr.error("Harap pilih Metode Bayar dulu");
+      this.checkNikData = false;
       return;
     }
     var metodeBayarObject = JSON.parse(metodeBayar);   
@@ -484,6 +487,7 @@ export class CheckoutBuybackManualComponent implements OnInit {
   {
     this.toastr.error("Error. Kasir ID (Emas) Kosong !!!");
     console.debug("Gaada input dengan ID = userEmas");
+    this.checkNikData = false;
     return;
   }
 
@@ -494,6 +498,7 @@ export class CheckoutBuybackManualComponent implements OnInit {
   {
     this.toastr.error("Error. Branch Code tidak ditemukan !!!");
     console.debug("Gaada input hidden dengan ID = distro");
+    this.checkNikData = false;
     return;
   }  
     
@@ -502,7 +507,7 @@ export class CheckoutBuybackManualComponent implements OnInit {
   if(branchCode == "55099" || branchCode == "55098" || branchCode == "55097")
   {
 	// this.setKasir(null);
-																						 
+	this.checkNikData = false;							 
 	return;
   }
 										
@@ -517,6 +522,7 @@ export class CheckoutBuybackManualComponent implements OnInit {
     if (response == false) {
       this.toastr.error(this.checkNikService.message());
       console.debug(response, "Gagal Cek NIK");
+      this.checkNikData = false;
       return;
     }
     data.checkNik =  JSON.parse(response);
@@ -545,7 +551,8 @@ export class CheckoutBuybackManualComponent implements OnInit {
 				{
 					if(kasir == null)
 					{
-						this.toastr.error("Error. Harap hubungi IT Support/Helpdesk.");
+            this.toastr.error("Error. Harap hubungi IT Support/Helpdesk.");
+            this.checkNikData = false;
 						return;
 					}
 					
@@ -561,6 +568,7 @@ export class CheckoutBuybackManualComponent implements OnInit {
 			}
 		}
 
+    this.checkNikData = false;
 		if(tutup)
 		{
 			this.toastr.error("Kasir ditutup. Mohon buka kasir atau hubungi Pimpinan anda");

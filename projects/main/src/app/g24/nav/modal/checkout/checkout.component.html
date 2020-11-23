@@ -470,8 +470,19 @@
                                     </clr-input-container>
                                 </div>
                                 <div class="clr-col-3" style="margin-left: 30px; margin-top: 15px;">
-                                    <button type="button" class="btn btn-sm btn-primary-outline"
+                                    <div *ngIf="checkNikData; else dd">
+                                        <clr-spinner clrInline>
+                                          In Process
+                                        </clr-spinner>
+                                        <span>
+                                          In Process
+                                        </span>
+                                    </div>
+                                    <ng-template #dd>
+                                        <button type="button" class="btn btn-sm btn-primary-outline"
                                         (click)="cek()">Check</button>
+                                    </ng-template>
+                                    
                                 </div>
                             </div>
                         </div>
