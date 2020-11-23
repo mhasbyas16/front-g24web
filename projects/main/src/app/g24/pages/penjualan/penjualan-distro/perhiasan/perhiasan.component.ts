@@ -196,7 +196,7 @@ export class PerhiasanComponent implements OnInit {
     }
 
     addCart(code: any,vendor: any, jenis: any, 
-      warna: any, berat: any, kadar: any, harga: any, _hash:any){
+      warna: any, berat: any, kadar: any, harga: any, _hash:any, hargaAwal: any, diskon:any){
         this.perhiasan.emit(null);
         this.data.emit(null);
       this.cartList.push({
@@ -207,6 +207,8 @@ export class PerhiasanComponent implements OnInit {
         'berat' : berat,
         'kadar': kadar, 
         'harga': harga,
+        'hargaAwal':hargaAwal,
+        'diskon':diskon,
         'detail': JSON.parse(atob(_hash)),
         'qty': 1});
         console.debug(this.cartList,"ISI HASH CART")
