@@ -738,8 +738,6 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
       return;
     }
 
-    //MASIH MENGGUNAKAN API ADD, MICROSERVICES PROBLEM PARSE NUMBER
-
     this.mutasiservice.add(cfg).subscribe(output => {
       if(output!=false){
         this.spinner.Close();
@@ -794,10 +792,17 @@ constructor(private UnitService : UnitService, private sessionservice : SessionS
     this.spinner.SetSpinnerText("Sedang melakukan pencarian Produk...");
     this.spinner.Open();
 
-    if(!this.searchModel["product-category"]||!this.searchModel.vndr)
-    {
-      this.toastr.warning("Produk kategori atau vendor belum dipilih","Peringatan");
+    if(!this.searchModel["product-category"]){
+      this.toastr.warning("Produk kategori belum dipilih","Peringatan");
       this.spinner.Close();
+      return;
+    }else if(!this.searchModel.vndr){
+      this.spinner.Close();
+      this.toastr.warning("Vendor belum dipilih","Peringatan");
+      return;
+    }else if(!this.searchModel.tipe_stock){
+      this.spinner.Close();
+      this.toastr.warning("Tipe stock belum dipilih","Peringatan");
       return;
     }
     

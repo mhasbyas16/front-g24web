@@ -146,11 +146,11 @@ static key = EMenuID.DETAIL_INQUERY_PERHIASAN;
     this.spinner.SetSpinnerText("Mohon Tunggu...");
     this.spinner.Open();
     this.LoadingSearch = ClrLoadingState.LOADING;
-    let params = "?product-category.code=c00&";
+    let params = "?product-category.code=c00&unit.code="+this.sessionService.getUser().unit.code+"&";
 
-    if(this.sessionService.getUser().unit.code!="00005"){
-      params += "unit.code="+this.sessionService.getUser().unit.code+"&";
-    }
+    // if(this.sessionService.getUser().unit.code!="00005"){
+    //   params += "unit.code="+this.sessionService.getUser().unit.code+"&";
+    // }
 
     for(let key in this.inquery){
       if(this.inquery[key]==null || this.inquery[key]=="")continue;

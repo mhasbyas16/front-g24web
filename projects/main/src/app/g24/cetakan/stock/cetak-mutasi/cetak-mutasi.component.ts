@@ -140,42 +140,41 @@ addinput : any = {};
         if(dataCetak["product-category"].name == "Permata"){
           this.innerDoc['content'].push([
             {
-              style : 'detail',
-              columns : [
-                {
-                  layout: 'lightHorizontalLines',
-                  columns : [
-                    {alignment : 'center', lineHeight : 2, bold : true, text : "No",width : 40},
-                    {alignment : 'center', lineHeight : 2, bold : true, text : "_Id Product",width : 180},
-                    {alignment : 'center', lineHeight : 2, bold : true, text : "Berat",width : 60},
-                    {alignment : 'center', lineHeight : 2, bold : true, text : "HPP Emas",width : 60},
-                    {alignment : 'center', lineHeight : 2, bold : true, text : "HPP Berlian",width : 100},
-                    {alignment : 'center', lineHeight : 2, bold : true, text : "HPP Batu",width : 100},
-                    {alignment : 'center', lineHeight : 2, bold : true, text : "Ongkos Pembuatan",width : 120},
-                    {alignment : 'center', lineHeight : 2, bold : true, text : "Flag",width : 80},
-                    {alignment : 'center', lineHeight : 2, bold : true, text : "Status",width : 60},
-                  ]
-                }
-              ]
+              // style : 'detail',
+              layout : 'lightHorizontalLines',
+              fillColor : "turquoise",
+              table : {
+                
+                headerRows : 1,
+                widths: [ 30, 160, 60, 80, 100, 100, 115, 60],
+
+                body : [
+                  [{text : "No", bold : true},
+                   {text : "_Id Product", bold : true},
+                   {text : "Berat", bold : true},
+                   {text : "HPP Emas", bold : true},
+                   {text : "HPP Berlian", bold : true},
+                   {text : "HPP Batu", bold : true},
+                   {text : "Ongkos Pembuatan", bold : true},
+                   {text : "Tipe Stock", bold : true}]
+                ]
+              }
             }
           ]);
         }else{
           this.innerDoc['content'].push([
             {
-              style : 'detail',
-              columns : [
-                {
-                  layout: 'lightHorizontalLines',
-                  columns : [
-                    {alignment : 'center', lineHeight : 2, bold : true, text : "No",width : 40},
-                    {alignment : 'center', lineHeight : 2, bold : true, text : "_Id Product",width : '*'},
-                    {alignment : 'center', lineHeight : 2, bold : true, text : "Berat",width : 40},
-                    {alignment : 'center', lineHeight : 2, bold : true, text : "HPP",width : '*'},
-                    {alignment : 'center', lineHeight : 2, bold : true, text : "Flag",width : '*'},
-                    {alignment : 'center', lineHeight : 2, bold : true, text : "Status",width : '*'},
-                  ]
-                }
-              ]
+              // style : 'detail',
+              layout : 'lightHorizontalLines',
+              fillColor : "turquoise",
+              table : {
+                headerRows : 1,
+                widths: [ 45, 200, 190, '*', '*'], 
+                
+                body : [
+                      [{text:"No", bold : true},{text : "_id Product", bold : true},{text : "Berat",bold : true},{text : "HPP", bold : true},{text : "Tipe Stock", bold : true}]
+                ]
+              }
             }
           ]);
         }
@@ -191,11 +190,15 @@ addinput : any = {};
           if(produk["product-category"].name == "Perhiasan"){
           this.innerDoc['content'].push([
             {
-              style:'detail',
-              columns:[
-                {
-                  width:"*",
-                  columns:[
+              // style:'detail',
+              layout : 'lightHorizontalLines',
+              fillColor : "turquoise",
+              fillOpacity : 0.5,
+              table:{
+                headerRows : 1,
+                widths: [ 45, 200, 190, '*', '*'], 
+                
+                body : [
                     // {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
                     // {alignment : 'center', width:'*',text:produk._id},
                     // {alignment : 'center', width:40,text:' '+produk.berat == undefined ? "-" : produk.berat},
@@ -203,121 +206,108 @@ addinput : any = {};
                     // {alignment : 'center', width:'*',text:' '+produk.flag == undefined ? "-" : produk.flag},
                     // {alignment : 'center', width:'*',text:' Dalam Pengiriman '}
 
-                    {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
-                    {alignment : 'center', width:'*',text:produk._id},
-                    {alignment : 'center', width:60,text:' '+ produk.berat},
-                    {alignment : 'center', width:'*',text:' '+produk.hpp == undefined ? "-" : this.DelimiterComma(produk.hpp)},
-                    {alignment : 'center', width:'*',text:' '+produk.flag == undefined ? "-" : produk.flag},
-                    {alignment : 'center', width:'*',text:' Dalam Pengiriman '}
+                    [this.noItem,produk._id,produk.berat,produk.hpp == undefined ? "-" : this.DelimiterComma(produk.hpp),produk.tipe_stock == undefined ? "-" : produk.tipe_stock]
                   ]
                 }
-              ]
             }
           ]);
           }else if(produk["product-category"].name == "Souvenir"){
             this.innerDoc['content'].push([
               {
-                style:'detail',
-                columns:[
-                  {
-                    width:"*",
-                    columns:[
-
-                      {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
-                      {alignment : 'center', width:'*',text:produk._id},
-                      {alignment : 'center', width:60,text:' '+produk["product-denom"].value},
-                      {alignment : 'center', width:'*',text:' '+produk.hpp == undefined ? "-" : this.DelimiterComma(produk.hpp)},
-                      {alignment : 'center', width:'*',text:' '+produk.flag == undefined ? "-" : produk.flag},
-                      {alignment : 'center', width:'*',text:' Dalam Pengiriman '}
-                    ]
-                  }
+                // style:'detail',
+              layout : 'lightHorizontalLines',
+              fillColor : "turquoise",
+              fillOpacity : 0.5,
+              table:{
+                headerRows : 1,
+                widths: [ 45, 200, 190, '*', '*'], 
+                
+                body : [
+                  [this.noItem,produk._id,produk['product-denom'].value,produk.hpp == undefined ? "-" : this.DelimiterComma(produk.hpp),produk.tipe_stock == undefined ? "-" : produk.tipe_stock]
                 ]
               }
-            ]);
+            }
+          ]);
           }else if(produk["product-category"].name == "Gift"){
             this.innerDoc['content'].push([
               {
-                style : 'detail',
-                columns : [
-                  {
-                    width:"*",
-                    columns:[
-
-                      {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
-                      {alignment : 'center', width:'*',text:produk._id},
-                      {alignment : 'center', width:60,text:' '+produk["product-denom"].value},
-                      {alignment : 'center', width:'*',text:' '+produk.hpp == undefined ? "-" : this.DelimiterComma(produk.hpp)},
-                      {alignment : 'center', width:'*',text:' '+produk.flag == undefined ? "-" : produk.flag},
-                      {alignment : 'center', width:'*',text:' Dalam Pengiriman '}
-                    ]
-                  }
+                // style : 'detail',
+              layout : 'lightHorizontalLines',
+              fillColor : "turquoise",
+              fillOpacity : 0.5,
+              table:{
+                headerRows : 1,
+                widths: [ 45, 200, 190, '*', '*'], 
+                
+                body : [
+                  [this.noItem,produk._id,produk['product-denom'].value,produk.hpp == undefined ? "-" : this.DelimiterComma(produk.hpp),produk.tipe_stock == undefined ? "-" : produk.tipe_stock]
                 ]
               }
-            ]);
+            }
+          ]);
           }else if(produk["product-category"].name == "Emas Batangan"){
             this.innerDoc['content'].push([
               {
-                style : 'detail',
-                columns : [
-                  {
-                    width:"*",
-                    columns:[
-
-                      {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
-                      {alignment : 'center', width:'*',text:produk._id},
-                      {alignment : 'center', width:60,text:' '+produk["product-denom"].value},
-                      {alignment : 'center', width:'*',text:' '+produk.hpp == undefined ? "-" : this.DelimiterComma(produk.hpp)},
-                      {alignment : 'center', width:'*',text:' '+produk.flag == undefined ? "-" : produk.flag},
-                      {alignment : 'center', width:'*',text:' Dalam Pengiriman '}
-                    ]
-                  }
+                // style : 'detail',
+              
+              layout : 'lightHorizontalLines',
+              fillColor : "turquoise",
+              fillOpacity : 0.5,
+              table:{
+                headerRows : 1,
+                widths: [ 45, 200, 190, '*', '*'], 
+                
+                body : [
+                  [this.noItem,produk._id,produk['product-denom'].value,produk.hpp == undefined ? "-" : this.DelimiterComma(produk.hpp),produk.tipe_stock == undefined ? "-" : produk.tipe_stock]
                 ]
               }
-            ]);
+            }
+          ]);
           }else if(produk["product-category"].name == "Permata"){
             this.innerDoc['content'].push([
               {
-                style : 'detail',
-                columns : [
-                  {
-                    width:"*",
-                    columns:[
+                // style : 'detail',
 
-                      {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
-                      {alignment : 'center', width:180,text:produk._id},
-                      {alignment : 'center', width:60,text:' '+produk["total_berat"]},
-                      {alignment : 'center', width:60,text:' '+produk.hpp == undefined ? "-" : this.DelimiterComma(produk.hpp)},
-                      {alignment : 'center', width:100,text:' '+produk.hpp_berlian == undefined ? "-" : this.DelimiterComma(produk.hpp_berlian)},
-                      {alignment : 'center', width:100,text:' '+produk.hpp_batu == undefined ? "-" : this.DelimiterComma(produk.hpp_batu)},
-                      {alignment : 'center', width:100,text:' '+produk.ongkos_pembuatan == undefined ? "-" : this.DelimiterComma(produk.ongkos_pembuatan)},
-                      {alignment : 'center', width:100,text:' '+produk.flag == undefined ? "-" : produk.flag},
-                      {alignment : 'center', width:60,text:' Dalam Pengiriman '}
-                    ]
-                  }
+              layout : 'lightHorizontalLines',
+              fillColor : "turquoise",
+              fillOpacity : 0.5,
+              table:{
+                headerRows : 1,
+                widths: [ 30, 160, 60, 80, 100, 100, 115, 60], 
+                
+                body : [
+                  [this.noItem,
+                   produk._id,
+                   produk['total_berat'],
+                   produk.hpp == undefined ? "-" : this.DelimiterComma(produk.hpp),
+                   produk.hpp_berlian == undefined ? "-" : this.DelimiterComma(produk.hpp_berlian),
+                   produk.hpp_batu == undefined ? "-" : this.DelimiterComma(produk.hpp_batu),
+                   produk.ongkos_pembuatan == undefined ? "-" : this.DelimiterComma(produk.ongkos_pembuatan),
+                   produk.tipe_stock
+                  ]
                 ]
               }
-            ]);
+            }
+          ]);
           }else if(produk["product-category"].name == "Dinar"){
             this.innerDoc['content'].push([
               {
-                style : 'detail',
-                columns : [
-                  {
-                    width:"*",
-                    columns:[
+                // style : 'detail',
 
-                      {alignment : 'center', width:40,text: "(" +this.noItem+ ")"},
-                      {alignment : 'center', width:'*',text:produk._id},
-                      {alignment : 'center', width:60,text:' '+produk["product-denom"].value},
-                      {alignment : 'center', width:'*',text:' '+produk.hpp == undefined ? "-" : this.DelimiterComma(produk.hpp)},
-                      {alignment : 'center', width:'*',text:' '+produk.flag == undefined ? "-" : produk.flag},
-                      {alignment : 'center', width:'*',text:' Dalam Pengiriman '}
-                    ]
-                  }
+                layout : 'lightHorizontalLines',
+              fillColor : "turquoise",
+              fillOpacity : 0.5,
+              table:{
+                headerRows : 1,
+                widths: [ 45, 200, 190, '*', '*'], 
+                
+                body : [
+                  [this.noItem,produk._id,produk['product-denom'].value,produk.hpp == undefined ? "-" : this.DelimiterComma(produk.hpp),produk.tipe_stock == undefined ? "-" : produk.tipe_stock]
                 ]
               }
-            ]);
-          }
+            }
+          ]);
+        }
       }
     }
 

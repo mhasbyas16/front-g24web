@@ -187,7 +187,7 @@ export class DetailInqueryProductPermataComponent implements OnInit {
     this.spinner.SetSpinnerText("Mohon Tunggu...");
     this.spinner.Open();
     this.LoadingSearch = ClrLoadingState.LOADING;
-    let params = "?product-category.code=c03&";
+    let params = "?product-category.code=c03&unit.code="+this.sessionService.getUser().unit.code+"&";
 
     this.x = this.inquery["x"];
     this.y = this.inquery["y"];
@@ -203,9 +203,9 @@ export class DetailInqueryProductPermataComponent implements OnInit {
     // this.inquery["dimensi_product"] = x + "x" + y + "x" + z;
 
 
-    if(this.sessionService.getUser().unit.code!="00005"){
-      params += "unit.code="+this.sessionService.getUser().unit.code+"&";
-    }
+    // if(this.sessionService.getUser().unit.code!="00005"){
+    //   params += "unit.code="+this.sessionService.getUser().unit.code+"&";
+    // }
 
     if(this.inquery.x == undefined || this.inquery.y == undefined || this.inquery.z == undefined){
       // params += "product-stone-dimension="+x+"x"+y+"x"+z+"&";
