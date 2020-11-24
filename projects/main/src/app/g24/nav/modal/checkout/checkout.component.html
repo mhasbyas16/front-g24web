@@ -469,7 +469,7 @@
                                         <input clrInput type="text" formControlName="coa" id="coa" hidden>
                                     </clr-input-container>
                                 </div>
-                                <div class="clr-col-3" style="margin-left: 30px; margin-top: 15px;">
+                                <div class="clr-col-1" style="margin-left: 30px; margin-top: 15px;">
                                     <div *ngIf="checkNikData; else dd">
                                         <clr-spinner clrInline>
                                           In Process
@@ -483,6 +483,9 @@
                                         (click)="cek()">Check</button>
                                     </ng-template>
                                     
+                                </div>
+                                <div class="mandatory">
+                                    *
                                 </div>
                             </div>
                         </div>
@@ -513,7 +516,12 @@
                     <input type="hidden" formControlName="idSequencer">
 
                     <div class="card-footer">
-                        <button type="button" class="btn btn-block btn-primary" (click)="transaction()">Submit</button>
+                        <ng-container *ngIf="nikValid == false; else niks">
+                            <button type="button" class="btn btn-block btn-primary" disabled>Submit</button>
+                        </ng-container>
+                        <ng-template #niks>
+                            <button type="button" class="btn btn-block btn-primary" (click)="transaction()">Submit</button>
+                        </ng-template>
                     </div>
                 </div>
             </form>

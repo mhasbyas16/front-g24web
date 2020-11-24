@@ -337,6 +337,9 @@ export class CheckoutBuybackComponent implements OnInit {
   }
 
   storeTransaction(){
+    if (this.nikValid != true) {
+      return this.toastr.error("Cek NIK Terlebih Dahulu")
+    }
     this.processData = true;
     let data = this.formData.getRawValue();
     data["kembali"] = this.kembali

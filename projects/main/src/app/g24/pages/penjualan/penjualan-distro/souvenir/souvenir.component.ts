@@ -185,11 +185,16 @@ export class SouvenirComponent implements OnInit {
               "vendor" : this.souvenirs[0].vendor.name,
               "denom" : this.souvenirs[0]['product-denom'].name,
               "series" : this.souvenirs[0]['product-series'].name,
+              "vendorcode" : this.souvenirs[0].vendor.code,
+              "denomcode" : this.souvenirs[0]['product-denom'].code,
+              "seriescode" : this.souvenirs[0]['product-series'].code,
+              "productcategory" : this.souvenirs[0]['product-category'].code,
               "qty" : this.qty,
               "harga" : this.souvenirs[0].harga
 
             });
             this.datasouvenirs = cariSouvenir;
+            console.debug(cariSouvenir, "carisouvenir")
             this.loadingDg = false;
             // this.prmJualService.get("?"+this.souvenirCategory+"&"+this.flagApp).subscribe((Jualresponse: any) => {
             //   let prmJual = Jualresponse;
@@ -208,9 +213,11 @@ export class SouvenirComponent implements OnInit {
     return ARR;
   }
 
-  addCart(vendorSV: any, denomSV: any, seriesSV: any, qtySV: any, harga:any){
+  addCart(vendorSV: any, denomSV: any, seriesSV: any,productcategorySV:any, qtySV: any, harga:any){
     this.loadingDg = true;
     this.total = 0;
+    // Session
+    const getUnit = this.sessionService.getUnit();
     
 
     if (qtySV < this.jumlahSouvenir) {
@@ -218,15 +225,17 @@ export class SouvenirComponent implements OnInit {
       this.loadingDg = false;
     }else{
       let params : any;
-      let urlVendor = "vendor.name="+vendorSV;
-      let urlDenom = "product-denom.name="+denomSV;
-      let urlSeries = "product-series.name="+seriesSV;
+      let urlVendor = "&unit.code="+getUnit["code"]+"&vendor.code="+vendorSV;
+      let urlDenom = "product-denom.code="+denomSV;
+      let urlSeries = "product-series.code="+seriesSV;
+      let urlProductcategory = "product-category.code="+productcategorySV;
       let sv: any;
 
-      params = this.category;
-      params = params+"&"+urlVendor;
-      params = params+"&"+urlDenom;
-      params = params+"&"+urlSeries;
+      
+      params = "?_hash&"+urlProductcategory+"&"+urlVendor+"&"+urlDenom+"&"+urlSeries+"&"+this.flagBarang;
+      
+      
+      console.debug(params, "url product")
       
       let codeSV = this.cartList.map(el => el.code);
       let cekItem : any;
@@ -235,11 +244,12 @@ export class SouvenirComponent implements OnInit {
       console.debug(codeSV, 'codeLM')
 
       // lm = this.Souvenir
-     
+      // https://dev.g24sys.com/master-api/product-price/search?_hash&_or=product-category.code:c02,c04&unit.code=55086&vendor.code=g24&product-denom.code=0E&product-series.code=BO&flag=stock&_transactionType=t01&_ch=ch02
       this.productService.list(params+'&_transactionType=t01&_ch=ch02').subscribe((response: any) => {
         sv = response
         let udahDiCart = 0;
 
+        
         for (let index = 0; index < codeSV.length; index++) {
           cekItem = sv.map(e => e.code).indexOf(codeSV[index])
           if (cekItem != -1) {

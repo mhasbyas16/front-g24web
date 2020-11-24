@@ -74,7 +74,7 @@
                         </button>
                     </ng-container>
                     <ng-container *ngIf="d.harga != 0 || d.harga != '0' ">
-                        <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.vendor, d.denom, d.qty, d.harga)">
+                        <button type="button" class="btn btn-icon btn-sm btn-success" aria-label="home" (click)="addCart(d.vendorcode, d.denomcode, d.qty, d.harga)">
                             <clr-icon shape="plus"></clr-icon>
                         </button>
                     </ng-container>                     

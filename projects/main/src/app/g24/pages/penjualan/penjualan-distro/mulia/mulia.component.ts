@@ -184,8 +184,9 @@ export class MuliaComponent implements OnInit {
                 "denom" : this.mulias[0]['product-denom'].name,
                 "qty" : this.qty,
                 "flag" : this.mulias[0].flag,
-                "harga" : this.mulias[0].harga
-                
+                "harga" : this.mulias[0].harga,
+                "vendorcode" : this.mulias[0].vendor.code,
+                "denomcode" : this.mulias[0]['product-denom'].code
               });
               this.datamulias = cariMulia;
               console.debug(this.datamulias, "kamu")
@@ -213,16 +214,20 @@ export class MuliaComponent implements OnInit {
     return ARR;
   }
 
+ 
+
   addCart(vendorLM: any, denomLM: any, qtyLM: any, harga: any){
     this.loadingDg = true;
+     // Session
+    const getUnit = this.sessionService.getUnit();
 
     if (qtyLM < this.jumlahLM) {
       this.toastrService.error("Jumlah Tidak Mencukupis", "Mulia");
       this.loadingDg = false;
     }else{
       let params : any;
-      let urlVendor = "vendor.name="+vendorLM;
-      let urlDenom = "product-denom.name="+denomLM;
+      let urlVendor = "vendor.code="+vendorLM;
+      let urlDenom = "&unit.code="+getUnit["code"]+"&product-denom.code="+denomLM;
       let lm: any;
 
       params = this.category;
