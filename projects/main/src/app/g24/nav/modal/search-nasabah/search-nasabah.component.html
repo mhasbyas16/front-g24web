@@ -80,6 +80,13 @@
                                         <clr-dg-cell>{{client.namaIbuKandung}}</clr-dg-cell>
                                         <clr-dg-cell>{{client.jenisKelamin}}</clr-dg-cell>
                                     </clr-dg-row>
+                                    <clr-dg-footer>
+                                        <clr-dg-pagination #pagination [clrDgPageSize]="5">
+                                          <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Client per page</clr-dg-page-size>
+                                          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                                          of {{pagination.totalItems}} Client
+                                        </clr-dg-pagination>
+                                      </clr-dg-footer>
                                 
                                     <clr-dg-footer></clr-dg-footer>
                                 </clr-datagrid>
@@ -103,6 +110,13 @@
                                         <clr-dg-cell>{{client.bidangUsaha.name}}</clr-dg-cell>
                                         
                                     </clr-dg-row>
+                                    <clr-dg-footer>
+                                        <clr-dg-pagination #pagination [clrDgPageSize]="5">
+                                          <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Client per page</clr-dg-page-size>
+                                          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                                          of {{pagination.totalItems}} Client
+                                        </clr-dg-pagination>
+                                      </clr-dg-footer>
                                 
                                     <clr-dg-footer></clr-dg-footer>
                                 </clr-datagrid>

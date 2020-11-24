@@ -64,6 +64,13 @@
                             </ng-container>    
                         </clr-dg-cell>
                     </clr-dg-row>
+                    <clr-dg-footer>
+                        <clr-dg-pagination #pagination [clrDgPageSize]="5">
+                          <clr-dg-page-size [clrPageSizeOptions]="[5,10,20]">Data per page</clr-dg-page-size>
+                          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+                          of {{pagination.totalItems}} Buyback
+                        </clr-dg-pagination>
+                      </clr-dg-footer>
                     <clr-dg-detail *clrIfDetail="let detail">
                         <clr-dg-detail-header><span style="font-size: 25px;"><b>LIST PRODUCT</b></span></clr-dg-detail-header>
                         <clr-dg-detail-body>

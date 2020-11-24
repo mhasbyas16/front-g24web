@@ -406,6 +406,7 @@ export class CheckoutBuybackComponent implements OnInit {
           this.toastr.error(this.buybackService.message(), "Transaction");
           this.idTransaksi();
           this.processData = false;
+          this.ChangeContentArea('10009');
           return;
         }
       })

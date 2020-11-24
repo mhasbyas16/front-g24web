@@ -589,6 +589,7 @@ dat = null;
           this.processData = false;
           this.toastr.error(this.transactionService.message(), "Transaction");
           this.idTransaksi()
+          this.ChangeContentArea('10003');
           return;
         }
       })
